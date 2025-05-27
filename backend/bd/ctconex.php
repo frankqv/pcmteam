@@ -5,9 +5,9 @@ if(!isset($_SESSION))
     }
 
 // Define database
-define('dbhost', 'u171145084_pcmteam');
+define('dbhost', 'localhost');
 define('dbuser', 'root');
-define('dbpass', 'PCcomercial2025');
+define('dbpass', '');
 define('dbname', 'u171145084_pcmteam');
 
 // Connecting database

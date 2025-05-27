@@ -1,4 +1,4 @@
-<?php
+<?php /*
 session_start();
     if (isset($_SESSION['id'])){
         header('administrador/escritorio.php');
@@ -6,7 +6,38 @@ session_start();
         header('cliente/escritorio.php');
     }
     include_once '../backend/php/ctlogx.php'
- ?>
+ */?>
+ <?php
+session_start();
+
+if (isset($_SESSION['id']) && isset($_SESSION['rol'])) {
+    switch ($_SESSION['rol']) {
+        case 1:
+            header('Location: administrador/escritorio.php');
+            break;
+        case 2:
+            header('Location: cliente/escritorio.php');
+            break;
+        case 3:
+            header('Location: comercial/escritorio.php');
+            break;
+        case 4:
+            header('Location: jtecnico/escritorio.php');
+            break;
+        case 5:
+            header('Location: tecnico/escritorio.php');
+            break;
+        case 6:
+            header('Location: bodega/escritorio.php');
+            break;
+        default:
+            $errMsg = "Rol no definido.";
+            session_destroy(); // cerrar sesión por seguridad
+    }
+}
+include_once '../backend/php/ctlogx.php';
+?>
+ 
 <html lang="es">
 <head>
     <meta charset="UTF-8">
