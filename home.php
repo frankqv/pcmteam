@@ -2,58 +2,419 @@
 
  ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-100">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="estilo.css">
-    <title>PCMARKETTEAM</title>
-    <link rel="icon" type="image/png" href="/backend/img/favicon.png">
-
-    <!--Stypes backend/img/favicon.png-->
-    <style>
-        *{font-family:  'Rubik', sans-serif;}
-    </style>
-    
-    <link rel="icon" type="image/png" href="backend/img/favicon.png"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>PCMARKETTEAM</title>
+    <link rel="icon" type="image/png" href="backend/img/favicon.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles */
+        .main-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(73, 182, 159, 0.2);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: #49B69F;
+            background: linear-gradient(45deg, #49B69F, #00dc92);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-transform: capitalize;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(73, 182, 159, 0.1);
+            color: #49B69F;
+            transform: translateY(-2px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links a:hover {
+            background: #49B69F;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(73, 182, 159, 0.4);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(73, 182, 159, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            background: linear-gradient(45deg, #ffffff, #49B69F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #49B69F, #00dc92);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(73, 182, 159, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(73, 182, 159, 0.4);
+            color: white;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 4rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contact-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 3rem;
+            color: #49B69F;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .contact-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(73, 182, 159, 0.2);
+        }
+
+        .contact-item:hover {
+            transform: translateY(-5px);
+            background: rgba(73, 182, 159, 0.1);
+            box-shadow: 0 10px 30px rgba(73, 182, 159, 0.2);
+        }
+
+        .contact-item i {
+            font-size: 2.5rem;
+            color: #00dc92;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .contact-item h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #49B69F;
+        }
+
+        .contact-item p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .main-footer {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-text {
+            opacity: 0.8;
+        }
+
+        .footer-text span {
+            color: #49B69F;
+            font-weight: 600;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 0 1rem;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(26, 26, 46, 0.98);
+                flex-direction: column;
+                padding: 2rem;
+                transition: top 0.3s ease;
+                backdrop-filter: blur(20px);
+            }
+
+            .nav-menu.active {
+                top: 100%;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 6rem 1rem 3rem;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .contact-section {
+                padding: 3rem 1rem;
+            }
+        }
+
+        /* Scroll Behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #49B69F;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00dc92;
+        }
+    </style>
 </head>
 <body>
-    <!-- MENU -->
-    <div class="contenedor-header">
-        <header>
-            <h1><span style="color:#49B69F;">PCMARKET</span>TEAM</h1>
-            <nav id="nav">
-                <a href="#inicio" onclick="seleccionar()">inicio</a>
-                <a href="#contacto" onclick="seleccionar()">Contacto</a>
-                <a href="frontend/login.php" onclick="seleccionar()">Login</a>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo">
+                <h1><span>PCMARKET</span>TEAM</h1>
+            </div>
+            
+            <nav class="nav-menu" id="navMenu">
+                <a href="#inicio" onclick="closeMenu()">Inicio</a>
+                <a href="#contacto" onclick="closeMenu()">Contacto</a>
+                <a href="frontend/login.php" onclick="closeMenu()">Ingresar</a>
             </nav>
-            <div class="redes">
-                <a href="https://api.whatsapp.com/send/?phone=573222024365&text=Estoy+interesado" target="_blank" rel="noopener noreferrer">
+
+            <div class="social-links">
+                <a href="https://api.whatsapp.com/send/?phone=573222024365&text=Estoy+interesado" target="_blank" rel="noopener noreferrer" title="WhatsApp">
                     <i class="fa-brands fa-whatsapp"></i>
                 </a>
-                <a href="https://www.tiktok.com/@pcmarkett" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.tiktok.com/@pcmarkett" target="_blank" rel="noopener noreferrer" title="TikTok">
                     <i class="fa-brands fa-tiktok"></i>
                 </a>
-                <a href="https://www.youtube.com/@PCMARKETT" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.youtube.com/@PCMARKETT" target="_blank" rel="noopener noreferrer" title="YouTube">
                     <i class="fa-brands fa-youtube"></i>
                 </a>
             </div>
-            <!-- Icono del menu responsive -->
-            <div id="icono-nav" class="nav-responsive" onclick="mostrarOcultarMenu()">
-                <i class="fa-solid fa-bars"></i>
-            </div>                
-        </header>
-    </div>
 
-    <!-- SECCION INICIO -->
-    <section id="inicio" class="contacto">
+            <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="hero-section" style="background:#215247;" id="inicio">
+        <div class="hero-content">
+            <h1 class="hero-title">Bienvenido a PCMARKETTEAM</h1>
+            <p class="hero-subtitle">
+                Tu destino tecnológico de confianza. Ofrecemos las mejores soluciones en hardware y software 
+                con el respaldo de expertos en tecnología. Transformamos tus ideas en realidad digital.
+            </p>
+            <a href="#contacto" class="cta-button">
+                <i class="fas fa-rocket"></i> Comenzar Ahora
+            </a>
+        </div>
+        <!-- Hero Image -->
+    </main>
+
+      <section id="inicio" class="contacto">
         <div class="fila">
-       <?xml version="1.0" encoding="UTF-8"?>
+       <!-- xml version="1.0" encoding="UTF-8" -->
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 452.47 301.65">
         <defs>
             <style>
@@ -129,7 +490,7 @@
             }
 
             .cls-18 {
-                fill: #4929cf;
+                fill: #e1eae8;
             }
 
             .cls-19 {
@@ -307,10 +668,6 @@
             <linearGradient id="linear-gradient-22" x1="412.22" y1="81.93" x2="412.22" y2="84.64" xlink:href="#linear-gradient"/>
         </defs>
         <g class="cls-25">
-            <g id="OBJECTS">
-            <rect class="cls-7" width="452.47" height="301.65"/>
-            <path class="cls-48" d="M303.33,0H62.41c-2.82,5.54-6.77,10.47-11.82,14.25-9.42,7.06-22.34,11.26-26.64,22.22-5.59,14.26,7.38,30.39,3.15,45.11-3.16,10.97-14.76,17.15-25.74,20.27-.45.13-.9.25-1.35.37v199.41h163.26c7.07-17.6,18.95-32.25,38.23-39.76,14.78-5.76,31.09-6.32,46.22-11.1,15.12-4.79,30.21-15.98,31.67-31.78,2.03-22.11-22.99-39.52-21.94-61.7,1.09-23.05,29.36-37.21,31.83-60.15,1.82-16.93-11.15-32.11-12.51-49.08-1.52-19.08,11.5-35.32,26.57-48.08Z"/>
-            <g>
                 <path class="cls-18" d="M366.06,145.37c.06.07.1.15.1.25,0,.1-.03.19-.1.25-.06.07-.15.1-.25.1s-.18-.03-.25-.1c-.06-.06-.1-.15-.1-.25s.03-.18.1-.25c.06-.07.15-.1.25-.1s.19.03.25.1ZM365.71,146.68h.25s.06.02.06.06l.04,2.82s-.02.06-.06.06h-.32s-.06-.02-.06-.06l.03-2.82s.02-.06.06-.06Z"/>
                 <path class="cls-18" d="M367.97,149.57c-.22-.11-.39-.28-.52-.48-.12-.21-.18-.45-.18-.72v-1.72c0-.27.06-.51.18-.72.12-.21.29-.37.52-.48.22-.11.48-.17.77-.17s.54.06.77.17c.22.11.39.27.52.47.12.2.18.43.18.68v.08s-.02.06-.06.06h-.32s-.06-.02-.06-.06v-.08c0-.28-.09-.51-.28-.68-.19-.17-.43-.26-.74-.26s-.56.09-.74.27c-.19.18-.28.41-.28.71v1.75c0,.29.1.53.29.71.19.18.44.27.76.27s.55-.08.73-.25c.18-.17.27-.39.27-.67v-.57s0-.02-.03-.02h-.92s-.06-.02-.06-.06v-.26s.02-.06.06-.06h1.32s.06.02.06.06v.81c0,.45-.13.79-.4,1.04s-.62.38-1.07.38c-.29,0-.55-.06-.77-.17Z"/>
                 <path class="cls-18" d="M372.78,146.58s.05.04.04.08l-.07.31s-.04.05-.08.04c-.07-.03-.15-.04-.24-.04h-.08c-.22.01-.4.09-.54.25s-.21.34-.21.58v1.84s-.02.06-.06.06h-.32s-.06-.02-.06-.06v-3.04s.02-.06.06-.06h.32s.06.02.06.06v.38s0,.02,0,.02c0,0,.01,0,.02,0,.09-.15.2-.27.33-.36.14-.09.29-.13.47-.13.14,0,.26.03.36.08Z"/>
@@ -891,48 +1248,122 @@
        </div>
     </section>
 
-    <!-- SECCION SERVICIOS -->
-  
-
-    <!-- SECCION CONTACTO -->
-    <section class="contacto" id="contacto">
-        <div class="contenido-seccion">
-            <div class="contenedor-titulo">
+    <!-- Contact Section -->
+    <section class="contact-section" id="contacto">
+        <div class="contact-container">
+            <h2 class="contact-title">Contáctanos</h2>
             
-            <div class="fila-datos">
-                <div class="col">
-                    <i style="color: #00dc92;" class="fa-solid fa-location-dot"></i>
-                    Bogotá&nbsp;&nbsp;&nbsp;
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <h3>Ubicación</h3>
+                    <p>Bogotá, Colombia<br>Servicio a nivel nacional</p>
                 </div>
-                <div class="col">
-                    <i style="color: #00dc92;" class="fa-brands fa-whatsapp"></i>
-                  Más Info +57 322 2024365 | FrankQV  &nbsp;
+                
+                <div class="contact-item">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <h3>WhatsApp</h3>
+                    <p>+57 322 2024365<br>Atención personalizada con FrankQV</p>
                 </div>
-                <div class="col">
-                    <i style="color: #00dc92;" class="fa-regular fa-clock"></i>
-                    &nbsp;LUNES a VIERNES, 9:00 AM - 6:00 PM
+                
+                <div class="contact-item">
+                    <i class="fa-regular fa-clock"></i>
+                    <h3>Horario de Atención</h3>
+                    <p>Lunes a Viernes<br>9:00 AM - 6:00 PM</p>
                 </div>
             </div>
         </div>
-
     </section>
 
-    <footer>
-        <div class="info">
-            <p>2025 - <span style="color:#49B69F">DEV FRANK</span> Todos los derechos reservados</p>
-            <div class="redes">
-                <a href="https://api.whatsapp.com/send/?phone=573222024365&text=Estoy+interesado" target="_blank" rel="noopener noreferrer">
+    
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p class="footer-text">
+                2025 - <span>DEV FRANK</span> Todos los derechos reservados
+            </p>
+            
+            <div class="social-links">
+                <a href="https://api.whatsapp.com/send/?phone=573222024365&text=Estoy+interesado" target="_blank" rel="noopener noreferrer" title="WhatsApp">
                     <i class="fa-brands fa-whatsapp"></i>
                 </a>
-                <a href="https://www.tiktok.com/@pcmarkett" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.tiktok.com/@pcmarkett" target="_blank" rel="noopener noreferrer" title="TikTok">
                     <i class="fa-brands fa-tiktok"></i>
                 </a>
-                <a href="https://www.youtube.com/@PCMARKETT" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.youtube.com/@PCMARKETT" target="_blank" rel="noopener noreferrer" title="YouTube">
                     <i class="fa-brands fa-youtube"></i>
                 </a>
             </div>
         </div>
     </footer>
 
+    <script>
+        // Menu Toggle Functionality
+        function toggleMenu() {
+            const navMenu = document.getElementById('navMenu');
+            const menuToggle = document.getElementById('menuToggle');
+            
+            navMenu.classList.toggle('active');
+            
+            // Change icon
+            const icon = menuToggle.querySelector('i');
+            if (navMenu.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        function closeMenu() {
+            const navMenu = document.getElementById('navMenu');
+            const menuToggle = document.getElementById('menuToggle');
+            
+            navMenu.classList.remove('active');
+            
+            // Reset icon
+            const icon = menuToggle.querySelector('i');
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.main-header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(26, 26, 46, 0.98)';
+                header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.3)';
+            } else {
+                header.style.background = 'rgba(26, 26, 46, 0.95)';
+                header.style.boxShadow = 'none';
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const navMenu = document.getElementById('navMenu');
+            const menuToggle = document.getElementById('menuToggle');
+            
+            if (!navMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+                closeMenu();
+            }
+        });
+    </script>
 </body>
 </html>

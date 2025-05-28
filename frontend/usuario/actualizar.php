@@ -2,7 +2,7 @@
 ob_start();
 session_start();
 
-if (!isset($_SESSION['rol']) || ($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2)) {
+if (!isset($_SESSION['rol']) || ($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2 && $_SESSION['rol'] != 3 && $_SESSION['rol'] != 4 && $_SESSION['rol'] != 5 && $_SESSION['rol'] != 6)) {
     header('../error404.php');
 }
 ?>
@@ -24,19 +24,17 @@ if (!isset($_SESSION['rol']) || ($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2)
     <link rel="stylesheet" href="../../backend/css/loader.css">
 
     <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
     <!--google material icon-->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
 </head>
 
 <body>
-
     <div class="wrapper">
-
         <div class="body-overlay"></div>
         <!-- Sidebar  -->
         <nav id="sidebar">
@@ -51,14 +49,14 @@ if (!isset($_SESSION['rol']) || ($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2)
             <div class="top-navbar">
                 <!-- Barra de navegación superior -->
             </div>
-
             <div class="main-content">
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
                         <!-- Breadcrumb -->
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="../administrador/escritorio.php">Panel administrativo</a></li>
+                                <li class="breadcrumb-item"><a href="../administrador/escritorio.php">Panel
+                                        administrativo</a></li>
                                 <li class="breadcrumb-item"><a href="../usuario/mostrar.php">Usuarios</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Actualizar</li>
                             </ol>
@@ -84,53 +82,71 @@ if (!isset($_SESSION['rol']) || ($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2)
                                 }
                                 ?>
                                 <?php if (count($data) > 0) : ?>
-                                    <?php foreach ($data as $f) : ?>
-                                        <form enctype="multipart/form-data" method="POST" autocomplete="off">
-                                            <div class="row">
-                                                <div class="col-md-4 col-lg-4">
-                                                    <div class="form-group">
-                                                        <label for="email">Nombre del usuario<span class="text-danger">*</span></label>
-                                                        <input type="text" value="<?php echo $f->nombre; ?>" class="form-control" name="txtnaame" required placeholder="Nombre de la categoría">
-                                                        <input type="hidden" value="<?php echo $f->id; ?>" name="txtidc">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4 col-lg-4">
-                                                    <div class="form-group">
-                                                        <label for="email">Usuario<span class="text-danger">*</span></label>
-                                                        <input type="text" value="<?php echo $f->usuario; ?>" class="form-control" name="txtuse" required placeholder="Nombre de la categoría">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4 col-lg-4">
-                                                    <div class="form-group">
-                                                        <label for="email">Correo<span class="text-danger">*</span></label>
-                                                        <input type="email" value="<?php echo $f->correo; ?>" class="form-control" name="txtmail" required placeholder="Nombre de la categoría">
-                                                    </div>
-                                                </div>
-                                                <!-- Nuevo campo de selección para el rol -->
-                                                <div class="col-md-4 col-lg-4">
-                                                    <div class="form-group">
-                                                        <label for="rol">Rol<span class="text-danger">*</span></label>
-                                                        <select class="form-control" name="txtrol" required>
-                                                            <option value="1" <?php echo ($f->rol == 1) ? 'selected' : ''; ?>>Rol 1 Administrador</option>
-                                                            <option value="2" <?php echo ($f->rol == 2) ? 'selected' : ''; ?>>Rol 2 Cliente</option>
-                                                            <!-- Agrega más opciones de roles según sea necesario -->
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <hr>
+                                <?php foreach ($data as $f) : ?>
+                                <form enctype="multipart/form-data" method="POST" autocomplete="off">
+                                    <div class="row">
+                                        <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
-                                                <div class="col-sm-12">
-                                                    <button name='stupduser' class="btn btn-success text-white">Guardar</button>
-                                                    <a class="btn btn-danger text-white" href="../usuario/mostrar.php">Cancelar</a>
-                                                </div>
+                                                <label for="email">Nombre del usuario<span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" value="<?php echo $f->nombre; ?>"
+                                                    class="form-control" name="txtnaame" required
+                                                    placeholder="Nombre de la categoría">
+                                                <input type="hidden" value="<?php echo $f->id; ?>" name="txtidc">
                                             </div>
-                                        </form>
-                                    <?php endforeach; ?>
-                                <?php else : ?>
-                                    <div class="alert alert-warning" role="alert">
-                                        ¡No se encontró ningún dato!
+                                        </div>
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Usuario<span class="text-danger">*</span></label>
+                                                <input type="text" value="<?php echo $f->usuario; ?>"
+                                                    class="form-control" name="txtuse" required
+                                                    placeholder="Nombre de la categoría">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Correo<span class="text-danger">*</span></label>
+                                                <input type="email" value="<?php echo $f->correo; ?>"
+                                                    class="form-control" name="txtmail" required
+                                                    placeholder="Nombre de la categoría">
+                                            </div>
+                                        </div>
+                                        <!-- Nuevo campo de selección para el rol -->
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="rol">Rol<span class="text-danger">*</span></label>
+                                                <select class="form-control" name="txtrol" required>
+                                                    <option value="1" <?php echo ($f->rol == 1) ? 'selected' : ''; ?>>
+                                                        Rol #1: Administrador</option>
+                                                    <option value="2" <?php echo ($f->rol == 2) ? 'selected' : ''; ?>>
+                                                        Rol #2: Contable</option>
+                                                    <option value="3" <?php echo ($f->rol == 2) ?  'selected' : '';?>>
+                                                        Rol #3: Comercial</option>
+                                                    <option value="4" <?php echo ($f->rol == 2) ?  'selected' : '';?>>
+                                                        Rol #4: Jefe Técnico</option>
+                                                    <option value="5" <?php echo ($f->rol == 2) ?  'selected' : '';?>>
+                                                        Rol #5: Técnico</option>
+                                                    <option value="6" <?php echo ($f->rol == 2) ?  'selected' : '';?>>
+                                                        Rol #6: Bodega</option>
+                                                    <!-- Agrega más opciones de roles según sea necesario -->
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <hr>
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <button name='stupduser' class="btn btn-success text-white">Guardar</button>
+                                            <a class="btn btn-danger text-white"
+                                                href="../usuario/mostrar.php">Cancelar</a>
+                                        </div>
+                                    </div>
+                                </form>
+                                <?php endforeach; ?>
+                                <?php else : ?>
+                                <div class="alert alert-warning" role="alert">
+                                    ¡No se encontró ningún dato!
+                                </div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -139,41 +155,31 @@ if (!isset($_SESSION['rol']) || ($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2)
             </div>
         </div>
 
-
-
-
-
-
-
-
-
-
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="../../backend/js/jquery-3.3.1.slim.min.js"></script>
-    <script src="../../backend/js/popper.min.js"></script>
-    <script src="../../backend/js/bootstrap.min.js"></script>
-    <script src="../../backend/js/jquery-3.3.1.min.js"></script>
-    <script src="../../backend/js/sweetalert.js"></script>
-    <?php
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="../../backend/js/jquery-3.3.1.slim.min.js"></script>
+        <script src="../../backend/js/popper.min.js"></script>
+        <script src="../../backend/js/bootstrap.min.js"></script>
+        <script src="../../backend/js/jquery-3.3.1.min.js"></script>
+        <script src="../../backend/js/sweetalert.js"></script>
+        <?php
     include_once '../../backend/php/st_upduser.php';
     ?>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#sidebarCollapse').on('click', function() {
-            $('#sidebar').toggleClass('active');
-            $('#content').toggleClass('active');
-        });
+        <script type="text/javascript">
+        $(document).ready(function() {
+            $('#sidebarCollapse').on('click', function() {
+                $('#sidebar').toggleClass('active');
+                $('#content').toggleClass('active');
+            });
 
-        $('.more-button,.body-overlay').on('click', function() {
-            $('#sidebar,.body-overlay').toggleClass('show-nav');
-        });
+            $('.more-button,.body-overlay').on('click', function() {
+                $('#sidebar,.body-overlay').toggleClass('show-nav');
+            });
 
-    });
-</script>
-<script src="../../backend/js/loader.js"></script>
+        });
+        </script>
+        <script src="../../backend/js/loader.js"></script>
 </body>
 
 </html>
