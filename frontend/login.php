@@ -51,7 +51,7 @@ include_once '../backend/php/ctlogx.php';
     <div class="login-wrapper">
 
         <div class=" box-image box-col">
- <img src="../backend/img/sideimage.png" alt="sideimage"> 
+ <img src="../backend/img/sideimage.jpg" alt="sideimage"> 
         </div>
         <div class="box-col">
            <div class="box-form">
