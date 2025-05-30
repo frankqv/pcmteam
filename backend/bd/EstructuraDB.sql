@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 29-05-2025 a las 17:56:59
+-- Tiempo de generación: 30-05-2025 a las 17:58:34
 -- Versión del servidor: 10.11.10-MariaDB-log
 -- Versión de PHP: 7.2.34
 
@@ -122,9 +122,10 @@ INSERT INTO `clientes` (`idclie`, `numid`, `nomcli`, `apecli`, `naci`, `correo`,
 (1, '1231213', 'holman', 'grimaldo', '2019-03-13', 'grimaldox@gmail.com', '3026169292', 'Activo', '2024-03-14 04:02:53'),
 (2, '78901234', 'Ana', 'Perez', '1990-05-25', 'ana@example.com', '3157229001', 'Activo', '2024-03-14 04:30:20'),
 (3, '56789012', 'Pedro', 'Gomez', '1985-10-12', 'pedro@example.com', '3123456789', 'Inactivo', '2023-08-18 12:45:10'),
-(4, '34567890', 'Laura', 'Lopez', '2000-03-08', 'laura@example.com', '3163993481', 'Activo', '2024-09-12 15:20:30'),
+(4, '34567890', 'Laura', 'Lopez', '2000-03-08', 'laura@example.com', '3163993481', 'Inactivo', '2024-09-12 15:20:30'),
 (5, '90123456', 'Carlos', 'Martinez', '1978-12-03', 'carlos@example.com', '3136497264', 'Activo', '2023-10-25 18:10:15'),
-(6, '10232432', 'Joel Sebastian', 'Penagos Ortiz Trinidad de la Cruz', '0000-00-00', 'jsPenagos@gmail.com', '3058250638', 'Activo', '2024-03-21 06:22:37');
+(6, '10232432', 'Joel Sebastian', 'Penagos Ortiz Trinidad de la Cruz', '0000-00-00', 'jsPenagos@gmail.com', '3058250638', 'Activo', '2024-03-21 06:22:37'),
+(7, '12345678', 'Cliente Genérico', 'Genérico', '2018-11-20', '', '555', 'Activo', '2025-05-30 16:33:24');
 
 -- --------------------------------------------------------
 
@@ -207,7 +208,9 @@ INSERT INTO `ingresos` (`iding`, `detalle`, `total`, `fec`) VALUES
 (7, 'VENTA DE PRODUCTOS', 50000.00, '2024-03-19'),
 (8, 'VENTA DE PRODUCTOS', 108500.00, '2024-03-19'),
 (9, 'VENTA DE PRODUCTOS', 5000000.00, '2024-03-19'),
-(10, 'VENTA DE MEMBRESIAS', 89500.00, '2023-04-05');
+(10, 'VENTA DE MEMBRESIAS', 89500.00, '2023-04-05'),
+(11, 'VENTA DE MEMBRESIAS', 80000.00, '2025-05-30'),
+(12, 'VENTA DE MEMBRESIAS', 80000.00, '2025-05-30');
 
 -- --------------------------------------------------------
 
@@ -262,11 +265,11 @@ CREATE TABLE `plan` (
 --
 
 INSERT INTO `plan` (`idplan`, `foto`, `nompla`, `estp`, `prec`, `fere`) VALUES
-(1, '734337.jpg', 'PLAN BASICO', 'Activo', 89500.00, '2024-03-15 08:27:45'),
-(2, 'plan2.jpg', ' PLAN STANDARD', 'Activo', 49500.00, '2024-03-15 08:27:46'),
-(3, 'plan2.jpg', 'PLAN PLATINO', 'Activo', 99500.00, '2024-03-15 08:27:46'),
-(4, 'plan1.jpg', 'PLAN PREMIUM', 'Activo', 129000.00, '2024-03-31 08:27:46'),
-(6, 'plan1.jpg', 'PLAN PREMIUM 2', 'Inactivo', 6000.00, '2024-03-19 20:35:44');
+(1, '734337.jpg', 'MANTENIMIENTO PREVENTIVO', 'Activo', 89500.00, '2024-03-15 08:27:45'),
+(2, 'plan2.jpg', 'BORRADO SEGURO', 'Activo', 49500.00, '2024-03-15 08:27:46'),
+(3, 'plan2.jpg', 'COMPONENTE', 'Activo', 99500.00, '2024-03-15 08:27:46'),
+(4, '931030.png', 'REPARACION', 'Activo', 129000.00, '2024-03-31 08:27:46'),
+(5, 'plan1.jpg', 'SERVICIO TECNICO', 'Inactivo', 6000.00, '2024-03-19 20:35:44');
 
 -- --------------------------------------------------------
 
@@ -292,13 +295,13 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`idprod`, `codba`, `nomprd`, `idcate`, `precio`, `stock`, `foto`, `venci`, `esta`, `fere`) VALUES
-(1, '12345678901234', 'Computador Lenovo', 1, 10000.00, 1000, '115365.jpg', '2024-12-31', 'Activo', '2024-03-15 08:27:45'),
-(2, '56789012340123', 'Computador 117', 2, 15000.00, 50, '341946.jpg', '2025-06-30', 'Activo', '2024-03-15 08:27:46'),
-(3, '67890123451234', 'Computador DELL', 3, 25000.00, 26, '680339.jpg', '2025-12-31', 'Activo', '2024-03-15 08:27:46'),
-(4, '78901234562345', 'Computador ASUS', 1, 12500.00, 80, '579718.jpg', '2024-10-31', 'Activo', '2024-03-15 08:27:46'),
-(5, '89012345673456', 'Computador Compax', 4, 18000.00, 59, '956303.jpg', '2024-08-31', 'Activo', '2024-03-15 08:27:46'),
-(6, 'H7YY7MINAndznR', 'Computador HP', 1, 229500.00, 1000, '375961.png', '2025-04-01', 'Activo', '2024-03-21 19:19:20'),
-(0, 'vAZCeYThjC6An7', 'lenovo', 4, 5000000.00, 2, '10878.jpg', '2025-05-01', 'Activo', '2025-05-28 20:32:22');
+(1, 'vAZCeYThjC6An7', 'lenovo', 4, 5000000.00, 2, '10878.jpg', '2025-05-01', 'Activo', '2025-05-28 20:32:22'),
+(2, '12345678901234', 'Computador Lenovo', 1, 10000.00, 1000, '115365.jpg', '2024-12-31', 'Activo', '2024-03-15 08:27:45'),
+(3, '56789012340123', 'Computador 117', 2, 15000.00, 50, '341946.jpg', '2025-06-30', 'Activo', '2024-03-15 08:27:46'),
+(4, '67890123451234', 'Computador DELL', 3, 25000.00, 26, '680339.jpg', '2025-12-31', 'Activo', '2024-03-15 08:27:46'),
+(5, '78901234562345', 'Computador ASUS', 1, 12500.00, 80, '579718.jpg', '2024-10-31', 'Activo', '2024-03-15 08:27:46'),
+(6, '89012345673456', 'Computador Compax', 4, 18000.00, 59, '956303.jpg', '2024-08-31', 'Activo', '2024-03-15 08:27:46'),
+(7, 'H7YY7MINAndznR', 'Computador HP', 1, 229500.00, 1000, '375961.png', '2025-04-01', 'Activo', '2024-03-21 19:19:20');
 
 -- --------------------------------------------------------
 
@@ -323,12 +326,14 @@ CREATE TABLE `servicio` (
 --
 
 INSERT INTO `servicio` (`idservc`, `idplan`, `ini`, `fin`, `idclie`, `estod`, `meto`, `canc`, `fere`) VALUES
-(1, 1, '2024-03-15', '2024-05-08', 1, 'Activo', 'Metodo', 20000.00, '2024-03-15 08:27:46'),
-(2, 2, '2024-03-15', '2024-05-17', 2, 'Inactivo', 'Metodo2', 30000.00, '2024-03-15 08:27:46'),
-(3, 3, '2023-08-18', '2024-04-06', 3, 'Activo', 'Metodo3', 40000.00, '2024-03-15 08:27:46'),
+(1, 1, '2024-03-15', '2024-05-08', 1, 'Activo', 'Nequi', 20000.00, '2024-03-15 08:27:46'),
+(2, 2, '2024-03-15', '2024-05-17', 2, 'Inactivo', 'Nequi', 30000.00, '2024-03-15 08:27:46'),
+(3, 3, '2023-08-18', '2024-04-06', 3, 'Activo', 'Nequi', 40000.00, '2024-03-15 08:27:46'),
 (4, 4, '2023-09-22', '2025-02-21', 4, 'Activo', 'Nequi', 35000.00, '2024-03-15 08:27:46'),
 (5, 6, '2023-10-25', '2024-04-04', 5, 'Activo', 'Transferencia', 25000.00, '2024-03-15 08:27:46'),
-(6, 3, '2023-04-05', '2024-04-04', 6, 'Activo', 'Tarjeta', 560000.00, '2024-03-21 06:28:16');
+(6, 3, '2023-04-05', '2024-04-04', 6, 'Activo', 'Tarjeta', 560000.00, '2024-03-21 06:28:16'),
+(7, 0, '2025-05-30', '2025-06-12', 7, 'Activo', 'Nequi_Daviplata', 900000.00, '2025-05-30 17:21:20'),
+(8, 0, '2025-05-30', '2025-06-21', 2, 'Activo', 'Nequi_Daviplata', 9000000.00, '2025-05-30 17:24:54');
 
 -- --------------------------------------------------------
 
@@ -348,6 +353,13 @@ CREATE TABLE `setting` (
   `foto` text NOT NULL
 ) ;
 
+--
+-- Volcado de datos para la tabla `setting`
+--
+
+INSERT INTO `setting` (`idsett`, `nomem`, `ruc`, `decrp`, `corr`, `direc1`, `direc2`, `celu`, `foto`) VALUES
+(1, 'PCMARKET SAS', '901232273', 'PCMARKET SAS', 'comercial@pcmarkett.com', 'Cra. 53 #14-51, Bogotá,', '', '+57 304 41', 'logo.png');
+
 -- --------------------------------------------------------
 
 --
@@ -357,7 +369,7 @@ CREATE TABLE `setting` (
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
   `nombre` varchar(30) NOT NULL,
-  `usuario` varchar(15) NOT NULL,
+  `usuario` varchar(45) NOT NULL,
   `correo` varchar(30) NOT NULL,
   `clave` text NOT NULL,
   `rol` char(1) NOT NULL,
@@ -372,26 +384,26 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id`, `nombre`, `usuario`, `correo`, `clave`, `rol`, `foto`, `estado`, `fere`) VALUES
 (1, 'FrankQV', 'frank', 'frank@admin.com', '202cb962ac59075b964b07152d234b70', '1', '1', '1', '2025-05-28 14:48:15'),
-(2, 'Cristhian Romero', 'CristhianRomero', 'cr123@data.com', '53c9051e332d17250009640d364414c4', '2', '1', '1', '2025-05-28 22:37:54'),
+(2, 'Cristhian Romero', 'CristhianRomeropc', 'cr123@data.com', '53c9051e332d17250009640d364414c4', '2', '1', '1', '2025-05-28 22:37:54'),
 (3, 'Jasson Robles', 'Jassonroblespc', 'jr123@data.com', '75dbf8a92d4276fb51528da4e4a9d2c3', '2', '1', '1', '2025-05-28 22:38:35'),
-(4, 'Andrés Buitrago', 'AndresBuitragop', 'ab123@data.com', '4b812d068c142583012bfb70131a61ab', '2', '1', '1', '2025-05-28 22:38:57'),
+(4, 'Andrés Buitrago', 'AndresBuitragopc', 'ab123@data.com', '4b812d068c142583012bfb70131a61ab', '2', '1', '1', '2025-05-28 22:38:57'),
 (5, 'Nohelia Jaraba', 'Noheliajarabapc', 'nj123@data.com', '58b906fa888b10ebd49aa571bcef5149', '2', '1', '1', '2025-05-28 22:39:16'),
 (6, 'Anyi González', 'AnyiGonzalezpc', 'anyig123@data.com', '45deac01a8028dd922151f30e78e54ae', '2', '1', '1', '2025-05-28 22:39:49'),
 (7, 'Francisco Quiñonez', 'FranciscoQV', 'fqv123@data.com', 'e555b59d75e072eb5f18124db1cf1e22', '2', '1', '1', '2025-05-28 22:40:11'),
-(9, 'Sergio Lara', 'Sergiolarapc', 'sl123@data.com', '16170c99b0432f43d245347aa04aceaf', '2', '1', '1', '2025-05-28 22:40:48'),
-(10, 'Juan González', 'Juangonzalezpc', 'jg123@data.com', '210a23d675fe23128f532944f408089c', '2', '1', '1', '2025-05-28 22:41:07'),
-(11, 'Luis González', 'Luisgonzalezpc', 'lg123@data.com', '2f04e635bab80099208ccdd506acad69', '2', '1', '1', '2025-05-28 22:41:31'),
-(13, 'Natali Florez', 'Nataliflorezpc', 'nf123@data.com', 'd8ef5df38ad01af8d7c5e6e7a478f00d', '2', '1', '1', '2025-05-29 14:25:58'),
-(17, 'Fabian Sanchez', 'Fabiansanchezpc', 'fs123@data.com', 'c7417ff8f3f5c8600b914497b6b73492', '2', '1', '1', '2025-05-29 14:27:34'),
-(18, 'José Borda', 'Josebordapc', 'jb123@data.com', '4cd26c72d84d1e1d8fe7da2194d5153e', '2', '1', '1', '2025-05-29 14:30:57'),
-(19, 'Felipe Romero', 'Feliperomeropc', 'fr123@data.com', 'c843da53f7e567b80ff967cb3ba23aee', '2', '1', '1', '2025-05-29 14:31:24'),
-(20, 'Rodrigo Martínez', 'Rodrigomartinez', 'rm123@data.com', 'eafabe7aff85735469db0f134663b7cb', '2', '1', '1', '2025-05-29 14:31:43'),
-(21, 'Deivi Lopez', 'Deivilopezpc', 'dl123@data.com', 'facbcd76dde2c647198b1bab1d5d834d', '2', '1', '1', '2025-05-29 14:32:08'),
-(22, 'Maricela Tabla', 'Maricelatablapc', 'mt123@data.com', '0e57650e147ce827aec8b788db5a25ab', '2', '1', '1', '2025-05-29 14:32:29'),
-(23, 'Ana Gaviria', 'Anagaviriapc', 'ag123@data.com', '30e5488c3c420588715fe3a51143e7ec', '2', '1', '1', '2025-05-29 14:32:51'),
-(24, 'Laura Pedraza', 'Laurapedrazapc', 'lp123@data.com', '39382aa4884af196f11ed8feba7d128f', '2', '1', '1', '2025-05-29 14:33:16'),
-(25, 'Gabriela Gutiérrez', 'gabrielagutierr', 'gg123@data.com', '7d9bfd94d852319998c99d2c07980246', '2', '1', '1', '2025-05-29 14:33:42'),
-(26, 'Mónica Valencia', 'Monicavalenciap', 'mv123@data.com', '213a253bf5cce2d84e4032ace9e29aa7', '2', '1', '1', '2025-05-29 14:34:06');
+(8, 'Sergio Lara', 'Sergiolarapc', 'sl123@data.com', '16170c99b0432f43d245347aa04aceaf', '2', '1', '1', '2025-05-28 22:40:48'),
+(9, 'Juan González', 'Juangonzalezpc', 'jg123@data.com', '210a23d675fe23128f532944f408089c', '2', '1', '1', '2025-05-28 22:41:07'),
+(10, 'Luis González', 'Luisgonzalezpc', 'lg123@data.com', '2f04e635bab80099208ccdd506acad69', '2', '1', '1', '2025-05-28 22:41:31'),
+(11, 'Natali Florez', 'Nataliflorezpc', 'nf123@data.com', 'd8ef5df38ad01af8d7c5e6e7a478f00d', '2', '1', '1', '2025-05-29 14:25:58'),
+(12, 'Fabian Sanchez', 'Fabiansanchezpc', 'fs123@data.com', 'c7417ff8f3f5c8600b914497b6b73492', '2', '1', '1', '2025-05-29 14:27:34'),
+(13, 'José Borda', 'Josebordapc', 'jb123@data.com', '4cd26c72d84d1e1d8fe7da2194d5153e', '2', '1', '1', '2025-05-29 14:30:57'),
+(14, 'Felipe Romero', 'Feliperomeropc', 'fr123@data.com', 'c843da53f7e567b80ff967cb3ba23aee', '2', '1', '1', '2025-05-29 14:31:24'),
+(15, 'Rodrigo Martínez', 'Rodrigomartinezpc', 'rm123@data.com', 'eafabe7aff85735469db0f134663b7cb', '2', '1', '1', '2025-05-29 14:31:43'),
+(16, 'Deivi Lopez', 'Deivilopezpc', 'dl123@data.com', 'facbcd76dde2c647198b1bab1d5d834d', '2', '1', '1', '2025-05-29 14:32:08'),
+(17, 'Maricela Tabla', 'Maricelatablapc', 'mt123@data.com', '0e57650e147ce827aec8b788db5a25ab', '2', '1', '1', '2025-05-29 14:32:29'),
+(18, 'Ana Gaviria', 'Anagaviriapc', 'ag123@data.com', '30e5488c3c420588715fe3a51143e7ec', '2', '1', '1', '2025-05-29 14:32:51'),
+(19, 'Laura Pedraza', 'Laurapedrazapc', 'lp123@data.com', '39382aa4884af196f11ed8feba7d128f', '2', '1', '1', '2025-05-29 14:33:16'),
+(21, 'Gabriela Gutiérrez', 'gabrielagutierrezpc', 'gg123@data.com', '7d9bfd94d852319998c99d2c07980246', '2', '1', '1', '2025-05-29 14:33:42'),
+(22, 'Mónica Valencia', 'Monicavalenciapc', 'mv123@data.com', '213a253bf5cce2d84e4032ace9e29aa7', '2', '1', '1', '2025-05-29 14:34:06');
 
 --
 -- Índices para tablas volcadas
@@ -426,6 +438,7 @@ ALTER TABLE `clientes`
 --
 ALTER TABLE `compra`
   ADD PRIMARY KEY (`idcomp`),
+  ADD UNIQUE KEY `idcomp` (`idcomp`),
   ADD KEY `fk_compra_usuario` (`user_id`);
 
 --
@@ -443,16 +456,41 @@ ALTER TABLE `ingresos`
   ADD UNIQUE KEY `iding` (`iding`);
 
 --
+-- Indices de la tabla `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`idord`),
+  ADD UNIQUE KEY `idord` (`idord`);
+
+--
+-- Indices de la tabla `plan`
+--
+ALTER TABLE `plan`
+  ADD PRIMARY KEY (`idplan`),
+  ADD UNIQUE KEY `idplan` (`idplan`),
+  ADD UNIQUE KEY `idplan_3` (`idplan`),
+  ADD UNIQUE KEY `idplan_2` (`idplan`,`nompla`);
+
+--
+-- Indices de la tabla `producto`
+--
+ALTER TABLE `producto`
+  ADD PRIMARY KEY (`idprod`,`idcate`),
+  ADD UNIQUE KEY `idprod` (`idprod`);
+
+--
 -- Indices de la tabla `servicio`
 --
 ALTER TABLE `servicio`
-  ADD PRIMARY KEY (`idservc`);
+  ADD PRIMARY KEY (`idservc`,`idplan`,`idclie`),
+  ADD UNIQUE KEY `idservc` (`idservc`);
 
 --
 -- Indices de la tabla `setting`
 --
 ALTER TABLE `setting`
-  ADD PRIMARY KEY (`idsett`);
+  ADD PRIMARY KEY (`idsett`),
+  ADD UNIQUE KEY `idsett` (`idsett`);
 
 --
 -- Indices de la tabla `usuarios`
@@ -486,10 +524,28 @@ ALTER TABLE `compra`
   MODIFY `idcomp` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `gastos`
+--
+ALTER TABLE `gastos`
+  MODIFY `idga` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `ingresos`
 --
 ALTER TABLE `ingresos`
   MODIFY `iding` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `idord` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `producto`
+--
+ALTER TABLE `producto`
+  MODIFY `idprod` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `servicio`
