@@ -382,7 +382,7 @@
             </nav>
 
             <div class="social-links">
-                <a href="https://api.whatsapp.com/send/?phone=573222024365&text=Estoy+interesado" target="_blank" rel="noopener noreferrer" title="WhatsApp">
+                <a href="https://api.whatsapp.com/send/?phone=573222024365&text=%C2%A1Hola!%20%F0%9F%91%8B%20Bienvenido%2Fa%20%F0%9F%98%8E%0A%0ASoy%20FrankQV%2C%20el%20desarrollador%20detr%C3%A1s%20de%20este%20sistema.%20%F0%9F%9A%80%0A%0AAdem%C3%A1s%20de%20construir%20soluciones%20como%20esta%2C%20tambi%C3%A9n%20ofrezco%3A%0A%E2%9C%85%20Desarrollo%20de%20p%C3%A1ginas%20web%0A%E2%9C%85%20Sistemas%20a%20medida%0A%E2%9C%85%20Automatizaciones%20y%20m%C3%A1s%0A%0AJuntos%20podemos%20llevar%20la%20tecnolog%C3%ADa%20a%20otro%20nivel%20%F0%9F%9A%80%F0%9F%98%8E%0A%0A%C2%BFEn%20qu%C3%A9%20puedo%20ayudarte%20hoy%3F%20%F0%9F%92%AC" target="_blank" rel="noopener noreferrer" title="WhatsApp">
                     <i class="fa-brands fa-whatsapp"></i>
                 </a>
                 <a href="https://www.tiktok.com/@pcmarkett" target="_blank" rel="noopener noreferrer" title="TikTok">
@@ -391,6 +391,11 @@
                 <a href="https://www.youtube.com/@PCMARKETT" target="_blank" rel="noopener noreferrer" title="YouTube">
                     <i class="fa-brands fa-youtube"></i>
                 </a>
+                <a href="https://github.com/frankqv" target="_blank" rel="noopener noreferrer" title="YouTube">
+                    <i class="fa-brans fa-github"></i>
+                </a>
+
+
             </div>
 
             <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()">
@@ -1243,8 +1248,7 @@
                 </g>
                 </g>
             </g>
-            </g>
-        </g>
+          </g>
         </svg>
      <!-- FIN DE LA IMAGEN SVG -->
        </div>
@@ -1287,7 +1291,7 @@
             </p>
             
             <div class="social-links">
-                <a href="https://api.whatsapp.com/send/?phone=573222024365&text=Estoy+interesado" target="_blank" rel="noopener noreferrer" title="WhatsApp">
+                <a href="https://api.whatsapp.com/send/?phone=573222024365&text=%C2%A1Hola!%20%F0%9F%91%8B%20Bienvenido%2Fa%20%F0%9F%98%8E%0A%0ASoy%20FrankQV%2C%20el%20desarrollador%20detr%C3%A1s%20de%20este%20sistema.%20%F0%9F%9A%80%0A%0AAdem%C3%A1s%20de%20construir%20soluciones%20como%20esta%2C%20tambi%C3%A9n%20ofrezco%3A%0A%E2%9C%85%20Desarrollo%20de%20p%C3%A1ginas%20web%0A%E2%9C%85%20Sistemas%20a%20medida%0A%E2%9C%85%20Automatizaciones%20y%20m%C3%A1s%0A%0AJuntos%20podemos%20llevar%20la%20tecnolog%C3%ADa%20a%20otro%20nivel%20%F0%9F%9A%80%F0%9F%98%8E%0A%0A%C2%BFEn%20qu%C3%A9%20puedo%20ayudarte%20hoy%3F%20%F0%9F%92%AC" target="_blank" rel="noopener noreferrer" title="WhatsApp">
                     <i class="fa-brands fa-whatsapp"></i>
                 </a>
                 <a href="https://www.tiktok.com/@pcmarkett" target="_blank" rel="noopener noreferrer" title="TikTok">
@@ -1295,6 +1299,9 @@
                 </a>
                 <a href="https://www.youtube.com/@PCMARKETT" target="_blank" rel="noopener noreferrer" title="YouTube">
                     <i class="fa-brands fa-youtube"></i>
+                </a>
+                <a href="https://github.com/frankqv" target="_blank" rel="noopener noreferrer" title="GitHub">
+                    <i class="fa-brands fa-github"></i>
                 </a>
             </div>
         </div>

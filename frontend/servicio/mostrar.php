@@ -363,8 +363,14 @@ else{
     <a class="btn btn-danger text-white" href="../servicio/eliminar.php?id=<?php echo  $g->idservc; ?>"><i class='material-icons' data-toggle='tooltip' title='crear'>cancel</i></a>
 
 
-    <a class="btn btn-secondary text-white" target="_blank" href="https://api.whatsapp.com/send/?phone=57<?php echo  $g->celu; ?>&text=Hola🖐,%20GET-THE-BEST%20te%20recuerda%20que%20tu%20membresia%20finalizo%20espero%20poder%20contar%20contigo%20un%20mes%20mas%20te%20invito%20a%20renovar%20tu%20membresia%20a%0A%0Atravez%20de%20los%20siguientes%20canales:%20Nequi_Daviplata:%20Cel3222024365%20Efectivo%20Tarjeta%20LOS%20ESPERAMOS%0A%0A"><i class='material-icons' data-toggle='tooltip' title='crear'>smartphone</i></a>
+    <a class="btn btn-secondary text-white" target="_blank" href="https://api.whatsapp.com/send/?phone=57<?php echo  $g->celu; ?>&text=%C2%A1%20Te%20damos%20la%20bienvenida%20nuevamente%20a%20PCMarkett%21"><i class='material-icons' data-toggle='tooltip' title='crear'>smartphone</i></a>
+<!--¡Te%20damos%20la%20bienvenida%20nuevamente%20a%20PCMarkett!
+Tu próximo equipo te espera con un 10% de descuento exclusivo.
 
+
+se mas empresarial ¡Te extrañamos en PCMarkett! Tu siguiente equipo te está esperando con un descuento especial 💻🔥
+
+  -->
 
     <a class="btn btn-info text-white" href="../servicio/ticket.php?id=<?php echo  $g->idservc; ?>"><i class='material-icons' data-toggle='tooltip' title='crear'>print</i></a>
 
