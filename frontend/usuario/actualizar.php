@@ -119,14 +119,16 @@ if (!isset($_SESSION['rol']) || ($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2 
                                                     <option value="1" <?php echo ($f->rol == 1) ? 'selected' : ''; ?>>
                                                         Rol #1: Administrador</option>
                                                     <option value="2" <?php echo ($f->rol == 2) ? 'selected' : ''; ?>>
-                                                        Rol #2: Contable</option>
-                                                    <option value="3" <?php echo ($f->rol == 2) ?  'selected' : '';?>>
-                                                        Rol #3: Comercial</option>
-                                                    <option value="4" <?php echo ($f->rol == 2) ?  'selected' : '';?>>
+                                                        Rol #2: Usuario Generio</option>
+                                                    <option value="3" <?php echo ($f->rol == 3) ?  'selected' : '';?>>
+                                                        Rol #3: Contable</option>
+                                                    <option value="4" <?php echo ($f->rol == 4) ? 'selected' : ''; ?>>
+                                                        Rol #4: Comercial</option>
+                                                    <option value="5" <?php echo ($f->rol == 5) ?  'selected' : '';?>>
                                                         Rol #4: Jefe Técnico</option>
-                                                    <option value="5" <?php echo ($f->rol == 2) ?  'selected' : '';?>>
-                                                        Rol #5: Técnico</option>
-                                                    <option value="6" <?php echo ($f->rol == 2) ?  'selected' : '';?>>
+                                                    <option value="6" <?php echo ($f->rol == 6) ?  'selected' : '';?>>
+                                                        Rol #6: Técnico</option>
+                                                    <option value="7" <?php echo ($f->rol == 7) ?  'selected' : '';?>>
                                                         Rol #6: Bodega</option>
                                                     <!-- Agrega más opciones de roles según sea necesario -->
                                                 </select>

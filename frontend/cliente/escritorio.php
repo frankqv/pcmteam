@@ -1,4 +1,4 @@
-
+<!-- ROL 2 Genérico -->
 <?php
 ob_start();
      session_start();
