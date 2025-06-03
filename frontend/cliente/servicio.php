@@ -40,7 +40,7 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 2) {
 <body>
   <div class="wrapper">
     <div class="body-overlay"></div>
-    <!-- Sidebar  -->
+    <!-- Sidebar   -->
     <nav id="sidebar">
         <div class="sidebar-header">
             <h3><img src="../../backend/img/favicon.png" class="img-fluid" /><span>PCMARKETTEAM</span></h3>
@@ -64,7 +64,7 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 2) {
                         class="material-icons">view_timeline</i><span>Servicio</span></a>
             </li>
     </nav>
-    <!-- Sidebar  -->
+    <!-- Sidebar   -->
 
     <!-- Account Content  -->
     <div id="content">

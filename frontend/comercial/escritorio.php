@@ -43,7 +43,7 @@ ob_start();
     <div class="wrapper">
 
         <div class="body-overlay"></div>
-        <!-- Sidebar  -->
+        <!-- Sidebar   -->
         <nav id="sidebar">
             <div class="sidebar-header">
                 <h3><img src="../../backend/img/favicon.png" class="img-fluid" /><span>PCMARKETTEAM</span></h3>
@@ -70,7 +70,7 @@ ob_start();
                             class="material-icons">view_timeline</i><span>Servicio</span></a>
                 </li>
         </nav>
-        <!-- Sidebar  -->
+        <!-- Sidebar   -->
 
 
 

@@ -6,7 +6,7 @@ if (!isset($_SESSION)) {
 // Datos correctos de conexión a MySQL en Hostinger
 define('dbhost', 'localhost');
 define('dbuser', 'u171145084_pcmteam');
-define('dbpass', ''); // ← Asegúrate de que esta contraseña esté bien escrita
+define('dbpass', 'PCcomercial2025*'); // ← Asegúrate de que esta contraseña esté bien escrita
 define('dbname', 'u171145084_pcmteam');
 
 try {
