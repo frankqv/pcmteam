@@ -106,7 +106,7 @@ $menu = [
         ]
     ],
     [
-        'label' => 'Gastos',
+        'label' => 'Gastos Generales',
         'icon' => 'savings',
         'id' => 'gastos',
         'children' => [
