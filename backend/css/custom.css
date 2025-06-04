@@ -115,9 +115,12 @@ a:focus {
 	overflow:auto;
 }
 
-
-
-
+/* ---------------------------------------------------
+    SUB menu lateral
+----------------------------------------------------- */
+    .menu {
+        background-color: #313131; /* Gris claro */
+    }
 
 /* ---------------------------------------------------
     SIDEBAR STYLE start
@@ -192,7 +195,7 @@ a:focus {
 
 #sidebar ul li a:hover{
     color: #333;
-    background-color: rgb(255, 178, 62);
+    background-color: #0A6551;
 }
 
 .dropdown-toggle::after {
@@ -231,7 +234,7 @@ a:focus {
     position: relative;
     margin-right: 10px;
     top: 5px;
-	color: #555555;
+	color: #afafaf;
     margin-left: 10px;
 }
 
@@ -274,7 +277,7 @@ a:focus {
 
 
 .navbar{
-    background-color: #49B69F;
+    background-color: #2B6B5D;
     color: #FFFFFF;
 }
 
@@ -329,7 +332,7 @@ a:focus {
     font-size: 9px;
     border: 0px;
     font-size: 10px;
-    background: #49B69F;
+    background: #2B6B5D;
     min-width: 15px;
 	 text-align: center;
     padding: 1px 5px;
@@ -433,7 +436,7 @@ a:focus {
 }
 
 .icon.icon-rose {
-    color: #49B69F;
+    color: #2B6B5D;
 }
 .icon.icon-success {
     color: #4caf50;
@@ -466,7 +469,7 @@ a:focus {
     margin-bottom: 0;
 }
 .card .category:not([class*="text-"]) {
-    color: #555555;
+    color: #afafaf;
     font-size: 14px;
     font-weight: 400;
 }
@@ -482,7 +485,7 @@ a:focus {
 
 .card .card-footer .stats {
     line-height: 22px;
-    color: #555555;
+    color: #afafaf;
     font-size: 15px;
 }
 
@@ -540,7 +543,7 @@ a:focus {
 
 
 .streamline .sl-danger:before, .streamline .sl-danger:last-child:after {
-    background-color: #49B69F;
+    background-color: #2B6B5D;
 }
 
 .streamline .sl-success {
@@ -562,7 +565,7 @@ a:focus {
 
 
 .streamline .sl-danger {
-    border-left-color: #49B69F;
+    border-left-color: #2B6B5D;
 }
 .streamline .sl-item .sl-content {
     margin-left: 24px;

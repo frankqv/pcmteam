@@ -475,8 +475,6 @@ if($sentencia){
     <script type="text/javascript" src="../../backend/js/buttonsprint.js"></script>
 
     <script type="text/javascript" src="../../backend/js/example.js"></script>
-    <script type="text/javascript" src="../../backend/js/example1.js"></script>
-
      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="../../backend/js/chart/Chart.js"></script>
         <script>

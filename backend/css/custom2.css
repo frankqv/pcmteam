@@ -219,7 +219,7 @@ a:focus {
 
 #sidebar ul li a:hover{
     color: #333;
-    background-color: rgb(255, 178, 62);
+    background-color: #0A6551;
 }
 
 .dropdown-toggle::after {
@@ -258,7 +258,7 @@ a:focus {
     position: relative;
     margin-right: 10px;
     top: 5px;
-	color: #555555;
+	color: #afafaf;
     margin-left: 10px;
 }
 
@@ -493,7 +493,7 @@ a:focus {
     margin-bottom: 0;
 }
 .card .category:not([class*="text-"]) {
-    color: #555555;
+    color: #afafaf;
     font-size: 14px;
     font-weight: 400;
 }
@@ -509,7 +509,7 @@ a:focus {
 
 .card .card-footer .stats {
     line-height: 22px;
-    color: #555555;
+    color: #afafaf;
     font-size: 15px;
 }
 

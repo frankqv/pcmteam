@@ -64,7 +64,7 @@ ob_start();
                         <span class="material-icons">arrow_back_ios</span>
                     </button>
                          
-                         <a class="navbar-brand" href="#"> Planes </a>
+                         <a class="navbar-brand" href="#">SERVICIOS</a>
                          
                     <button class="d-inline-block d-lg-none ml-auto more-button" type="button" data-toggle="collapse"
                          data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,7 +108,7 @@ ob_start();
                         <div class="col-lg-12 col-md-12">
                             <div class="card" style="min-height: 485px">
                                 <div class="card-header card-header-text">
-                                    <h4 class="card-title">Planes recientes</h4>
+                                    <h4 class="card-title">Servicios Recientes</h4>
                                     <p class="category">Nuevos planes reciente añadidos el dia de hoy</p>
                                 </div>
                                 <br>
@@ -225,7 +225,9 @@ $(document).ready(function() {
         dom: 'Bfrtip',
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
+        ],language: {
+            search: "🔍buscar:"
+        }
     } );
 } );
     </script>

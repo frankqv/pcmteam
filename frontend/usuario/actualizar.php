@@ -129,11 +129,14 @@ if (!isset($_SESSION['rol']) || ($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2 
                                                     <option value="6" <?php echo ($f->rol == 6) ?  'selected' : '';?>>
                                                         Rol #6: Técnico</option>
                                                     <option value="7" <?php echo ($f->rol == 7) ?  'selected' : '';?>>
-                                                        Rol #6: Bodega</option>
+                                                        Rol #7: Bodega</option>
                                                     <!-- Agrega más opciones de roles según sea necesario -->
                                                 </select>
                                             </div>
                                         </div>
+                                        <!-- Cambiar foto * opcion subir archivo-->
+                                        
+                                        foto
                                     </div>
                                     <hr>
                                     <div class="form-group">

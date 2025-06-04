@@ -52,7 +52,6 @@ ob_start();
             <?php renderMenu($menu); ?>
         </nav>
 
-          
         <!-- Page Content  -->
         <div id="content">
           <div class='pre-loader'>
@@ -435,21 +434,14 @@ $(document).ready(function() {
         dom: 'Bfrtip',
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
+        ],language: {
+            search: "🔍buscar:"
+        }
     } );
 } );
     </script>
 
-    <script type="text/javascript">
-$(document).ready(function() {
-    $('#example1').DataTable( {
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
-    } );
-} );
-    </script>
+
         <script type="text/javascript">
             window.onload = function(){
   var fecha = new Date(); //Fecha actual

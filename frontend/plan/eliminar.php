@@ -61,7 +61,7 @@ ob_start();
                         <span class="material-icons">arrow_back_ios</span>
                     </button>
                          
-                         <a class="navbar-brand" href="#"> Planes </a>
+                         <a class="navbar-brand" href="#">SERVICIOS</a>
                          
                     <button class="d-inline-block d-lg-none ml-auto more-button" type="button" data-toggle="collapse"
                          data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

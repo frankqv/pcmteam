@@ -289,7 +289,9 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 2) {
             dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
-            ]
+            ],language: {
+            search: "🔍buscar:"
+        }
         });
     });
     </script>

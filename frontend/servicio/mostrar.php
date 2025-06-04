@@ -299,7 +299,9 @@ $(document).ready(function() {
         dom: 'Bfrtip',
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
+        ],language: {
+            search: "🔍buscar:"
+        }
     } );
 } );
     </script>

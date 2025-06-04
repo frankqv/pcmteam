@@ -38,42 +38,47 @@ switch ($rol) {
         break;
 }
 
-# Mostrar el panel correspondiente segun el rol
+# Menu Lateral de la Aplicación
+
 $menu = [
     [
-        'label' => $panelName, #Obener nombre de usuario
-        'url' => $panelUrl, #Obener carpeta segun el rol de nombre de usuario
+        'label' => $panelName,
+        'url' => $panelUrl,
         'icon' => 'dashboard'
     ],
+
     [
         'label' => 'Clientes',
         'icon' => 'group',
         'id' => 'clientes',
         'children' => [
-            ['label' => 'Mostrar', 'url' => '../clientes/mostrar.php'],
-            ['label' => 'Nuevo', 'url' => '../clientes/nuevo.php'],
+            ['label' => 'Listado', 'url' => '../clientes/mostrar.php'],
+            [
+                'label' => 'TIENDA',
+                'id' => 'tienda',
+                'icon' => 'store',
+                'children' => [
+                    ['label' => 'Puente Aranda', 'url' => '../clientes/mostrar.php'],
+                    ['label' => 'Unilago', 'url' => '../clientes/mostrar.php'],
+		    ['label' => 'Cúcuta', 'url' => '../clientes/mostrar.php'],
+		    ['label' => 'Medellín', 'url' => '../clientes/mostrar.php'],
+                ]
+            ]
         ]
+    ],
+
+    [
+        'label' => 'Pedidos',
+        'url' => '../servicio/mostrar.php',
+        'icon' => 'view_timeline'
     ],
     [
         'label' => 'Servicios',
         'icon' => 'dataset',
         'id' => 'planes',
         'children' => [
-            ['label' => 'Mostrar', 'url' => '../plan/mostrar.php'],
-            ['label' => 'Nuevo', 'url' => '../plan/nuevo.php'],
-        ]
-    ],
-    [
-        'label' => 'Pedidos', // Anteriormente "Servicio"
-        'url' => '../servicio/mostrar.php',
-        'icon' => 'view_timeline'
-    ],
-    [
-        'label' => 'Usuarios',
-        'icon' => 'manage_accounts',
-        'id' => 'usuarios',
-        'children' => [
-            ['label' => 'Mostrar', 'url' => '../usuario/mostrar.php'],
+            ['label' => '> Mostrar', 'url' => '../plan/mostrar.php'],
+            ['label' => '> Nuevo', 'url' => '../plan/nuevo.php'],
         ]
     ],
     [
@@ -81,35 +86,23 @@ $menu = [
         'icon' => 'conveyor_belt',
         'id' => 'productos',
         'children' => [
-            ['label' => 'Mostrar', 'url' => '../producto/mostrar.php'],
-            ['label' => 'Nuevo', 'url' => '../producto/nuevo.php'],
-        ]
+            ['label' => '> Lista de Productos', 'url' => '../producto/mostrar.php'],
+            ['label' => '> Categoría','id' => 'categorias', 'url' => '../categoria/mostrar.php'
+        ]]
     ],
     [
-        'label' => 'Categorías',
-        'icon' => 'category',
-        'id' => 'categorias',
-        'children' => [
-            ['label' => 'Mostrar', 'url' => '../categoria/mostrar.php'],
-            ['label' => 'Nuevo', 'url' => '../categoria/nuevo.php'],
-        ]
-    ],
-    [
-        'label' => 'Historial de Ventas', // Anteriormente "Ventas"
+        'label' => 'Historial de Ventas',
         'icon' => 'point_of_sale',
         'id' => 'ventas',
-        'children' => [
-            ['label' => 'Mostrar', 'url' => '../venta/mostrar.php'],
-            ['label' => 'Nuevo', 'url' => '../venta/nuevo.php'],
-        ]
+        'url' => '../venta/mostrar.php',
     ],
     [
         'label' => 'Compras',
         'icon' => 'shopping_basket',
         'id' => 'compras',
         'children' => [
-            ['label' => 'Mostrar', 'url' => '../compra/mostrar.php'],
-            ['label' => 'Nuevo', 'url' => '../compra/nuevo.php'],
+            ['label' => '> Mostrar', 'url' => '../compra/mostrar.php'],
+            ['label' => '> Nuevo', 'url' => '../compra/nuevo.php'],
         ]
     ],
     [
@@ -117,8 +110,8 @@ $menu = [
         'icon' => 'savings',
         'id' => 'gastos',
         'children' => [
-            ['label' => 'Mostrar', 'url' => '../gastos/mostrar.php'],
-            ['label' => 'Nuevo', 'url' => '../gastos/nuevo.php'],
+            ['label' => '> Mostrar', 'url' => '../gastos/mostrar.php'],
+            ['label' => '> Nuevo', 'url' => '../gastos/nuevo.php'],
         ]
     ],
     [
@@ -141,9 +134,9 @@ $menu = [
         'icon' => 'signal_cellular_alt',
         'id' => 'reportes',
         'children' => [
-            ['label' => 'Productos', 'url' => '../reporte/productos.php'],
-            ['label' => 'Clientes', 'url' => '../reporte/clientes.php'],
-            ['label' => 'Ventas', 'url' => '../reporte/ventas.php'],
+            ['label' => '> Productos', 'url' => '../reporte/productos.php'],
+            ['label' => '> Clientes', 'url' => '../reporte/clientes.php'],
+            ['label' => '> Ventas', 'url' => '../reporte/ventas.php'],
         ]
     ],
     [
@@ -155,6 +148,11 @@ $menu = [
         'label' => 'Marketing',
         'url' => '../marketing/mostrar.php',
         'icon' => 'campaign'
+    ],
+    [
+        'label' => 'Usuarios',
+        'url' => '../usuario/mostrar.php',
+        'icon' => 'manage_accounts',
     ],
     [
         'label' => 'Configuración',

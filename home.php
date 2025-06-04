@@ -61,8 +61,8 @@
         }
 
         .logo span {
-            color: #49B69F;
-            background: linear-gradient(45deg, #49B69F, #00dc92);
+            color: #2B6B5D;
+            background: linear-gradient(45deg, #2B6B5D, #00dc92);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -86,7 +86,7 @@
 
         .nav-menu a:hover {
             background: rgba(73, 182, 159, 0.1);
-            color: #49B69F;
+            color: #2B6B5D;
             transform: translateY(-2px);
         }
 
@@ -105,7 +105,7 @@
         }
 
         .social-links a:hover {
-            background: #49B69F;
+            background: #2B6B5D;
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(73, 182, 159, 0.4);
         }
@@ -152,7 +152,7 @@
             font-weight: 700;
             margin-bottom: 1.5rem;
             line-height: 1.2;
-            background: linear-gradient(45deg, #ffffff, #49B69F);
+            background: linear-gradient(45deg, #ffffff, #2B6B5D);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -167,7 +167,7 @@
 
         .cta-button {
             display: inline-block;
-            background: linear-gradient(45deg, #49B69F, #00dc92);
+            background: linear-gradient(45deg, #2B6B5D, #00dc92);
             color: white;
             padding: 1rem 2.5rem;
             border-radius: 50px;
@@ -202,7 +202,7 @@
             font-size: 2.5rem;
             font-weight: 600;
             margin-bottom: 3rem;
-            color: #49B69F;
+            color: #2B6B5D;
         }
 
         .contact-grid {
@@ -237,7 +237,7 @@
         .contact-item h3 {
             font-size: 1.2rem;
             margin-bottom: 0.5rem;
-            color: #49B69F;
+            color: #2B6B5D;
         }
 
         .contact-item p {
@@ -269,7 +269,7 @@
         }
 
         .footer-text span {
-            color: #49B69F;
+            color: #2B6B5D;
             font-weight: 600;
         }
 
@@ -358,7 +358,7 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #49B69F;
+            background: #2B6B5D;
             border-radius: 4px;
         }
 

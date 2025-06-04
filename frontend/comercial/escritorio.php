@@ -294,10 +294,7 @@ if($sentencia){
     <script type="text/javascript" src="../../backend/js/vfs_fonts.js"></script>
     <script type="text/javascript" src="../../backend/js/buttonshtml5.js"></script>
     <script type="text/javascript" src="../../backend/js/buttonsprint.js"></script>
-
     <script type="text/javascript" src="../../backend/js/example.js"></script>
-    <script type="text/javascript" src="../../backend/js/example1.js"></script>
-
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="../../backend/js/chart/Chart.js"></script>
     <script>

@@ -38,7 +38,7 @@ body{
     color: #fff;
 }
 .txtRojo{
-    color:#49B69F;
+    color:#2B6B5D;
 }
 .contenedor-header header nav a{
     display: inline-block;
@@ -48,7 +48,7 @@ body{
     text-transform: uppercase;
 }
 .contenedor-header header nav a:hover{
-    color: #49B69F;
+    color: #2B6B5D;
 }
 .contenedor-header header .redes a{
     text-decoration: none;
@@ -57,7 +57,7 @@ body{
     padding: 5px 8px;
 }
 .contenedor-header header .redes a:hover{
-    color: #49B69F;
+    color: #2B6B5D;
 }
 .nav-responsive{
     display: none;
@@ -103,12 +103,12 @@ body{
     width: 50px;
     margin: auto;
     height: 50px;
-    border: 2px solid #49B69F;
+    border: 2px solid #2B6B5D;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    color: #49B69F;
+    color: #2B6B5D;
     margin-top: 50px;
     text-decoration: none;
 }
@@ -118,7 +118,7 @@ body{
 a.btn-styled {
     display: inline-block;
     padding: 10px 20px; /* Ajusta según sea necesario */
-    background-color: #49B69F;
+    background-color: #2B6B5D;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -132,7 +132,7 @@ a.btn-styled {
     /* Asegúrate de que el enlace tenga el mismo estilo que el botón */
     display: inline-block;
     padding: 10px 20px; /* Ajusta según sea necesario */
-    background-color: #49B69F;
+    background-color: #2B6B5D;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -187,7 +187,7 @@ a.btn-styled {
     align-items:center
 }
 .nosotros .fila .col .contenedor-titulo .numero{
-    color: #49B69F;
+    color: #2B6B5D;
     font-weight: bold;
     display: block;
     font-size: 5rem;
@@ -196,7 +196,7 @@ a.btn-styled {
     margin-left: 30px;
 }
 .nosotros .fila .col .contenedor-titulo .info .frase{
-    color: #49B69F;
+    color: #2B6B5D;
 }
 .nosotros .fila .col .contenedor-titulo .info h2{
     font-size: 3rem;
@@ -224,7 +224,7 @@ a.btn-styled {
     font-size: 2.5rem;
 }
 .nosotros .fila-nosotros button{
-    background-color: #49B69F;
+    background-color: #2B6B5D;
     border: none;
     color: #fff;
     padding: 15px 35px;
@@ -269,7 +269,7 @@ a.btn-styled {
     align-items: center;
 }
 .servicios .fila .col .contenedor-titulo .numero{
-    color: #49B69F;
+    color: #2B6B5D;
     font-weight: bold;
     display: block;
     font-size: 5rem;
@@ -278,7 +278,7 @@ a.btn-styled {
     margin-left: 30px;
 }
 .servicios .fila .col .contenedor-titulo .info .frase{
-    color: #49B69F;
+    color: #2B6B5D;
 }
 .servicios .fila .col .contenedor-titulo .info h2{
     font-size: 3rem;
@@ -307,7 +307,7 @@ a.btn-styled {
     border: 1px solid #dde1e9
 }
 .servicios .info-servicios table td i{
-    color: #49B69F;
+    color: #2B6B5D;
     font-size: 2.5rem;
     margin-bottom: 20px;
 
@@ -346,7 +346,7 @@ a.btn-styled {
     align-items:center
 }
 .comodidades .fila .col .contenedor-titulo .numero{
-    color: #49B69F;
+    color: #2B6B5D;
     font-weight: bold;
     display: block;
     font-size: 5rem;
@@ -355,7 +355,7 @@ a.btn-styled {
     margin-left: 30px;
 }
 .comodidades .fila .col .contenedor-titulo .info .frase{
-    color: #49B69F;
+    color: #2B6B5D;
 }
 .comodidades .fila .col .contenedor-titulo .info h2{
     font-size: 3rem;
@@ -373,7 +373,7 @@ a.btn-styled {
 }
 .comodidades .fila .col li span{
     font-weight: bold;
-    color: #49B69F;
+    color: #2B6B5D;
 }
 /* ********** */
 /* GALERIA */
@@ -396,7 +396,7 @@ a.btn-styled {
     margin-bottom: 40px;
 }
 .galeria  .contenedor-titulo .numero{
-    color: #49B69F;
+    color: #2B6B5D;
     font-weight: bold;
     display: block;
     font-size: 5rem;
@@ -405,7 +405,7 @@ a.btn-styled {
     margin-left: 30px;
 }
 .galeria .contenedor-titulo .info .frase{
-    color: #49B69F;
+    color: #2B6B5D;
 }
 .galeria .contenedor-titulo .info h2{
     font-size: 3rem;
@@ -433,7 +433,7 @@ a.btn-styled {
     margin: auto;
 }
 .equipo  .contenedor-titulo .numero{
-    color: #49B69F;
+    color: #2B6B5D;
     font-weight: bold;
     display: block;
     font-size: 5rem;
@@ -442,7 +442,7 @@ a.btn-styled {
     margin-left: 30px;
 }
 .equipo .contenedor-titulo .info .frase{
-    color: #49B69F;
+    color: #2B6B5D;
 }
 .equipo .contenedor-titulo .info h2{
     font-size: 3rem;
@@ -465,7 +465,7 @@ a.btn-styled {
     text-align: center;
     border-radius: 5px;
     padding: 20px;
-    background: linear-gradient(#49B69F, #9a0e23);
+    background: linear-gradient(#2B6B5D, #9a0e23);
     color: #fff;
 }
 .equipo .fila .info p{
@@ -501,7 +501,7 @@ a.btn-styled {
     margin: auto;
 }
 .contacto  .contenedor-titulo .numero{
-    color: #49B69F;
+    color: #2B6B5D;
     font-weight: bold;
     display: block;
     font-size: 5rem;
@@ -510,7 +510,7 @@ a.btn-styled {
     margin-left: 30px;
 }
 .contacto .contenedor-titulo .info .frase{
-    color: #49B69F;
+    color: #2B6B5D;
 }
 .contacto .contenedor-titulo .info h2{
     font-size: 3rem;
@@ -547,7 +547,7 @@ a.btn-styled {
     margin: auto;
     margin-top: 30px;
     border: none;
-    background-color: #49B69F;
+    background-color: #2B6B5D;
     color: #fff;
     font-size: 18px;
     padding: 10px 25px;
@@ -562,7 +562,7 @@ a.btn-styled {
     text-align: center;
 }
 .contacto i{
-    color: #49B69F;
+    color: #2B6B5D;
     display: inline-block;
     margin-right: 10px;
 }
