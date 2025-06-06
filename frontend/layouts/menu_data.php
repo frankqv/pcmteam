@@ -47,25 +47,6 @@ $menu = [
         'icon' => 'dashboard'
     ],
 
-    [
-        'label' => 'Clientes',
-        'icon' => 'group',
-        'id' => 'clientes',
-        'children' => [
-            ['label' => 'Listado', 'url' => '../clientes/mostrar.php'],
-            [
-                'label' => 'TIENDA',
-                'id' => 'tienda',
-                'icon' => 'store',
-                'children' => [
-                    ['label' => 'Puente Aranda', 'url' => '../clientes/mostrar.php'],
-                    ['label' => 'Unilago', 'url' => '../clientes/mostrar.php'],
-		    ['label' => 'Cúcuta', 'url' => '../clientes/mostrar.php'],
-		    ['label' => 'Medellín', 'url' => '../clientes/mostrar.php'],
-                ]
-            ]
-        ]
-    ],
 
     [
         'label' => 'Pedidos',
@@ -166,6 +147,35 @@ $menu = [
     ]
 ];
 
+#
+// Agregar Clientes solo si el rol NO es 2, 3 o 4
+if (in_array($rol, [1, 4, 5])) {
+    // Insertar Cliente después de Panel de usaurio (posición 1)
+    array_splice($menu, 1, 0, [[
+    'label' => 'Clientes',
+            'icon' => 'group',
+            'id' => 'clientes',
+            'children' => [
+                ['label' => 'Listado', 'url' => '../clientes/mostrar.php'],
+                [
+                    'label' => 'TIENDA',
+                    'id' => 'tienda',
+                    'icon' => 'store',
+                    'children' => [
+                        ['label' => 'Puente Aranda', 'url' => '../clientes/mostrar.php'],
+                        ['label' => 'Unilago', 'url' => '../clientes/mostrar.php'],
+                ['label' => 'Cúcuta', 'url' => '../clientes/mostrar.php'],
+                ['label' => 'Medellín', 'url' => '../clientes/mostrar.php'],
+                    ]
+                ]
+            ] 
+        #Menu clientes
+    ]]);
+}
+
+
+
+# Define the function to generate the HTML for the menu PROVEEDORES 10
 // Agregar Proveedores solo si el rol NO es 2, 3 o 4
 if (!in_array($rol, [2, 3, 4])) {
     // Insertar Proveedores después de Gastos (posición 10)
@@ -175,5 +185,9 @@ if (!in_array($rol, [2, 3, 4])) {
         'icon' => 'local_shipping'
     ]]);
 }
+
+
+
+
 
 ?>

@@ -43,30 +43,15 @@ ob_start();
    
 <div class="body-overlay"></div>
         <!-- Sidebar   -->
+<!-- layouts nav.php  |  Sidebar -->
+        <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3><img src="../../backend/img/favicon.png" class="img-fluid"/><span>PCMARKETTEAM</span></h3>
+                <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM</span></h3>
             </div>
-            <ul class="list-unstyled components">
-               <li  class="active">
-                    <a href="../cliente/escritorio.php" class="dashboard"><i class="material-icons">dashboard</i><span>Panel Cliente</span></a>
-                </li>
-          
-                
-                <li class="dropdown">
-                    <a href="#pageSubmenu2" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                         <i class="material-icons">dataset</i><span>Planes</span></a>
-                    <ul class="collapse list-unstyled menu" id="pageSubmenu2">
-                        <li>
-                            <a href="../cliente/plan.php">Mostrar</a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="">
-                    <a href="../cliente/servicio.php"><i class="material-icons">view_timeline</i><span>Servicio</span></a>
-                </li>
+            <?php renderMenu($menu); ?>
         </nav>
+
 <!-- Sidebar  -->
 
 
