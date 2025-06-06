@@ -49,20 +49,6 @@ $menu = [
 
 
     [
-        'label' => 'Pedidos',
-        'url' => '../servicio/mostrar.php',
-        'icon' => 'view_timeline'
-    ],
-    [
-        'label' => 'Servicios',
-        'icon' => 'dataset',
-        'id' => 'planes',
-        'children' => [
-            ['label' => '> Mostrar', 'url' => '../plan/mostrar.php'],
-            ['label' => '> Nuevo', 'url' => '../plan/nuevo.php'],
-        ]
-    ],
-    [
         'label' => 'Productos',
         'icon' => 'conveyor_belt',
         'id' => 'productos',
@@ -147,7 +133,10 @@ $menu = [
     ]
 ];
 
-#
+
+
+
+#Cliente 1
 // Agregar Clientes solo si el rol NO es 2, 3 o 4
 if (in_array($rol, [1, 4, 5])) {
     // Insertar Cliente después de Panel de usaurio (posición 1)
@@ -173,9 +162,43 @@ if (in_array($rol, [1, 4, 5])) {
     ]]);
 }
 
+# Pedidos 2
+if (in_array($rol, [1, 4, 5, 7])) {
+    // Insertar Pedidos (posición 2)
+    array_splice($menu, 2, 0, [[
+    [
+        'label' => 'Pedidos',
+        'url' => '../servicio/mostrar.php',
+        'icon' => 'view_timeline'
+    ],
+        #Menu Pedidos 
+    ]]);
+}
+
+# Servicios 3
+if (in_array($rol, [1, 4, 5, 7])) {
+    // Insertar Servicios (posición 3)
+    array_splice($menu, 2, 0, [[
+    [
+        'label' => 'Servicios',
+        'icon' => 'dataset',
+        'id' => 'planes',
+        'children' => [
+            ['label' => '> Mostrar', 'url' => '../plan/mostrar.php'],
+            ['label' => '> Nuevo', 'url' => '../plan/nuevo.php'],
+        ]
+    ],
+        #Menu Servicios
+    ]]);
+}
 
 
-# Define the function to generate the HTML for the menu PROVEEDORES 10
+
+
+
+
+
+# PROVEEDORES 10 Define the function to generate the HTML for the menu 
 // Agregar Proveedores solo si el rol NO es 2, 3 o 4
 if (!in_array($rol, [2, 3, 4])) {
     // Insertar Proveedores después de Gastos (posición 10)
