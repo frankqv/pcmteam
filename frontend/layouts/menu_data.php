@@ -47,84 +47,6 @@ $menu = [
         'icon' => 'dashboard'
     ],
     [
-        'label' => 'Productos',
-        'icon' => 'conveyor_belt',
-        'id' => 'productos',
-        'children' => [
-            ['label' => '> Lista de Productos', 'url' => '../producto/mostrar.php'],
-            ['label' => '> Categoría', 'id' => 'categorias', 'url' => '../categoria/mostrar.php']
-        ]
-    ],
-    [
-        'label' => 'Historial de Ventas',
-        'icon' => 'point_of_sale',
-        'id' => 'ventas',
-        'url' => '../venta/mostrar.php'
-    ],
-    [
-        'label' => 'Compras',
-        'icon' => 'shopping_basket',
-        'id' => 'compras',
-        'children' => [
-            ['label' => '> Mostrar', 'url' => '../compra/mostrar.php'],
-            ['label' => '> Nuevo', 'url' => '../compra/nuevo.php']
-        ]
-    ],
-    [
-        'label' => 'Gastos Generales',
-        'icon' => 'savings',
-        'id' => 'gastos',
-        'children' => [
-            ['label' => '> Mostrar', 'url' => '../gastos/mostrar.php'],
-            ['label' => '> Nuevo', 'url' => '../gastos/nuevo.php']
-        ]
-    ],
-    [
-        'label' => 'Pedidos En Ruta',
-        'url' => '../pedidos_ruta/mostrar.php',
-        'icon' => 'local_mall'
-    ],
-    [
-        'label' => 'Laboratorio Técnico',
-        'url' => '../laboratorio/mostrar.php',
-        'icon' => 'biotech'
-    ],
-    [
-        'label' => 'Bodega',
-        'url' => '../bodega/mostrar.php',
-        'icon' => 'warehouse'
-    ],
-    [
-        'label' => 'Reportes',
-        'icon' => 'signal_cellular_alt',
-        'id' => 'reportes',
-        'children' => [
-            ['label' => '> Productos', 'url' => '../reporte/productos.php'],
-            ['label' => '> Clientes', 'url' => '../reporte/clientes.php'],
-            ['label' => '> Ventas', 'url' => '../reporte/ventas.php']
-        ]
-    ],
-    [
-        'label' => 'Gráficos',
-        'url' => '../graficos/mostrar.php',
-        'icon' => 'grain'
-    ],
-    [
-        'label' => 'Marketing',
-        'url' => '../marketing/mostrar.php',
-        'icon' => 'campaign'
-    ],
-    [
-        'label' => 'Usuarios',
-        'url' => '../usuario/mostrar.php',
-        'icon' => 'manage_accounts'
-    ],
-    [
-        'label' => 'Configuración',
-        'url' => '../cuenta/configuracion.php',
-        'icon' => 'settings'
-    ],
-    [
         'label' => 'Salir',
         'url' => '../cuenta/salir.php',
         'icon' => 'logout'
@@ -179,27 +101,73 @@ if (in_array($rol, [1, 4, 5, 7])) {
         ]
     ]]);
 }
+
 # Productos 4
-//
+if (in_array($rol, [1, 4, 5, 6, 7])) {
+    array_splice($menu, 4, 0, [[
+        'label' => 'Productos',
+        'icon' => 'conveyor_belt',
+        'id' => 'productos',
+        'children' => [
+            ['label' => '> Lista de Productos', 'url' => '../producto/mostrar.php'],
+            ['label' => '> Categoría', 'id' => 'categorias', 'url' => '../categoria/mostrar.php']
+        ]
+    ]]);
+}
 
 # Historial de venta 5
-//
-
+if (in_array($rol, [1, 3, 4])) {
+    array_splice($menu, 5, 0, [[
+        'label' => 'Historial de Ventas',
+        'icon' => 'point_of_sale',
+        'id' => 'ventas',
+        'url' => '../venta/mostrar.php'
+    ]]);
+}
 
 # Compras 6
-//
+if (in_array($rol, [1, 4, 5, 6, 7])) {
+    array_splice($menu, 6, 0, [[
+        'label' => 'Compras',
+        'icon' => 'shopping_basket',
+        'id' => 'compras',
+        'children' => [
+            ['label' => '> Mostrar', 'url' => '../compra/mostrar.php'],
+            ['label' => '> Nuevo', 'url' => '../compra/nuevo.php']
+        ]
+    ]]);
+}
 
 # Gastos Generales 7
-//
-
+if (in_array($rol, [1, 2, 3, 4])) {
+    array_splice($menu, 7, 0, [[
+        'label' => 'Gastos Generales',
+        'icon' => 'savings',
+        'id' => 'gastos',
+        'children' => [
+            ['label' => '> Mostrar', 'url' => '../gastos/mostrar.php'],
+            ['label' => '> Nuevo', 'url' => '../gastos/nuevo.php']
+        ]
+    ]]);
+}
 
 # Pedidos En Ruta 8
-//
-
+if (in_array($rol, [1, 4, 5])) {
+    array_splice($menu, 8, 0, [[
+        'label' => 'Pedidos En Ruta',
+        'url' => '../pedidos_ruta/mostrar.php',
+        'icon' => 'local_mall'
+    ]]);
+}
 
 # Laboratorio 9
-//
-
+if (in_array($rol, [1, 4, 5, 6, 7])) {
+    array_splice($menu, 9, 0, [[
+        'label' => 'Laboratorio Técnico',
+        'url' => '../laboratorio/mostrar.php',
+        'icon' => 'biotech'
+    ]]);
+}
 
 # PROVEEDORES 10
 // Agregar Proveedores solo si el rol NO es 2, 3 o 4
@@ -212,31 +180,67 @@ if (!in_array($rol, [2, 3, 4])) {
     ]]);
 }
 
-# Bodega 11
-//
+// Bodega 11
+// Crear condicional para que comerciales no puedan ver los listados de portátiles
+if (in_array($rol, [1, 4, 5, 7])) {
+    array_splice($menu, 11, 0, [[
+        'label' => 'Bodega',
+        'url' => '../bodega/mostrar.php',
+        'icon' => 'warehouse'
+    ]]);
+}
 
 # Reportes 12
-//
-
+if (in_array($rol, [1, 3])) {
+    array_splice($menu, 12, 0, [[
+        'label' => 'Reportes',
+        'icon' => 'signal_cellular_alt',
+        'id' => 'reportes',
+        'children' => [
+            ['label' => '> Productos', 'url' => '../reporte/productos.php'],
+            ['label' => '> Clientes', 'url' => '../reporte/clientes.php'],
+            ['label' => '> Ventas', 'url' => '../reporte/ventas.php']
+        ]
+    ]]);
+}
 
 # Gráficos 13
-//
-
+if (in_array($rol, [1, 3])) {
+    array_splice($menu, 13, 0, [[
+        'label' => 'Gráficos',
+        'url' => '../graficos/mostrar.php',
+        'icon' => 'grain'
+    ]]);
+}
 
 # Marketing 14
-//
+if (in_array($rol, [1])) {
+    array_splice($menu, 14, 0, [[
+        'label' => 'Marketing',
+        'url' => '../marketing/mostrar.php',
+        'icon' => 'campaign'
+    ]]);
+}
 
-
-# Usuarios
-//
-
+# Usuarios 15
+if (in_array($rol, [1])) {
+    array_splice($menu, 15, 0, [[
+        'label' => 'Usuarios',
+        'url' => '../usuario/mostrar.php',
+        'icon' => 'manage_accounts'
+    ]]);
+}
 
 # Configuraciones 16
-//
-
+if (in_array($rol, [1, 3, 5])) {
+    array_splice($menu, 16, 0, [[
+        'label' => 'Configuración',
+        'url' => '../cuenta/configuracion.php',
+        'icon' => 'settings'
+    ]]);
+}
 
 # Salir 17
-// Est apor default dentro del menu para todos los usuarios
-
+// Esta por default dentro del menu para todos los usuarios
 
 ?>
