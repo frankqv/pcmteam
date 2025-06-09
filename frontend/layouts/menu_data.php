@@ -46,22 +46,20 @@ $menu = [
         'url' => $panelUrl,
         'icon' => 'dashboard'
     ],
-
-
     [
         'label' => 'Productos',
         'icon' => 'conveyor_belt',
         'id' => 'productos',
         'children' => [
             ['label' => '> Lista de Productos', 'url' => '../producto/mostrar.php'],
-            ['label' => '> Categoría','id' => 'categorias', 'url' => '../categoria/mostrar.php'
-        ]]
+            ['label' => '> Categoría', 'id' => 'categorias', 'url' => '../categoria/mostrar.php']
+        ]
     ],
     [
         'label' => 'Historial de Ventas',
         'icon' => 'point_of_sale',
         'id' => 'ventas',
-        'url' => '../venta/mostrar.php',
+        'url' => '../venta/mostrar.php'
     ],
     [
         'label' => 'Compras',
@@ -69,7 +67,7 @@ $menu = [
         'id' => 'compras',
         'children' => [
             ['label' => '> Mostrar', 'url' => '../compra/mostrar.php'],
-            ['label' => '> Nuevo', 'url' => '../compra/nuevo.php'],
+            ['label' => '> Nuevo', 'url' => '../compra/nuevo.php']
         ]
     ],
     [
@@ -78,7 +76,7 @@ $menu = [
         'id' => 'gastos',
         'children' => [
             ['label' => '> Mostrar', 'url' => '../gastos/mostrar.php'],
-            ['label' => '> Nuevo', 'url' => '../gastos/nuevo.php'],
+            ['label' => '> Nuevo', 'url' => '../gastos/nuevo.php']
         ]
     ],
     [
@@ -103,7 +101,7 @@ $menu = [
         'children' => [
             ['label' => '> Productos', 'url' => '../reporte/productos.php'],
             ['label' => '> Clientes', 'url' => '../reporte/clientes.php'],
-            ['label' => '> Ventas', 'url' => '../reporte/ventas.php'],
+            ['label' => '> Ventas', 'url' => '../reporte/ventas.php']
         ]
     ],
     [
@@ -119,7 +117,7 @@ $menu = [
     [
         'label' => 'Usuarios',
         'url' => '../usuario/mostrar.php',
-        'icon' => 'manage_accounts',
+        'icon' => 'manage_accounts'
     ],
     [
         'label' => 'Configuración',
@@ -133,72 +131,77 @@ $menu = [
     ]
 ];
 
-
-
-
-#Cliente 1
+# Cliente 1
 // Agregar Clientes solo si el rol NO es 2, 3 o 4
 if (in_array($rol, [1, 4, 5])) {
-    // Insertar Cliente después de Panel de usaurio (posición 1)
+    // Insertar Cliente después de Panel de usuario (posición 1)
     array_splice($menu, 1, 0, [[
-    'label' => 'Clientes',
-            'icon' => 'group',
-            'id' => 'clientes',
-            'children' => [
-                ['label' => 'Listado', 'url' => '../clientes/mostrar.php'],
-                [
-                    'label' => 'TIENDA',
-                    'id' => 'tienda',
-                    'icon' => 'store',
-                    'children' => [
-                        ['label' => 'Puente Aranda', 'url' => '../clientes/mostrar.php'],
-                        ['label' => 'Unilago', 'url' => '../clientes/mostrar.php'],
-                ['label' => 'Cúcuta', 'url' => '../clientes/mostrar.php'],
-                ['label' => 'Medellín', 'url' => '../clientes/mostrar.php'],
-                    ]
+        'label' => 'Clientes',
+        'icon' => 'group',
+        'id' => 'clientes',
+        'children' => [
+            ['label' => 'Listado', 'url' => '../clientes/mostrar.php'],
+            [
+                'label' => 'TIENDA',
+                'id' => 'tienda',
+                'icon' => 'store',
+                'children' => [
+                    ['label' => 'Puente Aranda', 'url' => '../clientes/mostrar.php'],
+                    ['label' => 'Unilago', 'url' => '../clientes/mostrar.php'],
+                    ['label' => 'Cúcuta', 'url' => '../clientes/mostrar.php'],
+                    ['label' => 'Medellín', 'url' => '../clientes/mostrar.php']
                 ]
-            ] 
-        #Menu clientes
+            ]
+        ]
     ]]);
 }
 
 # Pedidos 2
-if (in_array($rol, [1, 4, 5, 7])) {
+if (in_array($rol, [1, 4, 5, 6, 7])) {
     // Insertar Pedidos (posición 2)
     array_splice($menu, 2, 0, [[
-    [
         'label' => 'Pedidos',
         'url' => '../servicio/mostrar.php',
         'icon' => 'view_timeline'
-    ],
-        #Menu Pedidos 
     ]]);
 }
 
 # Servicios 3
 if (in_array($rol, [1, 4, 5, 7])) {
     // Insertar Servicios (posición 3)
-    array_splice($menu, 2, 0, [[
-    [
+    array_splice($menu, 3, 0, [[
         'label' => 'Servicios',
         'icon' => 'dataset',
         'id' => 'planes',
         'children' => [
             ['label' => '> Mostrar', 'url' => '../plan/mostrar.php'],
-            ['label' => '> Nuevo', 'url' => '../plan/nuevo.php'],
+            ['label' => '> Nuevo', 'url' => '../plan/nuevo.php']
         ]
-    ],
-        #Menu Servicios
     ]]);
 }
+# Productos 4
+//
+
+# Historial de venta 5
+//
 
 
+# Compras 6
+//
+
+# Gastos Generales 7
+//
 
 
+# Pedidos En Ruta 8
+//
 
 
+# Laboratorio 9
+//
 
-# PROVEEDORES 10 Define the function to generate the HTML for the menu 
+
+# PROVEEDORES 10
 // Agregar Proveedores solo si el rol NO es 2, 3 o 4
 if (!in_array($rol, [2, 3, 4])) {
     // Insertar Proveedores después de Gastos (posición 10)
@@ -209,8 +212,31 @@ if (!in_array($rol, [2, 3, 4])) {
     ]]);
 }
 
+# Bodega 11
+//
+
+# Reportes 12
+//
 
 
+# Gráficos 13
+//
+
+
+# Marketing 14
+//
+
+
+# Usuarios
+//
+
+
+# Configuraciones 16
+//
+
+
+# Salir 17
+// Est apor default dentro del menu para todos los usuarios
 
 
 ?>
