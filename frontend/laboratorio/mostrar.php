@@ -1,9 +1,9 @@
-<!-- Rol 7: Bodega -->
+<!-- ROL 7. Bodega --> 
 <?php
 ob_start();
     session_start();
 
-if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [7,2,1])){
+if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4, 5, 6, 7])){
 header('location: ../error404.php');
 }
 ?>
@@ -102,4 +102,4 @@ header('location: ../error404.php');
 <?php }else{ 
 header('Location: ../error404.php');
 } ?>
-<?php ob_end_flush(); ?>ss
+<?php ob_end_flush(); ?>

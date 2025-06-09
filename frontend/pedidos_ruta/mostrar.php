@@ -1,9 +1,8 @@
-<!-- Rol 7: Bodega -->
 <?php
 ob_start();
     session_start();
 
-if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [7,2,1])){
+if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2])){
 header('location: ../error404.php');
 }
 ?>

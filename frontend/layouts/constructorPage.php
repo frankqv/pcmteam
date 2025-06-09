@@ -1,27 +1,54 @@
-<nav class="menu">
-  <ul>
-    <li>Inicio</li>
-    <li>
-      Productos
-      <ul>
-        <li>Teléfonos</li>
-        <li>Tabletas</li>
-        <li>
-          Accesorios
-          <ul>
-            <li>Cargadores</li>
-            <li>Fundas</li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <li>Contacto</li>
-  </ul>
-</nav>
+<?php
+function constructorPage(): void {
+
+    echo  '
+            <div class="top-navbar"> <!-- Contenido de top-navbar-->
+                <nav class="navbar navbar-expand-lg" style=" background-color: red;">
+                    <div class="container-fluid">
+                        <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
+                            <span class="material-icons">arrow_back_ios</span>
+                        </button>
+                        <a class="navbar-brand" href="#"> En CONSTRUCCIÓN </a>
+                        <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
+                            data-toggle="collapse" data-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="material-icons">more_vert</span>
+                        </button>
+                        <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
+                            id="navbarSupportedContent">
+                            <ul class="nav navbar-nav ml-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="../cuenta/configuracion.php">
+                                        <span class="material-icons">settings</span>
+                                    </a>
+                                </li>
+                                <li class="dropdown nav-item active">
+                                    <a href="#" class="nav-link" data-toggle="dropdown">
+
+                                        <img src="../../backend/img/reere.png">
+
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="../cuenta/perfil.php">Mi perfil</a>
+                                        </li>
+                                        <li>
+                                            <a href="../cuenta/salir.php">Salir</a>
+                                        </li>
+
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
 
 
 
-<section id="inicio" class="contacto">
+    
+            <section id="inicio" class="contacto">
         <div class="fila">
        <!-- xml version="1.0" encoding="UTF-8" -->
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 452.47 301.65">
@@ -852,5 +879,8 @@
           </g>
         </svg>
      <!-- FIN DE LA IMAGEN SVG -->
-       </div>
-    </section>
+                    ';}
+?>
+
+
+

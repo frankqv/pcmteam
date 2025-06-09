@@ -46,7 +46,7 @@ ob_start();
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM</span></h3>
+                <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM MARKETING</span></h3>
             </div>
             <?php renderMenu($menu); ?>
         </nav>
@@ -109,7 +109,7 @@ ob_start();
 
 
             <div class="main-content">
-
+                    
                 <div class="row">
                     <div class="col-lg-3 col-md-6 col-sm-6">
                         <div class="card card-stats">
@@ -218,7 +218,15 @@ ob_start();
                         </div>
                     </div>
                 </div>
+        <!-- Contenido de MAin-->
 
+        <!-- layouts nav.php  |  Sidebar -->
+            <?php    include_once '../bodega/construcionpage.php';    ?>
+            <div>
+                <?php construcionpage(); ?>
+            </div>
+        </div>
+    <!---  Contenido de MAIN -->
 
                 <div class="row ">
                     <div class="col-lg-7 col-md-12">

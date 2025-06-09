@@ -14,7 +14,7 @@ switch ($rol) {
         break;
     case 3:
         $panelName = 'Panel Contable';
-        $panelUrl = '../comercial/escritorio.php';
+        $panelUrl = '../contable/escritorio.php';
         break;
     case 4:
         $panelName = 'Panel Comercial';
@@ -46,7 +46,7 @@ $menu = [
         'url' => $panelUrl,
         'icon' => 'dashboard'
     ],
-    [
+    [ 
         'label' => 'Salir',
         'url' => '../cuenta/salir.php',
         'icon' => 'logout'
@@ -55,7 +55,7 @@ $menu = [
 
 # Cliente 1
 // Agregar Clientes solo si el rol NO es 2, 3 o 4
-if (in_array($rol, [1, 4, 5])) {
+if (in_array($rol, [1,2 , 4, 5])) {
     // Insertar Cliente después de Panel de usuario (posición 1)
     array_splice($menu, 1, 0, [[
         'label' => 'Clientes',

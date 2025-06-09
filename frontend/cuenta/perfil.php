@@ -3,7 +3,7 @@ ob_start();
   session_start();
   
   // Verificar si no hay sesión o el rol no es 1 ni 2
-  if (!isset($_SESSION['rol']) || ($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2)) {
+  if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7])){
       header('location: ../error404.php');
       exit; // Detener la ejecución del script si se redirige
   }

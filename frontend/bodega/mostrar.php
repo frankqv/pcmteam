@@ -1,9 +1,9 @@
-<!-- Rol 7: Bodega -->
+<!-- ROL 7. Bodega --> 
 <?php
 ob_start();
     session_start();
 
-if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [7,2,1])){
+if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])){
 header('location: ../error404.php');
 }
 ?>
@@ -58,11 +58,10 @@ header('location: ../error404.php');
         
         <!-- Contenido de MAin-->
 
-        <!-- layouts nav.php  |  Sidebar -->
+        <!-- Pagina en construccion.php  |  Sidebar -->
             <?php    include_once '../bodega/construcionpage.php';    ?>
-            <div>
-                <?php construcionpage(); ?>
-            </div>
+            <?php construcionpage(); ?>
+
         </div>
     <!---  Contenido de MAIN -->
 
@@ -102,4 +101,4 @@ header('location: ../error404.php');
 <?php }else{ 
 header('Location: ../error404.php');
 } ?>
-<?php ob_end_flush(); ?>ss
+<?php ob_end_flush(); ?>
