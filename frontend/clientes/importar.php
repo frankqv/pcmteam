@@ -34,10 +34,13 @@ if(isset($_POST['importar']))
   // mysqli_query($conn,$sql);
 
 
-  $d4 = $connect->prepare("INSERT INTO enquiry (numid, nomcli,apecli,naci,correo,celu,estad) VALUES('".$spreadSheetAry[$i][0]."','".$spreadSheetAry[$i][1]."','".$spreadSheetAry[$i][2]."','".$spreadSheetAry[$i][3]."','".$spreadSheetAry[$i][4]."','".$spreadSheetAry[$i][5]."', '".$spreadSheetAry[$i][6]."')"); 
+  $d4 = $connect->prepare("INSERT INTO enquiry (numid, nomcli,apecli,naci,correo,celu,estad,dircli,ciucli,idsede) VALUES('".$spreadSheetAry[$i][0]."','".$spreadSheetAry[$i][1]."','".$spreadSheetAry[$i][2]."','".$spreadSheetAry[$i][3]."','".$spreadSheetAry[$i][4]."','".$spreadSheetAry[$i][5]."', '".$spreadSheetAry[$i][6]."','".$spreadSheetAry[$i][7]."','".$spreadSheetAry[$i][8]."','".$spreadSheetAry[$i][9]."')"); 
 
     $inserted = $d4->execute();
 
+
+
+    
     if ($inserted>0) {
       // code...
       echo '<script type="text/javascript">

@@ -1,3 +1,5 @@
+<!-- Cúcuta -->
+<!--Unilago #Tienda-->
 <?php
 ob_start();
      session_start();
@@ -10,7 +12,6 @@ ob_start();
 
 <!doctype html>
 <html lang="es">
-
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -36,11 +37,8 @@ ob_start();
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
 </head>
-
 <body>
-
     <div class="wrapper">
-
         <div class="body-overlay"></div>
         <!-- layouts nav.php  |  Sidebar -->
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
@@ -50,7 +48,6 @@ ob_start();
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
         <!-- Page Content  -->
         <div id="content">
             <div class='pre-loader'>
@@ -64,7 +61,7 @@ ob_start();
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
 
-                        <a class="navbar-brand" href="#"> Clientes </a>
+                        <a class="navbar-brand" href="#"> Clientes Cúcuta</a>
 
                         <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
                             data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -102,10 +99,7 @@ ob_start();
                     </div>
                 </nav>
             </div>
-
-
             <div class="main-content">
-
                 <div class="row ">
                     <div class="col-lg-12 col-md-12">
                         <div class="card" style="min-height: 485px">
@@ -115,22 +109,25 @@ ob_start();
                             </div>
                             <br>
                             <a href="../clientes/nuevo.php" class="btn btn-danger text-white">Nuevo cliente</a>
-
-
                             <br>
                             <div class="card-content table-responsive">
-                                <?php
-                               require '../../backend/bd/ctconex.php'; 
-                                $sentencia = $connect->prepare("SELECT * FROM clientes order BY nomcli DESC;");
-                                $sentencia->execute();
+<?php
+// Llamar a la base de datos
+require '../../backend/bd/ctconex.php'; 
+// Filtrar datos segun la sede
+$sentencia = $connect->prepare("SELECT * FROM clientes WHERE idsede = 2 ORDER BY nomcli DESC;");
+$sentencia->execute();
+$data =  array();
+if($sentencia){
+    while($r = $sentencia->fetchObject()){
+        $data[] = $r;
+    }
+}
 
-                                $data =  array();
-                                if($sentencia){
-                                while($r = $sentencia->fetchObject()){
-                                    $data[] = $r;
-                                }
-                                }
-                                ?>
+?>
+
+
+
                                 <?php if(count($data)>0):?>
                                 <table class="table table-hover" id="example">
                                     <thead class="text-primary">

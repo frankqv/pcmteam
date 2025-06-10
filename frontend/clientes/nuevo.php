@@ -100,7 +100,7 @@ ob_start();
                         </div>
                     </div>
                 </nav>
-            </div>
+            </div> <!--perfil-->
 
 
             <div class="main-content">
@@ -168,7 +168,7 @@ ob_start();
                                             <div class="form-group">
                                                 <label for="email">Celular del cliente<span
                                                         class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" maxlength="14"
+                                                <input type="tel" class="form-control" maxlength="14"
                                                     onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
                                                     name="txtcel" required placeholder="Celular de la cliente">
 
@@ -189,13 +189,40 @@ ob_start();
 
                                         <div class="col-md-6 col-lg-6">
                                             <div class="form-group">
-                                                <label for="email">Nacimiento del cliente</label>
+                                                <label for="text">Nacimiento del cliente</label>
                                                 <input type="date" class="form-control" name="txtnaci" placeholder="">
 
                                             </div>
                                         </div>
                                     </div>
 
+                                    <!-- 1. "txtdire" -->
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class="form-group">
+                                            <label for="text">Dirección del Cliente</label>
+                                            <input type="text" class="form-control" name="txtdire" placeholder="Dirección del Cliente" required>
+                                        </div>
+                                    </div>
+                                    <!-- 2. "txtciud" -->
+                                    <div class="col-md-3 col-lg-3">
+                                        <div class="form-group">
+                                            <label for="text">Ciudad</label>
+                                            <input type="text" class="form-control" name="txtciud" placeholder="Ciudad">
+                                        </div>
+                                    </div>
+                                      <div class="col-md-3 col-lg-3">
+                                        <div class="form-group">
+                                            <label for="txtsede">Selecione una sede</label>
+                                            <select class="form-control" name="txtsede" required>
+                                                <option value="">Seleccione una sede</option>
+                                                <option value="1" >Bodega   #1</option>
+                                                <option value="2" >Medellin #2</option>
+                                                <option value="3" >Cúcuta   #3</option>
+                                                <option value="4" >Unilago  #4</option> 
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- 3. "txtsede" -->
                                     <div class="row">
                                         <div class="col-md-12 col-lg-12">
                                             <div class="form-group">
@@ -260,7 +287,6 @@ ob_start();
 </body>
 
 </html>
-
 
 
 

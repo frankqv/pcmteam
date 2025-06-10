@@ -64,6 +64,31 @@ if (in_array($rol, [1,2 , 4, 5])) {
         'children' => [
             ['label' => 'Listado', 'url' => '../clientes/mostrar.php'],
             [
+                'label' => 'Clientes por TIENDA',
+                'id' => 'tienda',
+                'icon' => 'store',
+                'children' => [
+                    ['label' => 'Puente Aranda', 'url' => '../clientes/bodega.php'],
+                    ['label' => 'Unilago', 'url' => '../clientes/unilago.php'],
+                    ['label' => 'Cúcuta', 'url' => '../clientes/cucuta.php'],
+                    ['label' => 'Medellín', 'url' => '../clientes/medellin.php']
+                ]
+            ]
+        ]
+    ]]);
+}
+
+# Cliente 1
+// Agregar Clientes solo si el rol NO es 2, 3 o 4
+if (in_array($rol, [1,2 , 4, 5])) {
+    // Insertar Cliente después de Panel de usuario (posición 1)
+    array_splice($menu, 2, 0, [[
+        'label' => 'Clientes',
+        'icon' => 'group',
+        'id' => 'clientes',
+        'children' => [
+            ['label' => 'Listado', 'url' => '../clientes/mostrar.php'],
+            [
                 'label' => 'TIENDA',
                 'id' => 'tienda',
                 'icon' => 'store',
@@ -78,41 +103,20 @@ if (in_array($rol, [1,2 , 4, 5])) {
     ]]);
 }
 
-# Cliente por Tienda 2
-// Agregar Clientes solo si el rol NO es 2, 3 o 4
-if (in_array($rol, [1,2 , 4, 5])) {
-    // Insertar Cliente después de Panel de usuario (posición 1)
-    array_splice($menu, 2, 0, [[
-            'label' => 'Clientes por TIENDA',
-                'id' => 'tienda',
-                'icon' => 'store',
-                'children' => [
-                    ['label' => ' > Puente Aranda', 'url' => '../clientes/bodega.php'],
-                    ['label' => ' > Unilago', 'url' => '../clientes/unilago.php'],
-                    ['label' => ' > Cúcuta', 'url' => '../clientes/cucuta.php'],
-                    ['label' => ' > Medellín', 'url' => '../clientes/medellin.php']
-                
-            
-        ]
-    ]]);
-}
 
-
-
-
-# Pedidos 3
+# Pedidos 2
 if (in_array($rol, [1, 4, 5, 6, 7])) {
-    // Insertar Pedidos (posición 3)
-    array_splice($menu, 3, 0, [[
+    // Insertar Pedidos (posición 2)
+    array_splice($menu, 2, 0, [[
         'label' => 'Pedidos',
         'url' => '../servicio/mostrar.php',
         'icon' => 'view_timeline'
     ]]);
 }
 
-# Servicios 4
+# Servicios 3
 if (in_array($rol, [1, 4, 5, 7])) {
-    // Insertar Servicios (posición 4)
+    // Insertar Servicios (posición 3)
     array_splice($menu, 3, 0, [[
         'label' => 'Servicios',
         'icon' => 'dataset',
@@ -124,9 +128,9 @@ if (in_array($rol, [1, 4, 5, 7])) {
     ]]);
 }
 
-# Productos 5
+# Productos 4
 if (in_array($rol, [1, 4, 5, 6, 7])) {
-    array_splice($menu, 5, 0, [[
+    array_splice($menu, 4, 0, [[
         'label' => 'Productos',
         'icon' => 'conveyor_belt',
         'id' => 'productos',
@@ -137,9 +141,9 @@ if (in_array($rol, [1, 4, 5, 6, 7])) {
     ]]);
 }
 
-# Historial de venta 6
+# Historial de venta 5
 if (in_array($rol, [1, 3, 4])) {
-    array_splice($menu, 6, 0, [[
+    array_splice($menu, 5, 0, [[
         'label' => 'Historial de Ventas',
         'icon' => 'point_of_sale',
         'id' => 'ventas',
@@ -147,9 +151,9 @@ if (in_array($rol, [1, 3, 4])) {
     ]]);
 }
 
-# Compras 7
+# Compras 6
 if (in_array($rol, [1, 4, 5, 6, 7])) {
-    array_splice($menu, 7, 0, [[
+    array_splice($menu, 6, 0, [[
         'label' => 'Compras',
         'icon' => 'shopping_basket',
         'id' => 'compras',
@@ -160,9 +164,9 @@ if (in_array($rol, [1, 4, 5, 6, 7])) {
     ]]);
 }
 
-# Gastos Generales 8
+# Gastos Generales 7
 if (in_array($rol, [1, 2, 3, 4])) {
-    array_splice($menu, 8, 0, [[
+    array_splice($menu, 7, 0, [[
         'label' => 'Gastos Generales',
         'icon' => 'savings',
         'id' => 'gastos',
@@ -173,48 +177,48 @@ if (in_array($rol, [1, 2, 3, 4])) {
     ]]);
 }
 
-# Pedidos En Ruta 9
+# Pedidos En Ruta 8
 if (in_array($rol, [1, 4, 5])) {
-    array_splice($menu, 9, 0, [[
+    array_splice($menu, 8, 0, [[
         'label' => 'Pedidos En Ruta',
         'url' => '../pedidos_ruta/mostrar.php',
         'icon' => 'local_mall'
     ]]);
 }
 
-# Laboratorio 10
+# Laboratorio 9
 if (in_array($rol, [1, 4, 5, 6, 7])) {
-    array_splice($menu, 10, 0, [[
+    array_splice($menu, 9, 0, [[
         'label' => 'Laboratorio Técnico',
         'url' => '../laboratorio/mostrar.php',
         'icon' => 'biotech'
     ]]);
 }
 
-# PROVEEDORES 11
+# PROVEEDORES 10
 // Agregar Proveedores solo si el rol NO es 2, 3 o 4
 if (!in_array($rol, [2, 3, 4])) {
     // Insertar Proveedores después de Gastos (posición 10)
-    array_splice($menu, 11, 0, [[
+    array_splice($menu, 10, 0, [[
         'label' => 'Proveedores',
         'url' => '../proveedor/mostrar.php',
         'icon' => 'local_shipping'
     ]]);
 }
 
-// Bodega 12
+// Bodega 11
 // Crear condicional para que comerciales no puedan ver los listados de portátiles
 if (in_array($rol, [1, 4, 5, 7])) {
-    array_splice($menu, 12, 0, [[
+    array_splice($menu, 11, 0, [[
         'label' => 'Bodega',
         'url' => '../bodega/mostrar.php',
         'icon' => 'warehouse'
     ]]);
 }
 
-# Reportes 13
+# Reportes 12
 if (in_array($rol, [1, 3])) {
-    array_splice($menu, 13, 0, [[
+    array_splice($menu, 12, 0, [[
         'label' => 'Reportes',
         'icon' => 'signal_cellular_alt',
         'id' => 'reportes',
@@ -226,43 +230,43 @@ if (in_array($rol, [1, 3])) {
     ]]);
 }
 
-# Gráficos 14
+# Gráficos 13
 if (in_array($rol, [1, 3])) {
-    array_splice($menu, 14, 0, [[
+    array_splice($menu, 13, 0, [[
         'label' => 'Gráficos',
         'url' => '../graficos/mostrar.php',
         'icon' => 'grain'
     ]]);
 }
 
-# Marketing 15
+# Marketing 14
 if (in_array($rol, [1])) {
-    array_splice($menu, 15, 0, [[
+    array_splice($menu, 14, 0, [[
         'label' => 'Marketing',
         'url' => '../marketing/mostrar.php',
         'icon' => 'campaign'
     ]]);
 }
 
-# Usuarios 16
+# Usuarios 15
 if (in_array($rol, [1])) {
-    array_splice($menu, 16, 0, [[
+    array_splice($menu, 15, 0, [[
         'label' => 'Usuarios',
         'url' => '../usuario/mostrar.php',
         'icon' => 'manage_accounts'
     ]]);
 }
 
-# Configuraciones 17
+# Configuraciones 16
 if (in_array($rol, [1, 3, 5])) {
-    array_splice($menu, 17, 0, [[
+    array_splice($menu, 16, 0, [[
         'label' => 'Configuración',
         'url' => '../cuenta/configuracion.php',
         'icon' => 'settings'
     ]]);
 }
 
-# Salir 18
+# Salir 17
 // Esta por default dentro del menu para todos los usuarios
 
 ?>
