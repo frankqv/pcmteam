@@ -61,7 +61,7 @@ ob_start();
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
 
-                        <a class="navbar-brand" href="#"> Clientes Cúcuta</a>
+                        <a class="navbar-brand" href="#"> Mis Clientes Cúcuta</a>
 
                         <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
                             data-toggle="collapse" data-target="#navbarSupportedContent"

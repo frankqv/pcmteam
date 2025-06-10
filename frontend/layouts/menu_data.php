@@ -83,7 +83,7 @@ if (in_array($rol, [1,2 , 4, 5])) {
 if (in_array($rol, [1,2 , 4, 5])) {
     // Insertar Cliente después de Panel de usuario (posición 1)
     array_splice($menu, 2, 0, [[
-            'label' => 'Clientes por TIENDA',
+            'label' => 'Mis Cleintes',
                 'id' => 'tienda',
                 'icon' => 'store',
                 'children' => [
@@ -114,7 +114,7 @@ if (in_array($rol, [1, 4, 5, 6, 7])) {
 if (in_array($rol, [1, 4, 5, 7])) {
     // Insertar Servicios (posición 4)
     array_splice($menu, 3, 0, [[
-        'label' => 'Servicios',
+        'label' => 'Mis Servicios',
         'icon' => 'dataset',
         'id' => 'planes',
         'children' => [
