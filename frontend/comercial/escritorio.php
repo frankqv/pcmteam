@@ -1,4 +1,4 @@
-<!-- Comercial 4 --> 
+<!-- Comercial 4 -->
 
 <?php
 ob_start();
@@ -42,7 +42,7 @@ header('location: ../error404.php');
 <body>
     <div class="wrapper">
 
-    <!-- layouts nav.php  |  Sidebar -->
+        <!-- layouts nav.php  |  Sidebar -->
         <div class="body-overlay"></div>s
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
         <nav id="sidebar">
@@ -52,20 +52,20 @@ header('location: ../error404.php');
             <?php renderMenu($menu); ?>
         </nav>
 
-    <!-- Page Content  -->
+        <!-- Page Content  -->
         <div id="content">
 
-        <!-- Contenido de top-navbar-->
-        
-        <!-- Contenido de MAin-->
+            <!-- Contenido de top-navbar-->
 
-        <!-- layouts nav.php  |  Sidebar -->
+            <!-- Contenido de MAin-->
+
+            <!-- layouts nav.php  |  Sidebar -->
             <?php    include_once '../bodega/construcionpage.php';    ?>
             <div>
                 <?php construcionpage(); ?>
             </div>
         </div>
-    <!---  Contenido de MAIN -->
+        <!---  Contenido de MAIN -->
 
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->

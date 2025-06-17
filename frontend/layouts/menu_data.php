@@ -104,7 +104,7 @@ if (in_array($rol, [1,2 , 4, 5])) {
 if (in_array($rol, [1, 4, 5, 6, 7])) {
     // Insertar Pedidos (posición 3)
     array_splice($menu, 3, 0, [[
-        'label' => 'Pedidos',
+        'label' => 'Servicios Tecnicos',
         'url' => '../servicio/mostrar.php',
         'icon' => 'view_timeline'
     ]]);

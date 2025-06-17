@@ -162,14 +162,14 @@ if($sentencia){
                                                 <a class="btn btn-primary text-white"
                                                     href="../compra/informacion.php?id=<?php echo  $g->idcomp; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
-                                                        title='crear'>visibility</i></a>
+                                                        title='info'>visibility</i></a>
 
 
 
                                                 <a class="btn btn-danger text-white"
                                                     href="../compra/cancelar.php?id=<?php echo  $g->idcomp; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
-                                                        title='crear'>cancel</i></a>
+                                                        title='cancelar'>cancel</i></a>
 
                                                 <a class="btn btn-success text-white"
                                                     href="../compra/ticket.php?id=<?php echo  $g->idcomp; ?>"><i

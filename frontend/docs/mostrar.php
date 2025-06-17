@@ -15,6 +15,7 @@ ob_start();
     if(!isset($_SESSION['rol']) || in_array($_SESSION['rol'], [0])){
     header('location: ../error404.php');
   }
+  require '../../backend/bd/ctconex.php'; 
 ?>
 <?php if(isset($_SESSION['id'])) { ?>
 
@@ -78,7 +79,7 @@ ob_start();
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
 
-                        <a class="navbar-brand" href="#"> Panel administrativo </a>
+                        <a class="navbar-brand" href="#"> Documentos Generales </a>
 
                         <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
                             data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -115,360 +116,173 @@ ob_start();
                         </div>
                     </div>
                 </nav>
-            </div>
+            </div> <!-- Nav Superior -->
 
 
             <div class="main-content">
 
                 <div class="row">
-                    <div class="col-lg-3 col-md-6 col-sm-6">
+                    <!--Boton 1 -->
+                    <div class="col-lg-4 col-md-6 col-sm-12">
                         <div class="card card-stats">
                             <div class="card-header">
-                                <div class="icon icon-warning">
-                                    <span class="material-icons">group</span>
+                                <div class="icon icon-success">
+                                    <span class="material-icons">receipt_long</span>
                                 </div>
                             </div>
-                            <div class="card-content">
-                                <?php 
-                                    require '../../backend/bd/ctconex.php'; 
-        $sql = "SELECT COUNT(*) total FROM clientes";
-        $result = $connect->query($sql); //$pdo sería el objeto conexión
-        $total = $result->fetchColumn();
+                            <button onclick="window.print()" class="btn btn-print"
+                                style="background: #2B6B5D; color:white;">
+                                <span class="material-symbols-outlined">Abrir</span> formulario
+                            </button>
 
-         ?>
-                                <p class="category"><strong>Clientes</strong></p>
-                                <h3 class="card-title"><?php echo  $total; ?></h3>
-                            </div>
                             <div class="card-footer">
                                 <div class="stats">
-                                    <i class="material-icons">update</i> Recién actualizado
+                                    <i class="material-icons">receipt_long</i> Porfavor, rellener los campos solicitados
+                                    en formulario en la seccion de vista previa
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6">
+
+                    <!--Boton 2 -->
+                    <div class="col-lg-4 col-md-6 col-sm-12">
                         <div class="card card-stats">
                             <div class="card-header">
                                 <div class="icon icon-rose">
-                                    <span class="material-icons">conveyor_belt</span>
-
+                                    <span class="material-icons">
+                                        description
+                                    </span>
                                 </div>
                             </div>
-                            <div class="card-content">
-                                <p class="category"><strong>Productos</strong></p>
-                                <?php 
-                                  
-        $sql = "SELECT COUNT(*) total FROM producto";
-        $result = $connect->query($sql); //$pdo sería el objeto conexión
-        $total = $result->fetchColumn();
-
-         ?>
-                                <h3 class="card-title"><?php echo  $total; ?></h3>
-                            </div>
+                            <button class="btn btn-print" style="background: #2B6B5D; color:white;">
+                                <span class="material-symbols-outlined">Abrir</span> formulario
+                            </button>
                             <div class="card-footer">
                                 <div class="stats">
-                                    <i class="material-icons">update</i> Recién actualizado
+                                    <i class="material-icons">request_page</i> Prestamos Caja menor
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6">
+                    <!--Boton 3 -->
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="card card-stats">
+                            <div class="card-header">
+                                <div class="icon icon-warning">
+                                    <span class="material-icons">contact_page</span>
+                                </div>
+                            </div>
+                            <button onclick="window.print()" class="btn btn-print"
+                                style="background: #2B6B5D; color:white;">
+                                <span class="material-symbols-outlined">Imprirmir</span>
+                            </button>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">update</i> Imprirmir Agradecimiento por confiar en
+                                    nosotros PCMARKETT
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Boton 4 -->
+                    <div class="col-lg-4 col-md-6 col-sm-12">
                         <div class="card card-stats">
                             <div class="card-header">
                                 <div class="icon icon-success">
                                     <span class="material-icons">
-                                        point_of_sale
+                                        description
                                     </span>
-
                                 </div>
                             </div>
-                            <div class="card-content">
-                                <?php 
-                                                $sql = "SELECT SUM(total_price) total_price,placed_on FROM orders where placed_on = CURDATE()";
-                                                $result = $connect->query($sql); //$pdo sería el objeto conexión
-                                                $total_price = $result->fetchColumn();
-
-                                                 ?>
-                                <p class="category"><strong>Ventas de hoy</strong></p>
-                                <h3 class="card-title">S/<?php echo  $total_price; ?> </h3>
-                            </div>
+                            <button onclick="window.print()" class="btn btn-print"
+                                style="background: #2B6B5D; color:white;">
+                                <span class="material-symbols-outlined">Imprirmir</span>
+                            </button>
                             <div class="card-footer">
                                 <div class="stats">
-                                    <i class="material-icons">update</i> Recién actualizado
+                                    <i class="material-icons">update</i> imprimir RUT
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6">
+                    <!--Boton 5 -->
+                    <div class="col-lg-4 col-md-6 col-sm-12">
                         <div class="card card-stats">
                             <div class="card-header">
                                 <div class="icon icon-info">
-
-                                    <span class="material-icons">
-                                        manage_accounts
-                                    </span>
+                                    <span class="material-icons">description</span>
                                 </div>
                             </div>
-                            <div class="card-content">
-                                <?php 
-                                  
-        $sql = "SELECT COUNT(*) total FROM usuarios";
-        $result = $connect->query($sql); //$pdo sería el objeto conexión
-        $total = $result->fetchColumn();
-
-         ?>
-                                <p class="category"><strong>Usuarios</strong></p>
-                                <h3 class="card-title"><?php echo  $total; ?></h3>
-                            </div>
+                            <button onclick="window.print()" class="btn btn-print"
+                                style="background: #2B6B5D; color:white;">
+                                <span class="material-symbols-outlined"></span> Imprirmir
+                            </button>
                             <div class="card-footer">
                                 <div class="stats">
-                                    <i class="material-icons">update</i> Recién actualizado
+                                    <i class="material-icons">update</i> imprimir Señalizacion de delicado
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <!--Boton 6 -->
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="card card-stats">
+                            <div class="card-header">
+                                <div class="icon icon-info">
+                                    <span class="material-icons">edit_square</span>
+                                </div>
+                            </div>
 
+                            <button onclick="window.print()" class="btn btn-print"
+                                style="background: #2B6B5D; color:white;">
+                                <span class="material-symbols-outlined">Abrir</span> formulario
+                            </button>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">description</i> Guía de Envio
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+                </div> <!-- botones superiores de nav, imprecion de documentos -->
+
+                <!-- Seccion de botones de ACCION #2 -->
                 <div class="row ">
-                    <div class="col-lg-7 col-md-12">
+                    <div class="col-lg-12 col-md-12">
                         <div class="card" style="min-height: 485px">
                             <div class="card-header card-header-text">
-                                <h4 class="card-title">Clientes recientes</h4>
+                                <h4 class="card-title">Vista previa de documento</h4>
                                 <p class="category">Nuevos clientes reciente añadidos el dia de hoy</p>
                             </div>
                             <div class="card-content table-responsive">
-                                <?php
-                            
- $sentencia = $connect->prepare("SELECT * FROM clientes order BY idclie DESC;");
- $sentencia->execute();
 
-$data =  array();
-if($sentencia){
-  while($r = $sentencia->fetchObject()){
-    $data[] = $r;
-  }
-}
-   ?>
-                                <?php if(count($data)>0):?>
-                                <table class="table table-hover" id="example">
-                                    <thead class="text-primary">
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Clientes</th>
-                                            <th>Celular</th>
-                                            <th>Correo</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach($data as $g):?>
-                                        <tr>
-                                            <td><?php echo  $g->idclie; ?></td>
-                                            <td><?php echo  $g->nomcli; ?> <?php echo  $g->apecli; ?></td>
-                                            <td><?php echo  $g->celu; ?></td>
-                                            <td><?php echo  $g->correo; ?></td>
-                                        </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                                <?php else:?>
-                                <!-- Warning Alert -->
-                                <div class="alert alert-warning" role="alert">
-                                    No se encontró ningún dato!
-                                </div>
+                                <!-- Contenido salga según el boton que   Seleciono el para generar el docuemnto -->
 
-                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Seccion de botones de ACCION #3 -->
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card" style="min-height: 485px">
+                            <div class="card-header card-header-text">
+                                <h4 class="card-title">Botones de accion</h4>
+                                <p class="category">Descargar o Imprirmir Documentos</p>
+                            </div>
+                            <div class="card-content table-responsive">
+                                <?php 
+                                $docs
+                                ?>
+
+                                <button value="docs">Descargar en PDF</button>
+                                <button>Imprirmir AHORA</button>
+                                <!-- Contenido salga según el boton que   Seleciono el para generar el docuemnto -->
+
                             </div>
                         </div>
                     </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    <div class="row">
-                        <div class="col-lg-7 col-md-12">
-                            <div class="card" style="min-height: 485px">
-                                <div class="card-header card-header-text">
-                                    <h4 class="card-title">Productos recientes</h4>
-                                    <p class="category">Nuevos productos reciente añadidos el dia de hoy</p>
-                                </div>
-                                <div class="card-content table-responsive">
-                                    <?php
-                               
- $sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate order BY codba DESC;");
- $sentencia->execute();
-
-$data =  array();
-if($sentencia){
-  while($r = $sentencia->fetchObject()){
-    $data[] = $r;
-  }
-}
-   ?>
-                                    <?php if(count($data)>0):?>
-                                    <table class="table table-hover" id="example1">
-                                        <thead class="text-primary">
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Nombre</th>
-                                                <th>Categoria</th>
-                                                <th>Stock</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach($data as $a):?>
-                                            <tr>
-                                                <td><?php echo  $a->idprod; ?></td>
-                                                <td><?php echo  $a->nomprd; ?></td>
-                                                <td><?php echo  $a->nomca; ?></td>
-                                                <?php 
-
-if ($a->stock <= 0) {
-  
-    echo '<td><span class="badge badge-danger">stock vacio</span></td>';
-}elseif ($a->stock <= 5) {
-    echo '<td><span class="badge badge-warning">Está por acabarse</span></td>';
-   
-}else {
-    echo '<td><span class="badge badge-success">' . $a->stock . '</span></td>';
-}
-                                                 ?>
-                                            </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                    <?php else:?>
-                                    <!-- Warning Alert -->
-                                    <div class="alert alert-warning" role="alert">
-                                        No se encontró ningún dato!
-                                    </div>
-
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-5 col-md-12">
-                            <div class="card" style="min-height: 485px">
-                                <div class="card-header card-header-text">
-                                    <h4 class="card-title">Estadística de productos</h4>
-                                </div>
-                                <div class="card-content">
-                                    <div id="piechart" class="tcentrado"></div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6 col-md-12">
-
-                        </div>
-
-
-                        <div class="col-lg-6 col-md-12">
-                            <div class="card" style="min-height: 485px">
-                                <div class="card-header card-header-text">
-                                    <h4 class="card-title">Cumpleaños recientes</h4>
-                                </div>
-                                <div class="card-content">
-                                    <img src="../../backend/img/pastel-de-cumple.png" width='150' height='150'
-                                        class="tcentrado">
-                                    <br>
-                                    <?php
-                               
- $sentencia = $connect->prepare("SELECT idclie, nomcli, apecli, naci, celu FROM clientes WHERE DAY(naci)=DAY(NOW()) AND MONTH(naci)=MONTH(NOW());");
- $sentencia->execute();
-
-$data =  array();
-if($sentencia){
-  while($r = $sentencia->fetchObject()){
-    $data[] = $r;
-  }
-}
-   ?>
-                                    <?php if(count($data)>0):?>
-                                    <?php foreach($data as $g):?>
-
-
-                                    <input type="" value="<?php  echo $g->nomcli ?>" name="">
-
-                                    <?php endforeach; ?>
-                                    <?php else:?>
-                                    <!-- Warning Alert -->
-                                    <div class="alert alert-warning" role="alert">
-                                        No se encontró ningún dato!
-                                    </div>
-
-                                    <?php endif; ?>
-
-                                </div>
-
-                            </div>
-                        </div>
-
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12">
-                            <div class="card" style="min-height: 485px">
-                                <div class="card-header card-header-text">
-                                    <h4 class="card-title">Venta de hoy</h4>
-                                </div>
-                                <div class="card-content">
-                                    <div id="sale_values" height="50" wight="50"></div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12">
-
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-12 col-md-12">
-                                <div class="card" style="min-height: 485px">
-                                    <div class="card-header card-header-text">
-                                        <h4 class="card-title">Ingresos totales</h4>
-                                    </div>
-                                    <div class="card-content">
-                                        <div id="chart_div" height="50" wight="50"></div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-12 col-md-12">
-                                <div class="card" style="min-height: 485px">
-                                    <div class="card-header card-header-text">
-                                        <h4 class="card-title">Gastos totales</h4>
-                                    </div>
-                                    <div class="card-content">
-                                        <div id="gast_div" height="50" wight="50"></div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
 
                 </div>
             </div>

@@ -221,7 +221,7 @@ ob_start();
 
 
                 <div class="row ">
-                    <div class="col-lg-7 col-md-12">
+                    <div class="col-lg-12 col-md-3">
                         <div class="card" style="min-height: 485px">
                             <div class="card-header card-header-text">
                                 <h4 class="card-title">Clientes recientes</h4>
@@ -287,7 +287,7 @@ if($sentencia){
 
 
                     <div class="row">
-                        <div class="col-lg-7 col-md-12">
+                        <div class="col-lg-12 col-md-3">
                             <div class="card" style="min-height: 485px">
                                 <div class="card-header card-header-text">
                                     <h4 class="card-title">Productos recientes</h4>

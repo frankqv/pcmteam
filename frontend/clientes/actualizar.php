@@ -238,10 +238,10 @@ if($sentencia){
         <label for="txtsede">Selecione una sede</label>
         <select class="form-control" name="txtsede" required>
             <option value="">Seleccione una sede</option>
-            <option value="1" <?php if($f->idsede == 1) echo 'selected'; ?>>Bodega   #1</option>
-            <option value="2" <?php if($f->idsede == 2) echo 'selected'; ?>>Medellin #2</option>
-            <option value="3" <?php if($f->idsede == 3) echo 'selected'; ?>>Cúcuta   #3</option>
-            <option value="4" <?php if($f->idsede == 4) echo 'selected'; ?>>Unilago  #4</option> 
+            <option value="Bodega1" <?php if($f->idsede == 'Bodega1') echo 'selected'; ?>>Bodega   #1</option>
+            <option value="Medellin" <?php if($f->idsede == 'Medellin') echo 'selected'; ?>>Medellin #2</option>
+            <option value="Cucuta" <?php if($f->idsede == 'Cucuta') echo 'selected'; ?>>Cúcuta   #3</option>
+            <option value="Unilago" <?php if($f->idsede == 'Unilago') echo 'selected'; ?>>Unilago  #4</option> 
         </select>
     </div>
   </div>

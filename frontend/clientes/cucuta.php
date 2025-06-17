@@ -115,7 +115,7 @@ ob_start();
 // Llamar a la base de datos
 require '../../backend/bd/ctconex.php'; 
 // Filtrar datos segun la sede
-$sentencia = $connect->prepare("SELECT * FROM clientes WHERE idsede = 3 ORDER BY nomcli DESC;");
+$sentencia = $connect->prepare("SELECT * FROM clientes WHERE idsede ='Cucuta' OR idsede = 3 ORDER BY nomcli DESC;");
 $sentencia->execute();
 $data =  array();
 if($sentencia){
@@ -163,11 +163,11 @@ if($sentencia){
                                                 <a class="btn btn-warning text-white"
                                                     href="../clientes/actualizar.php?id=<?php echo  $g->idclie; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
-                                                        title='crear'>edit</i></a>
+                                                        title='editar'>edit</i></a>
                                                 <a class="btn btn-danger text-white"
                                                     href="../clientes/eliminar.php?id=<?php echo  $g->idclie; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
-                                                        title='crear'>cancel</i></a>
+                                                        title='cancelar'>cancel</i></a>
                                                 <a class="btn btn-primary text-white"
                                                     href="../clientes/informacion.php?id=<?php echo  $g->idclie; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
@@ -176,7 +176,7 @@ if($sentencia){
                                                 <a class="btn btn-warning text-white"
                                                     href="../clientes/actualizar.php?id=<?php echo  $g->idclie; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
-                                                        title='crear'>edit</i></a>
+                                                        title='editar'>edit</i></a>
                                                 <?php  } ?>
                                             </td>
                                         </tr>

@@ -11,39 +11,40 @@ ob_start();
 
 <!doctype html>
 <html lang="es">
-  <head>
+
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-       <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-        <title>PCMARKETTEAM</title>
-         <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="../../backend/css/bootstrap.min.css">
-         <!----css3---->
-        <link rel="stylesheet" href="../../backend/css/custom2.css">
-        <link rel="stylesheet" href="../../backend/css/loader.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <title>PCMARKETTEAM</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../../backend/css/bootstrap.min.css">
+    <!----css3---->
+    <link rel="stylesheet" href="../../backend/css/custom2.css">
+    <link rel="stylesheet" href="../../backend/css/loader.css">
 
-             <!-- Data Tables -->
+    <!-- Data Tables -->
     <link rel="stylesheet" type="text/css" href="../../backend/css/datatable.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/buttonsdataTables.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/font.css">
-          <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
-     
-     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-     <!--google material icon-->
-        <link href="https://fonts.googleapis.com/css2?family=Material+Icons"
-      rel="stylesheet">
-      <link rel="icon" type="image/png" href="../../backend/img/favicon.png"/>
-  </head>
-  <body>
-  
-<div class="wrapper">
-   
-<div class="body-overlay"></div>
+    <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!--google material icon-->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <div class="body-overlay"></div>
         <!-- Sidebar   -->
-<!-- layouts nav.php  |  Sidebar -->
+        <!-- layouts nav.php  |  Sidebar -->
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
         <nav id="sidebar">
             <div class="sidebar-header">
@@ -52,7 +53,7 @@ ob_start();
             <?php renderMenu($menu); ?>
         </nav>
 
-<!-- Sidebar  -->
+        <!-- Sidebar  -->
 
 
 
@@ -79,83 +80,84 @@ ob_start();
 
 
 
-          
+
         <!-- Page Content  -->
         <div id="content">
-          <div class='pre-loader'>
-    <img class='loading-gif' alt='loading' src="https://i.imgflip.com/9vd6wr.gif"/>
-</div>
-          <div class="top-navbar">
-            <nav class="navbar navbar-expand-lg">
-                <div class="container-fluid">
+            <div class='pre-loader'>
+                <img class='loading-gif' alt='loading' src="https://i.imgflip.com/9vd6wr.gif" />
+            </div>
+            <div class="top-navbar">
+                <nav class="navbar navbar-expand-lg">
+                    <div class="container-fluid">
 
-                    <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
-                        <span class="material-icons">arrow_back_ios</span>
-                    </button>
-                         
-                         <a class="navbar-brand" href="#"> Panel cliente </a>
-                         
-                    <button class="d-inline-block d-lg-none ml-auto more-button" type="button" data-toggle="collapse"
-                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="material-icons">more_vert</span>
-                    </button>
+                        <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
+                            <span class="material-icons">arrow_back_ios</span>
+                        </button>
 
-                    <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none" id="navbarSupportedContent">
-                        <ul class="nav navbar-nav ml-auto">  
-                         <li class="nav-item">
-                                <a class="nav-link" href="../cuenta/perfil2.php">
+                        <a class="navbar-brand" href="#"> Panel cliente </a>
+
+                        <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
+                            data-toggle="collapse" data-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="material-icons">more_vert</span>
+                        </button>
+
+                        <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
+                            id="navbarSupportedContent">
+                            <ul class="nav navbar-nav ml-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="../cuenta/perfil2.php">
                                         <span class="material-icons">settings</span>
-                                        </a>
-                            </li> 
-                            <li class="dropdown nav-item active">
-                                <a href="#" class="nav-link" data-toggle="dropdown">
-                                   
-                                   <img src="../../backend/img/reere.png" >
-                                           
-                               </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="../cuenta/perfil2.php">Mi perfil</a>
-                                    </li>
-                                    <li>
-                                        <a href="../cuenta/salir.php">Salir</a>
-                                    </li>
-                                    
-                                </ul>
-                            </li>
-                            
-                        </ul>
+                                    </a>
+                                </li>
+                                <li class="dropdown nav-item active">
+                                    <a href="#" class="nav-link" data-toggle="dropdown">
+
+                                        <img src="../../backend/img/reere.png">
+
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="../cuenta/perfil2.php">Mi perfil</a>
+                                        </li>
+                                        <li>
+                                            <a href="../cuenta/salir.php">Salir</a>
+                                        </li>
+
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            </nav>
-         </div>
-               
-               
-               <div class="main-content">
-               
-               <div class="row">
-                                <div class="card-content">
-                                    <?php 
+                </nav>
+            </div>
+
+
+            <div class="main-content">
+
+                <div class="row">
+                    <div class="card-content">
+                        <?php 
                                     require '../../backend/bd/ctconex.php'; 
         $sql = "SELECT COUNT(*) total FROM clientes";
         $result = $connect->query($sql); //$pdo sería el objeto conexión
         $total = $result->fetchColumn();
 
          ?>
-                                    
-                                    
-                                
-                                </div>
-                            </div>
-                        </div>
 
 
-                        <div class="col-lg-3 col-md-6 col-sm-6">
-                            <div class="card card-stats">
 
-                        </div>
                     </div>
-                         
+                </div>
+            </div>
+
+
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card card-stats">
+
+                </div>
+            </div>
 
 
 
@@ -196,15 +198,16 @@ ob_start();
 
 
 
-                    <div class="row">
-                     <div class="col-lg-7 col-md-12">
-                            <div class="card" style="min-height: 485px">
-                                <div class="card-header card-header-text">
-                                    <h4 class="card-title">Productos recientes</h4>
-                                    <p class="category">Nuevos productos reciente añadidos el dia de hoy</p>
-                                </div>
-                                <div class="card-content table-responsive">
-                                    <?php
+
+            <div class="row">
+                <div class="col-lg-7 col-md-12">
+                    <div class="card" style="min-height: 485px">
+                        <div class="card-header card-header-text">
+                            <h4 class="card-title">Productos recientes</h4>
+                            <p class="category">Nuevos productos reciente añadidos el dia de hoy</p>
+                        </div>
+                        <div class="card-content table-responsive">
+                            <?php
                                
  $sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate order BY codba DESC;");
  $sentencia->execute();
@@ -216,21 +219,23 @@ if($sentencia){
   }
 }
    ?>
-   <?php if(count($data)>0):?> 
-                                    <table class="table table-hover" id="example1">
-                                        <thead class="text-primary">
-                                            <tr><th>ID</th>
-                                            <th>Nombre</th>
-                                            <th>Categoria</th>
-                                            <th>Stock</th>
-                                        </tr></thead>
-                                        <tbody>
-                                            <?php foreach($data as $a):?>
-                                            <tr>
-                                                <td><?php echo  $a->idprod; ?></td>
-                                                <td><?php echo  $a->nomprd; ?></td>
-                                                <td><?php echo  $a->nomca; ?></td>
-                                                <?php 
+                            <?php if(count($data)>0):?>
+                            <table class="table table-hover" id="example1">
+                                <thead class="text-primary">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre</th>
+                                        <th>Categoria</th>
+                                        <th>Stock</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($data as $a):?>
+                                    <tr>
+                                        <td><?php echo  $a->idprod; ?></td>
+                                        <td><?php echo  $a->nomprd; ?></td>
+                                        <td><?php echo  $a->nomca; ?></td>
+                                        <?php 
 
 if ($a->stock <= 0) {
   
@@ -242,20 +247,20 @@ if ($a->stock <= 0) {
     echo '<td><span class="badge badge-success">' . $a->stock . '</span></td>';
 }
                                                  ?>
-                                            </tr>
-                                             <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                    <?php else:?>
-        <!-- Warning Alert -->
-<div class="alert alert-warning" role="alert">
-  No se encontró ningún dato!
-</div>
-
-    <?php endif; ?>
-                                </div>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                            <?php else:?>
+                            <!-- Warning Alert -->
+                            <div class="alert alert-warning" role="alert">
+                                No se encontró ningún dato!
                             </div>
+
+                            <?php endif; ?>
                         </div>
+                    </div>
+                </div>
 
 
 
@@ -279,15 +284,16 @@ if ($a->stock <= 0) {
 
 
 
-                        <div class="col-lg-6 col-md-12">
-                            <div class="card" style="min-height: 485px">
-                                <div class="card-header card-header-text">
-                                    <h4 class="card-title">Aniversario con empresa</h4>
-                                </div>
-                                <div class="card-content">
-                                    <img src="../../backend/img/pastel-de-cumple.png" width='150' height='150' class="tcentrado">
-                                    <br>
-                                   <?php
+                <div class="col-lg-6 col-md-12">
+                    <div class="card" style="min-height: 485px">
+                        <div class="card-header card-header-text">
+                            <h4 class="card-title">Aniversario con empresa</h4>
+                        </div>
+                        <div class="card-content">
+                            <img src="../../backend/img/pastel-de-cumple.png" width='150' height='150'
+                                class="tcentrado">
+                            <br>
+                            <?php
                                
  $sentencia = $connect->prepare("SELECT idclie, nomcli, apecli, naci, celu FROM clientes WHERE DAY(naci)=DAY(NOW()) AND MONTH(naci)=MONTH(NOW());");
  $sentencia->execute();
@@ -299,43 +305,43 @@ if($sentencia){
   }
 }
    ?>
-   <?php if(count($data)>0):?>
-   <?php foreach($data as $g):?>
+                            <?php if(count($data)>0):?>
+                            <?php foreach($data as $g):?>
 
-    
-     <input type="" value="<?php  echo $g->nomcli ?>" name="">
-    
-   <?php endforeach; ?>
-   <?php else:?>
-        <!-- Warning Alert -->
-<div class="alert alert-warning" role="alert">
-  No se encontró ningún dato!
-</div>
 
-    <?php endif; ?>   
+                            <input type="" value="<?php  echo $g->nomcli ?>" name="">
 
-                                </div>
-
+                            <?php endforeach; ?>
+                            <?php else:?>
+                            <!-- Warning Alert -->
+                            <div class="alert alert-warning" role="alert">
+                                No se encontró ningún dato!
                             </div>
+
+                            <?php endif; ?>
+
                         </div>
 
-                        
                     </div>
-        
                 </div>
+
+
+            </div>
+
+        </div>
     </div>
 
-  
-     <!-- Optional JavaScript -->
+
+    <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-   <script src="../../backend/js/jquery-3.3.1.slim.min.js"></script>
-   <script src="../../backend/js/popper.min.js"></script>
-   <script src="../../backend/js/bootstrap.min.js"></script>
-   <script src="../../backend/js/jquery-3.3.1.min.js"></script>
-   <script type="text/javascript" src="../../backend/js/sidebarCollapse.js"></script>
- 
-<script src="../../backend/js/loader.js"></script>
-<!-- Data Tables -->
+    <script src="../../backend/js/jquery-3.3.1.slim.min.js"></script>
+    <script src="../../backend/js/popper.min.js"></script>
+    <script src="../../backend/js/bootstrap.min.js"></script>
+    <script src="../../backend/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../backend/js/sidebarCollapse.js"></script>
+
+    <script src="../../backend/js/loader.js"></script>
+    <!-- Data Tables -->
     <script type="text/javascript" src="../../backend/js/datatable.js"></script>
     <script type="text/javascript" src="../../backend/js/datatablebuttons.js"></script>
     <script type="text/javascript" src="../../backend/js/jszip.js"></script>
@@ -345,20 +351,22 @@ if($sentencia){
     <script type="text/javascript" src="../../backend/js/buttonsprint.js"></script>
 
     <script type="text/javascript" src="../../backend/js/example.js"></script>
-     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-        <script src="../../backend/js/chart/Chart.js"></script>
-        <script>
-   google.charts.load('current', {'packages':['corechart']});  
-           google.charts.setOnLoadCallback(drawChart);  
-           function drawChart()  
-           {  
-                var data = google.visualization.arrayToDataTable([  
-                          ['Articulo', 'Stock'],  
-                         
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="../../backend/js/chart/Chart.js"></script>
+    <script>
+    google.charts.load('current', {
+        'packages': ['corechart']
+    });
+    google.charts.setOnLoadCallback(drawChart);
 
-        
-                          
-                          <?php
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Articulo', 'Stock'],
+
+
+
+
+            <?php
                         
         $stmt = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate");
 
@@ -370,26 +378,28 @@ if($sentencia){
         }
 
             ?>
-             ]);  
-                var options = {  
-                     
-                      //is3D:true,  
-                      pieHole: 0.4  
-                     };  
-                var chart = new google.visualization.PieChart(document.getElementById('piechart'));  
-                chart.draw(data, options);  
-           }  
-         </script>
-        <script>
-            google.charts.load('current', {'packages':['corechart']});  
-           google.charts.setOnLoadCallback(drawChart);  
-           function drawChart()  
-           {  
-                var data = google.visualization.arrayToDataTable([  
-                          ['Articulo', 'Stock'],  
-                         
-                          
-                          <?php
+        ]);
+        var options = {
+
+            //is3D:true,  
+            pieHole: 0.4
+        };
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+    }
+    </script>
+    <script>
+    google.charts.load('current', {
+        'packages': ['corechart']
+    });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Articulo', 'Stock'],
+
+
+            <?php
                         
         $stmt = $connect->prepare("SELECT * FROM clientes");
 
@@ -401,26 +411,28 @@ if($sentencia){
         }
 
             ?>
-             ]);  
-                var options = {  
-                     
-                      //is3D:true,  
-                      pieHole: 0.4  
-                     };  
-                var chart = new google.visualization.PieChart(document.getElementById('piechartcli'));  
-                chart.draw(data, options);  
-           }  
-        </script>
+        ]);
+        var options = {
 
-        <script type="text/javascript">
-      google.charts.load('current', {'packages':['bar']});
-      google.charts.setOnLoadCallback(drawStuff);
+            //is3D:true,  
+            pieHole: 0.4
+        };
+        var chart = new google.visualization.PieChart(document.getElementById('piechartcli'));
+        chart.draw(data, options);
+    }
+    </script>
 
-      function drawStuff() {
+    <script type="text/javascript">
+    google.charts.load('current', {
+        'packages': ['bar']
+    });
+    google.charts.setOnLoadCallback(drawStuff);
+
+    function drawStuff() {
         var data = new google.visualization.arrayToDataTable([
-          ['Fecha', 'Monto'],
-          
-          <?php
+            ['Fecha', 'Monto'],
+
+            <?php
         $id=$_SESSION['id'];
         $stmt = $connect->prepare("SELECT SUM(total_price) total_price,placed_on FROM orders where placed_on = CURDATE()");
 
@@ -432,36 +444,47 @@ if($sentencia){
         }
 
             ?>
-            
+
         ]);
 
         var options = {
-          width: 900,
-          legend: { position: 'none' },
-          chart: { title: '',
-                   subtitle: '' },
-          bars: 'horizontal', // Required for Material Bar Charts.
-          axes: {
-            x: {
-              0: { side: 'top', label: 'Monto'} // Top x-axis.
+            width: 900,
+            legend: {
+                position: 'none'
+            },
+            chart: {
+                title: '',
+                subtitle: ''
+            },
+            bars: 'horizontal', // Required for Material Bar Charts.
+            axes: {
+                x: {
+                    0: {
+                        side: 'top',
+                        label: 'Monto'
+                    } // Top x-axis.
+                }
+            },
+            bar: {
+                groupWidth: "90%"
             }
-          },
-          bar: { groupWidth: "90%" }
         };
 
         var chart = new google.charts.Bar(document.getElementById('sale_values'));
         chart.draw(data, options);
-      };
+    };
     </script>
     <script type="text/javascript">
-      google.charts.load('current', {'packages':['bar']});
-      google.charts.setOnLoadCallback(drawStuff);
+    google.charts.load('current', {
+        'packages': ['bar']
+    });
+    google.charts.setOnLoadCallback(drawStuff);
 
-      function drawStuff() {
+    function drawStuff() {
         var data = new google.visualization.arrayToDataTable([
-          ['Fecha', 'Monto'],
-          
-          <?php
+            ['Fecha', 'Monto'],
+
+            <?php
         $id=$_SESSION['id'];
         $stmt = $connect->prepare("SELECT servicio.idservc, plan.idplan, plan.prec,plan.foto, plan.nompla, servicio.ini, servicio.fin, clientes.idclie, clientes.numid, clientes.nomcli, clientes.apecli, clientes.naci, clientes.celu, clientes.correo, servicio.estod, servicio.fere, SUM(prec) as prec FROM servicio INNER JOIN plan ON servicio.idplan = plan.idplan INNER JOIN clientes ON servicio.idclie = clientes.idclie where servicio.ini = CURDATE()");
 
@@ -473,37 +496,48 @@ if($sentencia){
         }
 
             ?>
-            
+
         ]);
 
         var options = {
-          width: 900,
-          legend: { position: 'none' },
-          chart: { title: '',
-                   subtitle: '' },
-          bars: 'horizontal', // Required for Material Bar Charts.
-          axes: {
-            x: {
-              0: { side: 'top', label: 'Monto'} // Top x-axis.
+            width: 900,
+            legend: {
+                position: 'none'
+            },
+            chart: {
+                title: '',
+                subtitle: ''
+            },
+            bars: 'horizontal', // Required for Material Bar Charts.
+            axes: {
+                x: {
+                    0: {
+                        side: 'top',
+                        label: 'Monto'
+                    } // Top x-axis.
+                }
+            },
+            bar: {
+                groupWidth: "90%"
             }
-          },
-          bar: { groupWidth: "90%" }
         };
 
         var chart = new google.charts.Bar(document.getElementById('services_values'));
         chart.draw(data, options);
-      };
+    };
     </script>
 
-<script type="text/javascript">
-      google.charts.load('current', {'packages':['bar']});
-      google.charts.setOnLoadCallback(drawStuff);
+    <script type="text/javascript">
+    google.charts.load('current', {
+        'packages': ['bar']
+    });
+    google.charts.setOnLoadCallback(drawStuff);
 
-      function drawStuff() {
+    function drawStuff() {
         var data = new google.visualization.arrayToDataTable([
-          ['Fecha', 'Monto'],
-          
-          <?php
+            ['Fecha', 'Monto'],
+
+            <?php
         $id=$_SESSION['id'];
         $stmt = $connect->prepare("SELECT ingresos.iding, ingresos.detalle, ingresos.total, ingresos.fec, SUM(total) as total FROM ingresos");
 
@@ -515,36 +549,47 @@ if($sentencia){
         }
 
             ?>
-            
+
         ]);
 
         var options = {
-          width: 900,
-          legend: { position: 'none' },
-          chart: { title: '',
-                   subtitle: '' },
-          bars: 'horizontal', // Required for Material Bar Charts.
-          axes: {
-            x: {
-              0: { side: 'top', label: 'Monto'} // Top x-axis.
+            width: 900,
+            legend: {
+                position: 'none'
+            },
+            chart: {
+                title: '',
+                subtitle: ''
+            },
+            bars: 'horizontal', // Required for Material Bar Charts.
+            axes: {
+                x: {
+                    0: {
+                        side: 'top',
+                        label: 'Monto'
+                    } // Top x-axis.
+                }
+            },
+            bar: {
+                groupWidth: "90%"
             }
-          },
-          bar: { groupWidth: "90%" }
         };
 
         var chart = new google.charts.Bar(document.getElementById('chart_div'));
         chart.draw(data, options);
-      };
+    };
     </script>
-<script type="text/javascript">
-      google.charts.load('current', {'packages':['bar']});
-      google.charts.setOnLoadCallback(drawStuff);
+    <script type="text/javascript">
+    google.charts.load('current', {
+        'packages': ['bar']
+    });
+    google.charts.setOnLoadCallback(drawStuff);
 
-      function drawStuff() {
+    function drawStuff() {
         var data = new google.visualization.arrayToDataTable([
-          ['Fecha', 'Monto'],
-          
-          <?php
+            ['Fecha', 'Monto'],
+
+            <?php
         $id=$_SESSION['id'];
         $stmt = $connect->prepare("SELECT gastos.idga, gastos.detall, gastos.total, gastos.fec, SUM(total) as total FROM gastos 
 ");
@@ -557,30 +602,40 @@ if($sentencia){
         }
 
             ?>
-            
+
         ]);
 
         var options = {
-          width: 900,
-          legend: { position: 'none' },
-          chart: { title: '',
-                   subtitle: '' },
-          bars: 'horizontal', // Required for Material Bar Charts.
-          axes: {
-            x: {
-              0: { side: 'top', label: 'Monto'} // Top x-axis.
+            width: 900,
+            legend: {
+                position: 'none'
+            },
+            chart: {
+                title: '',
+                subtitle: ''
+            },
+            bars: 'horizontal', // Required for Material Bar Charts.
+            axes: {
+                x: {
+                    0: {
+                        side: 'top',
+                        label: 'Monto'
+                    } // Top x-axis.
+                }
+            },
+            bar: {
+                groupWidth: "90%"
             }
-          },
-          bar: { groupWidth: "90%" }
         };
 
         var chart = new google.charts.Bar(document.getElementById('gast_div'));
         chart.draw(data, options);
-      };
+    };
     </script>
 
-  </body>
-  </html>
+</body>
+
+</html>
 
 
 
@@ -589,4 +644,4 @@ if($sentencia){
 <?php }else{ 
     header('Location: ../error404.php');
  } ?>
- <?php ob_end_flush(); ?>     
+<?php ob_end_flush(); ?>

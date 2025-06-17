@@ -142,16 +142,16 @@ if($sentencia){
 
   <div class="col-md-4 col-lg-4">
    <div class="form-group">
-    <label for="email">Nombre del plan<span class="text-danger">*</span></label>
-    <input type="text" value="<?php echo  $f->nompla  ; ?>" class="form-control"  name="txtnampla" required placeholder="Nombre del plan">
+    <label for="email">Nombre del servicio<span class="text-danger">*</span></label>
+    <input type="text" value="<?php echo  $f->nompla  ; ?>" class="form-control"  name="txtnampla" required placeholder="Nombre del servicio">
    <input type="hidden" value="<?php echo  $f->idplan  ; ?>" name="txtidc">
 </div>   
   </div>
 
 <div class="col-md-4 col-lg-4">
    <div class="form-group">
-    <label for="email">Precio del plan<span class="text-danger">*</span></label>
-    <input type="text" value="<?php echo  $f->prec  ; ?>" onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"  class="form-control"  name="txtprepl" required placeholder="Precio del plan">
+    <label for="email">Precio del servicio<span class="text-danger">*</span></label>
+    <input type="text" value="<?php echo  $f->prec  ; ?>" onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"  class="form-control"  name="txtprepl" required placeholder="Precio del servicio">
    
 </div>   
   </div>
@@ -159,7 +159,7 @@ if($sentencia){
 
 <div class="col-md-4 col-lg-4">
    <div class="form-group">
-    <label for="email">Estado del plan<span class="text-danger">*</span></label>
+    <label for="email">Estado del servicio<span class="text-danger">*</span></label>
     <select class="form-control" required name="txtesta">
           <option value="<?php echo  $f->estp  ; ?>"><?php echo  $f->estp  ; ?></option>
           <option>--------Seleccione---------</option>

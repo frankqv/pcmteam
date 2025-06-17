@@ -166,11 +166,11 @@ ob_start();
                                                 <a class="btn btn-warning text-white"
                                                     href="../clientes/actualizar.php?id=<?php echo  $g->idclie; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
-                                                        title='crear'>edit</i></a>
+                                                        title='editar'>edit</i></a>
                                                 <a class="btn btn-danger text-white"
                                                     href="../clientes/eliminar.php?id=<?php echo  $g->idclie; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
-                                                        title='crear'>cancel</i></a>
+                                                        title='cancelar'>cancel</i></a>
                                                 <a class="btn btn-primary text-white"
                                                     href="../clientes/informacion.php?id=<?php echo  $g->idclie; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
@@ -179,7 +179,7 @@ ob_start();
                                                 <a class="btn btn-warning text-white"
                                                     href="../clientes/actualizar.php?id=<?php echo  $g->idclie; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
-                                                        title='crear'>edit</i></a>
+                                                        title='editar'>edit</i></a>
                                                 <?php  } ?>
                                             </td>
                                         </tr>

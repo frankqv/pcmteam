@@ -151,21 +151,21 @@ header('../error404.php');
                                             <td><?php echo  $g->correo; ?></td>
                                             <td>
                                                 <?php if ($g->rol == '1') { ?>
-                                                  <span class="badge badge-success">Administrador</span>
+                                                <span class="badge badge-success">Administrador</span>
                                                 <?php } elseif ($g->rol == '2') { ?>
-                                                  <span class="badge badge-secondary">Default Genérico</span>
+                                                <span class="badge badge-secondary">Default Genérico</span>
                                                 <?php } elseif ($g->rol == '3') { ?>
-                                                  <span class="badge badge-info">Contable</span>
+                                                <span class="badge badge-info">Contable</span>
                                                 <?php } elseif ($g->rol == '4') { ?>
-                                                  <span class="badge badge-primary">Comercial</span>
+                                                <span class="badge badge-primary">Comercial</span>
                                                 <?php } elseif ($g->rol == '5') { ?>
-                                                  <span class="badge badge-warning">Jefe Técnico</span>
+                                                <span class="badge badge-warning">Jefe Técnico</span>
                                                 <?php } elseif ($g->rol == '6') { ?>
-                                                  <span class="badge badge-dark">Técnico</span>
+                                                <span class="badge badge-dark">Técnico</span>
                                                 <?php } elseif ($g->rol == '7') { ?>
-                                                  <span class="badge badge-light text-dark">Bodega</span>
+                                                <span class="badge badge-light text-dark">Bodega</span>
                                                 <?php } else { ?>
-                                                  <span class="badge badge-danger">null</span>
+                                                <span class="badge badge-danger">null</span>
                                                 <?php } ?>
                                             </td>
                                             <!-- Estado del usuario activo o inactivo-->
@@ -181,13 +181,13 @@ header('../error404.php');
                                                 <a class="btn btn-warning text-white"
                                                     href="../usuario/actualizar.php?id=<?php echo  $g->id; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
-                                                        title='crear'>edit</i></a>
+                                                        title='editar'>edit</i></a>
 
                                                 <?php  }   else {?>
                                                 <a class="btn btn-warning text-white"
                                                     href="../usuario/actualizar.php?id=<?php echo  $g->id; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
-                                                        title='crear'>edit</i></a>
+                                                        title='editar'>edit</i></a>
                                                 <?php  } ?>
                                             </td>
                                         </tr>

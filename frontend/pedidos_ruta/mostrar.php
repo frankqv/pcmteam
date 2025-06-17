@@ -40,7 +40,7 @@ header('location: ../error404.php');
 <body>
     <div class="wrapper">
 
-    <!-- layouts nav.php  |  Sidebar -->
+        <!-- layouts nav.php  |  Sidebar -->
         <div class="body-overlay"></div>s
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
         <nav id="sidebar">
@@ -50,20 +50,20 @@ header('location: ../error404.php');
             <?php renderMenu($menu); ?>
         </nav>
 
-    <!-- Page Content  -->
+        <!-- Page Content  -->
         <div id="content">
 
-        <!-- Contenido de top-navbar-->
-        
-        <!-- Contenido de MAin-->
+            <!-- Contenido de top-navbar-->
 
-        <!-- layouts nav.php  |  Sidebar -->
+            <!-- Contenido de MAin-->
+
+            <!-- layouts nav.php  |  Sidebar -->
             <?php    include_once '../bodega/construcionpage.php';    ?>
             <div>
                 <?php construcionpage(); ?>
             </div>
         </div>
-    <!---  Contenido de MAIN -->
+        <!---  Contenido de MAIN -->
 
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -82,7 +82,6 @@ header('location: ../error404.php');
         <script type="text/javascript" src="../../backend/js/vfs_fonts.js"></script>
         <script type="text/javascript" src="../../backend/js/buttonshtml5.js"></script>
         <script type="text/javascript" src="../../backend/js/buttonsprint.js"></script>
-
         <script type="text/javascript" src="../../backend/js/example.js"></script>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="../../backend/js/chart/Chart.js"></script>

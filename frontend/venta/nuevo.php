@@ -10,39 +10,40 @@ ob_start();
 
 <!doctype html>
 <html lang="es">
-  <head>
+
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-       <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-        <title>PCMARKETTEAM</title>
-         <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="../../backend/css/bootstrap.min.css">
-         <!----css3---->
-        <link rel="stylesheet" href="../../backend/css/custom.css">
-        <link rel="stylesheet" href="../../backend/css/loader.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <title>PCMARKETTEAM</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../../backend/css/bootstrap.min.css">
+    <!----css3---->
+    <link rel="stylesheet" href="../../backend/css/custom.css">
+    <link rel="stylesheet" href="../../backend/css/loader.css">
 
 
-                     <!-- Data Tables -->
+    <!-- Data Tables -->
     <link rel="stylesheet" type="text/css" href="../../backend/css/datatable.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/buttonsdataTables.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/font.css">
 
-          <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
-     
-     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-     <!--google material icon-->
-        <link href="https://fonts.googleapis.com/css2?family=Material+Icons"
-      rel="stylesheet">
-      <link rel="icon" type="image/png" href="../../backend/img/favicon.png"/>
-  </head>
-  <body>
-  
-<div class="wrapper">
-   
-<div class="body-overlay"></div>
+    <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!--google material icon-->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <div class="body-overlay"></div>
         <!-- layouts nav.php  |  Sidebar -->
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
         <nav id="sidebar">
@@ -54,81 +55,83 @@ ob_start();
 
         <!-- Page Content  -->
         <div id="content">
-          <div class='pre-loader'>
-    <img class='loading-gif' alt='loading' src="https://i.imgflip.com/9vd6wr.gif"/>
-</div>
-          <div class="top-navbar">
-            <nav class="navbar navbar-expand-lg">
-                <div class="container-fluid">
+            <div class='pre-loader'>
+                <img class='loading-gif' alt='loading' src="https://i.imgflip.com/9vd6wr.gif" />
+            </div>
+            <div class="top-navbar">
+                <nav class="navbar navbar-expand-lg">
+                    <div class="container-fluid">
 
-                    <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
-                        <span class="material-icons">arrow_back_ios</span>
-                    </button>
-                         
-                         <a class="navbar-brand" href="#"> Ventas </a>
-                         
-                    <button class="d-inline-block d-lg-none ml-auto more-button" type="button" data-toggle="collapse"
-                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="material-icons">more_vert</span>
-                    </button>
+                        <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
+                            <span class="material-icons">arrow_back_ios</span>
+                        </button>
 
-                    <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none" id="navbarSupportedContent">
-                        <ul class="nav navbar-nav ml-auto">  
-                         <li class="nav-item">
-                                <a class="nav-link" href="../cuenta/configuracion.php">
+                        <a class="navbar-brand" href="#"> Ventas </a>
+
+                        <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
+                            data-toggle="collapse" data-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="material-icons">more_vert</span>
+                        </button>
+
+                        <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
+                            id="navbarSupportedContent">
+                            <ul class="nav navbar-nav ml-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="../cuenta/configuracion.php">
                                         <span class="material-icons">settings</span>
-                                        </a>
-                            </li> 
-                            <li class="dropdown nav-item active">
-                                <a href="#" class="nav-link" data-toggle="dropdown">
-                                   
-                                   <img src="../../backend/img/reere.png" >
-                                           
-                               </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="../cuenta/perfil.php">Mi perfil</a>
-                                    </li>
-                                    <li>
-                                        <a href="../cuenta/salir.php">Salir</a>
-                                    </li>
-                                    
-                                </ul>
-                            </li>
-                            
-                        </ul>
+                                    </a>
+                                </li>
+                                <li class="dropdown nav-item active">
+                                    <a href="#" class="nav-link" data-toggle="dropdown">
+
+                                        <img src="../../backend/img/reere.png">
+
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="../cuenta/perfil.php">Mi perfil</a>
+                                        </li>
+                                        <li>
+                                            <a href="../cuenta/salir.php">Salir</a>
+                                        </li>
+
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            </nav>
-         </div>
-               
-               
-               <div class="main-content">
-               
-                         <div class="row ">
-                        <div class="col-lg-6 col-md-6">
+                </nav>
+            </div>
 
-                            <div class="card" style="min-height: 485px">
-                                <div class="card-header card-header-text">
-                                    <h4 class="card-title">Ventas</h4>
-                                    <p class="category">Nuevas ventas</p>
-                                </div>
-                                <br>
-                             
-                               <div class="card-content table-responsive">
-                                  <table class="table table-hover" id="example1">
-                                      <thead class="text-primary"> 
-                                          <tr>
-                                              <th>Articulo</th>
-                                              <th>Precio</th>
-                                              <th>Stock</th>
-                                              <th>Cantidad</th>
-                                              <th>Subtotal</th>
-                                              <th></th>
-                                          </tr>
 
-                                      </thead>
-                                      <tbody>
+            <div class="main-content">
+
+                <div class="row ">
+                    <div class="col-lg-6 col-md-6">
+
+                        <div class="card" style="min-height: 485px">
+                            <div class="card-header card-header-text">
+                                <h4 class="card-title">Ventas</h4>
+                                <p class="category">Nuevas ventas</p>
+                            </div>
+                            <br>
+
+                            <div class="card-content table-responsive">
+                                <table class="table table-hover" id="example1">
+                                    <thead class="text-primary">
+                                        <tr>
+                                            <th>Articulo</th>
+                                            <th>Precio</th>
+                                            <th>Stock</th>
+                                            <th>Cantidad</th>
+                                            <th>Subtotal</th>
+                                            <th></th>
+                                        </tr>
+
+                                    </thead>
+                                    <tbody>
                                         <?php
       require_once('../../backend/bd/ctconex.php');
       $grand_total = 0;
@@ -137,46 +140,54 @@ ob_start();
       if($select_cart->rowCount() > 0){
          while($fetch_cart = $select_cart->fetch(PDO::FETCH_ASSOC)){ 
    ?>
-                                          <td><?= $fetch_cart['nomprd']; ?></td>
-                                          <td><?= $fetch_cart['precio']; ?></td>
-                                          <td><?= $fetch_cart['stock']; ?></td>
-                                          <td>
-                                              <form action="" method="POST">
-                  <div class="form-group">
-                     <input type="hidden" name="prdt" value="<?= $fetch_cart['idv']; ?>">
-                       <input type="number" name="p_qty" value="<?= $fetch_cart['quantity']; ?>" style="width:100px;" min="1" max="99" class="form-control" placeholder="Cantidad">
-                     </div>
-                <button type="submit" name="update_qty" class="btn btn-danger"> <i class='material-icons' data-toggle='tooltip' title='crear'>refresh</i></button>
-               </form>
-                                          </td>
-                                          <td><span><?= $sub_total = ($fetch_cart['price'] * $fetch_cart['quantity']); ?></span></td>
-                                          <td>
-                                          <a class="btn btn-danger" onclick="return confirm('Eliminar del carrito?');" href="../venta/eliminar.php?id=<?= $fetch_cart['idv']; ?>"><i class='material-icons' data-toggle='tooltip' title='crear'>close</i></a>    
-                                          </td>
-                                      </tbody>
-                                      <?php
+                                        <td><?= $fetch_cart['nomprd']; ?></td>
+                                        <td><?= $fetch_cart['precio']; ?></td>
+                                        <td><?= $fetch_cart['stock']; ?></td>
+                                        <td>
+                                            <form action="" method="POST">
+                                                <div class="form-group">
+                                                    <input type="hidden" name="prdt" value="<?= $fetch_cart['idv']; ?>">
+                                                    <input type="number" name="p_qty"
+                                                        value="<?= $fetch_cart['quantity']; ?>" style="width:100px;"
+                                                        min="1" max="99" class="form-control" placeholder="Cantidad">
+                                                </div>
+                                                <button type="submit" name="update_qty" class="btn btn-danger"> <i
+                                                        class='material-icons' data-toggle='tooltip'
+                                                        title='crear'>refresh</i></button>
+                                            </form>
+                                        </td>
+                                        <td><span><?= $sub_total = ($fetch_cart['price'] * $fetch_cart['quantity']); ?></span>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-danger" onclick="return confirm('Eliminar del carrito?');"
+                                                href="../venta/eliminar.php?id=<?= $fetch_cart['idv']; ?>"><i
+                                                    class='material-icons' data-toggle='tooltip'
+                                                    title='crear'>close</i></a>
+                                        </td>
+                                    </tbody>
+                                    <?php
       $grand_total += $sub_total;
       }
    }else{
       echo '<p class="alert alert-warning">Tu carrito esta vació</p>';
    }
    ?>
-                                  </table> 
-                               </div>
-                               
-
+                                </table>
                             </div>
-                        </div>
 
-                        <div class="col-lg-6 col-md-6">
-                            <div class="card" style="min-height: 485px">
-                                <div class="card-header card-header-text">
-                                    <h4 class="card-title">Articulo</h4>
-                                    <p class="category">Agrega un articulo</p>
-                                </div>
-                                <br>
-                             
-                               <div class="card-content table-responsive">
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card" style="min-height: 485px">
+                            <div class="card-header card-header-text">
+                                <h4 class="card-title">Articulo</h4>
+                                <p class="category">Agrega un articulo</p>
+                            </div>
+                            <br>
+
+                            <div class="card-content table-responsive">
                                 <?php 
 
 $sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate order BY codba DESC;");
@@ -188,25 +199,26 @@ if($sentencia){
   }
 }
                                      ?>
-                                     <?php if(count($data)>0):?>
-                                   <table class="table table-hover" id="example">
-                                       <thead class="text-primary">
-                                          <tr>
-                                              <th>Nombre</th>
-                                              <th>Precio</th>
-                                              
-                                              <th>Foto</th>
-                                              <th>Stock</th>
-                                              <th>Opcion</th>
-                                          </tr> 
-                                       </thead>
-                                       <tbody>
+                                <?php if(count($data)>0):?>
+                                <table class="table table-hover" id="example">
+                                    <thead class="text-primary">
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Precio</th>
+
+                                            <th>Foto</th>
+                                            <th>Stock</th>
+                                            <th>Opcion</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                         <?php foreach($data as $d):?>
-                                           <tr>
-                                               <td><?php echo  $d->nomprd; ?></td>
-                                               <td><?php echo  $d->precio; ?></td>
-                                                <td><img src="../../backend/img/subidas/<?php echo $d->foto ?>" width='50' height='50'></td>
-                                               <?php 
+                                        <tr>
+                                            <td><?php echo  $d->nomprd; ?></td>
+                                            <td><?php echo  $d->precio; ?></td>
+                                            <td><img src="../../backend/img/subidas/<?php echo $d->foto ?>" width='50'
+                                                    height='50'></td>
+                                            <?php 
 
 if ($d->stock <= 0) {
   
@@ -218,63 +230,71 @@ if ($d->stock <= 0) {
     echo '<td><span class="badge badge-success">' . $d->stock . '</span></td>';
 }
                                                  ?>
-                                                 <td>
-   
-    <form class="form-inline" method="post" action="">
-    <input type="hidden" name="prdt" value="<?php echo $d->idprod; ?>">
-    <input type="hidden" name="pdrus" value="<?php echo $_SESSION['id']; ?>">
-    <input type="hidden" name="name" value="<?php echo $d->nomprd; ?>">
-    <input type="hidden" name="prec" value="<?php echo $d->precio; ?>">
-   
-      <div class="form-group">
-        <input type="number" name="p_qty" value="1" style="width:100px;" min="1" class="form-control" placeholder="Cantidad">
-      </div>
-      <button type="submit" name="add_to_cart" class="btn btn-success"> <i class='material-icons' data-toggle='tooltip' title='crear'>shopping_cart</i></button>
-    </form> 
+                                            <td>
 
-                                                 </td>
-                                           </tr>
-                                           <?php endforeach; ?>
-                                       </tbody>
-                                   </table>
-                                   <?php else:?>
-        <!-- Warning Alert -->
-<div class="alert alert-warning" role="alert">
-  No se encontró ningún dato!
-</div>
+                                                <form class="form-inline" method="post" action="">
+                                                    <input type="hidden" name="prdt" value="<?php echo $d->idprod; ?>">
+                                                    <input type="hidden" name="pdrus"
+                                                        value="<?php echo $_SESSION['id']; ?>">
+                                                    <input type="hidden" name="name" value="<?php echo $d->nomprd; ?>">
+                                                    <input type="hidden" name="prec" value="<?php echo $d->precio; ?>">
 
-    <?php endif; ?>
-                               </div>
-                               
+                                                    <div class="form-group">
+                                                        <input type="number" name="p_qty" value="1" style="width:100px;"
+                                                            min="1" class="form-control" placeholder="Cantidad">
+                                                    </div>
+                                                    <button type="submit" name="add_to_cart" class="btn btn-success"> <i
+                                                            class='material-icons' data-toggle='tooltip'
+                                                            title='crear'>shopping_cart</i></button>
+                                                </form>
 
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                                <?php else:?>
+                                <!-- Warning Alert -->
+                                <div class="alert alert-warning" role="alert">
+                                    No se encontró ningún dato!
+                                </div>
+
+                                <?php endif; ?>
                             </div>
+
+
                         </div>
+                    </div>
 
-                        <div class="col-lg-12 col-md-12">
-                            <div class="card" style="min-height: 485px">
-                               <div class="card-header card-header-text">
-                                    <h4 class="card-title">Ventas recientes</h4>
-                                    <p class="category">Finalizar ventas reciente añadidos el dia de hoy</p>
-                                </div> 
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card" style="min-height: 485px">
+                            <div class="card-header card-header-text">
+                                <h4 class="card-title">Ventas recientes</h4>
+                                <p class="category">Finalizar ventas reciente añadidos el dia de hoy</p>
+                            </div>
 
-                                <div class="card-content table-responsive">
-                                  <div class="alert alert-warning">
-  <strong>Estimado usuario!</strong> Los campos remarcados con <span class="text-danger">*</span> son necesarios.
-  <br>
-  <strong>Al registrar una venta en el apartado clientes debes añadir uno nuevo si es primera vez</strong>
-</div> 
-<form enctype="multipart/form-data" method="POST"  autocomplete="off">
-    <div class="row">
-        <div class="col-md-4 col-lg-4">
-   <div class="form-group">
-    <label for="email">Clientes<span class="text-danger">*</span></label>
-    <input type="hidden" name="pdrus" value="<?php echo $_SESSION['id']; ?>">
-    <input type="hidden" value="<?php $d->stock ?>" name="st">
-    <input type="hidden" value="<?php $d->idprod ?>" name="stpro">
-    <input type="hidden" name="quantity" value="<?php $fetch_cart['quantity'] ?> ">
-    <select class="form-control" required name="cxtip">
-            <option value="">----------Seleccione------------</option>  
-            <?php
+                            <div class="card-content table-responsive">
+                                <div class="alert alert-warning">
+                                    <strong>Estimado usuario!</strong> Los campos remarcados con <span
+                                        class="text-danger">*</span> son necesarios.
+                                    <br>
+                                    <strong>Al registrar una venta en el apartado clientes debes añadir uno nuevo si es
+                                        primera vez</strong>
+                                </div>
+                                <form enctype="multipart/form-data" method="POST" autocomplete="off">
+                                    <div class="row">
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Clientes<span class="text-danger">*</span></label>
+                                                <input type="hidden" name="pdrus"
+                                                    value="<?php echo $_SESSION['id']; ?>">
+                                                <input type="hidden" value="<?php $d->stock ?>" name="st">
+                                                <input type="hidden" value="<?php $d->idprod ?>" name="stpro">
+                                                <input type="hidden" name="quantity"
+                                                    value="<?php $fetch_cart['quantity'] ?> ">
+                                                <select class="form-control" required name="cxtip">
+                                                    <option value="">----------Seleccione------------</option>
+                                                    <?php
            //require '../../backend/bd/ctconex.php';
             $stmt = $connect->prepare("SELECT * FROM clientes where estad='Activo' order by idclie desc");
             $stmt->execute();
@@ -282,48 +302,51 @@ if ($d->stock <= 0) {
                 {
                     extract($row);
                     ?>
-            <option value="<?php echo $idclie; ?>"><?php echo $nomcli; ?> <?php echo $apecli; ?></option>
-                    <?php
+                                                    <option value="<?php echo $idclie; ?>"><?php echo $nomcli; ?>
+                                                        <?php echo $apecli; ?></option>
+                                                    <?php
                 }
         ?>
-            ?>                          
-    </select>
-</div>   
-  </div>
-  <div class="col-md-4 col-lg-4">
-   <div class="form-group">
-    <label for="email">Comprobante<span class="text-danger">*</span></label>
-    <select class="form-control" required name="cxcom">
-          <option value="">----------Seleccione------------</option>  
-            <option value="Ticket">Ticket</option>                         
-    </select>
-</div>   
-  </div>
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Comprobante<span class="text-danger">*</span></label>
+                                                <select class="form-control" required name="cxcom">
+                                                    <option value="">----------Seleccione------------</option>
+                                                    <option value="Ticket">Ticket</option>
+                                                </select>
+                                            </div>
+                                        </div>
 
-  <div class="col-md-4 col-lg-4">
-   <div class="form-group">
-    <label for="email">Tipo de pago<span class="text-danger">*</span></label>
-    <select class="form-control" required name="cxtcre">
-          <option value="">----------Seleccione------------</option>  
-            <option value="Transferencia">Transferencia</option> 
-            <option value="Efectivo">Efectivo</option>                         
-    </select>
-</div>   
-  </div>
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Tipo de pago<span
+                                                        class="text-danger">*</span></label>
+                                                <select class="form-control" required name="cxtcre">
+                                                    <option value="">----------Seleccione------------</option>
+                                                    <option value="Transferencia">Transferencia</option>
+                                                    <option value="Efectivo">Efectivo</option>
+                                                </select>
+                                            </div>
+                                        </div>
 
-    </div>
-    <div class="row">
-      <div class="col-md-12 col-lg-12">
-      <div class="form-group">
-    <label for="email">Fecha<span class="text-danger">*</span></label>
-    <input type="text"  id="fechaActual" class="form-control"   name="txtdate" required >
-   
-</div>
-  </div>  
-    </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-lg-12">
+                                            <div class="form-group">
+                                                <label for="email">Fecha<span class="text-danger">*</span></label>
+                                                <input type="text" id="fechaActual" class="form-control" name="txtdate"
+                                                    required>
 
-    <div class="row">
-        <?php
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <?php
     //require_once('../../backend/config/Conexion.php');
         $user_id = $_SESSION['id'];
       $cart_grand_total = 0;
@@ -334,19 +357,25 @@ if ($d->stock <= 0) {
             $cart_total_price = ($fetch_cart_items['precio'] * $fetch_cart_items['quantity']);
             $cart_grand_total += $cart_total_price;
    ?>
-       <div class="col-md-12 col-lg-12">
-   <div class="form-group">
-    <label for="email">Mis productos<span class="text-danger">*</span></label>
-    
-   <input type="hidden" value="<?= $fetch_cart_items['idprod']; ?>" name="product1[]">
-   <input type="hidden" value="<?= $fetch_cart_items['quantity']; ?>" name="canti[]">
-   <input type="hidden" value="<?= $fetch_cart_items['idv']; ?>" name="idcart">
+                                        <div class="col-md-12 col-lg-12">
+                                            <div class="form-group">
+                                                <label for="email">Mis productos<span
+                                                        class="text-danger">*</span></label>
 
-   
-    <input readonly class="form-control" type="text" value="<?= $fetch_cart_items['name']; ?> (<?= 'S/'.$fetch_cart_items['precio'].'/- x '. $fetch_cart_items['quantity']; ?>)" name="">
-</div>   
-  </div>
-  <?php
+                                                <input type="hidden" value="<?= $fetch_cart_items['idprod']; ?>"
+                                                    name="product1[]">
+                                                <input type="hidden" value="<?= $fetch_cart_items['quantity']; ?>"
+                                                    name="canti[]">
+                                                <input type="hidden" value="<?= $fetch_cart_items['idv']; ?>"
+                                                    name="idcart">
+
+
+                                                <input readonly class="form-control" type="text"
+                                                    value="<?= $fetch_cart_items['name']; ?> (<?= 'S/'.$fetch_cart_items['precio'].'/- x '. $fetch_cart_items['quantity']; ?>)"
+                                                    name="">
+                                            </div>
+                                        </div>
+                                        <?php
     }
    }else{
       echo '<p class="empty"><p class="alert alert-warning">Tu carrito esta vació</p></p>';
@@ -354,73 +383,75 @@ if ($d->stock <= 0) {
    }
    ?>
 
-    </div>
-    <div class="row">
-        <div class="col-md-12 col-lg-12">
-        
-            <h1 style="font-size:42px; color:#000000;"><strong>Precio Total :S/<?php echo number_format($cart_grand_total, 2); ?> </strong></h1>
-                                                </div>
-        
-            <input type="hidden" value="<?php  echo $cart_grand_total ?>" name="txttotalll">
-        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-lg-12">
 
-         <hr>
-<div class="form-group">
-        <div class="col-sm-12">
-            <button name="order" type="submit" class="btn btn-success text-white <?= ($cart_grand_total > 1)?'':'disabled'; ?>">Guardar</button>                       
-            <a class="btn btn-danger text-white" href="../venta/mostrar.php">Cancelar</a>
-        </div>
-    </div>
-</form>
-    </div>
+                                            <h1 style="font-size:42px; color:#000000;"><strong>Precio Total
+                                                    :S/<?php echo number_format($cart_grand_total, 2); ?> </strong></h1>
+                                        </div>
 
-     
-                                </div>
+                                        <input type="hidden" value="<?php  echo $cart_grand_total ?>" name="txttotalll">
+                                    </div>
+
+                                    <hr>
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <button name="order" type="submit"
+                                                class="btn btn-success text-white <?= ($cart_grand_total > 1)?'':'disabled'; ?>">Guardar</button>
+                                            <a class="btn btn-danger text-white"
+                                                href="../venta/mostrar.php">Cancelar</a>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                        </div>
-                      
-                    </div>
 
-                         </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
 
         </div>
+
+    </div>
     </div>
 
-  
-     <!-- Optional JavaScript -->
+
+    <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-   <script src="../../backend/js/jquery-3.3.1.slim.min.js"></script>
-   <script src="../../backend/js/popper.min.js"></script>
-   <script src="../../backend/js/bootstrap.min.js"></script>
-   <script src="../../backend/js/jquery-3.3.1.min.js"></script>
-  
-  <script src="../../backend/js/sweetalert.js"></script>
-   <?php
+    <script src="../../backend/js/jquery-3.3.1.slim.min.js"></script>
+    <script src="../../backend/js/popper.min.js"></script>
+    <script src="../../backend/js/bootstrap.min.js"></script>
+    <script src="../../backend/js/jquery-3.3.1.min.js"></script>
+
+    <script src="../../backend/js/sweetalert.js"></script>
+    <?php
     include_once '../../backend/php/st_add_cart.php'
 ?>
-  <?php
+    <?php
     include_once '../../backend/php/st_updcart.php'
 ?>
 
-<?php
+    <?php
     include_once '../../backend/php/st_addcheck.php'
 ?>
-  <script type="text/javascript">
-  $(document).ready(function () {
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
-                    $('#content').toggleClass('active');
-            });
-               
-                $('.more-button,.body-overlay').on('click', function () {
-                $('#sidebar,.body-overlay').toggleClass('show-nav');
-            });
-               
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('#sidebarCollapse').on('click', function() {
+            $('#sidebar').toggleClass('active');
+            $('#content').toggleClass('active');
         });
 
-</script>
-<script src="../../backend/js/loader.js"></script>
-<!-- Data Tables -->
+        $('.more-button,.body-overlay').on('click', function() {
+            $('#sidebar,.body-overlay').toggleClass('show-nav');
+        });
+
+    });
+    </script>
+    <script src="../../backend/js/loader.js"></script>
+    <!-- Data Tables -->
     <script type="text/javascript" src="../../backend/js/datatable.js"></script>
     <script type="text/javascript" src="../../backend/js/datatablebuttons.js"></script>
     <script type="text/javascript" src="../../backend/js/jszip.js"></script>
@@ -429,34 +460,36 @@ if ($d->stock <= 0) {
     <script type="text/javascript" src="../../backend/js/buttonshtml5.js"></script>
     <script type="text/javascript" src="../../backend/js/buttonsprint.js"></script>
     <script type="text/javascript">
-$(document).ready(function() {
-    $('#example').DataTable( {
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ],language: {
-            search: "🔍buscar:"
-        }
-    } );
-} );
+    $(document).ready(function() {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            language: {
+                search: "🔍buscar:"
+            }
+        });
+    });
     </script>
 
 
-        <script type="text/javascript">
-            window.onload = function(){
-  var fecha = new Date(); //Fecha actual
-  var mes = fecha.getMonth()+1; //obteniendo mes
-  var dia = fecha.getDate(); //obteniendo dia
-  var ano = fecha.getFullYear(); //obteniendo año
-  if(dia<10)
-    dia='0'+dia; //agrega cero si el menor de 10
-  if(mes<10)
-    mes='0'+mes //agrega cero si el menor de 10
-  document.getElementById('fechaActual').value=ano+"-"+mes+"-"+dia;
-}
-        </script>
-  </body>
-  </html>
+    <script type="text/javascript">
+    window.onload = function() {
+        var fecha = new Date(); //Fecha actual
+        var mes = fecha.getMonth() + 1; //obteniendo mes
+        var dia = fecha.getDate(); //obteniendo dia
+        var ano = fecha.getFullYear(); //obteniendo año
+        if (dia < 10)
+            dia = '0' + dia; //agrega cero si el menor de 10
+        if (mes < 10)
+            mes = '0' + mes //agrega cero si el menor de 10
+        document.getElementById('fechaActual').value = ano + "-" + mes + "-" + dia;
+    }
+    </script>
+</body>
+
+</html>
 
 
 
@@ -465,4 +498,4 @@ $(document).ready(function() {
 <?php }else{ 
     header('Location: ../error404.php');
  } ?>
- <?php ob_end_flush(); ?>     
+<?php ob_end_flush(); ?>

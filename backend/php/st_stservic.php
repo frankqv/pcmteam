@@ -12,10 +12,12 @@ if(isset($_POST['staddserv']))
    $meto=$_POST['txtmeto'];
    $total=$_POST['txtprec'];
    $cancel=$_POST['txtcanc'];
-    
-   
+   $servtxt = $_POST['servtxt'];
+   $servfoto = $_POST['servfoto'];
+   $responsable=$_POST['responsable'];
+      
 
-       $d3 = $connect->prepare("INSERT INTO servicio (idplan, ini,fin,idclie,estod,meto,canc) VALUES('$idplan','$ini','$fin','$idclie','$estod','$meto','$cancel')");
+       $d3 = $connect->prepare("INSERT INTO servicio (idplan, ini,fin,idclie,estod,meto,canc,servtxt,servfoto, responsable) VALUES('$idplan','$ini','$fin','$idclie','$estod','$meto','$cancel','$servtxt','$servfoto', '$responsable')");
 
 
        $d4 = $connect->prepare("INSERT INTO ingresos (detalle,total,fec) VALUES('VENTA DE MEMBRESIAS','$total','$ini')");

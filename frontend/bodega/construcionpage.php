@@ -14,7 +14,8 @@ function construcionpage(): void {
                             <span class="material-icons">more_vert</span>
                         </button>
                         <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
-                            id="navbarSupportedContent">
+                            id="navbarSupportedCont
+                            ent">
                             <ul class="nav navbar-nav ml-auto">
                                 <li class="nav-item">
                                     <a class="nav-link" href="../cuenta/configuracion.php">

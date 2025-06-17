@@ -39,7 +39,7 @@ ob_start();
     <div class="wrapper">
 
         <div class="body-overlay"></div>
-       <!-- layouts nav.php  |  Sidebar -->
+        <!-- layouts nav.php  |  Sidebar -->
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
         <nav id="sidebar">
             <div class="sidebar-header">

@@ -110,20 +110,20 @@ ob_start();
                             <a href="../clientes/nuevo.php" class="btn btn-danger text-white">Nuevo cliente</a>
                             <br>
                             <div class="card-content table-responsive">
-<?php
-// Llamar a la base de datos
-require '../../backend/bd/ctconex.php'; 
-// Filtrar datos segun la sede
-$sentencia = $connect->prepare("SELECT * FROM clientes WHERE idsede = 4 ORDER BY nomcli DESC;");
-$sentencia->execute();
-$data =  array();
-if($sentencia){
-    while($r = $sentencia->fetchObject()){
-        $data[] = $r;
-    }
-}
+                                <?php
+                                // Llamar a la base de datos
+                                require '../../backend/bd/ctconex.php'; 
+                                // Filtrar datos segun la sede
+                                $sentencia = $connect->prepare("SELECT * FROM clientes WHERE idsede = 'Unilago' OR idsede = 4 ORDER BY nomcli DESC;");
+                                $sentencia->execute();
+                                $data =  array();
+                                if($sentencia){
+                                while($r = $sentencia->fetchObject()){
+                                    $data[] = $r;
+                                }
+                                }
 
-?>
+                                ?>
 
 <!-- En informacion de los clietes de su SEDE segun donde este Loguedo como pareces en los registros   En la base de Datos 
 
@@ -193,11 +193,11 @@ if($sentencia){
                                                 <a class="btn btn-warning text-white"
                                                     href="../clientes/actualizar.php?id=<?php echo  $g->idclie; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
-                                                        title='crear'>edit</i></a>
+                                                        title='editar'>edit</i></a>
                                                 <a class="btn btn-danger text-white"
                                                     href="../clientes/eliminar.php?id=<?php echo  $g->idclie; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
-                                                        title='crear'>cancel</i></a>
+                                                        title='cancelar'>cancel</i></a>
                                                 <a class="btn btn-primary text-white"
                                                     href="../clientes/informacion.php?id=<?php echo  $g->idclie; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
@@ -206,7 +206,7 @@ if($sentencia){
                                                 <a class="btn btn-warning text-white"
                                                     href="../clientes/actualizar.php?id=<?php echo  $g->idclie; ?>"><i
                                                         class='material-icons' data-toggle='tooltip'
-                                                        title='crear'>edit</i></a>
+                                                        title='editar'>edit</i></a>
                                                 <?php  } ?>
                                             </td>
                                         </tr>

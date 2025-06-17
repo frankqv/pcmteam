@@ -135,7 +135,7 @@ if (!isset($_SESSION['rol']) || ($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2 
                                             </div>
                                         </div>
                                         <!-- Cambiar foto * opcion subir archivo-->
-                                        
+
                                         foto
                                     </div>
                                     <hr>

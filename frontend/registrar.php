@@ -55,16 +55,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Usuario - PCMARKETTEAM</title>
-    
+
     <link rel="stylesheet" href="../backend/css/style.css">
-    <link rel="icon" type="image/png" href="../backend/img/favicon.png"/>
+    <link rel="icon" type="image/png" href="../backend/img/favicon.png" />
 
 </head>
+
 <body>
     <div class="register-wrapper">
         <div class="register-form">
@@ -94,9 +96,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         </div>
     </div>
-    
+
 </body>
+
 </html>
 
 <script src="../backend/js/jquery-3.3.1.min.js"></script>
-  <script type="text/javascript" src="../backend/js/reenvio.js"></script>
+<script type="text/javascript" src="../backend/js/reenvio.js"></script>

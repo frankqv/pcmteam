@@ -37,9 +37,13 @@ Estrutura que busco implementar, de paso a paso Estructura   3 JUNIO 2025
 │   ├── nav.php
 │   └── menu_data.php
 │
-
-
-
+├── /docs               ← Generador de documetos: De uso frecuente
+│   ├── mostrar.php
+│   ├── archivos // Pdfs, documenos para descargar o imprimir
+│
+│
+│
+│
 
 
 

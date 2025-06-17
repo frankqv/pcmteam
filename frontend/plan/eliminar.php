@@ -137,8 +137,8 @@ if($sentencia){
 
   <div class="col-md-12 col-lg-12">
    <div class="form-group">
-    <label for="email">Nombre del plan<span class="text-danger">*</span></label>
-    <input type="text" readonly value="<?php echo  $f->nompla  ; ?>" class="form-control"  name="txtnampla" required placeholder="Nombre del plan">
+    <label for="email">Nombre del servicio<span class="text-danger">*</span></label>
+    <input type="text" readonly value="<?php echo  $f->nompla  ; ?>" class="form-control"  name="txtnampla" required placeholder="Nombre del servicio">
    <input type="hidden" value="<?php echo  $f->idplan  ; ?>" name="txtidc">
 </div>   
   </div>

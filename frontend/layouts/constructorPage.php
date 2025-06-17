@@ -881,6 +881,3 @@ function constructorPage(): void {
      <!-- FIN DE LA IMAGEN SVG -->
                     ';}
 ?>
-
-
-

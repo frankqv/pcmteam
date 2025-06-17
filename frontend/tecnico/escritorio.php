@@ -157,9 +157,9 @@ header('location: ../error404.php');
                                 <p class="category"> ¡Gracias por visitarnos!
                                     Estamos Trabajando para una
                                     mejor experiencia PCMARKETTEAM</p>
-                                    <!-- Pagina en construccion.php  |  Sidebar -->
-                                    <?php    include_once '../bodega/construcionpage.php';    ?>
-                                    <?php construcionpage(); ?>
+                                <!-- Pagina en construccion.php  |  Sidebar -->
+                                <?php    include_once '../bodega/construcionpage.php';    ?>
+                                <?php construcionpage(); ?>
                             </div>
                             <br>
 
