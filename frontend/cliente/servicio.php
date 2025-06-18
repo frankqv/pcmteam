@@ -178,7 +178,7 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 2) {
                                                 <?php echo  $g->fin; ?></strong></td>
                                         <?php } else { ?>
                                         <td style="color: #3e5569;">
-                                            <span class="text-dark"><strong>Suscripcion inactiva</strong></span>
+                                            <span class="text-dark"><strong>Finalizado</strong></span>
                                         </td>
                                         <?php } ?>
 
@@ -192,7 +192,7 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 2) {
                                                     $contador = date_diff($datetime1, $datetime2);
                                                     $differenceFormat = '%a';
                                                     while ($fechaEnvio == '0000-00-00') {
-                                                        echo '<span class="label label-success">FREE</span>';
+                                                        echo '<span class="label label-success">Pediente</span>';
                                                         $fechaEnvio++;
                                                     }
                                                     if ($esta == 'Inactivo') {
@@ -200,7 +200,7 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 2) {
                                                     } elseif ($fechaEnvio > $fechaActual) {
                                                         echo $contador->format($differenceFormat);
                                                     } else {
-                                                        echo '<span class="text-danger"><strong>Renovar</strong></span>';
+                                                        echo '<span class="text-success"><strong>Entregado</strong></span>';
                                                     }
                                                     ?>
                                         </td>

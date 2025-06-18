@@ -111,20 +111,20 @@ ob_start();
                             <a href="../clientes/nuevo.php" class="btn btn-danger text-white">Nuevo cliente</a>
                             <br>
                             <div class="card-content table-responsive">
-<?php
-// Llamar a la base de datos
-require '../../backend/bd/ctconex.php'; 
-// Filtrar datos segun la sede
-$sentencia = $connect->prepare("SELECT * FROM clientes WHERE idsede = 'Bodega1' OR idsede = '1' ORDER BY nomcli DESC;");
-$sentencia->execute();
-$data =  array();
-if($sentencia){
-    while($r = $sentencia->fetchObject()){
-        $data[] = $r;
-    }
-}
+                                <?php
+                                // Llamar a la base de datos
+                                require '../../backend/bd/ctconex.php'; 
+                                // Filtrar datos segun la sede
+                                $sentencia = $connect->prepare("SELECT * FROM clientes WHERE idsede = 'Principal' OR idsede = '1' OR 'Bodega1' ORDER BY nomcli DESC;");
+                                $sentencia->execute();
+                                $data =  array();
+                                if($sentencia){
+                                    while($r = $sentencia->fetchObject()){
+                                        $data[] = $r;
+                                    }
+                                }
 
-?>
+                                ?>
 
 
 

@@ -159,8 +159,8 @@ if($sentencia){
 if ($g->stock <= 0) {
   
     echo '<td><span class="badge badge-danger">stock vacio</span></td>';
-}elseif ($g->stock <= 5) {
-    echo '<td><span class="badge badge-warning">Está por acabarse</span></td>';
+}elseif ($g->stock <= 1) {
+    echo '<td><span class="badge badge-warning">Última unidade</span></td>';
    
 }else {
     echo '<td><span class="badge badge-success">' . $g->stock . '</span></td>';

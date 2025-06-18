@@ -215,7 +215,7 @@ ob_start();
                                             <label for="txtsede">Selecione una sede</label>
                                             <select class="form-control" name="txtsede" required>
                                                 <option value="">Seleccione una sede</option>
-                                                <option value="Bodega1" >Bodega   #1</option>
+                                                <option value="Principal" >Bodega   #1</option>
                                                 <option value="Medellin" >Medellin #2</option>
                                                 <option value="Cucuta" >Cúcuta   #3</option>
                                                 <option value="Unilago" >Unilago  #4</option> 

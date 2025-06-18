@@ -1,5 +1,5 @@
+<!-- servicio/nuevo-php -->
 <?php
-
 ob_start();
      session_start();
     
@@ -130,10 +130,11 @@ ob_start();
                                     <strong>Al registrar un servicio en el apartado clientes debes añadir uno nuevo si
                                         es primera vez</strong>
                                 </div>
-                                
-                                        <center>
-                                            <h4><b>Informacion</b> del Cliente</h4>
-                                        </center> <hr/>
+
+                                <center>
+                                    <h4><b>Informacion</b> del Cliente</h4>
+                                </center>
+                                <hr />
                                 <form enctype="multipart/form-data" method="POST" autocomplete="off">
                                     <div class="row">
                                         <div class="col-md-4 col-lg-4">
@@ -144,7 +145,6 @@ ob_start();
                                                 </select>
                                             </div>
                                         </div>
-
                                         <div class="col-md-4 col-lg-4" style="display:none;">
                                             <div class="form-group">
                                                 <label for="email">Precio<span class="text-danger">*</span></label>
@@ -153,30 +153,24 @@ ob_start();
                                                 </select>
                                             </div>
                                         </div>
-
-
                                         <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
-                                                <label for="email">Clientes<span class="text-danger">*</span></label>
+                                                <label for="email">Clientes <span class="text-danger">*</span></label>
                                                 <select class="form-control" required name="txtcli">
-                                                    <option value="">----------Seleccione------------</option>
+                                                    <option value="">Seleccione un cliente</option>
                                                     <?php
                                                         require '../../backend/bd/ctconex.php';
                                                         $stmt = $connect->prepare("SELECT * FROM clientes where estad='Activo' order by idclie desc");
                                                         $stmt->execute();
-                                                        while($row=$stmt->fetch(PDO::FETCH_ASSOC))
-                                                            {
-                                                                extract($row);
-                                                                ?>
-                                                    <option value="<?php echo $idclie; ?>"><?php echo $nomcli; ?>
-                                                        <?php echo $apecli; ?></option>
-                                                    <?php
-                                                            }
-                                                    ?>
+                                                        while($row=$stmt->fetch(PDO::FETCH_ASSOC)) {
+                                                            extract($row);
+                                                            echo "<option value='$idclie'>$nomcli $apecli</option>";
+                                                        }
                                                     ?>
                                                 </select>
                                             </div>
                                         </div>
+
 
                                         <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
@@ -184,45 +178,85 @@ ob_start();
                                                         class="text-danger">*</span></label>
                                                 <select class="form-control" required name="txtesta">
                                                     <option value="Activo">Activo</option>
-                                                   <!-- <option value="Inactivo">Inactivo</option> -->
+                                                    <!-- <option value="Inactivo">Inactivo</option> -->
                                                 </select>
                                             </div>
                                         </div>
 
                                         <div class="col-md-6 col-lg-6">
                                             <div>
-                                                <label for="email">COMPRO EN LA SEDE<span class="text-danger">*</span></label>
-                                                    <select class="form-control" required name="txtesta">
-                                                    <option value="Bodega1">Bodega1</option>
+                                                <label for="email">COMPRO EN LA SEDE<span
+                                                        class="text-danger">*</span></label>
+                                                <select class="form-control" required name="txtesta">
+                                                    <option value="Principal">Principal</option>
                                                     <option value="Medellin">Medellin</option>
                                                     <option value="Cucuta">Cucuta</option>
                                                     <option value="Unilago">Unilago</option>
                                                 </select>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <center>
-                                        <h4><b>Descripcion</b></h4> <hr>
-                                    </center>
-                                    <div class="row">
-                                        <div class="col-md-6 col-lg-6">
-                                                <label for="email">Responsable<span class="text-danger">*</span></label>
-                                                    <select class="form-control" required name="responsable">
-                                                    <option value="José Borda">José Borda</option>
-                                                    <option value="Medellin">Medellin</option>
-                                                    <option value="Cucuta">Cucuta</option>
-                                                    <option value="Unilago">Unilago</option>
-                                                </select>
                                         </div>
 
-                                            <div class="col-md-6 col-lg-6">
+                                        <div class="col-md-6 col-lg-6">
+                                            <label for="Comercial">Comercial<span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-control" required name="Comercial">
+                                                <option value="">----------Seleccione Comercial------------</option>
+                                                <?php
+                                                        // Consulta para obtener usuarios con rol 5 y 6
+                                                        $stmt_comerciales = $connect->prepare("SELECT id, nombre, rol FROM usuarios WHERE rol IN (4) AND estado = '1' ORDER BY nombre ASC");
+                                                        $stmt_comerciales->execute();
+                                                        while($row_resp = $stmt_comerciales->fetch(PDO::FETCH_ASSOC)) {
+                                                            $rol_texto = ($row_resp['rol'] == 4) ? 'Comercial' : 'Soporte Técnico';
+                                                            ?>
+                                                <option value="<?php echo htmlspecialchars($row_resp['nombre']); ?>">
+                                                    <?php echo htmlspecialchars($row_resp['nombre']); ?> -
+                                                    <?php echo $rol_texto; ?>
+                                                </option>
+                                                <?php
+                                                        }
+                                                    ?>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <center>
+                                        <h4><b>Descripcion</b></h4>
+                                        <hr>
+                                    </center>
+                                    <!-- Reemplaza esta sección en tu formulario original -->
+                                    <div class="row">
+                                        <div class="col-md-6 col-lg-6">
+                                            <label for="responsable">Responsable<span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-control" required name="responsable">
+                                                <option value="">----------Seleccione Responsable------------</option>
+                                                <?php
+                                                        // Consulta para obtener usuarios con rol 5 y 6
+                                                        $stmt_responsables = $connect->prepare("SELECT id, nombre, rol FROM usuarios WHERE rol IN (5, 6, 7) AND estado = '1' ORDER BY nombre ASC");
+                                                        $stmt_responsables->execute();
+                                                        while($row_resp = $stmt_responsables->fetch(PDO::FETCH_ASSOC)) {
+                                                            $rol_texto = ($row_resp['rol'] == 5) ? 'Técnico' : 'Soporte Técnico';
+                                                            ?>
+                                                <option value="<?php echo htmlspecialchars($row_resp['nombre']); ?>">
+                                                    <?php echo htmlspecialchars($row_resp['nombre']); ?> -
+                                                    <?php echo $rol_texto; ?>
+                                                </option>
+                                                <?php
+                                                        }
+                                                    ?>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6 col-lg-6">
                                             <div class="form-group">
-                                                <label for="email">Observacion del Tecnico<span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control"
-                                                    name="servtxt" required placeholder="">
+                                                <label for="servtxt">Observación del Técnico<span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="servtxt" required
+                                                    placeholder="Ingrese observación del servicio">
                                             </div>
                                         </div>
                                     </div>
+
 
                                     <center>
                                         <h4><b>Detalles</b> del servicio</h4>

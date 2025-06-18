@@ -177,7 +177,7 @@ ob_start();
                                             <?php  }   else {?>
 
                                             <td style="color: #3e5569;">
-                                                <span class="text-dark"><strong>Suscripcion inactiva</strong></span>
+                                                <span class="text-dark"><strong>Finalizado</strong></span>
                                             </td>
 
 
@@ -196,7 +196,7 @@ ob_start();
 
 
                                         while ($fechaEnvio == '0000-00-00') {
-                                               echo '<span class="label label-success">FREE</span>';
+                                               echo '<span class="label label-success">Pediente</span>';
                                                $fechaEnvio++;
                                             }
                                             if ($esta == 'Inactivo') {
@@ -206,7 +206,7 @@ ob_start();
                                                  echo $contador->format($differenceFormat);
                                              }else {
                                           
-                                           echo '<span class="text-danger"><strong>Renovar</strong></span>';
+                                           echo '<span class="text-success"><strong>Entregado</strong></span>';
 
 
                                         }
@@ -278,7 +278,7 @@ ob_start();
                         </div>
                     </div>
 
-                </div><a href="../servicio/nuevo.php" class="btn btn-success text-white">Nueva Categoria de Servicio Tecnico</a>
+                </div><a href="../plan/nuevo.php" class="btn btn-success text-white">Nueva Categoria de Servicio Tecnico</a>
 
             </div>
 

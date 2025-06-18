@@ -2,7 +2,7 @@
 ob_start();
      session_start();
     
-    if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4, 5, 6, 7])){
+    if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4, 5])){
     header('../error404.php');
   }
 ?>
@@ -129,7 +129,7 @@ ob_start();
                                 <?php
  require '../../backend/bd/ctconex.php'; 
  $id = $_GET['id'];
- $sentencia = $connect->prepare("SELECT servicio.meto,servicio.idservc, plan.idplan, plan.foto, plan.nompla, servicio.ini, servicio.fin, clientes.idclie, clientes.numid, clientes.nomcli, clientes.apecli, clientes.naci, clientes.celu, clientes.correo, servicio.estod, servicio.fere servicio.servtxt, servicio.foto, servicio.responsable FROM servicio INNER JOIN plan ON servicio.idplan = plan.idplan INNER JOIN clientes ON servicio.idclie = clientes.idclie  WHERE servicio.idservc= '$id';");
+ $sentencia = $connect->prepare("SELECT servicio.canc,servicio.meto,servicio.idservc, plan.prec,plan.idplan, plan.foto, plan.nompla, servicio.ini, servicio.fin, clientes.idclie, clientes.numid, clientes.nomcli, clientes.apecli, clientes.naci, clientes.celu, clientes.correo, clientes.dircli, clientes.ciucli, clientes.idsede, servicio.estod, servicio.fere, servicio.servtxt, servicio.servfoto, servicio.responsable FROM servicio INNER JOIN plan ON servicio.idplan = plan.idplan INNER JOIN clientes ON servicio.idclie = clientes.idclie WHERE servicio.idservc= '$id';");
  $sentencia->execute();
 
 $data =  array();
@@ -142,33 +142,13 @@ if($sentencia){
                                 <?php if(count($data)>0):?>
                                 <?php foreach($data as $f):?>
                                 <form enctype="multipart/form-data" method="POST" autocomplete="off">
+                                    
+                                    <!-- Información del Cliente -->
+                                    <center>
+                                        <h4><b>Información</b> del Cliente</h4>
+                                    </center>
+                                    <hr>
                                     <div class="row">
-                                        <div class="col-md-4 col-lg-4">
-                                            <div class="form-group">
-                                                <label for="email">Servicio Tecnico<span
-                                                        class="text-danger">*</span></label>
-                                                <select class="form-control" required name="txtpln">
-                                                    <option value="<?php echo  $f->idplan  ; ?>">
-                                                        <?php echo  $f->nompla  ; ?></option>
-                                                    <option value="">----------Seleccione------------</option>
-                                                    <?php
-           require '../../backend/bd/ctconex.php';
-            $stmt = $connect->prepare("SELECT * FROM plan where estp='Activo' order by idplan desc");
-            $stmt->execute();
-            while($row=$stmt->fetch(PDO::FETCH_ASSOC))
-                {
-                    extract($row);
-                    ?>
-                                                    <option value="<?php echo $idplan; ?>"><?php echo $nompla; ?>
-                                                    </option>
-                                                    <?php
-                }
-        ?>
-                                                    ?>
-                                                </select>
-                                            </div>
-                                        </div>
-
                                         <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
                                                 <label for="email">Clientes<span class="text-danger">*</span></label>
@@ -189,7 +169,108 @@ if($sentencia){
                                                     <?php
                 }
         ?>
-                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Celular<span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" value="<?php echo $f->celu; ?>" 
+                                                       name="txtcelu" readonly>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Correo<span class="text-danger">*</span></label>
+                                                <input type="email" class="form-control" value="<?php echo $f->correo; ?>" 
+                                                       name="txtcorreo" readonly>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Dirección<span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" value="<?php echo $f->dircli; ?>" 
+                                                       name="txtdircli" readonly>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Ciudad<span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" value="<?php echo $f->ciucli; ?>" 
+                                                       name="txtciucli" readonly>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">ID SEDE<span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" value="<?php echo $f->idsede; ?>" 
+                                                       name="txtidsede" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Descripción -->
+                                    <center>
+                                        <h4><b>Descripción</b></h4>
+                                    </center>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-md-12 col-lg-12">
+                                            <div class="form-group">
+                                                <label>Detalles del Técnico<span class="text-danger">*</span></label>
+                                                <textarea class="form-control" name="txtservtxt" rows="4" required><?php echo htmlspecialchars($f->servtxt); ?></textarea>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="email">Foto del estado de llegada</label>
+                                                <input type="file" class="form-control" name="txtservfoto" accept="image/*">
+                                                <?php if(!empty($f->servfoto)): ?>
+                                                    <small class="text-muted">Foto actual:</small>
+                                                    <br>
+                                                    <img src="../../backend/img/subidas/<?php echo $f->servfoto; ?>" height="100" class="mt-2">
+                                                <?php endif; ?>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Responsable<span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="txtresponsable" 
+                                                       value="<?php echo htmlspecialchars($f->responsable); ?>" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Detalles del Servicio -->
+                                    <center>
+                                        <h4>Detalles del <b>Servicio</b></h4>
+                                    </center>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Servicio Técnico<span
+                                                        class="text-danger">*</span></label>
+                                                <select class="form-control" required name="txtpln">
+                                                    <option value="<?php echo  $f->idplan  ; ?>">
+                                                        <?php echo  $f->nompla  ; ?></option>
+                                                    <option value="">----------Seleccione------------</option>
+                                                    <?php
+           require '../../backend/bd/ctconex.php';
+            $stmt = $connect->prepare("SELECT * FROM plan where estp='Activo' order by idplan desc");
+            $stmt->execute();
+            while($row=$stmt->fetch(PDO::FETCH_ASSOC))
+                {
+                    extract($row);
+                    ?>
+                                                    <option value="<?php echo $idplan; ?>"><?php echo $nompla; ?>
+                                                    </option>
+                                                    <?php
+                }
+        ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -204,6 +285,22 @@ if($sentencia){
                                                     <option value="">----------Seleccione------------</option>
                                                     <option value="Activo">Activo</option>
                                                     <option value="Inactivo">Inactivo</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Método de pago<span
+                                                        class="text-danger">*</span></label>
+                                                <select required class="form-control" name="txtmeto">
+                                                    <option value="<?php echo  $f->meto  ; ?>">
+                                                        <?php echo  $f->meto  ; ?></option>
+                                                    <option value="">----------Seleccione------------</option>
+                                                    <option value="Transferencia">Transferencia</option>
+                                                    <option value="Nequi">Nequi</option>
+                                                    <option value="Efectivo">Efectivo</option>
+                                                    <option value="Tarjeta">Tarjeta</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -224,7 +321,7 @@ if($sentencia){
 
                                         <div class="col-md-6 col-lg-6">
                                             <div class="form-group">
-                                                <label for="email">Fecha de vencimiento<span
+                                                <label for="email">Fecha de Entrega<span
                                                         class="text-danger">*</span></label>
                                                 <input type="date" id="fechad" value="<?php echo  $f->fin  ; ?>"
                                                     class="form-control" name="txtfin" required
@@ -233,23 +330,43 @@ if($sentencia){
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Información de Pago -->
                                     <div class="row">
-                                        <div class="col-md-12 col-lg-12">
+                                        <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
-                                                <label for="email">Metodo de pago<span
-                                                        class="text-danger">*</span></label>
-                                                <select required class="form-control" name="txtmeto">
-                                                    <option value="<?php echo  $f->meto  ; ?>">
-                                                        <?php echo  $f->meto  ; ?></option>
-                                                    <option value="">----------Seleccione------------</option>
-                                                    <option value="Transferencia">Transferencia</option>
-                                                    <option value="Nequi">Nequi</option>
-                                                    <option value="Efectivo">Efectivo</option>
-                                                    <option value="Tarjeta">Tarjeta</option>
-                                                </select>
+                                                <label for="email">Precio del servicio<span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="precio"
+                                                    onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
+                                                    value="<?php echo  $f->prec  ; ?>" name="txtprec" 
+                                                    placeholder="" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Canceló<span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="cancelo"
+                                                    onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
+                                                    value="<?php echo  $f->canc  ; ?>" name="txtcanc" 
+                                                    placeholder="" onkeyup="calcularDeuda()">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Debe<span class="text-danger">*</span></label>
+                                                <?php 
+                                      $number1 =  $f->prec;
+                                      $number2 =  $f->canc;
+                                      $result  = $number1  -  $number2;
+                                      ?>
+                                                <input type="text" value="<?php echo $result; ?>" class="form-control"
+                                                    id="debe" readonly name="txtdebe" placeholder="">
                                             </div>
                                         </div>
                                     </div>
+
                                     <hr>
                                     <div class="form-group">
                                         <div class="col-sm-12">
@@ -316,13 +433,23 @@ if($sentencia){
     // Asignar valor mínimo
     document.querySelector('#fechad').min = fechaMin;
     </script>
+
+    <script>
+    function calcularDeuda() {
+        // Obtener los valores ingresados por el usuario
+        var precio = parseFloat(document.getElementById('precio').value) || 0;
+        var cancelo = parseFloat(document.getElementById('cancelo').value) || 0;
+
+        // Calcular el resultado de la resta
+        var debe = precio - cancelo;
+
+        // Mostrar el resultado en el campo "debe"
+        document.getElementById('debe').value = debe;
+    }
+    </script>
 </body>
 
 </html>
-
-
-
-
 
 <?php }else{ 
     header('../error404.php');

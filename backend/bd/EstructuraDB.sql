@@ -128,10 +128,10 @@ INSERT INTO `clientes` (`idclie`, `numid`, `nomcli`, `apecli`, `naci`, `correo`,
 (2, '78901234', 'Ana Maria', 'Perez Gonzales', '1990-05-25', 'ana@example.com', '3157229001', 'Activo', '2024-03-14 04:30:20', 'Cra. 52 #14-51', 'Medellin, Antioquia', 'Unilago'),
 (3, '56789012', 'Pedro', 'Gomez', '1985-10-12', 'pedro@example.com', '3123456789', 'Inactivo', '2023-08-18 12:45:10', 'Cra. 53 #14-53', 'Cucuta', 'Medellin'),
 (4, '34567890', 'Laura', 'Lopez', '2000-03-08', 'laura@example.com', '3163993481', 'Inactivo', '2024-09-12 15:20:30', 'Cra. 54 #14-51', 'Cali', 'Cucuta'),
-(5, '90123456', 'Juan Guillermo Cuadrado', 'Martinez', '1978-12-03', 'carlos@example.com', '3136497264', 'Activo', '2023-10-25 18:10:15', 'Cra. 55 #14-51', 'Cartagena', 'Bodega1'),
-(6, '10232432', 'Joel Sebastian', 'Penagos Ortiz Trinidad de la Cruz', '0000-00-00', 'jsPenagos@gmail.com', '3058250638', 'Activo', '2024-03-21 06:22:37', 'Cra. 56 #14-51', 'Manizales', 'Bodega1'),
-(7, '12345678', 'Andrea Berlin', 'Crawford Díaz', '2018-11-20', 'ClienteGenerico@pcmarkett.com', '3058250623', 'Activo', '2025-05-30 16:33:24', 'Cra. 57 #14-51', 'Bogota', 'Bodega1'),
-(8, '12321343', 'Juan Andres', 'Burgos Alcala', '1997-07-03', 'jandresba@gmail.com', '381932101', 'Activo', '2025-06-10 16:27:06', 'Cra. 58 #14-51', 'Bogota', 'Bodega1'),
+(5, '90123456', 'Juan Guillermo Cuadrado', 'Martinez', '1978-12-03', 'carlos@example.com', '3136497264', 'Activo', '2023-10-25 18:10:15', 'Cra. 55 #14-51', 'Cartagena', 'Principal'),
+(6, '10232432', 'Joel Sebastian', 'Penagos Ortiz Trinidad de la Cruz', '0000-00-00', 'jsPenagos@gmail.com', '3058250638', 'Activo', '2024-03-21 06:22:37', 'Cra. 56 #14-51', 'Manizales', 'Principal'),
+(7, '12345678', 'Andrea Berlin', 'Crawford Díaz', '2018-11-20', 'ClienteGenerico@pcmarkett.com', '3058250623', 'Activo', '2025-05-30 16:33:24', 'Cra. 57 #14-51', 'Bogota', 'Principal'),
+(8, '12321343', 'Juan Andres', 'Burgos Alcala', '1997-07-03', 'jandresba@gmail.com', '381932101', 'Activo', '2025-06-10 16:27:06', 'Cra. 58 #14-51', 'Bogota', 'Principal'),
 (9, '13471293', 'Sergio', 'Lara Bello', '2002-01-14', 'segioqw@gmial.com', '3282262171', 'Activo', '2025-06-10 17:54:33', 'Cra. 53 #14-51', '', 'Unilago');
 
 -- --------------------------------------------------------

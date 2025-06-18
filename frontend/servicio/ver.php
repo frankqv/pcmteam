@@ -1,3 +1,4 @@
+<!-- Ver.php -->
 <?php  
 ob_start();
      session_start();
@@ -298,7 +299,7 @@ ob_start();
 
                                         <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
-                                                <label for="email">Fecha de vencimiento<span
+                                                <label for="email">Fecha de Entrega<span
                                                         class="text-danger">*</span></label>
                                                 <input type="date" id="fechad" value="<?php echo  $f->fin  ; ?>"
                                                     class="form-control" name="txtfin" disabled

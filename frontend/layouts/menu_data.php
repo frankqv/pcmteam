@@ -46,11 +46,6 @@ $menu = [
         'url' => $panelUrl,
         'icon' => 'dashboard'
     ],
-    [ 
-        'label' => 'Salir',
-        'url' => '../cuenta/salir.php',
-        'icon' => 'logout'
-    ]
 ];
 
 # Cliente 1
@@ -80,7 +75,7 @@ if (in_array($rol, [1,2 , 4, 5])) {
 
 # Cliente por Tienda 2
 // Agregar Clientes solo si el rol NO es 2, 3 o 4
-if (in_array($rol, [1,2 , 4, 5])) {
+if (in_array($rol, [2 , 4, 5])) {
     // Insertar Cliente después de Panel de usuario (posición 1)
     array_splice($menu, 2, 0, [[
             'label' => 'Mis Cleintes',
@@ -96,9 +91,6 @@ if (in_array($rol, [1,2 , 4, 5])) {
         ]
     ]]);
 }
-
-
-
 
 # Pedidos 3
 if (in_array($rol, [1, 4, 5, 6, 7])) {
@@ -117,7 +109,7 @@ if (in_array($rol, [1, 4, 5, 7])) {
         'label' => 'Mis Servicios',
         'icon' => 'dataset',
         'id' => 'planes',
-         'url' => '../plan/mostrar.php'
+         'url' => '../mis_servicios/mostrar.php'
     ]]);
 }
 
@@ -269,5 +261,12 @@ if (in_array($rol, [1, 3, 5])) {
 
 # Salir 19
 // Esta por default dentro del menu para todos los usuarios
+if (!in_array($rol, [0])) {
+    array_splice($menu, 20, 0, [[
+        'label' => 'Salir',
+        'url' => '../cuenta/salir.php',
+        'icon' => 'logout'
+    ]]);
+}
 
 ?>
