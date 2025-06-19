@@ -22,10 +22,7 @@ ob_start();
     <!----css3---->
     <link rel="stylesheet" href="../../backend/css/custom.css">
     <link rel="stylesheet" href="../../backend/css/loader.css">
-
-
     <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -33,11 +30,8 @@ ob_start();
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
 </head>
-
 <body>
-
     <div class="wrapper">
-
         <div class="body-overlay"></div>
         <!-- layouts nav.php  |  Sidebar -->
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
@@ -47,8 +41,6 @@ ob_start();
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
-
         <!-- Page Content  -->
         <div id="content">
             <div class='pre-loader'>
@@ -57,11 +49,9 @@ ob_start();
             <div class="top-navbar">
                 <nav class="navbar navbar-expand-lg">
                     <div class="container-fluid">
-
                         <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
-
                         <a class="navbar-brand" href="#"> Productos </a>
 
                         <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
@@ -82,7 +72,6 @@ ob_start();
                                     <a href="#" class="nav-link" data-toggle="dropdown">
 
                                         <img src="../../backend/img/reere.png">
-
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
@@ -100,8 +89,6 @@ ob_start();
                     </div>
                 </nav>
             </div>
-
-
             <div class="main-content">
 
                 <div class="row ">
@@ -120,22 +107,46 @@ ob_start();
                                 <h4 class="card-title">Productos recientes</h4>
                                 <p class="category">Informacion del producto reciente añadidos el dia de hoy</p>
                             </div>
-
                             <div class="card-content table-responsive">
-
                                 <?php
- require '../../backend/bd/ctconex.php'; 
- $id = $_GET['id'];
- $sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate WHERE producto.idprod= '$id';");
- $sentencia->execute();
+                                    require '../../backend/bd/ctconex.php'; 
+                                    $id = $_GET['id'];
+                                    $sentencia = $connect->prepare("SELECT 
+                                        producto.idprod, 
+                                        producto.codba, 
+                                        producto.nomprd, 
+                                        categoria.idcate, 
+                                        categoria.nomca, 
+                                        producto.precio, 
+                                        producto.stock, 
+                                        producto.foto, 
+                                        producto.venci, 
+                                        producto.esta, 
+                                        producto.fere, 
+                                        producto.serial, 
+                                        producto.marca, 
+                                        producto.ram, 
+                                        producto.disco, 
+                                        producto.prcpro, 
+                                        producto.pntpro, 
+                                        producto.tarpro, 
+                                        producto.grado 
+                                    FROM producto 
+                                    INNER JOIN categoria ON producto.idcate = categoria.idcate 
+                                    WHERE producto.idprod = ?");
+                                    // Ejecutar con parámetro preparado (más seguro)
+                                    $sentencia->execute([$id]);
+                                    ?>
+                                    <?php
+                                                                        
 
-$data =  array();
-if($sentencia){
-  while($r = $sentencia->fetchObject()){
-    $data[] = $r;
-  }
-}
-   ?>
+                                    $data =  array();
+                                    if($sentencia){
+                                    while($r = $sentencia->fetchObject()){
+                                        $data[] = $r;
+                                    }
+                                    }
+                                ?>
                                 <?php if(count($data)>0):?>
                                 <?php foreach($data as $f):?>
                                 <form enctype="multipart/form-data" method="POST" autocomplete="off">
@@ -145,7 +156,6 @@ if($sentencia){
                                             <div class="form-group">
                                                 <center><img src="../../backend/img/subidas/<?php echo  $f->foto  ; ?>"
                                                         height="150"></center>
-
                                             </div>
                                         </div>
                                     </div>
@@ -162,7 +172,6 @@ if($sentencia){
                                                 <input type="hidden" value="<?php echo  $f->idprod  ; ?>" name="txtidc">
                                             </div>
                                         </div>
-
                                         <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
                                                 <label for="email">Nombre del producto<span
@@ -170,10 +179,8 @@ if($sentencia){
                                                 <input type="text" class="form-control"
                                                     value="<?php echo  $f->nomprd  ; ?>" name="txtnampr" readonly
                                                     placeholder="Nombre del producto">
-
                                             </div>
                                         </div>
-
                                         <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
                                                 <label for="email">Categoria del producto<span
@@ -181,12 +188,25 @@ if($sentencia){
                                                 <select class="form-control" readonly name="txtcate">
                                                     <option value="<?php echo  $f->idcate  ; ?>">
                                                         <?php echo  $f->nomca  ; ?></option>
-
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
+                                    <center><h4><b>Configuracion del</b> Equipo</h4> <hr/></center>
+                                    <div class="row">
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Código del producto<span
+                                                        class="text-danger">*</span></label>
+                                                <input readonly type="text" maxlength="14"
+                                                    value="<?php echo  $f->codba  ; ?>" class="form-control"
+                                                    name="txtcode" placeholder="Código del producto">
+                                                <input type="hidden" value="<?php echo  $f->idprod  ; ?>" name="txtidc">
+                                            </div>
+                                        </div>
+                                    </div>
 
+                                    <!-- detalels Cemercial -->
                                     <div class="row">
                                         <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
@@ -199,7 +219,6 @@ if($sentencia){
 
                                             </div>
                                         </div>
-
                                         <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
                                                 <label for="email">Stock del producto<span
@@ -208,20 +227,18 @@ if($sentencia){
                                                     class="form-control"
                                                     onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
                                                     name="txtstc" readonly placeholder="Precio del producto">
-
                                             </div>
                                         </div>
-
-                                        <div class="col-md-4 col-lg-4">
+                                        <!--<div class="col-md-4 col-lg-4">
                                             <div class="form-group">
                                                 <label for="email">Vencimiento del producto<span
                                                         class="text-danger">*</span></label>
-                                                <input type="date" value="<?php echo  $f->venci  ; ?>"
+                                                <input type="date" value="php echo  $f->venci  ; ?>"
                                                     class="form-control" name="txtvenc" readonly
                                                     placeholder="Precio del producto">
 
                                             </div>
-                                        </div>
+                                        </div>-->
                                     </div>
 
                                     <div class="row">

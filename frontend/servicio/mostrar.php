@@ -278,7 +278,7 @@ ob_start();
                         </div>
                     </div>
 
-                </div><a href="../plan/nuevo.php" class="btn btn-success text-white">Nueva Categoria de Servicio Tecnico</a>
+                </div><a href="../plan/mostrar.php" class="btn btn-success text-white">Nueva Categoria de Servicio Tecnico</a>
 
             </div>
 

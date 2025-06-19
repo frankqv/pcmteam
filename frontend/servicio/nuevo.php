@@ -105,7 +105,6 @@ ob_start();
 
 
             <div class="main-content">
-
                 <div class="row ">
                     <div class="col-lg-12 col-md-12">
                         <nav aria-label="breadcrumb">
@@ -121,7 +120,6 @@ ob_start();
                                 <h4 class="card-title">Servicios recientes</h4>
                                 <p class="category">Nuevos servicios reciente añadidos el dia de hoy</p>
                             </div>
-
                             <div class="card-content table-responsive">
                                 <div class="alert alert-warning">
                                     <strong>Estimado usuario!</strong> Los campos remarcados con <span
@@ -130,7 +128,6 @@ ob_start();
                                     <strong>Al registrar un servicio en el apartado clientes debes añadir uno nuevo si
                                         es primera vez</strong>
                                 </div>
-
                                 <center>
                                     <h4><b>Informacion</b> del Cliente</h4>
                                 </center>
@@ -170,8 +167,6 @@ ob_start();
                                                 </select>
                                             </div>
                                         </div>
-
-
                                         <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
                                                 <label for="email">Estado del servicio<span
@@ -182,7 +177,6 @@ ob_start();
                                                 </select>
                                             </div>
                                         </div>
-
                                         <div class="col-md-6 col-lg-6">
                                             <div>
                                                 <label for="email">COMPRO EN LA SEDE<span
@@ -197,8 +191,7 @@ ob_start();
                                         </div>
 
                                         <div class="col-md-6 col-lg-6">
-                                            <label for="Comercial">Comercial<span
-                                                    class="text-danger">*</span></label>
+                                            <label for="Comercial">Comercial<span class="text-danger">*</span></label>
                                             <select class="form-control" required name="Comercial">
                                                 <option value="">----------Seleccione Comercial------------</option>
                                                 <?php
@@ -255,9 +248,17 @@ ob_start();
                                                     placeholder="Ingrese observación del servicio">
                                             </div>
                                         </div>
+                                        <div class="col-md-12 col-lg-12">
+                                            <div class="form-group">
+                                                <label for="email">Foto del servicio<span
+                                                        class="text-danger">*</span></label>
+                                                <input type="file" id="imagen" name="foto" onchange="readURL(this);"
+                                                    data-toggle="tooltip" required>
+                                                <img id="blah" src="../../backend/img/noimage.png" width="100"
+                                                    heigth="100" alt="your image" style="max-width:90px;" />
+                                            </div>
+                                        </div>
                                     </div>
-
-
                                     <center>
                                         <h4><b>Detalles</b> del servicio</h4>
                                     </center>
@@ -272,8 +273,6 @@ ob_start();
                                             </div>
                                         </div>
                                     </div>
-
-
                                     <div class="row">
                                         <div class="col-md-6 col-lg-6">
                                             <div class="form-group">
@@ -297,7 +296,6 @@ ob_start();
                                             </div>
                                         </div>
                                     </div>
-
                                     <hr>
                                     <div class="form-group">
                                         <div class="col-sm-12">
@@ -308,13 +306,15 @@ ob_start();
                                     </div>
                                 </form>
                             </div>
-
+                                          <a href="../plan/mostrar.php" class="btn btn-success text-white">Nueva Categoria de Servicio Tecnico</a>
                         </div>
                     </div>
-
                 </div>
 
-            </div>
+            </div> <!-- main -->
+
+
+            <!-- Contenido -->
 
         </div>
     </div>

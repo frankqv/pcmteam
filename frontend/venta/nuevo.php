@@ -190,7 +190,7 @@ ob_start();
                             <div class="card-content table-responsive">
                                 <?php 
 
-$sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate order BY codba DESC;");
+$sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere, producto.serial, producto.marca, producto.ram, producto.disco, producto.prcpro, producto.pntpro, producto.tarpro, producto.grado FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate order BY codba DESC;");
  $sentencia->execute();
 $data =  array();
 if($sentencia){
@@ -223,7 +223,7 @@ if($sentencia){
                                                 
                                                     echo '<td><span class="badge badge-danger">stock vacio</span></td>';
                                                 }elseif ($d->stock <= 1) {
-                                                    echo '<td><span class="badge badge-warning">Última unidade</span></td>';
+                                                    echo '<td><span class="badge badge-warning">Última Unidad</span></td>';
                                                 
                                                 }else {
                                                     echo '<td><span class="badge badge-success">' . $d->stock . '</span></td>';

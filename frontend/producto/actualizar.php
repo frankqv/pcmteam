@@ -127,18 +127,18 @@ ob_start();
                                         class="text-danger">*</span> son necesarios.
                                 </div>
                                 <?php
- require '../../backend/bd/ctconex.php'; 
- $id = $_GET['id'];
- $sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate WHERE producto.idprod= '$id';");
- $sentencia->execute();
+                                    require '../../backend/bd/ctconex.php'; 
+                                    $id = $_GET['id'];
+                                    $sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere, producto.serial, producto.marca, producto.ram, producto.disco, producto.prcpro, producto.pntpro, producto.tarpro, producto.grado FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate WHERE producto.idprod= '$id';");
+                                    $sentencia->execute();
 
-$data =  array();
-if($sentencia){
-  while($r = $sentencia->fetchObject()){
-    $data[] = $r;
-  }
-}
-   ?>
+                                    $data =  array();
+                                    if($sentencia){
+                                    while($r = $sentencia->fetchObject()){
+                                        $data[] = $r;
+                                    }
+                                    }
+                                ?>
                                 <?php if(count($data)>0):?>
                                 <?php foreach($data as $f):?>
                                 <form enctype="multipart/form-data" method="POST" autocomplete="off">
@@ -175,19 +175,19 @@ if($sentencia){
                                                         <?php echo  $f->nomca  ; ?></option>
                                                     <option value="">----------Seleccione------------</option>
                                                     <?php
-           require '../../backend/bd/ctconex.php';
-            $stmt = $connect->prepare("SELECT * FROM categoria where estado='Activo' order by categoria.idcate desc");
-            $stmt->execute();
-            while($row=$stmt->fetch(PDO::FETCH_ASSOC))
-                {
-                    extract($row);
-                    ?>
-                                                    <option value="<?php echo $idcate; ?>"><?php echo $nomca; ?>
-                                                    </option>
-                                                    <?php
-                }
-        ?>
-                                                    ?>
+                                                        require '../../backend/bd/ctconex.php';
+                                                            $stmt = $connect->prepare("SELECT * FROM categoria where estado='Activo' order by categoria.idcate desc");
+                                                            $stmt->execute();
+                                                            while($row=$stmt->fetch(PDO::FETCH_ASSOC))
+                                                                {
+                                                                    extract($row);
+                                                                    ?>
+                                                                                                    <option value="<?php echo $idcate; ?>"><?php echo $nomca; ?>
+                                                                                                    </option>
+                                                                                                    <?php
+                                                                }
+                                                        ?>
+                                                
                                                 </select>
                                             </div>
                                         </div>

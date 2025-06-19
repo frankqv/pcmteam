@@ -130,28 +130,28 @@ ob_start();
                                     <div class="row">
                                         <div class="col-md-4 col-lg-4">
                                             <?php 
-$permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                                                $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-function generate_string($input, $strength = 16) {
+                                                function generate_string($input, $strength = 16) {
 
-    $input_length = strlen($input);
+                                                    $input_length = strlen($input);
 
-    $random_string = '';
+                                                    $random_string = '';
 
-    for($i = 0; $i < $strength; $i++) {
+                                                    for($i = 0; $i < $strength; $i++) {
 
-        $random_character = $input[mt_rand(0, $input_length - 1)];
+                                                        $random_character = $input[mt_rand(0, $input_length - 1)];
 
-        $random_string .= $random_character;
+                                                        $random_string .= $random_character;
 
-    }
+                                                    }
 
-    return $random_string;
+                                                    return $random_string;
 
-}
+                                                }
 
-             ?>
-                                            <div class="form-group">
+                                            ?>
+                                                                                            <div class="form-group">
                                                 <label for="email">Código del producto<span
                                                         class="text-danger">*</span></label>
                                                 <input type="text" maxlength="14"

@@ -120,7 +120,7 @@ ob_start();
                             <div class="card-content table-responsive">
                                 <?php
                                require '../../backend/bd/ctconex.php'; 
- $sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate order BY codba DESC;");
+ $sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere, producto.serial, producto.marca, producto.ram, producto.disco, producto.prcpro, producto.pntpro, producto.tarpro, producto.grado FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate order BY codba DESC;");
  $sentencia->execute();
 
 $data =  array();
@@ -135,12 +135,12 @@ if($sentencia){
                                     <thead class="text-primary">
                                         <tr>
                                             <th>Foto</th>
-                                            <th>Nombre</th>
                                             <th>Categoria</th>
+                                            <th>Nombre</th>
                                             <th>Stock</th>
-                                            <th>Precio</th>
-                                            <th>Vencimiento</th>
-                                            <th>Estado</th>
+                                            <th>Precio al Mayor</th>
+                                           <!-- <th>Vencimiento</th> -->
+                                            <th>Dental</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
@@ -152,49 +152,50 @@ if($sentencia){
                                                 <img src="../../backend/img/subidas/<?php echo $g->foto ?>" width='50'
                                                     height='50'>
                                             </td>
-                                            <td><?php echo  $g->nomprd; ?></td>
                                             <td><?php echo  $g->nomca; ?></td>
+                                            <td><?php echo  $g->nomprd; ?></td>
                                             <?php 
 
-if ($g->stock <= 0) {
-  
-    echo '<td><span class="badge badge-danger">stock vacio</span></td>';
-}elseif ($g->stock <= 1) {
-    echo '<td><span class="badge badge-warning">Última unidade</span></td>';
-   
-}else {
-    echo '<td><span class="badge badge-success">' . $g->stock . '</span></td>';
-}
-                                                 ?>
+                                                if ($g->stock <= 0) {
+                                                
+                                                    echo '<td><span class="badge badge-danger">stock vacio</span></td>';
+                                                }elseif ($g->stock <= 1) {
+                                                    echo '<td><span class="badge badge-warning">Última Unidad</span></td>';
+                                                
+                                                }else {
+                                                    echo '<td><span class="badge badge-success">' . $g->stock . '</span></td>';
+                                                }
+                                            ?>
 
 
                                             <td><?php echo  $g->precio; ?></td>
-                                            <?php
-date_default_timezone_set('America/Lima');
-$datetime1 = date_create(date('Y-m-d'));    
-$datetime2 = date_create($g->venci);   
-$dias= $diff = $datetime1->diff($datetime2); 
+                                            <td><?php echo $g->precio * 1.3; ?></td>
+                                            <?php /*  
+                                                date_default_timezone_set('America/Lima');
+                                                $datetime1 = date_create(date('Y-m-d'));    
+                                                $datetime2 = date_create($g->venci);   
+                                                $dias= $diff = $datetime1->diff($datetime2); 
 
-$dias = $datetime1->diff($datetime2)->format('%r%a'); 
-// Si la fecha final es igual a la fecha actual o anterior <== MUESTRA MENSAJE SEGUN PROGRAMACION
+                                                $dias = $datetime1->diff($datetime2)->format('%r%a'); 
+                                                // Si la fecha final es igual a la fecha actual o anterior <== MUESTRA MENSAJE SEGUN PROGRAMACION
 
-if ($dias <= 0) {
+                                                if ($dias <= 0) {
 
-    echo '<td><span class="badge badge-danger">Vencido</span></td>';
-} elseif ($dias <= 3) {
+                                                    echo '<td><span class="badge badge-danger">Vencido</span></td>';
+                                                } elseif ($dias <= 3) {
 
-    echo '<td><span class="badge badge-warning">Está a ' . $dias . 'días de vencer</span></td>';
-} else {
-    echo '<td><span class="badge badge-success">' . $g->venci . '</span></td>';
-}
-?>
+                                                    echo '<td><span class="badge badge-warning">Está a ' . $dias . 'días de vencer</span></td>';
+                                                } else {
+                                                    echo '<td><span class="badge badge-success">' . $g->venci . '</span></td>';
+                                                }
+                                            ?>
 
-                                            <td><?php    if($g->esta =='Activo')  { ?>
+                                                <td><?php  if($g->esta =='Activo')  { ?>
 
                                                 <span class="badge badge-success">Activo</span>
                                                 <?php  }   else {?>
                                                 <span class="badge badge-danger">Inactivo</span>
-                                                <?php  } ?>
+                                                <?php  } */?>
                                             </td>
                                             <td>
                                                 <?php    if($g->esta =='Activo')  { ?>
