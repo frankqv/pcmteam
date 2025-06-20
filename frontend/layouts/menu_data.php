@@ -75,7 +75,7 @@ if (in_array($rol, [1,2 , 4, 5])) {
 
 # Cliente por Tienda 2
 // Agregar Clientes solo si el rol NO es 2, 3 o 4
-if (in_array($rol, [2 , 4, 5])) {
+if (in_array($rol, [1,2 , 4, 5])) {
     // Insertar Cliente después de Panel de usuario (posición 1)
     array_splice($menu, 2, 0, [[
             'label' => 'Mis Cleintes',
@@ -103,7 +103,7 @@ if (in_array($rol, [1, 4, 5, 6, 7])) {
 }
 
 # Servicios 4
-if (in_array($rol, [1, 4, 5, 7])) {
+if (in_array($rol, [ 4, 5, 7])) {
     // Insertar Servicios (posición 4)
     array_splice($menu, 4, 0, [[
         'label' => 'Mis Servicios',
