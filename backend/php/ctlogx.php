@@ -39,15 +39,18 @@ if (isset($_POST['ctglog'])) {
               header('Location: cliente/escritorio.php'); //CLIENTE
               exit;
             case 3:
+              header('location: contable/escritorio.php'); //Contable
+              break;
+            case 4:
               header('Location: comercial/escritorio.php'); //COMERCIAL
               exit;
-            case 4:
-              header('Location: jtecnico/escritorio.php'); //JTECNICO
-              exit;
             case 5:
-              header('Location: tecnico/escritorio.php'); //TECNICO
+              header('Location: jtecnico/escritorio.php'); //JEFE TECNICO
               exit;
             case 6:
+              header(header: 'Location: tecnico/escritorio.php'); //TECNICO
+              exit;
+            case 7:
               header('Location: bodega/escritorio.php'); //BODEGA
               exit;
             default:

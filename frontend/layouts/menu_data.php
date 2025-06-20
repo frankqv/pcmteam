@@ -180,7 +180,7 @@ if (in_array($rol, [1, 4, 5])) {
 }
 
 # Laboratorio 11
-if (in_array($rol, [1, 4, 5, 6, 7])) {
+if (in_array($rol, [1, 4, 5, 6])) {
     array_splice($menu, 11, 0, [[
         'label' => 'Laboratorio Técnico',
         'url' => '../laboratorio/mostrar.php',

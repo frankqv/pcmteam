@@ -130,18 +130,18 @@ ob_start();
                             <div class="card-content table-responsive">
 
                                 <?php
- require '../../backend/bd/ctconex.php'; 
- $id = $_SESSION['id'];
- $sentencia = $connect->prepare("SELECT * FROM usuarios  WHERE usuarios.id= '$id';");
- $sentencia->execute();
+                                    require '../../backend/bd/ctconex.php'; 
+                                    $id = $_SESSION['id'];
+                                    $sentencia = $connect->prepare("SELECT * FROM usuarios  WHERE usuarios.id= '$id';");
+                                    $sentencia->execute();
 
-$data =  array();
-if($sentencia){
-  while($r = $sentencia->fetchObject()){
-    $data[] = $r;
-  }
-}
-   ?>
+                                    $data =  array();
+                                    if($sentencia){
+                                    while($r = $sentencia->fetchObject()){
+                                        $data[] = $r;
+                                    }
+                                    }
+                                ?>
                                 <?php if(count($data)>0):?>
                                 <?php foreach($data as $d):?>
                                 <form enctype="multipart/form-data" method="POST" autocomplete="off">
@@ -192,27 +192,32 @@ if($sentencia){
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row">
                                         <div class="col-md-12 col-lg-12">
                                             <div class="form-group">
                                                 <label for="email">Cargo<span class="text-danger">*</span></label>
-
-
                                                 <select class="form-control" required name="txtcarr">
-                                                    <?php    if($d->rol =='1')  { ?>
-                                                    <option value="<?php echo  $d->rol; ?>">administrador</option>
+                                                    <?php
+                                                    $roles = [
+                                                        1 => "Administrador",
+                                                        2 => "Cliente",
+                                                        3 => "Contable",
+                                                        4 => "Comercial",
+                                                        5 => "Jefe Tecnico",
+                                                        6 => "Tecnico",
+                                                        7 => "Bodega"
+                                                    ];
 
-                                                    <?php  }   else {?>
-
-                                                    <?php  } ?>
-
+                                                    if (isset($d->rol) && isset($roles[$d->rol])) {
+                                                        echo '<option value="' . $d->rol . '">' . $roles[$d->rol] . '</option>';
+                                                    } else {
+                                                        echo '<option value="">Rol desconocido</option>';
+                                                    }
+                                                    ?>
                                                 </select>
-
                                             </div>
                                         </div>
                                     </div>
-
                                     <hr>
                                     <div class="form-group">
                                         <div class="col-sm-12">
