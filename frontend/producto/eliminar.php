@@ -7,7 +7,6 @@ ob_start();
   }
 ?>
 <?php if(isset($_SESSION['id'])) { ?>
-
 <!doctype html>
 <html lang="es">
 
@@ -22,10 +21,7 @@ ob_start();
     <!----css3---->
     <link rel="stylesheet" href="../../backend/css/custom.css">
     <link rel="stylesheet" href="../../backend/css/loader.css">
-
-
     <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -35,9 +31,7 @@ ob_start();
 </head>
 
 <body>
-
     <div class="wrapper">
-
         <div class="body-overlay"></div>
         <!-- layouts nav.php  |  Sidebar -->
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
@@ -47,8 +41,6 @@ ob_start();
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
-
         <!-- Page Content  -->
         <div id="content">
             <div class='pre-loader'>
@@ -57,19 +49,15 @@ ob_start();
             <div class="top-navbar">
                 <nav class="navbar navbar-expand-lg">
                     <div class="container-fluid">
-
                         <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
-
                         <a class="navbar-brand" href="#"> Productos </a>
-
                         <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
                             data-toggle="collapse" data-target="#navbarSupportedContent"
                             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="material-icons">more_vert</span>
                         </button>
-
                         <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
                             id="navbarSupportedContent">
                             <ul class="nav navbar-nav ml-auto">
@@ -80,9 +68,7 @@ ob_start();
                                 </li>
                                 <li class="dropdown nav-item active">
                                     <a href="#" class="nav-link" data-toggle="dropdown">
-
                                         <img src="../../backend/img/reere.png">
-
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
@@ -91,22 +77,16 @@ ob_start();
                                         <li>
                                             <a href="../cuenta/salir.php">Salir</a>
                                         </li>
-
                                     </ul>
                                 </li>
-
                             </ul>
                         </div>
                     </div>
                 </nav>
             </div>
-
-
             <div class="main-content">
-
                 <div class="row ">
                     <div class="col-lg-12 col-md-12">
-
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="../administrador/escritorio.php">Panel
@@ -120,28 +100,25 @@ ob_start();
                                 <h4 class="card-title">¿Estás seguro de que quieres desactivarlo?</h4>
                                 <p class="category">Desactivar producto reciente añadidos el dia de hoy</p>
                             </div>
-
                             <div class="card-content table-responsive">
-
                                 <?php
- require '../../backend/bd/ctconex.php'; 
- $id = $_GET['id'];
- $sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere, producto.serial, producto.marca, producto.ram, producto.disco, producto.prcpro, producto.pntpro, producto.tarpro, producto.grado FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate WHERE producto.idprod= '$id';");
- $sentencia->execute();
+                                    require '../../backend/bd/ctconex.php'; 
+                                    $id = $_GET['id'];
+                                    $sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere, producto.serial, producto.marca, producto.ram, producto.disco, producto.prcpro, producto.pntpro, producto.tarpro, producto.grado FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate WHERE producto.idprod= '$id';");
+                                    $sentencia->execute();
 
-$data =  array();
-if($sentencia){
-  while($r = $sentencia->fetchObject()){
-    $data[] = $r;
-  }
-}
-   ?>
+                                    $data =  array();
+                                    if($sentencia){
+                                    while($r = $sentencia->fetchObject()){
+                                        $data[] = $r;
+                                    }
+                                    }
+                                    ?>
                                 <?php if(count($data)>0):?>
                                 <?php foreach($data as $f):?>
                                 <form enctype="multipart/form-data" method="POST" autocomplete="off">
                                     <div class="row">
                                         <div class="col-md-6 col-lg-6">
-
                                             <div class="form-group">
                                                 <label for="email">Código del producto<span
                                                         class="text-danger">*</span></label>
@@ -151,7 +128,6 @@ if($sentencia){
                                                 <input type="hidden" value="<?php echo  $f->idprod  ; ?>" name="txtidc">
                                             </div>
                                         </div>
-
                                         <div class="col-md-6 col-lg-6">
                                             <div class="form-group">
                                                 <label for="email">Nombre del producto<span
@@ -159,12 +135,9 @@ if($sentencia){
                                                 <input type="text" class="form-control"
                                                     value="<?php echo  $f->nomprd  ; ?>" name="txtnampr" readonly
                                                     placeholder="Nombre del producto">
-
                                             </div>
                                         </div>
                                     </div>
-
-
                                     <hr>
                                     <div class="form-group">
                                         <div class="col-sm-12">
@@ -179,19 +152,14 @@ if($sentencia){
                                 <div class="alert alert-warning" role="alert">
                                     No se encontró ningún dato!
                                 </div>
-
                                 <?php endif; ?>
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
     </div>
-
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -200,10 +168,7 @@ if($sentencia){
     <script src="../../backend/js/bootstrap.min.js"></script>
     <script src="../../backend/js/jquery-3.3.1.min.js"></script>
     <script src="../../backend/js/sweetalert.js"></script>
-    <?php
-    include_once '../../backend/php/st_dltprodc.php'
-?>
-
+    <?php include_once '../../backend/php/st_dltprodc.php'?>
     <script type="text/javascript">
     $(document).ready(function() {
         $('#sidebarCollapse').on('click', function() {
@@ -214,20 +179,12 @@ if($sentencia){
         $('.more-button,.body-overlay').on('click', function() {
             $('#sidebar,.body-overlay').toggleClass('show-nav');
         });
-
     });
     </script>
     <script src="../../backend/js/loader.js"></script>
-
-
 </body>
 
 </html>
-
-
-
-
-
 <?php }else{ 
     header('Location: ../error404.php');
  } ?>

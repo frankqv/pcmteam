@@ -1,16 +1,18 @@
+<!-- frontend/producto/informacion.php -->
 <?php
 ob_start();
      session_start();
+// Activa el reporte de errores temporalmente para debug:
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
     
     if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4, 5, 6, 7])){
     header('location: ../error404.php');
   }
 ?>
 <?php if(isset($_SESSION['id'])) { ?>
-
 <!doctype html>
 <html lang="es">
-
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -53,13 +55,11 @@ ob_start();
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
                         <a class="navbar-brand" href="#"> Productos </a>
-
                         <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
                             data-toggle="collapse" data-target="#navbarSupportedContent"
                             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="material-icons">more_vert</span>
                         </button>
-
                         <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
                             id="navbarSupportedContent">
                             <ul class="nav navbar-nav ml-auto">
@@ -70,7 +70,6 @@ ob_start();
                                 </li>
                                 <li class="dropdown nav-item active">
                                     <a href="#" class="nav-link" data-toggle="dropdown">
-
                                         <img src="../../backend/img/reere.png">
                                     </a>
                                     <ul class="dropdown-menu">
@@ -80,20 +79,16 @@ ob_start();
                                         <li>
                                             <a href="../cuenta/salir.php">Salir</a>
                                         </li>
-
                                     </ul>
                                 </li>
-
                             </ul>
                         </div>
                     </div>
                 </nav>
             </div>
             <div class="main-content">
-
                 <div class="row ">
                     <div class="col-lg-12 col-md-12">
-
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="../administrador/escritorio.php">Panel
@@ -109,8 +104,12 @@ ob_start();
                             </div>
                             <div class="card-content table-responsive">
                                 <?php
-                                    require '../../backend/bd/ctconex.php'; 
-                                    $id = $_GET['id'];
+                                    require '../../backend/bd/ctconex.php'; // Usa parámetros preparados para evitar inyección SQL
+                                    $id = isset($_GET['id']) && is_numeric($_GET['id']) ? (int)$_GET['id'] : 0;
+                                    if ($id <= 0) {
+                                        header('Location: ../error404.php');
+                                        exit;
+                                    }
                                     $sentencia = $connect->prepare("SELECT 
                                         producto.idprod, 
                                         producto.codba, 
@@ -137,9 +136,7 @@ ob_start();
                                     // Ejecutar con parámetro preparado (más seguro)
                                     $sentencia->execute([$id]);
                                     ?>
-                                    <?php
-                                                                        
-
+                                <?php  
                                     $data =  array();
                                     if($sentencia){
                                     while($r = $sentencia->fetchObject()){
@@ -162,7 +159,6 @@ ob_start();
                                     <br>
                                     <div class="row">
                                         <div class="col-md-4 col-lg-4">
-
                                             <div class="form-group">
                                                 <label for="email">Código del producto<span
                                                         class="text-danger">*</span></label>
@@ -191,21 +187,96 @@ ob_start();
                                                 </select>
                                             </div>
                                         </div>
+                                        <!-- nuevo -->
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Referencia<span class="text-danger">*</span></label>
+                                                <select class="form-control" readonly name="txtcate">
+                                                    <option value="<?php echo  $f->idcate  ; ?>">
+                                                        <?php echo  $f->nomca  ; ?></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Marca<span class="text-danger">*</span></label>
+                                                <select class="form-control" readonly name="txtcate">
+                                                    <option value="<?php echo  $f->idcate  ; ?>">
+                                                        <?php echo  $f->marca  ; ?></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">GRADO
+                                                    <span class="text-danger">*</span></label>
+                                                <select class="form-control" readonly name="txtcate">
+                                                    <option value="<?php echo  $f->idcate  ; ?>">
+                                                        <?php echo  $f->grado  ; ?></option>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <center><h4><b>Configuracion del</b> Equipo</h4> <hr/></center>
+                                    <center>
+                                        <h4><b>Configuracion del</b> Equipo</h4>
+                                        <hr />
+                                    </center>
                                     <div class="row">
                                         <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
-                                                <label for="email">Código del producto<span
+                                                <label for="email">Procesador<span
                                                         class="text-danger">*</span></label>
                                                 <input readonly type="text" maxlength="14"
-                                                    value="<?php echo  $f->codba  ; ?>" class="form-control"
-                                                    name="txtcode" placeholder="Código del producto">
+                                                    value="<?php echo  $f->prcpro  ; ?>" class="form-control"
+                                                    name="txtcode" placeholder="Procesador del equipo">
+                                                <input type="hidden" value="<?php echo  $f->idprod  ; ?>" name="txtidc">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">RAM<span
+                                                        class="text-danger">*</span></label>
+                                                <input readonly type="text" maxlength="14"
+                                                    value="<?php echo  $f->ram  ; ?>" class="form-control"
+                                                    name="txtcode" placeholder="RAM">
+                                                <input type="hidden" value="<?php echo  $f->idprod  ; ?>" name="txtidc">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Disco<span
+                                                        class="text-danger">*</span></label>
+                                                <input readonly type="text" maxlength="14"
+                                                    value="<?php echo  $f->disco  ; ?>" class="form-control"
+                                                    name="txtcode" placeholder="Disco">
+                                                <input type="hidden" value="<?php echo  $f->idprod  ; ?>" name="txtidc">
+                                            </div>
+                                        </div>
+                                        <div class='col-md-4 col-lg-4'>
+                                            <div class='form-group'>
+                                                <label for='email'>Dimenciones<span
+                                                        class='text-danger'>*</span></label>
+                                                <input readonly type='text' maxlength='14'
+                                                    value='<?php echo  $f->pntpro  ; ?>' class='form-control'
+                                                    name='txtcode' placeholder='Dimenciones'>
+                                                <input type='hidden' value='<?php echo  $f->idprod  ; ?>' name='txtidc'>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-lg-4">
+                                            <div class="form-group">
+                                                <label for="email">Tarjeta Grafica<span
+                                                        class="text-danger">*</span></label>
+                                                <input readonly type="text" maxlength="14"
+                                                    value="<?php echo  $f->tarpro  ; ?>" class="form-control"
+                                                    name="txtcode" placeholder="Integrada">
                                                 <input type="hidden" value="<?php echo  $f->idprod  ; ?>" name="txtidc">
                                             </div>
                                         </div>
                                     </div>
-
+                                    <center>
+                                        <h4><b>Detalles</b> Comercial</h4>
+                                        <hr />
+                                    </center>
                                     <!-- detalels Cemercial -->
                                     <div class="row">
                                         <div class="col-md-4 col-lg-4">
@@ -216,7 +287,6 @@ ob_start();
                                                     class="form-control"
                                                     onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
                                                     name="txtpre" readonly placeholder="Precio del producto">
-
                                             </div>
                                         </div>
                                         <div class="col-md-4 col-lg-4">
@@ -236,29 +306,22 @@ ob_start();
                                                 <input type="date" value="php echo  $f->venci  ; ?>"
                                                     class="form-control" name="txtvenc" readonly
                                                     placeholder="Precio del producto">
-
                                             </div>
                                         </div>-->
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-12 col-lg-12">
+                                        <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
                                                 <label for="email">Estado del producto<span
                                                         class="text-danger">*</span></label>
                                                 <select class="form-control" readonly name="txtesta">
                                                     <option value="<?php echo  $f->esta  ; ?>">
                                                         <?php echo  $f->esta  ; ?></option>
-
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
-
                                     <hr>
                                     <div class="form-group">
                                         <div class="col-sm-12">
-
                                             <a class="btn btn-danger text-white"
                                                 href="../producto/mostrar.php">Cancelar</a>
                                         </div>
@@ -269,20 +332,14 @@ ob_start();
                                 <div class="alert alert-warning" role="alert">
                                     No se encontró ningún dato!
                                 </div>
-
                                 <?php endif; ?>
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
     </div>
-
-
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="../../backend/js/jquery-3.3.1.slim.min.js"></script>
@@ -290,32 +347,20 @@ ob_start();
     <script src="../../backend/js/bootstrap.min.js"></script>
     <script src="../../backend/js/jquery-3.3.1.min.js"></script>
     <script src="../../backend/js/sweetalert.js"></script>
-
-
     <script type="text/javascript">
     $(document).ready(function() {
         $('#sidebarCollapse').on('click', function() {
             $('#sidebar').toggleClass('active');
             $('#content').toggleClass('active');
         });
-
         $('.more-button,.body-overlay').on('click', function() {
             $('#sidebar,.body-overlay').toggleClass('show-nav');
         });
-
     });
     </script>
     <script src="../../backend/js/loader.js"></script>
-
-
 </body>
-
 </html>
-
-
-
-
-
 <?php }else{ 
     header('Location: ../error404.php');
  } ?>
