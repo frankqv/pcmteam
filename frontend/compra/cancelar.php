@@ -122,18 +122,18 @@ ob_start();
 
                             <div class="card-content table-responsive">
                                 <?php
- require '../../backend/bd/ctconex.php'; 
- $id = $_GET['id'];
- $sentencia = $connect->prepare("SELECT compra.idcomp, compra.user_id, compra.method, compra.total_products, compra.total_price, compra.placed_on, compra.payment_status, compra.tipc FROM compra WHERE compra.idcomp= '$id';");
- $sentencia->execute();
+                                    require '../../backend/bd/ctconex.php'; 
+                                    $id = $_GET['id'];
+                                    $sentencia = $connect->prepare("SELECT compra.idcomp, compra.user_id, compra.method, compra.total_products, compra.total_price, compra.placed_on, compra.payment_status, compra.tipc FROM compra WHERE compra.idcomp= '$id';");
+                                    $sentencia->execute();
 
-$data =  array();
-if($sentencia){
-  while($r = $sentencia->fetchObject()){
-    $data[] = $r;
-  }
-}
-   ?>
+                                    $data =  array();
+                                    if($sentencia){
+                                    while($r = $sentencia->fetchObject()){
+                                        $data[] = $r;
+                                    }
+                                    }
+                                ?>
                                 <?php if(count($data)>0):?>
                                 <?php foreach($data as $f):?>
                                 <form enctype="multipart/form-data" method="POST" autocomplete="off">

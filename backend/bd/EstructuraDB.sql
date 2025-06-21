@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-06-2025 a las 16:32:17
+-- Tiempo de generación: 21-06-2025 a las 19:01:53
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -67,7 +67,7 @@ CREATE TABLE `cart_compra` (
 --
 
 INSERT INTO `cart_compra` (`idcarco`, `user_id`, `idprod`, `name`, `price`, `quantity`) VALUES
-(0, 1, 5, 'Computador ASUS', 12500, 1),
+(0, 1, 3, 'Computador 117', 15000, 1),
 (2, 3, 3, 'LTE MEMORIAS', 25, 2),
 (3, 4, 4, 'CAJA DE SSD', 13, 4),
 (4, 5, 5, 'LTE PORTAILES', 200000, 1),
@@ -129,7 +129,7 @@ INSERT INTO `clientes` (`idclie`, `numid`, `nomcli`, `apecli`, `naci`, `correo`,
 (3, '56789012', 'Pedro', 'Gomez', '1985-10-12', 'pedro@example.com', '3123456789', 'Inactivo', '2023-08-18 12:45:10', 'Cra. 53 #14-53', 'Cucuta', 'Medellin'),
 (4, '34567890', 'Laura', 'Lopez', '2000-03-08', 'laura@example.com', '3163993481', 'Inactivo', '2024-09-12 15:20:30', 'Cra. 54 #14-51', 'Cali', 'Cucuta'),
 (5, '90123456', 'Juan Guillermo Cuadrado', 'Martinez', '1978-12-03', 'carlos@example.com', '3136497264', 'Activo', '2023-10-25 18:10:15', 'Cra. 55 #14-51', 'Cartagena', 'Principal'),
-(6, '10232432', 'Joel Sebastian', 'Penagos Ortiz Trinidad de la Cruz', '0000-00-00', 'jsPenagos@gmail.com', '3058250638', 'Activo', '2024-03-21 06:22:37', 'Cra. 56 #14-51', 'Manizales', 'Principal'),
+(6, '10232432', 'Joel Sebastian', 'Penagos Ortiz Trinidad de la Cruz', '0000-00-00', 'jsPenagos@gmail.com', '3058250638', 'Activo', '2024-03-21 06:22:37', 'Cra. 56 #14-51', 'Manizales', 'Unilago'),
 (7, '12345678', 'Andrea Berlin', 'Crawford Díaz', '2018-11-20', 'ClienteGenerico@pcmarkett.com', '3058250623', 'Activo', '2025-05-30 16:33:24', 'Cra. 57 #14-51', 'Bogota', 'Principal'),
 (8, '12321343', 'Juan Andres', 'Burgos Alcala', '1997-07-03', 'jandresba@gmail.com', '381932101', 'Activo', '2025-06-10 16:27:06', 'Cra. 58 #14-51', 'Bogota', 'Principal'),
 (9, '13471293', 'Sergio', 'Lara Bello', '2002-01-14', 'segioqw@gmial.com', '3282262171', 'Activo', '2025-06-10 17:54:33', 'Cra. 53 #14-51', '', 'Unilago');
@@ -161,7 +161,8 @@ INSERT INTO `compra` (`idcomp`, `user_id`, `method`, `total_products`, `total_pr
 (3, 3, 'Transferencia', 'Producto4, Producto5', 60.50, '2023-08-18', 'Pagado', 'Tipc'),
 (4, 4, 'Tarjeta', 'Producto2, Producto3, Producto5', 58.50, '2023-09-22', 'Pagado', 'Tipc'),
 (5, 5, 'Efectivo', 'Producto4', 12.50, '2023-10-25', 'Pagado', 'Tipc'),
-(6, 2, 'Transferencia', ', Producto2 ( 3 ), Producto4 ( 1 ), creatina 1Kg ( 1 )', 75500.00, '2024-03-19', 'Aceptado', 'Ticket');
+(6, 2, 'Transferencia', ', Producto2 ( 3 ), Producto4 ( 1 ), creatina 1Kg ( 1 )', 75500.00, '2024-03-19', 'Aceptado', 'Ticket'),
+(7, 1, 'Efectivo', ', Computador ASUS ( 1 )', 12500.00, '2025-06-20', 'Aceptado', 'Ticket');
 
 -- --------------------------------------------------------
 
@@ -186,7 +187,8 @@ INSERT INTO `gastos` (`idga`, `detall`, `total`, `fec`) VALUES
 (3, 'Gasto3', 15000.00, '2023-08-18'),
 (4, 'Gasto4', 18500.00, '2023-09-22'),
 (5, 'Compra de productos de Limpieza Protex', 22000.00, '2023-10-25'),
-(6, 'COMPRA DE PRODUCTOS', 75500.00, '2024-03-19');
+(6, 'COMPRA DE PRODUCTOS', 75500.00, '2024-03-19'),
+(7, 'COMPRA DE PRODUCTOS', 12500.00, '2025-06-20');
 
 -- --------------------------------------------------------
 
@@ -295,6 +297,7 @@ CREATE TABLE `plan` (
 --
 
 INSERT INTO `plan` (`idplan`, `foto`, `nompla`, `estp`, `prec`, `fere`) VALUES
+(0, '756730.png', 'reting', 'Activo', 90000.00, '2025-06-19 14:49:49'),
 (1, '515419.png', 'MANTENIMIENTO PREVENTIVO', 'Activo', 89500.00, '2024-03-15 08:27:45'),
 (2, '767524.png', 'BORRADO SEGURO', 'Activo', 49500.00, '2024-03-15 08:27:46'),
 (3, 'plan2.jpg', 'COMPONENTE', 'Activo', 99500.00, '2024-03-15 08:27:46'),
@@ -321,11 +324,11 @@ CREATE TABLE `producto` (
   `serial` varchar(50) DEFAULT NULL,
   `marca` varchar(50) DEFAULT NULL,
   `ram` varchar(8) DEFAULT NULL,
-  `disco` varchar(8) DEFAULT NULL,
+  `disco` text DEFAULT NULL,
   `prcpro` varchar(8) DEFAULT NULL,
   `pntpro` varchar(8) DEFAULT NULL,
   `tarpro` varchar(30) DEFAULT NULL,
-  `grado` varchar(30) DEFAULT NULL
+  `grado` enum('A','B','C','SCRAP','#N/D','','0') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -333,13 +336,13 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`idprod`, `codba`, `nomprd`, `idcate`, `precio`, `stock`, `foto`, `venci`, `esta`, `fere`, `serial`, `marca`, `ram`, `disco`, `prcpro`, `pntpro`, `tarpro`, `grado`) VALUES
-(1, 'vAZCeYThjC6An7', 'lenovo', 4, 5000000.00, 2, '10878.jpg', '2025-05-01', 'Activo', '2025-05-28 20:32:22', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(2, '12345678901234', 'Computador Lenovo', 1, 10000.00, 1000, '115365.jpg', '2024-12-31', 'Activo', '2024-03-15 08:27:45', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(3, '56789012340123', 'Computador 117', 2, 15000.00, 50, '341946.jpg', '2025-06-30', 'Activo', '2024-03-15 08:27:46', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(4, '67890123451234', 'Computador DELL', 3, 25000.00, 26, '680339.jpg', '2025-12-31', 'Activo', '2024-03-15 08:27:46', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(5, '78901234562345', 'Computador ASUS', 1, 12500.00, 80, '579718.jpg', '2024-10-31', 'Activo', '2024-03-15 08:27:46', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(6, '89012345673456', 'Computador Compax', 4, 18000.00, 59, '956303.jpg', '2024-08-31', 'Activo', '2024-03-15 08:27:46', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(7, 'H7YY7MINAndznR', 'Computador HP', 1, 229500.00, 1000, '375961.png', '2025-04-01', 'Activo', '2024-03-21 19:19:20', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(1, 'vAZCeYThjC6An7', 'lenovo', 4, 5000000.00, 2, '10878.jpg', '2025-05-01', 'Inactivo', '2025-05-28 20:32:22', 'H7YY7MINAndznR', 'lenovo', NULL, NULL, NULL, NULL, '4GB', '0'),
+(2, '12345678901234', 'Computador Lenovo', 1, 10000.00, 1000, '115365.jpg', '2024-12-31', 'Activo', '2024-03-15 08:27:45', 'H7YY7MINAndznR', 'lenovo', NULL, NULL, NULL, NULL, 'Integrada', '#N/D'),
+(3, '56789012340123', 'Computador 117', 2, 15000.00, 50, '341946.jpg', '2025-06-30', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', 'SCRAP'),
+(4, '67890123451234', 'Computador DELL', 3, 25000.00, 26, '680339.jpg', '2025-12-31', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', ''),
+(5, '78901234562345', 'Computador ASUS', 1, 12500.00, 81, '579718.jpg', '2024-10-31', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', 'C'),
+(6, '89012345673456', 'Computador Compax', 4, 18000.00, 59, '956303.jpg', '2024-08-31', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', 'B'),
+(7, 'H7YY7MINAndznR', 'Computador HP', 1, 229500.00, 1000, '375961.png', '2025-04-01', 'Activo', '2024-03-21 19:19:20', 'H7YY7MINAndznR', 'HP', '16 GB', '256GB SSD', 'i7 8th', '14\"', '2 GB', 'A');
 
 -- --------------------------------------------------------
 
@@ -388,10 +391,10 @@ INSERT INTO `servicio` (`idservc`, `idplan`, `ini`, `fin`, `idclie`, `estod`, `m
 (3, 3, '2023-08-18', '2024-04-06', 3, 'Activo', 'Nequi', 40000.00, '2024-03-15 08:27:46', NULL, NULL, NULL),
 (4, 4, '2023-09-22', '2025-02-21', 4, 'Activo', 'Nequi', 35000.00, '2024-03-15 08:27:46', NULL, NULL, NULL),
 (5, 6, '2023-10-25', '2024-04-04', 5, 'Activo', 'Transferencia', 25000.00, '2024-03-15 08:27:46', NULL, NULL, NULL),
-(6, 3, '2023-04-05', '2024-04-04', 6, 'Activo', 'Tarjeta', 560000.00, '2024-03-21 06:28:16', NULL, 'portatil_display.jpeg', NULL),
-(7, 0, '2025-05-30', '2025-06-12', 7, 'Activo', 'Nequi_Daviplata', 900000.00, '2025-05-30 17:21:20', 'El equipo enciende y funciona por salida externa. Display dañado físicamente, presenta manchas y líneas. Cliente solicita cambio de pantalla y mantenimiento general. 70', 'portatil_display.jpeg', NULL),
-(8, 0, '2025-05-30', '2025-06-21', 2, 'Activo', 'Nequi_Daviplata', 9000000.00, '2025-05-30 17:24:54', 'El equipo enciende y funciona por salida externa. Display dañado físicamente, presenta manchas y líneas. Cliente solicita cambio de pantalla y mantenimiento general. 2', 'portatil_display.jpeg', NULL),
-(9, 5, '2025-06-12', '2025-06-19', 7, 'Activo', 'Nequi_Daviplata', 90000.00, '2025-06-12 22:35:50', 'El equipo enciende y funciona por salida externa. Display dañado físicamente, presenta manchas y líneas. Cliente solicita cambio de pantalla y mantenimiento general.', 'portatil_display.jpeg', 'José Borda'),
+(6, 3, '2023-04-05', '2025-06-19', 6, 'Activo', 'Tarjeta', 560000.00, '2024-03-21 06:28:16', NULL, 'portatil_display.jpeg', 'Juan David'),
+(7, 0, '2025-05-30', '2025-06-12', 7, 'Activo', 'Nequi_Daviplata', 900000.00, '2025-05-30 17:21:20', 'El equipo enciende y funciona por salida externa. Display dañado físicamente, presenta manchas y líneas. Cliente solicita cambio de pantalla y mantenimiento general. 70', 'portatil_display.jpeg', 'José Borda'),
+(8, 0, '2025-05-30', '2025-06-21', 2, 'Activo', 'Nequi_Daviplata', 9000000.00, '2025-05-30 17:24:54', 'El equipo enciende y funciona por salida externa. Display dañado físicamente, presenta manchas y líneas. Cliente solicita cambio de pantalla y mantenimiento general. 2', 'portatil_display.jpeg', 'Luis'),
+(9, 5, '2025-06-12', '2025-06-19', 0, 'Activo', 'Nequi_Daviplata', 90000.00, '2025-06-12 22:35:50', 'El equipo enciende y funciona por salida externa. Display dañado físicamente, presenta manchas y líneas. Cliente solicita cambio de pantalla y mantenimiento general.', 'portatil_display.jpeg', 'José Borda'),
 (10, 4, '2025-06-16', '0000-00-00', 5, 'Medellin', 'Transferencia', 90000.00, '2025-06-16 23:01:11', '', '', '');
 
 -- --------------------------------------------------------
@@ -600,13 +603,13 @@ ALTER TABLE `clientes`
 -- AUTO_INCREMENT de la tabla `compra`
 --
 ALTER TABLE `compra`
-  MODIFY `idcomp` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idcomp` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `gastos`
 --
 ALTER TABLE `gastos`
-  MODIFY `idga` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idga` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `ingresos`
