@@ -282,8 +282,14 @@ ob_start();
                                                         class="text-danger">*</span></label>
                                                 <select class="form-control" required name="cxtcre">
                                                     <option value="">----------Seleccione------------</option>
-                                                    <option value="Transferencia">Transferencia</option>
+                                                    <option value="Transferencia">Transferencia</option>                                                                                                        <option value="Transferencia">Transferencia</option>
                                                     <option value="Efectivo">Efectivo</option>
+                                                    <option value="Efectivo">Tarjeta</option>
+                                                    <option value="Efectivo">Addi</option>
+                                                    <option value="Efectivo">Wompi</option>
+                                                    <option value="Efectivo">SisteCredito</option>
+                                                    <option value="Efectivo">PSE</option>
+                                                    
                                                 </select>
                                             </div>
                                         </div>
