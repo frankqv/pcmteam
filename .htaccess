@@ -7,15 +7,53 @@
 #Allow from env=AllowLocal
 
 
+# Permitir solo IPs de Colombia, Brasil, tu red local y el servidor
 
-# Permitir solo IPs dentro de cierto rango + tu IP local
+# Tu red local (WiFi)
+SetEnvIf Remote_Addr ^192\.168\.2\.22$ AllowLocal
 
+# Acceso interno del servidor
+SetEnvIf Remote_Addr ^127\.0\.0\.1$ AllowServer
+SetEnvIf Remote_Addr ^::1$ AllowServer
+
+# === RANGOS DE COLOMBIA ===
+
+# Movistar
 SetEnvIf Remote_Addr ^181\.4[8-9]\.     AllowColombia
 SetEnvIf Remote_Addr ^181\.5[0-9]\.     AllowColombia
 SetEnvIf Remote_Addr ^181\.6[0-3]\.     AllowColombia
-SetEnvIf Remote_Addr ^192\.168\.2\.22$  AllowLocal
 
+# Claro
+SetEnvIf Remote_Addr ^186\.8[0-9]\.     AllowColombia
+SetEnvIf Remote_Addr ^186\.9[0-5]\.     AllowColombia
+
+# ETB / Avantel / Tigo / Otros
+SetEnvIf Remote_Addr ^179\.0[0-9]\.     AllowColombia
+SetEnvIf Remote_Addr ^179\.1[0-5]\.     AllowColombia
+SetEnvIf Remote_Addr ^190\.            AllowColombia
+SetEnvIf Remote_Addr ^200\.            AllowColombia
+SetEnvIf Remote_Addr ^201\.            AllowColombia
+
+# === RANGOS DE BRASIL ===
+
+# Net Virtua / Claro Brasil
+SetEnvIf Remote_Addr ^187\.            AllowBrasil
+SetEnvIf Remote_Addr ^189\.            AllowBrasil
+
+# Vivo / Telefônica
+SetEnvIf Remote_Addr ^177\.            AllowBrasil
+SetEnvIf Remote_Addr ^179\.            AllowBrasil
+
+# Oi / Tim Brasil / Outros
+SetEnvIf Remote_Addr ^170\.            AllowBrasil
+SetEnvIf Remote_Addr ^138\.            AllowBrasil
+SetEnvIf Remote_Addr ^152\.            AllowBrasil
+
+# === ORDEN DE FILTRADO ===
 Order Deny,Allow
 Deny from all
-Allow from env=AllowColombia
+
 Allow from env=AllowLocal
+Allow from env=AllowServer
+Allow from env=AllowColombia
+Allow from env=AllowBrasil
