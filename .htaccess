@@ -1,0 +1,21 @@
+#// Permitir solo Colombia y tu IP local
+#SetEnvIf GEOIP_COUNTRY_CODE CO AllowCountry
+#SetEnvIf Remote_Addr ^192\.168\.2\.22$ AllowLocal
+#Order Deny,Allow
+#Deny from all
+#Allow from env=AllowCountry
+#Allow from env=AllowLocal
+
+
+
+# Permitir solo IPs dentro de cierto rango + tu IP local
+
+SetEnvIf Remote_Addr ^181\.4[8-9]\.     AllowColombia
+SetEnvIf Remote_Addr ^181\.5[0-9]\.     AllowColombia
+SetEnvIf Remote_Addr ^181\.6[0-3]\.     AllowColombia
+SetEnvIf Remote_Addr ^192\.168\.2\.22$  AllowLocal
+
+Order Deny,Allow
+Deny from all
+Allow from env=AllowColombia
+Allow from env=AllowLocal
