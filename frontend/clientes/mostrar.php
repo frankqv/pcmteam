@@ -2,7 +2,7 @@
 ob_start();
      session_start();
     
-    if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2])){
+    if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2,7])){
     header('location: ../error404.php');
   }
 ?>
@@ -115,6 +115,7 @@ ob_start();
                             </div>
                             <br>
                             <a href="../clientes/nuevo.php" class="btn btn-danger text-white">Nuevo cliente</a>
+                            <a href="../clientes/importar.php" class="btn btn-success text-white ml-2">Subir archivo Excel</a>
 
 
                             <br>

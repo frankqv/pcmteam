@@ -94,7 +94,7 @@ ob_start();
                             id="navbarSupportedContent">
                             <ul class="nav navbar-nav ml-auto">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../cuenta/perfil2.php">
+                                    <a class="nav-link" href="../cuenta/perfil.php">
                                         <span class="material-icons">settings</span>
                                     </a>
                                 </li>
@@ -106,7 +106,7 @@ ob_start();
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a href="../cuenta/perfil2.php">Mi perfil</a>
+                                            <a href="../cuenta/perfil.php">Mi perfil</a>
                                         </li>
                                         <li>
                                             <a href="../cuenta/salir.php">Salir</a>
@@ -231,7 +231,7 @@ if($sentencia){
                                         <div class="col-sm-12">
                                             <button name='stupdprof' class="btn btn-success text-white">Guardar</button>
                                             <a class="btn btn-danger text-white"
-                                                href="../cuenta/perfil2.php">Cancelar</a>
+                                                href="../cuenta/perfil.php">Cancelar</a>
                                         </div>
                                     </div>
                                 </form>
@@ -289,7 +289,7 @@ if($sentencia){
                                             <button name='stupdprofpsd'
                                                 class="btn btn-success text-white">Guardar</button>
                                             <a class="btn btn-danger text-white"
-                                                href="../cuenta/perfil2.php">Cancelar</a>
+                                                href="../cuenta/perfil.php">Cancelar</a>
                                         </div>
                                     </div>
                                 </form>

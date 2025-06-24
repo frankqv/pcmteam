@@ -1,6 +1,7 @@
 {
     "require": {
         "league/oauth2-client": "^2.7",
-        "psr/log": "^3.0"
+        "psr/log": "^3.0",
+        "phpoffice/phpspreadsheet": "^4.4"
     }
 }

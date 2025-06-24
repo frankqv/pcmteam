@@ -50,32 +50,35 @@ $menu = [
 
 # Cliente 1
 // Agregar Clientes solo si el rol NO es 2, 3 o 4
-if (in_array($rol, [1,2 , 4, 5])) {
+if (in_array($rol, [1,2 , 4, 5, 7])) {
     // Insertar Cliente después de Panel de usuario (posición 1)
-    array_splice($menu, 1, 0, [[
+    $children = [
+        ['label' => 'Listado', 'url' => '../clientes/mostrar.php']
+    ];
+    if ($rol == 1 || $rol == 7) {
+        $children[] = [
+            'label' => 'TIENDA',
+            'id' => 'tienda',
+            'icon' => 'store',
+            'children' => [
+                ['label' => 'Puente Aranda', 'url' => '../clientes/bodega.php'],
+                ['label' => 'Unilago', 'url' => '../clientes/unilago.php'],
+                ['label' => 'Cúcuta', 'url' => '../clientes/cucuta.php'],
+                ['label' => 'Medellín', 'url' => '../clientes/medellin.php']
+            ]
+        ];
+    }
+    array_splice($menu, 7, 0, [[
         'label' => 'Clientes',
         'icon' => 'group',
         'id' => 'clientes',
-        'children' => [
-            ['label' => 'Listado', 'url' => '../clientes/mostrar.php'],
-            [
-                'label' => 'TIENDA',
-                'id' => 'tienda',
-                'icon' => 'store',
-                'children' => [
-                    ['label' => 'Puente Aranda', 'url' => '../clientes/bodega.php'],
-                    ['label' => 'Unilago', 'url' => '../clientes/unilago.php'],
-                    ['label' => 'Cúcuta', 'url' => '../clientes/cucuta.php'],
-                    ['label' => 'Medellín', 'url' => '../clientes/medellin.php']
-                ]
-            ]
-        ]
+        'url' => '../clientes/mostrar.php',
     ]]);
 }
 
 # Cliente por Tienda 2
 // Agregar Clientes solo si el rol NO es 2, 3 o 4
-if (in_array($rol, [1,2 , 4, 5])) {
+if (in_array($rol, [1,2 , 4, 5,])) {
     // Insertar Cliente después de Panel de usuario (posición 1)
     array_splice($menu, 2, 0, [[
             'label' => 'Mis Cleintes',
@@ -190,7 +193,7 @@ if (in_array($rol, [1, 4, 5, 6])) {
 
 # PROVEEDORES 12
 // Agregar Proveedores solo si el rol NO es 2, 3 o 4
-if (!in_array($rol, [2, 3, 4])) {
+if (!in_array($rol, [2, 3, 4,6])) {
     // Insertar Proveedores después de Gastos (posición 10)
     array_splice($menu, 12, 0, [[
         'label' => 'Proveedores',
