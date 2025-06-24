@@ -115,7 +115,7 @@ ob_start();
                                 // Llamar a la base de datos
                                 require '../../backend/bd/ctconex.php'; 
                                 // Filtrar datos segun la sede
-                                $sentencia = $connect->prepare("SELECT * FROM clientes WHERE idsede = 'Principal' OR idsede = '1' OR 'Bodega1' ORDER BY nomcli DESC;");
+                                $sentencia = $connect->prepare("SELECT * FROM clientes WHERE idsede = 'Principal' OR idsede = '1' OR 'Bodega1' OR 'principal' ORDER BY nomcli DESC;");
                                 $sentencia->execute();
                                 $data =  array();
                                 if($sentencia){

@@ -2,7 +2,6 @@
 
 include('../../backend/bd/ctconex.php');
 require_once __DIR__ . '/../../vendor/autoload.php';
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 if(isset($_POST['importar']))
 {
@@ -15,67 +14,95 @@ if(isset($_POST['importar']))
     ];
 
     if (in_array($_FILES["exceldata"]["type"], $allowedFileType)) {
-  $filename=$_FILES['exceldata']['name'];
-  $tempname=$_FILES['exceldata']['tmp_name'];
-  $uploadDir = '../../backend/uploads/';
-  if (!is_dir($uploadDir)) {
-      mkdir($uploadDir, 0777, true);
-  }
-  move_uploaded_file($tempname, $uploadDir . $filename);
+  
+  $tempname = $_FILES['exceldata']['tmp_name'];
+  
+  // Procesar directamente desde la memoria temporal sin guardar en servidor
+  $Reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+  $spreadSheet = $Reader->load($tempname);
+  $excelSheet = $spreadSheet->getActiveSheet();
+  $spreadSheetAry = $excelSheet->toArray();
+  $sheetCount = count($spreadSheetAry);
 
- // Verificar si la clase existe antes de usarla y manejar errores de carga
- try {
-     if (!class_exists('\PhpOffice\PhpSpreadsheet\Reader\Xlsx')) {
-         throw new Exception('La clase PhpSpreadsheet\\Reader\\Xlsx no está disponible. Verifique la instalación de la librería.');
-     }
-     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-     $spreadsheet = $reader->load('../../backend/uploads/' . $filename);
-     $excelSheet = $spreadsheet->getActiveSheet();
-     $spreadSheetAry = $excelSheet->toArray();
-     $sheetCount = count($spreadSheetAry);
- } catch (Exception $e) {
-     echo '<script type="text/javascript">
-         swal("¡Error!", "No se pudo procesar el archivo Excel: ' . addslashes($e->getMessage()) . '", "error");
-         </script>';
-     exit;
- }
- 
- for($i=1;$i<$sheetCount;$i++)
- {
+  $insertedCount = 0;
+  $skippedCount = 0;
+  $errorCount = 0;
+
+  for($i=1;$i<$sheetCount;$i++)
+  {
+    // Verificar que la fila no esté vacía
+    if (empty($spreadSheetAry[$i][0]) || empty($spreadSheetAry[$i][1])) {
+      continue; // Saltar filas vacías
+    }
+
     // Verificar si el numid ya existe
     $check = $connect->prepare("SELECT COUNT(*) FROM clientes WHERE numid = ?");
     $check->execute([$spreadSheetAry[$i][0]]);
     if ($check->fetchColumn() > 0) {
         // Salta este registro duplicado
+        $skippedCount++;
         continue;
     }
 
-    $d4 = $connect->prepare("INSERT INTO clientes (numid, nomcli, apecli, naci, correo, celu, estad, dircli, ciucli, idsede) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $inserted = $d4->execute([
-        $spreadSheetAry[$i][0], // numid
-        $spreadSheetAry[$i][1], // nomcli
-        $spreadSheetAry[$i][2], // apecli
-        $spreadSheetAry[$i][3], // naci
-        $spreadSheetAry[$i][4], // correo
-        $spreadSheetAry[$i][5], // celu
-        $spreadSheetAry[$i][6], // estad
-        $spreadSheetAry[$i][7], // dircli
-        $spreadSheetAry[$i][8], // ciucli
-        $spreadSheetAry[$i][9]  // idsede
-    ]);
+    // Validar que los datos no estén vacíos
+    $numid = trim($spreadSheetAry[$i][0]);
+    $nomcli = trim($spreadSheetAry[$i][1]);
+    $apecli = trim($spreadSheetAry[$i][2]);
+    $naci = trim($spreadSheetAry[$i][3]);
+    $correo = trim($spreadSheetAry[$i][4]);
+    $celu = trim($spreadSheetAry[$i][5]);
+    $estad = trim($spreadSheetAry[$i][6]);
+    $dircli = trim($spreadSheetAry[$i][7]);
+    $ciucli = trim($spreadSheetAry[$i][8]);
+    $idsede = trim($spreadSheetAry[$i][9]);
 
-    if ($inserted>0) {
-      echo '<script type="text/javascript">
-swal("¡Registrado!", "Se agrego correctamente", "success").then(function() {
-            window.location = "../clientes/mostrar.php";
-        });
-        </script>';
+    // Validar datos requeridos
+    if (empty($numid) || empty($nomcli) || empty($apecli)) {
+      $errorCount++;
+      continue;
     }
- }
+
+    // Validar formato de fecha
+    if (!empty($naci) && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $naci)) {
+      $naci = '1900-01-01'; // Fecha por defecto si no es válida
+    }
+
+    try {
+      $d4 = $connect->prepare("INSERT INTO clientes (numid, nomcli, apecli, naci, correo, celu, estad, dircli, ciucli, idsede) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+      $inserted = $d4->execute([
+          $numid,
+          $nomcli,
+          $apecli,
+          $naci,
+          $correo,
+          $celu,
+          $estad,
+          $dircli,
+          $ciucli,
+          $idsede
+      ]);
+
+      if ($inserted) {
+        $insertedCount++;
+      } else {
+        $errorCount++;
+      }
+    } catch (Exception $e) {
+      $errorCount++;
+      // Log del error para debugging
+      error_log("Error insertando cliente: " . $e->getMessage());
+    }
   }
-  else 
-  {
-    echo 'Please Upload Excel File; Check File Extenstion';
+  
+  $mensaje = "Importación completada:\n";
+  $mensaje .= "- Registros insertados: $insertedCount\n";
+  $mensaje .= "- Registros duplicados ignorados: $skippedCount\n";
+  $mensaje .= "- Errores: $errorCount";
+  
+  echo "<script>alert('$mensaje'); window.location.href='mostrar.php';</script>";
+  
+  } else {
+    echo "<script>alert('Tipo de archivo no válido. Por favor, sube un archivo Excel (.xlsx)');</script>";
   }
 }
 ?>
