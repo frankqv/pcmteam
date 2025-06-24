@@ -148,7 +148,7 @@ ob_start();
                                     <div class="row">
                                         <div class="col-md-6 col-lg-6">
                                             <div class="form-group">
-                                                <label for="email">Nombre del administrador<span
+                                                <label for="email">Nombre del Perfil<span
                                                         class="text-danger">*</span></label>
                                                 <input type="text" value="<?php echo  $d->nombre; ?>"
                                                     class="form-control" id="nombres" name="txtnaame" required
@@ -159,7 +159,7 @@ ob_start();
 
                                         <div class="col-md-6 col-lg-6">
                                             <div class="form-group">
-                                                <label for="email">Estado del administrador<span
+                                                <label for="email">Estado del Perfil<span
                                                         class="text-danger">*</span></label>
                                                 <select class="form-control" required name="txtesta">
                                                     <?php    if($d->estado =='1')  { ?>

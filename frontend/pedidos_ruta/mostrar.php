@@ -1,3 +1,4 @@
+<!---- /pedidos_ruta/mostrar.php -->
 <?php
 ob_start();
     session_start();
