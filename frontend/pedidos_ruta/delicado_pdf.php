@@ -27,38 +27,44 @@ try {
             $pdf->AddPage();
             
             // Título
-            $pdf->SetFont('Arial', 'B', 28);
-            $pdf->Cell(0, 30, 'DELICADO', 0, 1, 'C');
+            $pdf->SetFont('Times', 'B',54);
+            $pdf->Cell(0, 10, 'DELICADO', 0, 1, 'C');
             
+            // Ciudad
+            $pdf->SetFont('Times', 'B', 32);
+            $pdf->Cell(0, 12, utf8_decode( $datos['ciucli']), 0, 1, 'C');
+            
+
             // Datos del cliente
             $pdf->SetFont('Arial', '', 16);
             $pdf->Ln(5);
             
-            // Ciudad
-            $pdf->Cell(0, 12, utf8_decode('Ciudad: ' . $datos['ciucli']), 0, 1, 'C');
-            
             // Nombre completo del cliente
-            $pdf->Cell(0, 12, utf8_decode('Cliente: ' . $datos['nomcli'] . ' ' . $datos['apecli']), 0, 1, 'C');
+            $pdf->Cell(0, 8, utf8_decode('Para: ' . $datos['nomcli'] . ' ' . $datos['apecli']), 0, 1, 'C');
+            
+            // Numero de identificacion
+            $pdf->Cell(0, 8, utf8_decode('C.C: ' . $datos['numid']), 0, 1, 'C');
             
             // Dirección
-            $pdf->Cell(0, 12, utf8_decode('Direccion: ' . $datos['dircli']), 0, 1, 'C');
+            $pdf->Cell(0, 8, utf8_decode('Direccion: ' . $datos['dircli']), 0, 1, 'C');
             
             // Celular del cliente
-            $pdf->Cell(0, 12, utf8_decode('Celular cliente: ' . $datos['celu']), 0, 1, 'C');
+            $pdf->Cell(0, 8, utf8_decode('Celular cliente: ' . $datos['celu']), 0, 1, 'C');
             
             // Datos del remitente
             $pdf->Ln(10);
             $pdf->SetFont('Arial', 'B', 14);
-            $pdf->Cell(0, 10, 'DATOS DEL REMITENTE:', 0, 1, 'C');
+            $pdf->Cell(0, 8, 'DATOS DEL REMITENTE:', 0, 1, 'C');
             $pdf->SetFont('Arial', '', 14);
             $pdf->Cell(0, 8, utf8_decode($datos['nombre_remitente']), 0, 1, 'C');
             $pdf->Cell(0, 8, utf8_decode('Celular: ' . $datos['celu_remitente']), 0, 1, 'C');
             
             // Mensaje final
-            $pdf->Ln(20);
+            $pdf->Ln(8);
             $pdf->SetFont('Arial', 'B', 16);
-            $pdf->Cell(0, 12, 'Gracias por su compra', 0, 1, 'C');
-            
+            $pdf->Cell(0, 8, 'Producto con sellos de seguridad', 0, 1, 'C');
+            $pdf->Cell(0, 12, 'FACTURA AQUI', 0, 0, 'C');
+
             // Generar PDF
             $pdf->Output('I', 'guia_envio_delicado.pdf');
             exit;

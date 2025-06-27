@@ -2,6 +2,15 @@
 require_once '../../backend/pdf/fpdf.php';
 require_once '../../backend/bd/ctconex.php';
 
+class PDF extends FPDF {
+    function Header() {
+        // Título con Helvetica Bold
+        $this->SetFont('Helvetica', 'B', 54);
+        $this->Cell(0, 15, 'DELICADO', 0, 1, 'C');
+        $this->Ln(5);
+    }
+}
+
 // Obtener el ID del pedido
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
@@ -23,41 +32,44 @@ try {
         
         if ($datos) {
             // Crear PDF
-            $pdf = new FPDF();
+            $pdf = new PDF();
             $pdf->AddPage();
             
-            // Título
-            $pdf->SetFont('Arial', 'B', 28);
-            $pdf->Cell(0, 30, 'DELICADO', 0, 1, 'C');
+            // Ciudad - usando Helvetica Bold para mayor impacto
+            $pdf->SetFont('Helvetica', 'B', 32);
+            $pdf->Cell(0, 15, utf8_decode($datos['ciucli']), 0, 1, 'C');
             
             // Datos del cliente
-            $pdf->SetFont('Arial', '', 16);
-            $pdf->Ln(5);
-            
-            // Ciudad
-            $pdf->Cell(0, 12, utf8_decode('Ciudad: ' . $datos['ciucli']), 0, 1, 'C');
+            $pdf->SetFont('Helvetica', '', 16);
+            $pdf->Ln(8);
             
             // Nombre completo del cliente
-            $pdf->Cell(0, 12, utf8_decode('Cliente: ' . $datos['nomcli'] . ' ' . $datos['apecli']), 0, 1, 'C');
+            $pdf->Cell(0, 8, utf8_decode('Para: ' . $datos['nomcli'] . ' ' . $datos['apecli']), 0, 1, 'C');
+            
+            // Numero de identificacion
+            $pdf->Cell(0, 8, utf8_decode('C.C: ' . $datos['numid']), 0, 1, 'C');
             
             // Dirección
-            $pdf->Cell(0, 12, utf8_decode('Direccion: ' . $datos['dircli']), 0, 1, 'C');
+            $pdf->Cell(0, 8, utf8_decode('Direccion: ' . $datos['dircli']), 0, 1, 'C');
             
             // Celular del cliente
-            $pdf->Cell(0, 12, utf8_decode('Celular cliente: ' . $datos['celu']), 0, 1, 'C');
+            $pdf->Cell(0, 8, utf8_decode('Celular cliente: ' . $datos['celu']), 0, 1, 'C');
             
             // Datos del remitente
-            $pdf->Ln(10);
-            $pdf->SetFont('Arial', 'B', 14);
-            $pdf->Cell(0, 10, 'DATOS DEL REMITENTE:', 0, 1, 'C');
-            $pdf->SetFont('Arial', '', 14);
+            $pdf->Ln(12);
+            $pdf->SetFont('Helvetica', 'B', 14);
+            $pdf->Cell(0, 8, 'DATOS DEL REMITENTE:', 0, 1, 'C');
+            $pdf->SetFont('Helvetica', '', 14);
             $pdf->Cell(0, 8, utf8_decode($datos['nombre_remitente']), 0, 1, 'C');
             $pdf->Cell(0, 8, utf8_decode('Celular: ' . $datos['celu_remitente']), 0, 1, 'C');
             
-            // Mensaje final
-            $pdf->Ln(20);
-            $pdf->SetFont('Arial', 'B', 16);
-            $pdf->Cell(0, 12, ' Producto con sellos de seguridad,', 0, 1, 'C');
+            // Mensaje final - usando Helvetica Bold para destacar
+            $pdf->Ln(10);
+            $pdf->SetFont('Helvetica', 'B', 16);
+            $pdf->Cell(0, 10, 'Producto con sellos de seguridad', 0, 1, 'C');
+            $pdf->Ln(5);
+            $pdf->SetFont('Helvetica', 'B', 18);
+            $pdf->Cell(0, 12, 'FACTURA AQUI', 0, 0, 'C');
             
             // Generar PDF
             $pdf->Output('I', 'guia_envio_delicado.pdf');
@@ -71,4 +83,4 @@ try {
 } catch (PDOException $e) {
     die('Error en la base de datos: ' . $e->getMessage());
 }
-?> 
+?>

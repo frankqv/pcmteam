@@ -113,7 +113,7 @@ function __construct($orientation='P', $unit='mm', $size='A4')
 	else
 		$this->fontpath = '';
 	// Core fonts
-	$this->CoreFonts = array('courier', 'helvetica', 'times', 'symbol', 'zapfdingbats');
+	$this->CoreFonts = array('courier', 'helvetica', 'times', 'symbol', 'zapfdingbats', 'montserrat', 'timesb', 'timesi', 'montserrat-bold');
 	// Scale factor
 	if($unit=='pt')
 		$this->k = 1;
@@ -496,7 +496,7 @@ function SetFont($family, $style='', $size=0)
 	if(!isset($this->fonts[$fontkey]))
 	{
 		// Test if one of the core fonts
-		if($family=='arial')
+		if($family=='arial' || $family=='montserrat')
 			$family = 'helvetica';
 		if(in_array($family,$this->CoreFonts))
 		{
@@ -1573,7 +1573,7 @@ protected function _putfonts()
 		$font = file_get_contents($this->fontpath.$file,true);
 		if(!$font)
 			$this->Error('Font file not found: '.$file);
-		$compressed = (substr($file,-2)=='.z');
+		$compressed = (substr($file,-2)=='.ttf');
 		if(!$compressed && isset($info['length2']))
 			$font = substr($font,6,$info['length1']).substr($font,6+$info['length1']+6,$info['length2']);
 		$this->_put('<</Length '.strlen($font));
@@ -1892,8 +1892,4 @@ protected function _enddoc()
 	$this->state = 3;
 }
 }
-?>
-<?php
-$connect = new PDO("mysql:host=localhost;dbname=u171145084_pcmteam;charset=utf8", "u171145084_pcmteam", "PCcomercial2025*");
-$connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 ?>
