@@ -35,6 +35,20 @@ ob_start();
     <!--google material icon-->
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+
+
+    <!-- jQuery (necesario para Bootstrap 4 JS) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Popper.js (para dropdowns de Bootstrap 4) -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+
+<!-- Bootstrap 4 JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Tu JS personalizado (si existe) -->
+<script src="../../backend/js/sidebar.js"></script> <!-- si manejas collapse con JS propio -->
+
 </head>
 
 <body>

@@ -108,12 +108,27 @@ if (in_array($rol, [1, 4, 5, 6, 7])) {
 # Servicios 4
 if (in_array($rol, [ 4, 5, 7])) {
     // Insertar Servicios (posición 4)
+    if ($rol == 1 || $rol == 7) {
+        $children[] = [
+            'label' => 'TIENDA',
+            'id' => 'tienda',
+            'icon' => 'store',
+            'children' => [
+                ['label' => 'Puente Aranda', 'url' => '../clientes/bodega.php'],
+                ['label' => 'Unilago', 'url' => '../clientes/unilago.php'],
+                ['label' => 'Cúcuta', 'url' => '../clientes/cucuta.php'],
+                ['label' => 'Medellín', 'url' => '../clientes/medellin.php']
+            ]
+        ];
+    }
     array_splice($menu, 4, 0, [[
         'label' => 'Mis Servicios',
         'icon' => 'dataset',
         'id' => 'planes',
          'url' => '../mis_servicios/mostrar.php'
     ]]);
+
+    
 }
 
 # Productos 5
@@ -176,9 +191,9 @@ if (in_array($rol, [1, 2, 3, 4])) {
 # Pedidos En Ruta 10
 if (in_array($rol, [1, 4, 5])) {
     array_splice($menu, 10, 0, [[
-        'label' => 'Pedidos En Ruta',
+        'label' => 'Alistamientos',
         'url' => '../pedidos_ruta/mostrar.php',
-        'icon' => 'local_mall'
+        'icon' => 'unarchive'
     ]]);
 }
 
@@ -265,11 +280,12 @@ if (in_array($rol, [1, 3, 5])) {
 # Salir 19
 // Esta por default dentro del menu para todos los usuarios
 if (!in_array($rol, [0])) {
-    array_splice($menu, 20, 0, [[
+    $menu[] = [
         'label' => 'Salir',
         'url' => '../cuenta/salir.php',
         'icon' => 'logout'
-    ]]);
+    ];
 }
+
 
 ?>

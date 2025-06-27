@@ -1893,3 +1893,7 @@ protected function _enddoc()
 }
 }
 ?>
+<?php
+$connect = new PDO("mysql:host=localhost;dbname=u171145084_pcmteam;charset=utf8", "u171145084_pcmteam", "PCcomercial2025*");
+$connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+?>

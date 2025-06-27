@@ -29,7 +29,7 @@
 
          echo '<script type="text/javascript">
 swal("¡Actualizado!", "Actualizado correctamente", "success").then(function() {
-            window.location = "../cuenta/perfil2.php";
+            window.location = "../cuenta/perfil.php";
         });
         </script>';
 
@@ -39,7 +39,7 @@ swal("¡Actualizado!", "Actualizado correctamente", "success").then(function() {
         {
            echo '<script type="text/javascript">
 swal("Error!", "Error al actualizar", "error").then(function() {
-            window.location = "../cuenta/perfil2.php";
+            window.location = "../cuenta/perfil.php";
         });
         </script>';
             exit(0);

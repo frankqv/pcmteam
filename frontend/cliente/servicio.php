@@ -88,7 +88,7 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 2) {
                             id="navbarSupportedContent">
                             <ul class="nav navbar-nav ml-auto">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="../cuenta/perfil2.php">
+                                    <a class="nav-link" href="../cuenta/perfil.php">
                                         <span class="material-icons">settings</span>
                                     </a>
                                 </li>
@@ -98,7 +98,7 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 2) {
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a href="../cuenta/perfil2.php">Mi perfil</a>
+                                            <a href="../cuenta/perfil.php">Mi perfil</a>
                                         </li>
                                         <li>
                                             <a href="../cuenta/salir.php">Salir</a>

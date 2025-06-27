@@ -2,7 +2,7 @@
 ob_start();
      session_start();
     
-    if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2])){
+    if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4])){
     header('location: ../error404.php');
   }
 ?>
@@ -22,7 +22,6 @@ ob_start();
     <!----css3---->
     <link rel="stylesheet" href="../../backend/css/custom.css">
     <link rel="stylesheet" href="../../backend/css/loader.css">
-
     <!-- Data Tables -->
     <link rel="stylesheet" type="text/css" href="../../backend/css/datatable.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/buttonsdataTables.css">

@@ -22,7 +22,7 @@
 
          echo '<script type="text/javascript">
 swal("¡Actualizado!", "Contraseña actualizada correctamente", "success").then(function() {
-            window.location = "../cuenta/perfil2.php";
+            window.location = "../cuenta/perfil.php";
         });
         </script>';
 
@@ -32,7 +32,7 @@ swal("¡Actualizado!", "Contraseña actualizada correctamente", "success").then(
         {
            echo '<script type="text/javascript">
 swal("Error!", "Error al actualizar", "error").then(function() {
-            window.location = "../cuenta/perfil2.php";
+            window.location = "../cuenta/perfil.php";
         });
         </script>';
             exit(0);

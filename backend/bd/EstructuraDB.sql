@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-06-2025 a las 19:01:53
+-- Tiempo de generación: 26-06-2025 a las 22:48:48
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -43,9 +43,7 @@ CREATE TABLE `cart` (
 --
 
 INSERT INTO `cart` (`idv`, `user_id`, `idprod`, `name`, `price`, `quantity`) VALUES
-(1, 1, 1, 'Producto1', 10, 2),
-(4, 4, 4, 'Producto4', 13, 4),
-(6, 2, 5, 'creatina 1Kg', 18000, 20);
+(0, 4, 4, 'Computador DELL', 25000, 1);
 
 -- --------------------------------------------------------
 
@@ -132,7 +130,12 @@ INSERT INTO `clientes` (`idclie`, `numid`, `nomcli`, `apecli`, `naci`, `correo`,
 (6, '10232432', 'Joel Sebastian', 'Penagos Ortiz Trinidad de la Cruz', '0000-00-00', 'jsPenagos@gmail.com', '3058250638', 'Activo', '2024-03-21 06:22:37', 'Cra. 56 #14-51', 'Manizales', 'Unilago'),
 (7, '12345678', 'Andrea Berlin', 'Crawford Díaz', '2018-11-20', 'ClienteGenerico@pcmarkett.com', '3058250623', 'Activo', '2025-05-30 16:33:24', 'Cra. 57 #14-51', 'Bogota', 'Principal'),
 (8, '12321343', 'Juan Andres', 'Burgos Alcala', '1997-07-03', 'jandresba@gmail.com', '381932101', 'Activo', '2025-06-10 16:27:06', 'Cra. 58 #14-51', 'Bogota', 'Principal'),
-(9, '13471293', 'Sergio', 'Lara Bello', '2002-01-14', 'segioqw@gmial.com', '3282262171', 'Activo', '2025-06-10 17:54:33', 'Cra. 53 #14-51', '', 'Unilago');
+(9, '13471293', 'Sergio', 'Lara Bello', '2002-01-14', 'segioqw@gmial.com', '3282262171', 'Activo', '2025-06-10 17:54:33', 'Cra. 53 #14-51', 'Tocacima', 'Unilago'),
+(10, '65321874', 'Mary', 'Bonz Rodriguez', '1997-01-02', 'maryb1997@correo.com', '3001234557', 'Activo', '2025-06-24 19:58:48', 'Calle 1 #2-4', 'Cali', 'Unilago'),
+(12, '87654321', 'Maria', 'Garay', '1985-05-15', 'maria@correo.com', '3009876543', 'Activo', '2025-06-24 22:18:58', 'Carrera 5 #10-20', 'Bogotá', 'Unilago'),
+(13, '11223344', 'Carlos', 'Lopez Vanegas', '1992-08-22', 'carlos@correo.com', '3005556466', 'Activo', '2025-06-24 22:18:58', 'Avenida 3 #15-8', 'Cucuta', 'Cucuta'),
+(14, '51667788', 'Paula', 'Santa Rosa', '1988-12-10', 'paurosa@correo.com', '3001112242', 'Activo', '2025-06-24 22:18:58', 'Calle 8 #25-21', 'Bogotá', 'Principal'),
+(15, '91997788', 'Stephany Tatiana', 'Brown Castillo', '2007-12-10', 'stepbc@corre.com', '3201112242', 'Activo', '2025-06-24 22:25:02', 'Calle 3 #4-5', 'Cartagena', 'Medellin');
 
 -- --------------------------------------------------------
 
@@ -183,7 +186,7 @@ CREATE TABLE `gastos` (
 
 INSERT INTO `gastos` (`idga`, `detall`, `total`, `fec`) VALUES
 (1, 'Gasto1', 10000.00, '2024-03-15'),
-(2, 'Gasto2', 20000.00, '2024-03-15'),
+(2, 'Compra de insumos', 20000.00, '2024-03-15'),
 (3, 'Gasto3', 15000.00, '2023-08-18'),
 (4, 'Gasto4', 18500.00, '2023-09-22'),
 (5, 'Compra de productos de Limpieza Protex', 22000.00, '2023-10-25'),
@@ -221,7 +224,11 @@ INSERT INTO `ingresos` (`iding`, `detalle`, `total`, `fec`) VALUES
 (11, 'VENTA DE MEMBRESIAS', 80000.00, '2025-05-30'),
 (12, 'VENTA DE MEMBRESIAS', 80000.00, '2025-05-30'),
 (13, 'VENTA DE MEMBRESIAS', 6000.00, '2025-06-12'),
-(14, 'VENTA DE MEMBRESIAS', 129000.00, '2025-06-16');
+(14, 'VENTA DE MEMBRESIAS', 129000.00, '2025-06-16'),
+(15, 'VENTA DE PRODUCTOS', 15000.00, '2025-06-25'),
+(16, 'VENTA DE PRODUCTOS', 40000.00, '2025-06-24'),
+(17, 'VENTA DE PRODUCTOS', 5033000.00, '2025-06-26'),
+(18, 'VENTA DE PRODUCTOS', 25000.00, '2025-06-25');
 
 -- --------------------------------------------------------
 
@@ -259,23 +266,29 @@ CREATE TABLE `orders` (
   `total_price` decimal(10,2) NOT NULL,
   `placed_on` text NOT NULL,
   `payment_status` text NOT NULL,
-  `tipc` text NOT NULL
+  `tipc` text NOT NULL,
+  `despacho` varchar(255) DEFAULT NULL,
+  `responsable` varchar(55) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `orders`
 --
 
-INSERT INTO `orders` (`idord`, `user_id`, `user_cli`, `method`, `total_products`, `total_price`, `placed_on`, `payment_status`, `tipc`) VALUES
-(1, 1, 1, 'Tarjeta', 'Producto1', 20000.00, '2024-03-15', 'Pagado', 'Tipc'),
-(2, 2, 2, 'Efectivo', 'Producto2, Producto3', 70000.00, '2024-03-14', 'Pendiente', 'Tipc'),
-(3, 3, 3, 'Transferencia', 'Producto4, Producto5', 65000.00, '2023-08-18', 'Pagado', 'Tipc'),
-(4, 4, 4, 'Tarjeta', 'Producto2, Producto3, Producto5', 58500.00, '2023-09-22', 'Pagado', 'Tipc'),
-(5, 5, 5, 'Efectivo', 'Producto4', 125000.00, '2023-10-25', 'Pagado', 'Tipc'),
-(6, 2, 2, 'Efectivo', ', Producto2 ( 3 )', 450000.00, '2024-03-15', 'Aceptado', 'Ticket'),
-(7, 3, 5, 'Transferencia', ', Producto3 ( 2 )', 50000.00, '2024-03-19', 'Aceptado', 'Ticket'),
-(8, 3, 5, 'Transferencia', ', creatina 1Kg ( 2 ), Producto1 ( 1 ), Producto4 ( 1 ), Producto3 ( 2 )', 108500.00, '2024-03-19', 'Aceptado', 'Ticket'),
-(9, 3, 5, 'Efectivo', ', Producto1 ( 500 )', 5000000.00, '2024-03-19', 'Aceptado', 'Ticket');
+INSERT INTO `orders` (`idord`, `user_id`, `user_cli`, `method`, `total_products`, `total_price`, `placed_on`, `payment_status`, `tipc`, `despacho`, `responsable`) VALUES
+(1, 34, 1, 'Tarjeta', 'Producto1', 20000.00, '2024-03-15', 'Pagado', 'Tipc', 'DESPACHO TIENDA PUENTE ARANDA', NULL),
+(2, 13, 2, 'Efectivo', 'Producto2, Producto3', 70000.00, '2024-03-14', 'Pendiente', 'Tipc', 'COORDINADORA pte aranda', NULL),
+(3, 8, 3, 'Transferencia', 'Producto4, Producto5', 65000.00, '2023-08-18', 'Pagado', 'Tipc', 'cancelado', NULL),
+(4, 13, 4, 'Tarjeta', 'Producto2, Producto3, Producto5', 58500.00, '2023-09-22', 'Pagado', 'Tipc', 'DESPACHO TIENDA PUENTE ARANDA', NULL),
+(5, 12, 5, 'Efectivo', 'Producto4', 125000.00, '2023-10-25', 'Pagado', 'Tipc', 'DESPACHO TIENDA UNILAGO', NULL),
+(6, 13, 2, 'Efectivo', ', Producto2 ( 3 )', 450000.00, '2024-03-15', 'Aceptado', 'Ticket', 'DESPACHO TIENDA PUENTE ARANDA', NULL),
+(7, 15, 5, 'Transferencia', ', Producto3 ( 2 )', 50000.00, '2024-03-19', 'Aceptado', 'Ticket', 'PICAP', NULL),
+(8, 8, 5, 'Transferencia', ', creatina 1Kg ( 2 ), Producto1 ( 1 ), Producto4 ( 1 ), Producto3 ( 2 )', 108500.00, '2024-03-19', 'Aceptado', 'Ticket', 'DESPACHO TIENDA PUENTE ARANDA', NULL),
+(9, 10, 5, 'Efectivo', ', Producto1 ( 500 )', 5000000.00, '2024-03-19', 'Aceptado', 'Ticket', 'DESPACHO TIENDA CUCUTA', NULL),
+(10, 9, 12, 'Efectivo', ', Computador 117 ( 1 )', 15000.00, '2025-06-25', 'Aceptado', 'Ticket', 'DESPACHO TIENDA PUENTE ARANDA', NULL),
+(11, 32, 9, 'Efectivo', ', Computador DELL ( 1 ), Computador 117 ( 1 )', 40000.00, '2025-06-24', 'Aceptado', 'Ticket', 'DESPACHO TIENDA MEDELLIN', NULL),
+(12, 16, 7, 'Efectivo', ', Computador Compax ( 1 ), lenovo ( 1 ), Computador 117 ( 1 )', 5033000.00, '2025-06-26', 'Aceptado', 'Ticket', 'INTERRAPIDISIMO pte aranda', NULL),
+(13, 16, 9, 'Efectivo', ', Computador DELL ( 1 )', 25000.00, '2025-06-25', 'Aceptado', 'Ticket', 'DESPACHO TIENDA PUENTE ARANDA', NULL);
 
 -- --------------------------------------------------------
 
@@ -336,12 +349,12 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`idprod`, `codba`, `nomprd`, `idcate`, `precio`, `stock`, `foto`, `venci`, `esta`, `fere`, `serial`, `marca`, `ram`, `disco`, `prcpro`, `pntpro`, `tarpro`, `grado`) VALUES
-(1, 'vAZCeYThjC6An7', 'lenovo', 4, 5000000.00, 2, '10878.jpg', '2025-05-01', 'Inactivo', '2025-05-28 20:32:22', 'H7YY7MINAndznR', 'lenovo', NULL, NULL, NULL, NULL, '4GB', '0'),
+(1, 'vAZCeYThjC6An7', 'lenovo', 4, 5000000.00, 1, '10878.jpg', '2025-05-01', 'Inactivo', '2025-05-28 20:32:22', 'H7YY7MINAndznR', 'lenovo', NULL, NULL, NULL, NULL, '4GB', '0'),
 (2, '12345678901234', 'Computador Lenovo', 1, 10000.00, 1000, '115365.jpg', '2024-12-31', 'Activo', '2024-03-15 08:27:45', 'H7YY7MINAndznR', 'lenovo', NULL, NULL, NULL, NULL, 'Integrada', '#N/D'),
-(3, '56789012340123', 'Computador 117', 2, 15000.00, 50, '341946.jpg', '2025-06-30', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', 'SCRAP'),
-(4, '67890123451234', 'Computador DELL', 3, 25000.00, 26, '680339.jpg', '2025-12-31', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', ''),
+(3, '56789012340123', 'Computador 117', 2, 15000.00, 47, '341946.jpg', '2025-06-30', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', 'SCRAP'),
+(4, '67890123451234', 'Computador DELL', 3, 25000.00, 24, '680339.jpg', '2025-12-31', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', ''),
 (5, '78901234562345', 'Computador ASUS', 1, 12500.00, 81, '579718.jpg', '2024-10-31', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', 'C'),
-(6, '89012345673456', 'Computador Compax', 4, 18000.00, 59, '956303.jpg', '2024-08-31', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', 'B'),
+(6, '89012345673456', 'Computador Compax', 4, 18000.00, 58, '956303.jpg', '2024-08-31', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', 'B'),
 (7, 'H7YY7MINAndznR', 'Computador HP', 1, 229500.00, 1000, '375961.png', '2025-04-01', 'Activo', '2024-03-21 19:19:20', 'H7YY7MINAndznR', 'HP', '16 GB', '256GB SSD', 'i7 8th', '14\"', '2 GB', 'A');
 
 -- --------------------------------------------------------
@@ -446,7 +459,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombre`, `usuario`, `correo`, `clave`, `rol`, `foto`, `estado`, `fere`, `idsede`) VALUES
-(1, 'FrankQV', 'frank', 'frank@admin.com', '202cb962ac59075b964b07152d234b70', '1', '1', '1', '2025-05-28 14:48:15', '3'),
+(1, 'FrankQV', 'frank', 'frank@admin.com', '202cb962ac59075b964b07152d234b70', '1', '1', '1', '2025-05-28 14:48:15', 'Cucuta'),
 (2, 'Cristhian Romero', 'CristhianRomeropc', 'cr123@data.com', '53c9051e332d17250009640d364414c4', '1', '1', '1', '2025-05-28 22:37:54', NULL),
 (3, 'Jasson Robles', 'Jassonroblespc', 'jr123@data.com', '75dbf8a92d4276fb51528da4e4a9d2c3', '1', '1', '1', '2025-05-28 22:38:35', NULL),
 (4, 'Andrés Buitrago', 'AndresBuitragopc', 'ab123@data.com', '4b812d068c142583012bfb70131a61ab', '1', '1', '1', '2025-05-28 22:38:57', NULL),
@@ -464,13 +477,13 @@ INSERT INTO `usuarios` (`id`, `nombre`, `usuario`, `correo`, `clave`, `rol`, `fo
 (16, 'Deivi Lopez', 'Deivilopezpc', 'dl123@data.com', 'facbcd76dde2c647198b1bab1d5d834d', '6', '1', '1', '2025-05-29 14:32:08', NULL),
 (17, 'Maricela Tabla', 'Maricelatablapc', 'mt123@data.com', '0e57650e147ce827aec8b788db5a25ab', '3', '1', '1', '2025-05-29 14:32:29', ''),
 (18, 'Ana Gaviria', 'Anagaviriapc', 'ag123@data.com', '30e5488c3c420588715fe3a51143e7ec', '3', '1', '1', '2025-05-29 14:32:51', NULL),
-(19, 'Laura Pedraza', 'Laurapedrazapc', 'lp123@data.com', '39382aa4884af196f11ed8feba7d128f', '4', '1', '1', '2025-05-29 14:33:16', '4'),
-(21, 'Gabriela Gutiérrez', 'gabrielagutierrezpc', 'gg123@data.com', '7d9bfd94d852319998c99d2c07980246', '4', '1', '1', '2025-05-29 14:33:42', '3'),
-(22, 'Mónica Valencia', 'Monicavalenciapc', 'mv123@data.com', '213a253bf5cce2d84e4032ace9e29aa7', '4', '1', '1', '2025-05-29 14:34:06', '2'),
+(19, 'Laura Pedraza', 'Laurapedrazapc', 'lp123@data.com', '39382aa4884af196f11ed8feba7d128f', '4', '1', '1', '2025-05-29 14:33:16', 'Unilago'),
+(21, 'Gabriela Gutiérrez', 'gabrielagutierrezpc', 'gg123@data.com', '7d9bfd94d852319998c99d2c07980246', '4', '1', '1', '2025-05-29 14:33:42', 'Cucuta'),
+(22, 'Mónica Valencia', 'Monicavalenciapc', 'mv123@data.com', '213a253bf5cce2d84e4032ace9e29aa7', '4', '1', '1', '2025-05-29 14:34:06', 'Principal'),
 (28, 'frank2', 'frank2', 'frank2@gmail.com', '202cb962ac59075b964b07152d234b70', '2', '1', '1', '2025-06-06 21:40:21', '2'),
-(29, 'frank3', 'frank3', 'frank3@gmail.com', '202cb962ac59075b964b07152d234b70', '3', '1', '1', '2025-06-09 20:07:48', '3'),
-(31, 'frank4', 'frank4', 'frank4@gmail.com', '202cb962ac59075b964b07152d234b70', '4', '1', '1', '2025-06-09 20:08:22', '4'),
-(32, 'frank5', 'frank5', 'frank5@gmail.com', '202cb962ac59075b964b07152d234b70', '5', '1', '1', '2025-06-09 20:08:38', NULL),
+(29, 'frank3', 'frank3', 'frank3@gmail.com', '202cb962ac59075b964b07152d234b70', '3', '1', '1', '2025-06-09 20:07:48', 'Cucuta'),
+(31, 'frank4', 'frank4', 'frank4@gmail.com', '202cb962ac59075b964b07152d234b70', '4', '1', '1', '2025-06-09 20:08:22', 'Unilago'),
+(32, 'frank5', 'frank5', 'frank5@gmail.com', '202cb962ac59075b964b07152d234b70', '5', '1', '1', '2025-06-09 20:08:38', 'Medellin'),
 (33, 'frank6', 'frank6', 'frank6@gmail.com', '202cb962ac59075b964b07152d234b70', '6', '1', '1', '2025-06-09 20:09:04', NULL),
 (34, 'frank7', 'frank7', 'frank7@gmail.com', '202cb962ac59075b964b07152d234b70', '7', '1', '1', '2025-06-09 20:09:18', NULL);
 
@@ -498,9 +511,9 @@ ALTER TABLE `categoria`
 --
 ALTER TABLE `clientes`
   ADD PRIMARY KEY (`idclie`),
-  ADD UNIQUE KEY `correo_UNIQUE` (`correo`) USING HASH,
   ADD UNIQUE KEY `numid_UNIQUE` (`numid`),
-  ADD UNIQUE KEY `idclie` (`idclie`);
+  ADD UNIQUE KEY `idclie` (`idclie`),
+  ADD UNIQUE KEY `correo_UNIQUE` (`correo`) USING HASH;
 
 --
 -- Indices de la tabla `compra`
@@ -597,7 +610,7 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `idclie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `idclie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `compra`
@@ -615,7 +628,7 @@ ALTER TABLE `gastos`
 -- AUTO_INCREMENT de la tabla `ingresos`
 --
 ALTER TABLE `ingresos`
-  MODIFY `iding` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `iding` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `marketing`
@@ -627,7 +640,7 @@ ALTER TABLE `marketing`
 -- AUTO_INCREMENT de la tabla `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `idord` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `idord` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
@@ -646,20 +659,17 @@ ALTER TABLE `proveedores`
 --
 ALTER TABLE `servicio`
   MODIFY `idservc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
 --
 -- AUTO_INCREMENT de la tabla `setting`
 --
 ALTER TABLE `setting`
   MODIFY `idsett` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 COMMIT;
-
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

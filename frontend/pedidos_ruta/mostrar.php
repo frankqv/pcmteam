@@ -3,8 +3,34 @@
 ob_start();
     session_start();
 
-if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2])){
-header('location: ../error404.php');
+if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5])){
+    header('location: ../error404.php');
+    exit;
+}
+include_once '../../backend/bd/ctconex.php';
+
+// Obtener técnicos (roles 5, 6, 7)
+$tecnicos = $connect->query("SELECT id, nombre FROM usuarios WHERE rol IN ('5','6','7')")->fetchAll(PDO::FETCH_ASSOC);
+
+// Consulta principal de pedidos
+$sql = "
+SELECT o.*, c.nomcli, c.apecli, c.idsede, s.servtxt, s.ini, s.fin, u.nombre as tecnico
+FROM orders o
+LEFT JOIN clientes c ON o.user_cli = c.idclie
+LEFT JOIN servicio s ON s.idclie = c.idclie
+LEFT JOIN usuarios u ON o.user_id = u.id
+ORDER BY o.idord DESC
+";
+$pedidos = $connect->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+
+// Mapeo de estados
+function estadoPedido($status) {
+    $map = [
+        'Pagado' => 'Finalizado',
+        'Pendiente' => 'Alistamiento',
+        'Aceptado' => 'Enviado',
+    ];
+    return $map[$status] ?? $status;
 }
 ?>
 <?php if(isset($_SESSION['id'])) { ?>
@@ -23,13 +49,11 @@ header('location: ../error404.php');
     <!----css3---->
     <link rel="stylesheet" href="../../backend/css/custom.css">
     <link rel="stylesheet" href="../../backend/css/loader.css">
-
     <!-- Data Tables -->
     <link rel="stylesheet" type="text/css" href="../../backend/css/datatable.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/buttonsdataTables.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/font.css">
     <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -40,9 +64,8 @@ header('location: ../error404.php');
 
 <body>
     <div class="wrapper">
-
         <!-- layouts nav.php  |  Sidebar -->
-        <div class="body-overlay"></div>s
+        <div class="body-overlay"></div>
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
         <nav id="sidebar">
             <div class="sidebar-header">
@@ -50,18 +73,91 @@ header('location: ../error404.php');
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
+        <div class="top-navbar">
+                <nav class="navbar navbar-expand-lg">
+                    <div class="container-fluid">
+                        <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
+                            <span class="material-icons">arrow_back_ios</span>
+                        </button>
+                        <a class="navbar-brand" href="#"> Productos </a>
+                        <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
+                            data-toggle="collapse" data-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="material-icons">more_vert</span>
+                        </button>
+                        <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
+                            id="navbarSupportedContent">
+                            <ul class="nav navbar-nav ml-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="../cuenta/configuracion.php">
+                                        <span class="material-icons">settings</span>
+                                    </a>
+                                </li>
+                                <li class="dropdown nav-item active">
+                                    <a href="#" class="nav-link" data-toggle="dropdown">
+                                        <img src="../../backend/img/reere.png">
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="../cuenta/perfil.php">Mi perfil</a>
+                                        </li>
+                                        <li>
+                                            <a href="../cuenta/salir.php">Salir</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
         <!-- Page Content  -->
         <div id="content">
-
-            <!-- Contenido de top-navbar-->
-
-            <!-- Contenido de MAin-->
-
-            <!-- layouts nav.php  |  Sidebar -->
-            <?php    include_once '../bodega/construcionpage.php';    ?>
-            <div>
-                <?php construcionpage(); ?>
+            <div class="container mt-4">
+                <h2>Alistamientos</h2>
+                <table class="table table-bordered table-hover" id="tablaPedidos">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Técnico Responsable</th>
+                            <th>Fecha de Inicio</th>
+                            <th>Número de Pedido</th>
+                            <th>Descripción</th>
+                            <th>Nombre Cliente</th>
+                            <th>Tienda</th>
+                            <th>Saldo</th>
+                            <th>Ver Fotos</th>
+                            <th>Estado</th>
+                            <th>Imprimir</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach($pedidos as $pedido): ?>
+                        <tr>
+                            <td>
+                                <form method="post" action="asignar_tecnico.php" style="display:inline-block;">
+                                    <input type="hidden" name="idord" value="<?php echo $pedido['idord']; ?>">
+                                    <select name="tecnico_id" class="form-control form-control-sm" onchange="this.form.submit()">
+                                        <option value="">Seleccionar</option>
+                                        <?php foreach($tecnicos as $tec): ?>
+                                            <option value="<?php echo $tec['id']; ?>" <?php if($pedido['user_id'] == $tec['id']) echo 'selected'; ?>><?php echo htmlspecialchars($tec['nombre']); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </form>
+                            </td>
+                            <td><?php echo htmlspecialchars($pedido['ini'] ?? $pedido['placed_on']); ?></td>
+                            <td>#<?php echo 1000 + (int)$pedido['idord']; ?></td>
+                            <td><?php echo htmlspecialchars($pedido['servtxt'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($pedido['nomcli'] . ' ' . $pedido['apecli']); ?></td>
+                            <td><?php echo htmlspecialchars($pedido['idsede']); ?></td>
+                            <td>$<?php echo number_format($pedido['total_price'], 0, ',', '.'); ?></td>
+                            <td><a href="ver.php?id=<?php echo $pedido['idord']; ?>" class="btn btn-info btn-sm">Ver</a></td>
+                            <td><?php echo estadoPedido($pedido['payment_status']); ?></td>
+                            <td><a href="factura.php?id=<?php echo $pedido['idord']; ?>" class="btn btn-primary btn-sm" target="_blank">Imprimir</a> <hr/>
+                            <a href="delicado.php?id=<?php echo $pedido['idord']; ?>" class="btn btn-danger btn-sm">Guia Envio</a></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
         <!---  Contenido de MAIN -->
@@ -92,6 +188,11 @@ header('location: ../error404.php');
         });
         google.charts.setOnLoadCallback(drawChart);
         </script>
+        <script>
+        $(document).ready(function() {
+            $('#tablaPedidos').DataTable();
+        });
+        </script>
 
 </body>
 
@@ -101,4 +202,4 @@ header('location: ../error404.php');
 <?php }else{ 
 header('Location: ../error404.php');
 } ?>
-<?php ob_end_flush(); ?>ss
+<?php ob_end_flush(); ?>

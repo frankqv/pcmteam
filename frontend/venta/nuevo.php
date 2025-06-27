@@ -2,7 +2,7 @@
 ob_start();
      session_start();
     
-    if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2])){
+    if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4])){
     header('location: ../error404.php');
   }
 ?>
@@ -22,15 +22,11 @@ ob_start();
     <!----css3---->
     <link rel="stylesheet" href="../../backend/css/custom.css">
     <link rel="stylesheet" href="../../backend/css/loader.css">
-
-
     <!-- Data Tables -->
     <link rel="stylesheet" type="text/css" href="../../backend/css/datatable.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/buttonsdataTables.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/font.css">
-
     <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -40,9 +36,7 @@ ob_start();
 </head>
 
 <body>
-
     <div class="wrapper">
-
         <div class="body-overlay"></div>
         <!-- layouts nav.php  |  Sidebar -->
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
@@ -52,7 +46,6 @@ ob_start();
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
         <!-- Page Content  -->
         <div id="content">
             <div class='pre-loader'>
@@ -65,15 +58,12 @@ ob_start();
                         <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
-
                         <a class="navbar-brand" href="#"> Ventas </a>
-
                         <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
                             data-toggle="collapse" data-target="#navbarSupportedContent"
                             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="material-icons">more_vert</span>
                         </button>
-
                         <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
                             id="navbarSupportedContent">
                             <ul class="nav navbar-nav ml-auto">
@@ -86,7 +76,6 @@ ob_start();
                                     <a href="#" class="nav-link" data-toggle="dropdown">
 
                                         <img src="../../backend/img/reere.png">
-
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
@@ -95,10 +84,8 @@ ob_start();
                                         <li>
                                             <a href="../cuenta/salir.php">Salir</a>
                                         </li>
-
                                     </ul>
                                 </li>
-
                             </ul>
                         </div>
                     </div>
@@ -132,14 +119,14 @@ ob_start();
 
                                     </thead>
                                     <tbody>
-                                        <?php
-      require_once('../../backend/bd/ctconex.php');
-      $grand_total = 0;
-      $select_cart = $connect->prepare("SELECT cart.idv, usuarios.id, usuarios.nombre, producto.idprod, producto.codba, producto.nomprd, producto.precio, producto.stock, cart.name, cart.price, cart.quantity FROM cart INNER JOIN usuarios ON cart.user_id = usuarios.id INNER JOIN producto ON cart.idprod = producto.idprod");
-       $select_cart->execute();
-      if($select_cart->rowCount() > 0){
-         while($fetch_cart = $select_cart->fetch(PDO::FETCH_ASSOC)){ 
-   ?>
+                                    <?php
+                                        require_once('../../backend/bd/ctconex.php');
+                                        $grand_total = 0;
+                                        $select_cart = $connect->prepare("SELECT cart.idv, usuarios.id, usuarios.nombre, producto.idprod, producto.codba, producto.nomprd, producto.precio, producto.stock, cart.name, cart.price, cart.quantity FROM cart INNER JOIN usuarios ON cart.user_id = usuarios.id INNER JOIN producto ON cart.idprod = producto.idprod");
+                                        $select_cart->execute();
+                                        if($select_cart->rowCount() > 0){
+                                            while($fetch_cart = $select_cart->fetch(PDO::FETCH_ASSOC)){ 
+                                    ?>
                                         <td><?= $fetch_cart['nomprd']; ?></td>
                                         <td><?= $fetch_cart['precio']; ?></td>
                                         <td><?= $fetch_cart['stock']; ?></td>
@@ -166,12 +153,12 @@ ob_start();
                                         </td>
                                     </tbody>
                                     <?php
-      $grand_total += $sub_total;
-      }
-   }else{
-      echo '<p class="alert alert-warning">Tu carrito esta vació</p>';
-   }
-   ?>
+                                        $grand_total += $sub_total;
+                                        }
+                                    }else{
+                                        echo '<p class="alert alert-warning">Tu carrito esta vació</p>';
+                                    }
+                                    ?>
                                 </table>
                             </div>
 
@@ -189,15 +176,14 @@ ob_start();
 
                             <div class="card-content table-responsive">
                                 <?php 
-
-$sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere, producto.serial, producto.marca, producto.ram, producto.disco, producto.prcpro, producto.pntpro, producto.tarpro, producto.grado FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate order BY codba DESC;");
- $sentencia->execute();
-$data =  array();
-if($sentencia){
-  while($r = $sentencia->fetchObject()){
-    $data[] = $r;
-  }
-}
+                                    $sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere, producto.serial, producto.marca, producto.ram, producto.disco, producto.prcpro, producto.pntpro, producto.tarpro, producto.grado FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate order BY codba DESC;");
+                                    $sentencia->execute();
+                                    $data =  array();
+                                    if($sentencia){
+                                    while($r = $sentencia->fetchObject()){
+                                        $data[] = $r;
+                                    }
+                                    }
                                      ?>
                                 <?php if(count($data)>0):?>
                                 <table class="table table-hover" id="example">
@@ -205,7 +191,6 @@ if($sentencia){
                                         <tr>
                                             <th>Nombre</th>
                                             <th>Precio</th>
-
                                             <th>Foto</th>
                                             <th>Stock</th>
                                             <th>Opcion</th>
@@ -230,7 +215,6 @@ if($sentencia){
                                                 }
                                             ?>
                                             <td>
-
                                                 <form class="form-inline" method="post" action="">
                                                     <input type="hidden" name="prdt" value="<?php echo $d->idprod; ?>">
                                                     <input type="hidden" name="pdrus"
@@ -246,7 +230,6 @@ if($sentencia){
                                                             class='material-icons' data-toggle='tooltip'
                                                             title='crear'>shopping_cart</i></button>
                                                 </form>
-
                                             </td>
                                         </tr>
                                         <?php endforeach; ?>
@@ -260,11 +243,8 @@ if($sentencia){
 
                                 <?php endif; ?>
                             </div>
-
-
                         </div>
                     </div>
-
                     <div class="col-lg-12 col-md-12">
                         <div class="card" style="min-height: 485px">
                             <div class="card-header card-header-text">
@@ -294,18 +274,18 @@ if($sentencia){
                                                 <select class="form-control" required name="cxtip">
                                                     <option value="">----------Seleccione------------</option>
                                                     <?php
-           //require '../../backend/bd/ctconex.php';
-            $stmt = $connect->prepare("SELECT * FROM clientes where estad='Activo' order by idclie desc");
-            $stmt->execute();
-            while($row=$stmt->fetch(PDO::FETCH_ASSOC))
-                {
-                    extract($row);
-                    ?>
+                                                    //require '../../backend/bd/ctconex.php';
+                                                        $stmt = $connect->prepare("SELECT * FROM clientes where estad='Activo' order by idclie desc");
+                                                        $stmt->execute();
+                                                        while($row=$stmt->fetch(PDO::FETCH_ASSOC))
+                                                            {
+                                                                extract($row);
+                                                                ?>
                                                     <option value="<?php echo $idclie; ?>"><?php echo $nomcli; ?>
                                                         <?php echo $apecli; ?></option>
                                                     <?php
-                }
-        ?>
+                                                            }
+                                                    ?>
                                                     ?>
                                                 </select>
                                             </div>
@@ -315,11 +295,11 @@ if($sentencia){
                                                 <label for="email">Comprobante<span class="text-danger">*</span></label>
                                                 <select class="form-control" required name="cxcom">
                                                     <option value="">----------Seleccione------------</option>
-                                                    <option value="Ticket">Ticket</option>
+                                                    <option value="Ticket">Factura</option>
+                                                    <option value="Ticket">Boleta</option>
                                                 </select>
                                             </div>
                                         </div>
-
                                         <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
                                                 <label for="email">Tipo de pago<span
@@ -333,12 +313,9 @@ if($sentencia){
                                                     <option value="Efectivo">Wompi</option>
                                                     <option value="Efectivo">SisteCredito</option>
                                                     <option value="Efectivo">PSE</option>
-                                                   
-                                                    
                                                 </select>
                                             </div>
                                         </div>
-
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 col-lg-12">
@@ -346,23 +323,21 @@ if($sentencia){
                                                 <label for="email">Fecha<span class="text-danger">*</span></label>
                                                 <input type="text" id="fechaActual" class="form-control" name="txtdate"
                                                     required>
-
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row">
                                         <?php
-    //require_once('../../backend/config/Conexion.php');
-        $user_id = $_SESSION['id'];
-      $cart_grand_total = 0;
-      $select_cart_items = $connect->prepare("SELECT cart.idv, usuarios.id, usuarios.nombre, producto.idprod, producto.codba, producto.nomprd, producto.precio, producto.stock, cart.name, cart.price, cart.quantity FROM cart INNER JOIN usuarios ON cart.user_id = usuarios.id INNER JOIN producto ON cart.idprod = producto.idprod WHERE user_id = ?");
-      $select_cart_items->execute([$user_id]);
-      if($select_cart_items->rowCount() > 0){
-         while($fetch_cart_items = $select_cart_items->fetch(PDO::FETCH_ASSOC)){
-            $cart_total_price = ($fetch_cart_items['precio'] * $fetch_cart_items['quantity']);
-            $cart_grand_total += $cart_total_price;
-   ?>
+                                        //require_once('../../backend/config/Conexion.php');
+                                            $user_id = $_SESSION['id'];
+                                            $cart_grand_total = 0;
+                                            $select_cart_items = $connect->prepare("SELECT cart.idv, usuarios.id, usuarios.nombre, producto.idprod, producto.codba, producto.nomprd, producto.precio, producto.stock, cart.name, cart.price, cart.quantity FROM cart INNER JOIN usuarios ON cart.user_id = usuarios.id INNER JOIN producto ON cart.idprod = producto.idprod WHERE user_id = ?");
+                                            $select_cart_items->execute([$user_id]);
+                                            if($select_cart_items->rowCount() > 0){
+                                                while($fetch_cart_items = $select_cart_items->fetch(PDO::FETCH_ASSOC)){
+                                                $cart_total_price = ($fetch_cart_items['precio'] * $fetch_cart_items['quantity']);
+                                                $cart_grand_total += $cart_total_price;
+                                        ?>
                                         <div class="col-md-12 col-lg-12">
                                             <div class="form-group">
                                                 <label for="email">Mis productos<span
@@ -374,33 +349,22 @@ if($sentencia){
                                                     name="canti[]">
                                                 <input type="hidden" value="<?= $fetch_cart_items['idv']; ?>"
                                                     name="idcart">
-
-
                                                 <input readonly class="form-control" type="text"
                                                     value="<?= $fetch_cart_items['name']; ?> (<?= 'S/'.$fetch_cart_items['precio'].'/- x '. $fetch_cart_items['quantity']; ?>)"
                                                     name="">
                                             </div>
                                         </div>
-                                        <?php
-    }
-   }else{
-      echo '<p class="empty"><p class="alert alert-warning">Tu carrito esta vació</p></p>';
-
-   }
-   ?>
-
+                                        <?php }
+                                        }else{  echo '<p class="empty"><p class="alert alert-warning">Tu carrito esta vació</p></p>';   }
+                                        ?> 
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 col-lg-12">
-
                                             <h1 style="font-size:42px; color:#000000;"><strong>Precio Total
                                                     :S/<?php echo number_format($cart_grand_total, 2); ?> </strong></h1>
                                         </div>
-
                                         <input type="hidden" value="<?php  echo $cart_grand_total ?>" name="txttotalll">
-                                    </div>
-
-                                    <hr>
+                                    </div> <hr>
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <button name="order" type="submit"
@@ -411,19 +375,13 @@ if($sentencia){
                                     </div>
                                 </form>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
-
     </div>
     </div>
-
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -431,18 +389,13 @@ if($sentencia){
     <script src="../../backend/js/popper.min.js"></script>
     <script src="../../backend/js/bootstrap.min.js"></script>
     <script src="../../backend/js/jquery-3.3.1.min.js"></script>
-
     <script src="../../backend/js/sweetalert.js"></script>
     <?php
-    include_once '../../backend/php/st_add_cart.php'
-?>
+    include_once '../../backend/php/st_add_cart.php'?>
     <?php
-    include_once '../../backend/php/st_updcart.php'
-?>
-
+    include_once '../../backend/php/st_updcart.php'?>
     <?php
-    include_once '../../backend/php/st_addcheck.php'
-?>
+    include_once '../../backend/php/st_addcheck.php'  ?>
     <script type="text/javascript">
     $(document).ready(function() {
         $('#sidebarCollapse').on('click', function() {
@@ -478,8 +431,6 @@ if($sentencia){
         });
     });
     </script>
-
-
     <script type="text/javascript">
     window.onload = function() {
         var fecha = new Date(); //Fecha actual
@@ -496,10 +447,6 @@ if($sentencia){
 </body>
 
 </html>
-
-
-
-
 
 <?php }else{ 
     header('Location: ../error404.php');
