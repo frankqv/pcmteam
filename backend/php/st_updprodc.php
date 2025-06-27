@@ -11,10 +11,18 @@
     $stock = $_POST['txtstc'];
     $venci = $_POST['txtvenc'];
     $esta = $_POST['txtesta'];
+    $serial = $_POST['txtserial'];
+    $marca = $_POST['txtmarca'];
+    $grado = $_POST['txtgrado'];
+    $prcpro = $_POST['txtprcpro'];
+    $ram = $_POST['txtram'];
+    $disco = $_POST['txtdisco'];
+    $pntpro = $_POST['txtpntpro'];
+    $tarpro = $_POST['txttarpro'];
 
     try {
 
-        $query = "UPDATE producto SET codba=:codba, nomprd=:nomprd,idcate=:idcate,precio=:precio,stock=:stock,venci=:venci,esta=:esta WHERE idprod=:idprod LIMIT 1";
+        $query = "UPDATE producto SET codba=:codba, nomprd=:nomprd,idcate=:idcate,precio=:precio,stock=:stock,venci=:venci,esta=:esta,serial=:serial,marca=:marca,grado=:grado,prcpro=:prcpro,ram=:ram,disco=:disco,pntpro=:pntpro,tarpro=:tarpro WHERE idprod=:idprod LIMIT 1";
         $statement = $connect->prepare($query);
 
         $data = [
@@ -25,7 +33,14 @@
             ':stock' => $stock,
             ':venci' => $venci,
             ':esta' => $esta,
-           
+            ':serial' => $serial,
+            ':marca' => $marca,
+            ':grado' => $grado,
+            ':prcpro' => $prcpro,
+            ':ram' => $ram,
+            ':disco' => $disco,
+            ':pntpro' => $pntpro,
+            ':tarpro' => $tarpro,
             ':idprod' => $idprod
         ];
         $query_execute = $statement->execute($data);

@@ -36,7 +36,7 @@ if (isset($_POST['ctglog'])) {
               header('Location: administrador/escritorio.php'); //ADMINISTRADOR
               exit;
             case 2:
-              header('Location: cliente/escritorio.php'); //CLIENTE
+              header('Location: u_generico/escritorio.php'); //CLIENTE
               exit;
             case 3:
               header('location: contable/escritorio.php'); //Contable

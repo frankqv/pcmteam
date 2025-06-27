@@ -10,7 +10,7 @@ switch ($rol) {
         break;
     case 2:
         $panelName = 'Panel Cliente';
-        $panelUrl = '../cliente/escritorio.php';
+        $panelUrl = '../u_generico/escritorio.php';
         break;
     case 3:
         $panelName = 'Panel Contable';

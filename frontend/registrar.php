@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $clave = md5($_POST["clave"]); // Hash MD5 de la contraseña
 
     // Valores por defecto
-    $rol = 2; // Rol de cliente
+    $rol = 2; // Rol de usuario_generico
     $foto = 1; // Foto por defecto
     $estado = 1; // Estado activo por defecto
 

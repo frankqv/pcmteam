@@ -47,7 +47,7 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 2) {
             </div>
             <ul class="list-unstyled components">
                 <li class="active">
-                    <a href="../cliente/escritorio.php" class="dashboard"><i
+                    <a href="../u_generico/escritorio.php" class="dashboard"><i
                             class="material-icons">dashboard</i><span>Panel Cliente</span></a>
                 </li>
                 <li class="dropdown">
@@ -55,12 +55,12 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 2) {
                         <i class="material-icons">dataset</i><span>Planes</span></a>
                     <ul class="collapse list-unstyled menu" id="pageSubmenu2">
                         <li>
-                            <a href="../cliente/plan.php">Mostrar</a>
+                            <a href="../u_generico/plan.php">Mostrar</a>
                         </li>
                     </ul>
                 </li>
                 <li class="">
-                    <a href="../cliente/servicio.php"><i
+                    <a href="../u_generico/servicio.php"><i
                             class="material-icons">view_timeline</i><span>Servicio</span></a>
                 </li>
         </nav>

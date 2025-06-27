@@ -3,7 +3,7 @@ session_start();
     if (isset($_SESSION['id'])){
         header('administrador/escritorio.php');
     }elseif (isset($_SESSION['id'])){
-        header('cliente/escritorio.php');
+        header('u_generico/escritorio.php');
     }
     include_once '../backend/php/ctlogx.php'
  */?>
@@ -16,7 +16,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['rol'])) {
             header('Location: administrador/escritorio.php');
             break;
         case 2:
-            header('Location: cliente/escritorio.php');
+            header('Location: u_generico/escritorio.php');
             break;
         case 3:
             header('Location: contable/escritorio.php');
