@@ -16,7 +16,7 @@ header('location: ../error404.php');
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-    <title>PCMARKETTEAM</title>
+    <title>Proveedores - PCMARKETTEAM</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../backend/css/bootstrap.min.css">
     <!----css3---->
@@ -41,7 +41,7 @@ header('location: ../error404.php');
     <div class="wrapper">
 
         <!-- layouts nav.php  |  Sidebar -->
-        <div class="body-overlay"></div>s
+        <div class="body-overlay"></div>
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
         <nav id="sidebar">
             <div class="sidebar-header">
@@ -52,15 +52,133 @@ header('location: ../error404.php');
 
         <!-- Page Content  -->
         <div id="content">
+            <div class='pre-loader'>
+                <img class='loading-gif' alt='loading' src="https://i.imgflip.com/9vd6wr.gif" />
+            </div>
+            <div class="top-navbar">
+                <nav class="navbar navbar-expand-lg">
+                    <div class="container-fluid">
+                        <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
+                            <span class="material-icons">arrow_back_ios</span>
+                        </button>
 
-            <!-- Contenido de top-navbar-->
+                        <a class="navbar-brand" href="#"> Proveedores </a>
 
-            <!-- Contenido de MAin-->
+                        <button class="d-inline-block d-lg-none ml-auto more-button" type="button" data-toggle="collapse"
+                            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="material-icons">more_vert</span>
+                        </button>
 
-            <!-- layouts nav.php  |  Sidebar -->
-            <?php    include_once '../bodega/construcionpage.php';    ?>
-            <div>
-                <?php construcionpage(); ?>
+                        <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
+                            id="navbarSupportedContent">
+                            <ul class="nav navbar-nav ml-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="../cuenta/configuracion.php">
+                                        <span class="material-icons">settings</span>
+                                    </a>
+                                </li>
+                                <li class="dropdown nav-item active">
+                                    <a href="#" class="nav-link" data-toggle="dropdown">
+                                        <img src="../../backend/img/reere.png">
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="../cuenta/perfil.php">Mi perfil</a>
+                                        </li>
+                                        <li>
+                                            <a href="../cuenta/salir.php">Salir</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+
+            <div class="main-content">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card" style="min-height: 485px">
+                            <div class="card-header card-header-text">
+                                <h4 class="card-title">Proveedores</h4>
+                                <p class="category">Lista de proveedores registrados en el sistema</p>
+                            </div>
+                            <br>
+                            <a href="../proveedor/nuevo.php" class="btn btn-danger text-white">Nuevo Proveedor</a>
+                            <a href="../proveedor/importar.php" class="btn btn-success text-white ml-2">Importar Excel</a>
+                            <br>
+                            <div class="card-content table-responsive">
+                                <?php
+                                require '../../backend/bd/ctconex.php';
+                                $sentencia = $connect->prepare("SELECT * FROM proveedores ORDER BY nombre ASC;");
+                                $sentencia->execute();
+                                $data = array();
+                                if($sentencia){
+                                    while($r = $sentencia->fetchObject()){
+                                        $data[] = $r;
+                                    }
+                                }
+                                ?>
+                                <?php if(count($data)>0):?>
+                                <table class="table table-hover" id="example">
+                                    <thead class="text-primary">
+                                        <tr>
+                                            <th>Nomenclatura</th>
+                                            <th>Nombre</th>
+                                            <th>Teléfono</th>
+                                            <th>Correo</th>
+                                            <th>Dirección</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach($data as $d):?>
+                                        <tr>
+                                            <td><?php echo $d->nomenclatura; ?></td>
+                                            <td><?php echo $d->nombre; ?></td>
+                                            <td><?php echo $d->celu; ?></td>
+                                            <td><?php echo $d->correo; ?></td>
+                                            <td><?php echo $d->dire; ?></td>
+                                            <td>
+                                                <?php if($d->privado == 1) { ?>
+                                                    <span class="badge badge-success">Activo</span>
+                                                <?php } else { ?>
+                                                    <span class="badge badge-danger">Inactivo</span>
+                                                <?php } ?>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-info btn-sm" href="../proveedor/ver_detalles.php?id=<?php echo $d->id; ?>">
+                                                    <i class='material-icons' data-toggle='tooltip' title='Ver detalles'>visibility</i>
+                                                </a>
+                                                <a class="btn btn-warning btn-sm" href="../proveedor/editar.php?id=<?php echo $d->id; ?>">
+                                                    <i class='material-icons' data-toggle='tooltip' title='Editar'>edit</i>
+                                                </a>
+                                                <?php if($d->privado == 1): ?>
+                                                <a class="btn btn-danger btn-sm" href="../proveedor/desactivar.php?id=<?php echo $d->id; ?>">
+                                                    <i class='material-icons' data-toggle='tooltip' title='Desactivar'>block</i>
+                                                </a>
+                                                <?php else: ?>
+                                                <a class="btn btn-success btn-sm" href="../proveedor/activar.php?id=<?php echo $d->id; ?>">
+                                                    <i class='material-icons' data-toggle='tooltip' title='Activar'>check_circle</i>
+                                                </a>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                                <?php else:?>
+                                <div class="alert alert-warning" role="alert">
+                                    No se encontraron proveedores registrados!
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!---  Contenido de MAIN -->
@@ -93,6 +211,21 @@ header('location: ../error404.php');
         google.charts.setOnLoadCallback(drawChart);
         </script>
 
+            <script>
+        $(document).ready(function() {
+            if (!$.fn.DataTable.isDataTable('#example')) {
+                $('#example').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf', 'print'
+                    ],
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
@@ -101,4 +234,4 @@ header('location: ../error404.php');
 <?php }else{ 
 header('Location: ../error404.php');
 } ?>
-<?php ob_end_flush(); ?>ss
+<?php ob_end_flush(); ?>

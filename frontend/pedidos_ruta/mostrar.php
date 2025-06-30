@@ -3,7 +3,7 @@
 ob_start();
     session_start();
 
-if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5])){
+if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4, 7])){
     header('location: ../error404.php');
     exit;
 }
@@ -43,7 +43,7 @@ function estadoPedido($status) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-    <title>PCMARKETTEAM</title>
+    <title>Pedidos en Ruta - PCMARKETTEAM</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../backend/css/bootstrap.min.css">
     <!----css3---->
@@ -79,7 +79,7 @@ function estadoPedido($status) {
                         <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
-                        <a class="navbar-brand" href="#"> Productos </a>
+                        <a class="navbar-brand" href="#"> Pedidos en Ruta </a>
                         <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
                             data-toggle="collapse" data-target="#navbarSupportedContent"
                             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -113,8 +113,14 @@ function estadoPedido($status) {
             </div>
         <!-- Page Content  -->
         <div id="content">
+            <div class='pre-loader'>
+                <img class='loading-gif' alt='loading' src="https://i.imgflip.com/9vd6wr.gif" />
+            </div>
             <div class="container mt-4">
-                <h2>Alistamientos</h2>
+                <h2>Pedidos en Ruta</h2>
+                <a href="../pedidos_ruta/asignar_tecnico.php" class="btn btn-primary text-white">Asignar Técnico</a>
+                <a href="../pedidos_ruta/nuevo_pedido.php" class="btn btn-danger text-white ml-2">Nuevo Pedido</a>
+                <br>
                 <table class="table table-bordered table-hover" id="tablaPedidos">
                     <thead class="thead-dark">
                         <tr>

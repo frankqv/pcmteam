@@ -217,13 +217,19 @@ if (!in_array($rol, [2, 3, 4,6])) {
     ]]);
 }
 
-// Bodega 13
+# Bodega 13
 // Crear condicional para que comerciales no puedan ver los listados de portátiles
 if (in_array($rol, [1, 4, 5, 7])) {
     array_splice($menu, 13, 0, [[
         'label' => 'Bodega',
-        'url' => '../bodega/mostrar.php',
-        'icon' => 'warehouse'
+        'icon' => 'warehouse',
+        'id' => 'bodega',
+        'children' => [
+            ['label' => '> Inventario', 'url' => '../bodega/inventario.php'],
+            ['label' => '> Entradas', 'url' => '../bodega/entradas.php'],
+            ['label' => '> Salidas', 'url' => '../bodega/salidas.php'],
+            ['label' => '> Listado General', 'url' => '../bodega/mostrar.php']
+        ]
     ]]);
 }
 

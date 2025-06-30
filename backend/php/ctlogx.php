@@ -1,8 +1,15 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+session_start();
+error_reporting(0);
+
+// Corregir la ruta del archivo de conexión
+require_once __DIR__ . '/../bd/ctconex.php';
+
+$varsesion = $_SESSION['usuario'];
+if ($varsesion == null || $varsesion = '') {
+    header("Location: ../../index.php");
+    die();
 }
-require '../backend/bd/ctconex.php';
 
 if (isset($_POST['ctglog'])) {
   $errMsg = '';

@@ -374,7 +374,17 @@ CREATE TABLE `proveedores` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
+-- Agregar la columna nomenclatura a la tabla proveedores
+ALTER TABLE `proveedores` 
+ADD COLUMN `nomenclatura` VARCHAR(10) DEFAULT NULL AFTER `cuiprov`;
 
+-- Opcional: Crear un índice único para la nomenclatura
+CREATE UNIQUE INDEX idx_nomenclatura ON proveedores(nomenclatura);
+
+-- Opcional: Actualizar registros existentes con nomenclatura automática
+UPDATE proveedores 
+SET nomenclatura = CONCAT('PRV', LPAD(id, 3, '0')) 
+WHERE nomenclatura IS NULL;
 --
 -- Estructura de tabla para la tabla `servicio`
 --
@@ -673,3 +683,147 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+-- PRIMERO: Corregir la tabla proveedores para que tenga datos y estructura adecuada
+ALTER TABLE `proveedores` 
+CHANGE COLUMN `id` `id` int(11) NOT NULL AUTO_INCREMENT;
+
+-- Insertar algunos proveedores de ejemplo si la tabla está vacía
+INSERT IGNORE INTO `proveedores` (`id`, `privado`, `nombre`, `celu`, `correo`, `dire`, `cuiprov`) VALUES
+(1, 1, 'Proveedor Principal', 3001234567, 'proveedor1@email.com', 'Calle 123 #45-67', 'Bogotá'),
+(2, 1, 'Proveedor Secundario', 3007654321, 'proveedor2@email.com', 'Carrera 89 #12-34', 'Medellín');
+
+-- SEGUNDO: Crear la tabla bodega_inventario (sin dependencias)
+CREATE TABLE IF NOT EXISTS `bodega_inventario` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `codigo_g` varchar(50) NOT NULL COMMENT 'Código general del equipo',
+  `item` int(11) NOT NULL COMMENT 'Número de ítem secuencial',
+  `ubicacion` varchar(100) NOT NULL COMMENT 'Zona específica en bodega/laboratorio',
+  `posicion` varchar(50) NOT NULL COMMENT 'Posición exacta dentro de la ubicación',
+  `fecha_ingreso` datetime NOT NULL DEFAULT current_timestamp(),
+  `fecha_modificacion` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `activo_fijo` varchar(50) DEFAULT NULL COMMENT 'Identificador de activo fijo',
+  `codigo_lote` varchar(50) NOT NULL COMMENT 'Código de lote de ingreso',
+  `producto` varchar(50) NOT NULL COMMENT 'Tipo de producto (Laptop, Desktop, Monitor, AIO, etc.)',
+  `marca` varchar(50) NOT NULL COMMENT 'Marca del equipo',
+  `serial` varchar(100) NOT NULL COMMENT 'Número de serie del fabricante',
+  `modelo` varchar(100) NOT NULL COMMENT 'Modelo específico del equipo',
+  `procesador` varchar(100) DEFAULT NULL COMMENT 'Especificaciones del procesador',
+  `ram` varchar(50) DEFAULT NULL COMMENT 'Memoria RAM instalada',
+  `disco` varchar(100) DEFAULT NULL COMMENT 'Tipo y capacidad del disco',
+  `pulgadas` varchar(20) DEFAULT NULL COMMENT 'Tamaño de pantalla',
+  `observaciones` text DEFAULT NULL COMMENT 'Notas técnicas y observaciones',
+  `grado` enum('A','B','C') NOT NULL COMMENT 'Clasificación según procedimiento técnico',
+  `disposicion` varchar(50) NOT NULL COMMENT 'Estado actual del equipo en el proceso',
+  `estado` enum('activo','inactivo') NOT NULL DEFAULT 'activo',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `codigo_g` (`codigo_g`),
+  UNIQUE KEY `serial` (`serial`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- TERCERO: Crear la tabla bodega_entradas (CORREGIDA)
+CREATE TABLE IF NOT EXISTS `bodega_entradas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `inventario_id` int(11) NOT NULL COMMENT 'ID del equipo en inventario',
+  `fecha_entrada` datetime NOT NULL DEFAULT current_timestamp(),
+  `proveedor_id` int(11) NOT NULL COMMENT 'ID del proveedor',
+  `usuario_id` int(11) NOT NULL COMMENT 'ID del usuario que registra',
+  `cantidad` int(11) NOT NULL DEFAULT 1,
+  `observaciones` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `inventario_id` (`inventario_id`),
+  KEY `proveedor_id` (`proveedor_id`),
+  KEY `usuario_id` (`usuario_id`),
+  CONSTRAINT `fk_entradas_inventario` FOREIGN KEY (`inventario_id`) REFERENCES `bodega_inventario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_entradas_proveedor` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_entradas_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- CUARTO: Crear la tabla bodega_salidas
+CREATE TABLE IF NOT EXISTS `bodega_salidas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `inventario_id` int(11) NOT NULL COMMENT 'ID del equipo en inventario',
+  `fecha_salida` datetime NOT NULL DEFAULT current_timestamp(),
+  `tecnico_id` int(11) NOT NULL COMMENT 'ID del técnico responsable',
+  `usuario_id` int(11) NOT NULL COMMENT 'ID del usuario que registra',
+  `cantidad` int(11) NOT NULL DEFAULT 1,
+  `razon_salida` text NOT NULL,
+  `observaciones` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `inventario_id` (`inventario_id`),
+  KEY `tecnico_id` (`tecnico_id`),
+  KEY `usuario_id` (`usuario_id`),
+  CONSTRAINT `fk_salidas_inventario` FOREIGN KEY (`inventario_id`) REFERENCES `bodega_inventario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_salidas_tecnico` FOREIGN KEY (`tecnico_id`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_salidas_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- QUINTO: Crear la tabla bodega_diagnosticos
+CREATE TABLE IF NOT EXISTS `bodega_diagnosticos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `inventario_id` int(11) NOT NULL COMMENT 'ID del equipo en inventario',
+  `fecha_diagnostico` datetime NOT NULL DEFAULT current_timestamp(),
+  `tecnico_id` int(11) NOT NULL COMMENT 'ID del técnico que realiza el diagnóstico',
+  `camara` text DEFAULT NULL COMMENT 'Resultado prueba de cámara',
+  `teclado` text DEFAULT NULL COMMENT 'Resultado prueba de teclado',
+  `parlantes` text DEFAULT NULL COMMENT 'Resultado prueba de audio',
+  `bateria` text DEFAULT NULL COMMENT 'Resultado prueba de batería',
+  `microfono` text DEFAULT NULL COMMENT 'Resultado prueba de micrófono',
+  `pantalla` text DEFAULT NULL COMMENT 'Resultado prueba de pantalla',
+  `puertos` text DEFAULT NULL COMMENT 'Resultado prueba de puertos',
+  `disco` text DEFAULT NULL COMMENT 'Resultado prueba de disco',
+  `estado_reparacion` enum('falla_mecanica','falla_electrica','reparacion_cosmetica','aprobado') NOT NULL,
+  `observaciones` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `inventario_id` (`inventario_id`),
+  KEY `tecnico_id` (`tecnico_id`),
+  CONSTRAINT `fk_diagnosticos_inventario` FOREIGN KEY (`inventario_id`) REFERENCES `bodega_inventario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_diagnosticos_tecnico` FOREIGN KEY (`tecnico_id`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- SEXTO: Crear la tabla bodega_control_calidad
+CREATE TABLE IF NOT EXISTS `bodega_control_calidad` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `inventario_id` int(11) NOT NULL COMMENT 'ID del equipo en inventario',
+  `fecha_control` datetime NOT NULL DEFAULT current_timestamp(),
+  `tecnico_id` int(11) NOT NULL COMMENT 'ID del técnico que realiza el control',
+  `burning_test` text NOT NULL COMMENT 'Resultado de Burning Test',
+  `sentinel_test` text NOT NULL COMMENT 'Resultado de Sentinel',
+  `estado_final` enum('aprobado','rechazado') NOT NULL,
+  `categoria_rec` varchar(50) NOT NULL COMMENT 'Categorización REC',
+  `observaciones` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `inventario_id` (`inventario_id`),
+  KEY `tecnico_id` (`tecnico_id`),
+  CONSTRAINT `fk_calidad_inventario` FOREIGN KEY (`inventario_id`) REFERENCES `bodega_inventario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_calidad_tecnico` FOREIGN KEY (`tecnico_id`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- SÉPTIMO: Datos de ejemplo para bodega_inventario
+INSERT IGNORE INTO `bodega_inventario` 
+(`codigo_g`, `item`, `ubicacion`, `posicion`, `activo_fijo`, `codigo_lote`, `producto`, `marca`, `serial`, `modelo`, `procesador`, `ram`, `disco`, `pulgadas`, `observaciones`, `grado`, `disposicion`) 
+VALUES
+('EQ001', 1, 'BODEGA-A', 'ESTANTE-1-A', 'AF001', 'LOTE2025001', 'Laptop', 'Dell', 'DL123456789', 'Latitude 5520', 'Intel i5-1135G7', '8GB', '256GB SSD', '15.6', 'Equipo en buen estado', 'A', 'En inventario'),
+('EQ002', 2, 'BODEGA-A', 'ESTANTE-1-B', 'AF002', 'LOTE2025001', 'Desktop', 'HP', 'HP987654321', 'EliteDesk 800', 'Intel i7-10700', '16GB', '512GB SSD', 'N/A', 'Requiere limpieza', 'B', 'En diagnóstico'),
+('EQ003', 3, 'BODEGA-B', 'ESTANTE-2-A', 'AF003', 'LOTE2025002', 'AIO', 'Lenovo', 'LN456789123', 'ThinkCentre M90a', 'Intel i5-10400T', '8GB', '1TB HDD', '23.8', 'Pantalla con rayones menores', 'C', 'En reparación');
+
+-- OCTAVO: Datos de ejemplo para las demás tablas
+INSERT IGNORE INTO `bodega_entradas` 
+(`inventario_id`, `proveedor_id`, `usuario_id`, `cantidad`, `observaciones`) 
+VALUES
+(1, 1, 1, 1, 'Entrada inicial de inventario'),
+(2, 1, 1, 1, 'Entrada desde proveedor principal'),
+(3, 2, 1, 1, 'Entrada desde proveedor secundario');
+
+INSERT IGNORE INTO `bodega_diagnosticos` 
+(`inventario_id`, `tecnico_id`, `camara`, `teclado`, `parlantes`, `bateria`, `microfono`, `pantalla`, `puertos`, `disco`, `estado_reparacion`, `observaciones`) 
+VALUES
+(1, 8, 'Funcional', 'Funcional', 'Funcional', '85% capacidad', 'Funcional', 'Sin píxeles muertos', 'Todos funcionales', 'Estado excelente', 'aprobado', 'Equipo en perfectas condiciones'),
+(2, 8, 'N/A', 'Funcional', 'Funcional', 'N/A', 'N/A', 'Funcional', 'Puerto USB dañado', 'Buen estado', 'falla_mecanica', 'Requiere cambio de puerto USB'),
+(3, 8, 'Funcional', 'Tecla Space pegajosa', 'Funcional', 'N/A', 'Funcional', 'Rayones superficiales', 'Funcionales', 'Fragmentación alta', 'reparacion_cosmetica', 'Requiere limpieza de teclado y desfragmentación');
+
+INSERT IGNORE INTO `bodega_control_calidad` 
+(`inventario_id`, `tecnico_id`, `burning_test`, `sentinel_test`, `estado_final`, `categoria_rec`, `observaciones`) 
+VALUES
+(1, 13, 'Pasó 24h sin problemas', 'Sin amenazas detectadas', 'aprobado', 'REC-A', 'Equipo listo para venta'),
+(2, 13, 'Pasó 12h, se detuvo por sobrecalentamiento', 'Limpio', 'rechazado', 'REC-SCRAP', 'Requiere revisión del sistema de refrigeración');
