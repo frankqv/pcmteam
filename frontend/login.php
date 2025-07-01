@@ -14,25 +14,25 @@ if (isset($_SESSION['id']) && isset($_SESSION['rol'])) {
     switch ($_SESSION['rol']) {
         case 1:
             header('Location: administrador/escritorio.php');
-            break;
+            exit;
         case 2:
             header('Location: u_generico/escritorio.php');
-            break;
+            exit;
         case 3:
             header('Location: contable/escritorio.php');
-            break;
+            exit;
         case 4:
             header('Location: comercial/escritorio.php');
-            break;
+            exit;
         case 5:
             header('Location: jtecnico/escritorio.php');
-            break;
+            exit;
         case 6:
             header('Location: tecnico/escritorio.php');
-            break;
+            exit;
         case 7:
             header('Location: bodega/escritorio.php');
-            break;
+            exit;
         default:
             $errMsg = "Rol no definido.";
             session_destroy(); // cerrar sesión por seguridad

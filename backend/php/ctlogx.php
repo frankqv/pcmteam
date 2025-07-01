@@ -6,7 +6,7 @@ error_reporting(0);
 require_once __DIR__ . '/../bd/ctconex.php';
 
 $varsesion = $_SESSION['usuario'];
-if ($varsesion == null || $varsesion = '') {
+if ($varsesion == null || $varsesion == '') {
     header("Location: ../../index.php");
     die();
 }
@@ -40,25 +40,25 @@ if (isset($_POST['ctglog'])) {
 
           switch ($_SESSION['rol']) {
             case 1:
-              header('Location: administrador/escritorio.php'); //ADMINISTRADOR
+              header('Location: ../frontend/administrador/escritorio.php'); //ADMINISTRADOR
               exit;
             case 2:
-              header('Location: u_generico/escritorio.php'); //CLIENTE
+              header('Location: ../frontend/u_generico/escritorio.php'); //CLIENTE
               exit;
             case 3:
-              header('location: contable/escritorio.php'); //Contable
-              break;
+              header('Location: ../frontend/contable/escritorio.php'); //Contable
+              exit;
             case 4:
-              header('Location: comercial/escritorio.php'); //COMERCIAL
+              header('Location: ../frontend/comercial/escritorio.php'); //COMERCIAL
               exit;
             case 5:
-              header('Location: jtecnico/escritorio.php'); //JEFE TECNICO
+              header('Location: ../frontend/jtecnico/escritorio.php'); //JEFE TECNICO
               exit;
             case 6:
-              header(header: 'Location: tecnico/escritorio.php'); //TECNICO
+              header('Location: ../frontend/tecnico/escritorio.php'); //TECNICO
               exit;
             case 7:
-              header('Location: bodega/escritorio.php'); //BODEGA
+              header('Location: ../frontend/bodega/escritorio.php'); //BODEGA
               exit;
             default:
               $errMsg = 'Rol no definido. Contacte con el administrador.'; //DEFAULT
