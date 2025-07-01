@@ -86,7 +86,7 @@ if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4, 7])){
         <!-- Page Content -->
         <div id="content">
             <div id="loader-wrapper">
-                <div class="spinner-border text-primary" role="status">
+                 <div class="spinner-border text-primary" role="status">
                     <span class="sr-only">Cargando...</span>
                 </div>
             </div>
