@@ -5,11 +5,14 @@ error_reporting(0);
 // Corregir la ruta del archivo de conexión
 require_once __DIR__ . '/../bd/ctconex.php';
 
+// Comentado temporalmente para evitar redirecciones no deseadas
+/*
 $varsesion = $_SESSION['usuario'];
 if ($varsesion == null || $varsesion == '') {
     header("Location: ../../index.php");
     die();
 }
+*/
 
 if (isset($_POST['ctglog'])) {
   $errMsg = '';
@@ -75,6 +78,7 @@ if (isset($_POST['ctglog'])) {
 
 // Mostrar el error en pantalla si existe
 if (!empty($errMsg)) {
-  echo "<script>alert('$errMsg'); window.location.href = 'login.php';</script>";
+  // echo "<script>alert('$errMsg'); window.location.href = 'login.php';</script>";
+  echo "<div style='color: red; text-align: center; margin: 10px;'>$errMsg</div>";
 }
 ?>

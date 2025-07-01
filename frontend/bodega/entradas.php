@@ -73,14 +73,14 @@ require_once '../../backend/bd/ctconex.php';
                                                 <input type="text" class="form-control" name="marca" required>
                                             </div>
                                             <div class="form-group">
+                                                <label>Cantidad</label>
+                                                <input type="text" class="form-control" name="cantidad" required>
+                                            </div>
+                                            <div class="form-group">
                                                 <label>Modelo</label>
                                                 <input type="text" class="form-control" name="modelo" required>
                                             </div>
-                                            <div class="form-group">
-                                                <label>Serial</label>
-                                                <input type="text" class="form-control" name="serial" required>
-                                            </div>
-                                        </div>
+
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Proveedor</label>
