@@ -121,7 +121,7 @@ ob_start();
                                     Estamos Trabajando para una
                                     mejor experiencia PCMARKETTEAM</p>
                                 <!-- Pagina en construccion.php  |  Sidebar -->
-                                <?php    include_once '../util/builder.phpionpage.php';    ?>
+                                <?php    include_once '../util/builder.php';    ?>
                                 <?php construcionpage(); ?>
                             </div>
                             <br>

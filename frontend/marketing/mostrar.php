@@ -221,7 +221,7 @@ ob_start();
                 <!-- Contenido de MAin-->
 
                 <!-- layouts nav.php  |  Sidebar -->
-                <?php    include_once '../util/builder.phpionpage.php';    ?>
+                <?php    include_once '../util/builder.php';    ?>
                 <div>
                     <?php construcionpage(); ?>
                 </div>

@@ -89,6 +89,7 @@ require_once '../../backend/bd/ctconex.php';
                                                     <option value="Exhibición">Exhibición</option>
                                                 </select>
                                             </div>
+                                            
                                             <div class="form-group">
                                                 <label>Responsable</label>
                                                 <select class="form-control" name="responsable_id" required>
@@ -105,6 +106,7 @@ require_once '../../backend/bd/ctconex.php';
                                                     ?>
                                                 </select>
                                             </div>
+ 
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">

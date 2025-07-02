@@ -216,7 +216,6 @@ ob_start();
                                         <h4><b>Descripcion</b></h4>
                                         <hr>
                                     </center>
-                                    <!-- Reemplaza esta sección en tu formulario original -->
                                     <div class="row">
                                         <div class="col-md-6 col-lg-6">
                                             <label for="responsable">Responsable<span

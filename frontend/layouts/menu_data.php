@@ -223,7 +223,6 @@ if (in_array($rol, [1, 4, 5, 7])) {
     array_splice($menu, 13, 0, [[
         'label' => 'Bodega',
         'icon' => 'warehouse',
-        'id' => 'bodega',
         'children' => [
             ['label' => '> Inventario', 'url' => '../bodega/inventario.php'],
             ['label' => '> Entradas', 'url' => '../bodega/entradas.php'],
