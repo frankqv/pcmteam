@@ -229,7 +229,7 @@ if (in_array($rol, [1, 4, 5, 7])) {
             ['label' => '> Entradas', 'url' => '../bodega/entradas.php'],
             ['label' => '> Salidas', 'url' => '../bodega/salidas.php'],
             ['label' => '> Listado General', 'url' => '../bodega/mostrar.php'],
-            ['label' => '> barcode', 'url' => '../bodega/barcode.php'],
+            ['label' => '> barcode zabra', 'url' => '../bodega/barcode.php'],
         ]
     ]]);
 }
