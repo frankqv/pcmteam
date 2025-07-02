@@ -59,7 +59,7 @@ header('location: ../error404.php');
             <!-- Contenido de MAin-->
 
             <!-- Pagina en construccion.php  |  Sidebar -->
-            <?php    include_once '../bodega/construcionpage.php';    ?>
+            <?php    include_once '../util/builder.phpionpage.php';    ?>
             <?php construcionpage(); ?>
 
         </div>

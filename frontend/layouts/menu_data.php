@@ -228,7 +228,8 @@ if (in_array($rol, [1, 4, 5, 7])) {
             ['label' => '> Inventario', 'url' => '../bodega/inventario.php'],
             ['label' => '> Entradas', 'url' => '../bodega/entradas.php'],
             ['label' => '> Salidas', 'url' => '../bodega/salidas.php'],
-            ['label' => '> Listado General', 'url' => '../bodega/mostrar.php']
+            ['label' => '> Listado General', 'url' => '../bodega/mostrar.php'],
+            ['label' => '> barcode', 'url' => '../bodega/barcode.php'],
         ]
     ]]);
 }
@@ -242,7 +243,7 @@ if (in_array($rol, [1, 3])) {
         'children' => [
             ['label' => '> Productos', 'url' => '../reporte/productos.php'],
             ['label' => '> Clientes', 'url' => '../reporte/clientes.php'],
-            ['label' => '> Ventas', 'url' => '../reporte/ventas.php']
+            ['label' => '> Ventas', 'url' => '../reporte/ventas.php'],
         ]
     ]]);
 }
