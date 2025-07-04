@@ -15,13 +15,37 @@ require_once '../../backend/bd/ctconex.php';
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Generador de Códigos de Barras - PCMARKETTEAM</title>
+    <title>Generador de Etiquetas - PCMARKETTEAM</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../backend/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../backend/css/custom.css">
     <link rel="stylesheet" href="../../backend/css/loader.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+    <style>
+        .etiqueta-preview {
+            width: 5cm;
+            height: 2.5cm;
+            border: 1px solid #00;
+            display: inline-block;
+            margin: 0.1cm;
+            padding: 0.2cm;
+            box-sizing: border-box;
+            background: white;
+        }
+        .barcode-container {
+            text-align: center;
+            margin-bottom: 0.1cm;
+        }
+        .texto-codigo {
+            text-align: center;
+            font-size: 8px;
+            font-family: Arial;
+        }
+        .preview-section {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="wrapper">
@@ -42,7 +66,7 @@ require_once '../../backend/bd/ctconex.php';
                         <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
-                        <a class="navbar-brand" href="#"> Generador de Etiquetas ZPL </a>
+                        <a class="navbar-brand" href="#"> Generador de Etiquetas </a>
                     </div>
                 </nav>
             </div>
@@ -51,59 +75,140 @@ require_once '../../backend/bd/ctconex.php';
                     <div class="col-md-8">
                         <div class="card mt-4">
                             <div class="card-header bg-primary text-white">
-                                <h4 class="mb-0">Generador de Códigos de Barras para Zebra GK420T</h4>
+                                <h4 class="mb-0">Generador de Etiquetas (5cm x 2.5cm)</h4>
                             </div>
                             <div class="card-body">
                                 <?php
-                                error_reporting(E_ALL);
-                                ini_set('display_errors', 1);
                                 $errores = [];
                                 $datos = [];
+                                
                                 function generarTexto($datos, $numero) {
-                                  return $datos['proveedor'] . $datos['lote'] . str_pad($numero, 3, '0', STR_PAD_LEFT) . $datos['fecha'];
+                                    return $datos['proveedor'] . $datos['lote'] . str_pad($numero, 3, '0', STR_PAD_LEFT) . $datos['fecha'];
                                 }
-                                if (isset($_GET['zpl'])) {
-                                  $datos_zpl = [
-                                    'proveedor' => $_GET['proveedor'] ?? '',
-                                    'cantidad' => (int) ($_GET['cantidad'] ?? 0),
-                                    'lote' => $_GET['lote'] ?? '',
-                                    'fecha' => substr(date('Y'), -2)
-                                  ];
-                                  header('Content-Type: application/octet-stream');
-                                  header('Content-Disposition: attachment; filename="etiquetas.zpl"');
-                                  for ($i = 1; $i <= $datos_zpl['cantidad']; $i++) {
-                                    $codigo = generarTexto($datos_zpl, $i);
-                                    echo "^XA\n";
-                                    echo "^CF0,30\n";
-                                    echo "^FO30,30^BY2\n";
-                                    echo "^BCN,80,Y,N,N\n";
-                                    echo "^FD>{$codigo}^FS\n";
-                                    echo "^FO30,120^ADN,30,20^FD{$codigo}^FS\n";
-                                    echo "^XZ\n";
-                                  }
-                                  exit;
-                                }
+                                
                                 if ($_POST) {
-                                  $proveedor = strtoupper(trim($_POST['proveedor'] ?? ''));
-                                  $cantidad = filter_var($_POST['cantidad'] ?? 0, FILTER_VALIDATE_INT);
-                                  $lote = strtoupper(trim($_POST['lote'] ?? ''));
-                                  if (empty($proveedor)) $errores[] = "Proveedor requerido";
-                                  if ($cantidad <= 0) $errores[] = "Cantidad debe ser mayor a 0";
-                                  if (empty($lote) || strlen($lote) !== 1) $errores[] = "Lote debe ser una letra";
-                                  if (empty($errores)) {
-                                    $datos = [
-                                      'proveedor' => $proveedor,
-                                      'cantidad' => $cantidad,
-                                      'lote' => $lote,
-                                      'fecha' => substr(date('Y'), -2)
-                                    ];
-                                    echo "<div class='alert alert-success text-center'>";
-                                    echo "Datos válidos. Haz clic en el botón para descargar las etiquetas.";
-                                    echo "<div class='mt-3'><a href='?zpl=1&" . http_build_query($datos) . "' target='_blank' class='btn btn-success'>Descargar ZPL</a></div>";
-                                    echo "</div>";
-                                  } else {
-                                    echo "<div class='alert alert-danger'>" . implode('<br>', $errores) . "</div>";
-                                  }
+                                    $proveedor = strtoupper(trim($_POST['proveedor'] ?? ''));
+                                    $cantidad = filter_var($_POST['cantidad'] ?? 0, FILTER_VALIDATE_INT);
+                                    $lote = strtoupper(trim($_POST['lote'] ?? ''));
+                                    
+                                    if (empty($proveedor)) $errores[] = "Proveedor requerido";
+                                    if ($cantidad <= 0) $errores[] = "Cantidad debe ser mayor a 0";
+                                    if (empty($lote) || strlen($lote) !== 1) $errores[] = "Lote debe ser una letra";
+                                    
+                                    if (empty($errores)) {
+                                        $datos = [
+                                            'proveedor' => $proveedor,
+                                            'cantidad' => $cantidad,
+                                            'lote' => $lote,
+                                            'fecha' => substr(date('Y'), -2)
+                                        ];
+                                        
+                                        echo "<div class='alert alert-success text-center'>";
+                                        echo "Datos válidos. Haz clic en Imprimir para generar las etiquetas.";
+                                        echo "</div>";
+                                        
+                                        // Mostrar previsualización
+                                        echo "<div class='preview-section' id='previewSection'>";
+                                        echo "<div class='card'>";
+                                        echo "<div class='card-header bg-info text-white'>";
+                                        echo "<h5 class='mb-0'>📋 Previsualización de Etiquetas</h5>";
+                                        echo "</div>";
+                                        echo "<div class='card-body'>";
+                                        
+                                        // Información del código
+                                        $codigo_ejemplo = generarTexto($datos, 1);
+                                        echo "<div class='alert alert-info'>";
+                                        echo "<strong>Código de ejemplo:</strong> <code>{$codigo_ejemplo}</code><br>";
+                                        echo "<strong>Cantidad a imprimir:</strong> {$cantidad} etiquetas<br>";
+                                        echo "<strong>Medidas:</strong> 5cm x 2.5cm";
+                                        echo "</div>";
+                                        
+                                        // Ejemplo de etiqueta
+                                        echo "<div class='text-center mb-3'>";
+                                        echo "<h6>Ejemplo de etiqueta:</h6>";
+                                        echo "<div class='etiqueta-preview'>";
+                                        echo "<div class='barcode-container'>";
+                                        echo "<svg id='barcode-ejemplo'></svg>";
+                                        echo "</div>";
+                                        echo "<div class='texto-codigo'>{$codigo_ejemplo}</div>";
+                                        echo "</div>";
+                                        echo "</div>";
+                                        
+                                        // Botón de impresión
+                                        echo "<div class='text-center mt-3'>";
+                                        echo "<button onclick='imprimirEtiquetas()' class='btn btn-success btn-lg'>";
+                                        echo "🖨️ Imprimir {$cantidad} Etiquetas";
+                                        echo "</button>";
+                                        echo "</div>";
+                                        
+                                        echo "</div>";
+                                        echo "</div>";
+                                        echo "</div>";
+                                        
+                                        // Script para imprimir
+                                        echo "<script>";
+                                        echo "function imprimirEtiquetas() {";
+                                        echo "  var ventana = window.open('', '_blank', 'width=800,height=600');";
+                                        echo "  var html = '<html><head><title>Etiquetas</title>';";
+                                        echo "  html += '<script src=\"https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js\"></script>';";
+                                        echo "  html += '<style>';";
+                                        echo "  html += '@media print { body { margin: 0; padding: 0; } }';";
+                                        echo "  html += '.etiqueta { width: 5cm; height: 2.5cm; border: 1px solid #000; display: inline-block; margin: 0.1cm; padding: 0.2cm; box-sizing: border-box; }';";
+                                        echo "  html += '.barcode { text-align: center; margin-bottom: 0.1cm; }';";
+                                        echo "  html += '.texto { text-align: center; font-size: 8px; font-family: Arial; }';";
+                                        echo "  html += '</style></head><body>';";
+                                        
+                                        // Generar etiquetas
+                                        for ($i = 1; $i <= $cantidad; $i++) {
+                                            $codigo = generarTexto($datos, $i);
+                                            echo "  html += '<div class=\"etiqueta\">';";
+                                            echo "  html += '<div class=\"barcode\"><svg id=\"barcode{$i}\"></svg></div>';";
+                                            echo "  html += '<div class=\"texto\">{$codigo}</div>';";
+                                            echo "  html += '</div>';";
+                                        }
+                                        
+                                        echo "  html += '</body></html>';";
+                                        echo "  ventana.document.write(html);";
+                                        echo "  ventana.document.close();";
+                                        echo "  ventana.focus();";
+                                        echo "  setTimeout(function() {";
+                                        echo "    if(typeof ventana.JsBarcode !== 'undefined') {";
+                                        for ($i = 1; $i <= $cantidad; $i++) {
+                                            $codigo = generarTexto($datos, $i);
+                                            echo "      ventana.JsBarcode('#barcode{$i}', '{$codigo}', {";
+                                            echo "        format: 'CODE128',";
+                                            echo "        width: 1.5,";
+                                            echo "        height: 30,";
+                                            echo "        displayValue: false,";
+                                            echo "        margin: 2";
+                                            echo "      });";
+                                        }
+                                        echo "    }";
+                                        echo "    setTimeout(function() {";
+                                        echo "      ventana.print();";
+                                        echo "    }, 1000);";
+                                        echo "  }, 500);";
+                                        echo "}";
+                                        echo "</script>";
+                                        
+                                        // Script para mostrar y generar barcode
+                                        echo "<script>";
+                                        echo "document.addEventListener('DOMContentLoaded', function() {";
+                                        echo "  document.getElementById('previewSection').style.display = 'block';";
+                                        echo "  if(typeof JsBarcode !== 'undefined') {";
+                                        echo "    JsBarcode('#barcode-ejemplo', '{$codigo_ejemplo}', {";
+                                        echo "      format: 'CODE128',";
+                                        echo "      width: 1.5,";
+                                        echo "      height: 30,";
+                                        echo "      displayValue: false,";
+                                        echo "      margin: 2";
+                                        echo "    });";
+                                        echo "  }";
+                                        echo "});";
+                                        echo "</script>";
+                                    } else {
+                                        echo "<div class='alert alert-danger'>" . implode('<br>', $errores) . "</div>";
+                                    }
                                 }
                                 ?>
                                 <form method="POST">
@@ -120,7 +225,7 @@ require_once '../../backend/bd/ctconex.php';
                                         <input type="text" name="lote" maxlength="1" class="form-control" required>
                                     </div>
                                     <div class="text-center">
-                                        <button type="submit" class="btn btn-primary">Generar</button>
+                                        <button type="submit" class="btn btn-primary">Generar Previsualización</button>
                                         <button type="reset" class="btn btn-secondary ms-2">Limpiar</button>
                                     </div>
                                 </form>
@@ -128,20 +233,17 @@ require_once '../../backend/bd/ctconex.php';
                         </div>
                         <div class="card mt-4">
                             <div class="card-header bg-info text-white">
-                                <h5 class="mb-0">🖨️ ¿Cómo usar el archivo .zpl con tu Zebra GK420T?</h5>
+                                <h5 class="mb-0">🖨️ Instrucciones de Impresión</h5>
                             </div>
                             <div class="card-body">
                                 <ol>
-                                    <li>Haz clic en <strong>Descargar ZPL</strong> para guardar el archivo <code>etiquetas.zpl</code>.</li>
-                                    <li>Conecta tu impresora Zebra GK420T y asegúrate que esté en modo ZPL.</li>
-                                    <li>Arrastra el archivo sobre el ícono de la impresora, o usa este comando en Windows:<br>
-                                        <code>copy /b etiquetas.zpl LPT1:</code> o <code>copy /b etiquetas.zpl "\\NombrePC\NombreImpresora"</code>
-                                    </li>
-                                    <li>En Mac/Linux puedes usar:<br>
-                                        <code>lpr -P NombreImpresora etiquetas.zpl</code>
-                                    </li>
+                                    <li>Llena el formulario con los datos requeridos.</li>
+                                    <li>Haz clic en "Generar Previsualización" para ver el ejemplo.</li>
+                                    <li>Haz clic en "Imprimir" para abrir la ventana de impresión.</li>
+                                    <li>Configura tu impresora para papel de etiquetas de 5cm x 2.5cm.</li>
+                                    <li>Imprime las etiquetas.</li>
                                 </ol>
-                                <p class="mb-0">💡 También puedes usar la app Zebra Setup Utilities para enviar el archivo fácilmente.</p>
+                                <p class="mb-0">💡 Asegúrate de que tu impresora esté configurada para las medidas correctas.</p>
                             </div>
                         </div>
                     </div>
@@ -155,9 +257,11 @@ require_once '../../backend/bd/ctconex.php';
     <script src="../../backend/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../backend/js/sidebarCollapse.js"></script>
     <script src="../../backend/js/loader.js"></script>
+    <!-- JsBarcode Library -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 </body>
 </html>
 <?php } else { 
     header('Location: ../error404.php');
 } ?>
-<?php ob_end_flush(); ?>
+<?php ob_end_flush(); ?> 
