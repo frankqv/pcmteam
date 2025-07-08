@@ -28,6 +28,6 @@ php_flag display_errors On
 php_flag log_errors On
 php_value error_log logs/php_errors.log
 
-# Configurar sesiones
-php_value session.gc_maxlifetime 3600
-php_value session.cookie_lifetime 3600
+# Configurar sesiones: 61.200 segundos = 17 horas, 3600 segundos = 1 hora
+php_value session.gc_maxlifetime 61200 
+php_value session.cookie_lifetime 61200 
