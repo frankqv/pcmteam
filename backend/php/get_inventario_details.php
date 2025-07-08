@@ -69,6 +69,9 @@ try {
                 <tr><td><strong>Serial:</strong></td><td><?php echo htmlspecialchars($equipo['serial']); ?></td></tr>
                 <tr><td><strong>Ubicación:</strong></td><td><?php echo htmlspecialchars($equipo['ubicacion']); ?></td></tr>
                 <tr><td><strong>Posición:</strong></td><td><?php echo htmlspecialchars($equipo['posicion']); ?></td></tr>
+                <tr><td><strong>Lote:</strong></td><td><?php echo htmlspecialchars($equipo['codigo_lote']); ?></td></tr>
+                <tr><td><strong>Técnico a cargo:</strong></td><td><?php echo htmlspecialchars($equipo['tecnico_id']); ?></td></tr>
+              
             </table>
         </div>
         <div class="col-md-6">

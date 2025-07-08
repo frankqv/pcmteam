@@ -195,11 +195,10 @@ try {
                                                 <select class="form-control" name="disposicion" id="disposicion" required>
                                                     <option value="En revisión" <?php echo ($equipo['disposicion'] == 'En revisión') ? 'selected' : ''; ?>>En revisión</option>
                                                     <option value="En Alistamiento" <?php echo ($equipo['disposicion'] == 'En Alistamiento') ? 'selected' : ''; ?>>En Alistamiento</option>
-                                                    <option value="En espera" <?php echo ($equipo['disposicion'] == 'En espera') ? 'selected' : ''; ?>>En espera</option>
-                                                    <option value="En reparación" <?php echo ($equipo['disposicion'] == 'En reparación') ? 'selected' : ''; ?>>En reparación</option>
-                                                    <option value="En mantenimiento" <?php echo ($equipo['disposicion'] == 'En mantenimiento') ? 'selected' : ''; ?>>En mantenimiento</option>
-                                                    <option value="En espera de repuestos" <?php echo ($equipo['disposicion'] == 'En espera de repuestos') ? 'selected' : ''; ?>>En espera de repuestos</option>
-                                                    <option value="En espera de presupuesto" <?php echo ($equipo['disposicion'] == 'En espera de presupuesto') ? 'selected' : ''; ?>>En espera de Precio</option>
+                                                    <option value="En Laboratorio" <?php echo ($equipo['disposicion'] == 'En Laboratorio') ? 'selected' : ''; ?>>En Laboratorio</option>
+                                                    <option value="En Bodega" <?php echo ($equipo['disposicion'] == 'En Bodega') ? 'selected' : ''; ?>>En Bodega</option>
+                                                    <option value="Para Venta" <?php echo ($equipo['disposicion'] == 'Para Venta') ? 'selected' : ''; ?>>Para Venta</option>
+                                                    <option value="Business Room" <?php echo ($equipo['disposicion'] == 'Business Room') ? 'selected' : ''; ?>>Business Room</option>
                                                 </select>
                                             </div>
                                             <div class="form-group">

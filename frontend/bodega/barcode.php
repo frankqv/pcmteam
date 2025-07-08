@@ -161,7 +161,6 @@ require_once '../../backend/bd/ctconex.php';
                                                 $codigos[] = generarTexto($datos, $i);
                                             }
                                             ?>
-
                                             <script>
                                                 // Función para imprimir etiquetas
                                                 function imprimirEtiquetas() {
@@ -190,7 +189,7 @@ require_once '../../backend/bd/ctconex.php';
                                                     html += 'window.onload = function() {';
                                                     html += '  var codigos = ' + JSON.stringify(<?php echo json_encode($codigos); ?>) + ';';
                                                     html += '  for (var i = 0; i < codigos.length; i++) {';
-                                                    html += '    JsBarcode("#barcode"+i, codigos[i], {format: "CODE128", width: 1.5, height: 30, displayValue: false, margin: 2});';
+                                                    html += '    JsBarcode("#barcode"+i, codigos[i], {format: "CODE128B", width: 1.5, height: 30, displayValue: false, margin: 2});';
                                                     html += '  }';
                                                     html += '  setTimeout(function(){ window.print(); }, 500);';
                                                     html += '};';
