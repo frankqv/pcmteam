@@ -118,8 +118,7 @@ function estadoPedido($status) {
             </div>
             <div class="container mt-4">
                 <h2>Pedidos en Ruta</h2>
-                <a href="../pedidos_ruta/asignar_tecnico.php" class="btn btn-primary text-white">Asignar Técnico</a>
-                <a href="../pedidos_ruta/nuevo_pedido.php" class="btn btn-danger text-white ml-2">Nuevo Pedido</a>
+                <a href="../pedidos_ruta/nuevo_pedido.php" class="btn btn-info text-white ml-2">Generar Alistamiento</a>
                 <br>
                 <table class="table table-bordered table-hover" id="tablaPedidos">
                     <thead class="thead-dark">

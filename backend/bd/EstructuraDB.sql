@@ -3,10 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-07-2025 a las 19:52:21
+-- Tiempo de generación: 09-07-2025 a las 21:21:22
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.1.25
 
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -19,9 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `u171145084_pcmteam`
 --
-DROP DATABASE IF EXISTS `u171145084_pcmteam`;
 CREATE DATABASE IF NOT EXISTS `u171145084_pcmteam` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE u171145084_pcmteam;
+USE `u171145084_pcmteam`;
 
 -- --------------------------------------------------------
 
@@ -39,7 +39,7 @@ CREATE TABLE `bodega_control_calidad` (
   `estado_final` enum('aprobado','rechazado') NOT NULL,
   `categoria_rec` varchar(50) NOT NULL COMMENT 'Categorización REC',
   `observaciones` text DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `bodega_control_calidad`
@@ -70,7 +70,7 @@ CREATE TABLE `bodega_diagnosticos` (
   `disco` text DEFAULT NULL COMMENT 'Resultado prueba de disco',
   `estado_reparacion` enum('falla_mecanica','falla_electrica','reparacion_cosmetica','aprobado') NOT NULL,
   `observaciones` text DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `bodega_diagnosticos`
@@ -95,7 +95,7 @@ CREATE TABLE `bodega_entradas` (
   `usuario_id` int(11) NOT NULL COMMENT 'ID del usuario que registra',
   `cantidad` int(11) NOT NULL DEFAULT 1,
   `observaciones` text DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `bodega_entradas`
@@ -105,8 +105,7 @@ INSERT INTO `bodega_entradas` (`id`, `inventario_id`, `fecha_entrada`, `proveedo
 (1, 1, '2025-06-30 17:32:02', 1, 1, 1, 'Entrada inicial de inventario'),
 (2, 2, '2025-06-30 17:32:02', 1, 1, 1, 'Entrada desde proveedor principal'),
 (3, 3, '2025-06-30 17:32:02', 2, 1, 1, 'Entrada desde proveedor secundario'),
-(4, 4, '2025-07-02 17:19:56', 1, 1, 1, 'tESTEO'),
-(5, 5, '2025-07-02 17:38:12', 3, 1, 1, 'sin bateria');
+(4, 4, '2025-07-02 17:19:56', 1, 1, 1, 'tESTEO');
 
 -- --------------------------------------------------------
 
@@ -135,19 +134,21 @@ CREATE TABLE `bodega_inventario` (
   `observaciones` text DEFAULT NULL COMMENT 'Notas técnicas y observaciones',
   `grado` enum('A','B','C') NOT NULL COMMENT 'Clasificación según procedimiento técnico',
   `disposicion` varchar(50) NOT NULL COMMENT 'Estado actual del equipo en el proceso',
-  `estado` enum('activo','inactivo') NOT NULL DEFAULT 'activo'
-) ;
+  `estado` enum('activo','inactivo') NOT NULL DEFAULT 'activo',
+  `tecnico_id` int(11) DEFAULT NULL,
+  `pedido_id` int(11) DEFAULT NULL,
+  `producto_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `bodega_inventario`
 --
 
-INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `item`, `ubicacion`, `posicion`, `fecha_ingreso`, `fecha_modificacion`, `activo_fijo`, `codigo_lote`, `producto`, `marca`, `serial`, `modelo`, `procesador`, `ram`, `disco`, `pulgadas`, `observaciones`, `grado`, `disposicion`, `estado`) VALUES
-(1, 'EQ001', 1, 'BODEGA-A', 'ESTANTE-1-A', '2025-06-30 17:32:02', '2025-06-30 17:32:02', 'AF001', 'LOTE2025001', 'Laptop', 'Dell', 'DL123456789', 'Latitude 5520', 'Intel i5-1135G7', '8GB', '256GB SSD', '15.6', 'Equipo en buen estado', 'A', 'En inventario', 'activo'),
-(2, 'EQ002', 2, 'BODEGA-A', 'ESTANTE-1-B', '2025-06-30 17:32:02', '2025-06-30 17:32:02', 'AF002', 'LOTE2025001', 'Desktop', 'HP', 'HP987654321', 'EliteDesk 800', 'Intel i7-10700', '16GB', '512GB SSD', 'N/A', 'Requiere limpieza', 'B', 'En diagnóstico', 'activo'),
-(3, 'EQ003', 3, 'BODEGA-B', 'ESTANTE-2-A', '2025-06-30 17:32:02', '2025-06-30 17:32:02', 'AF003', 'LOTE2025002', 'AIO', 'Lenovo', 'LN456789123', 'ThinkCentre M90a', 'Intel i5-10400T', '8GB', '1TB HDD', '23.8', 'Pantalla con rayones menores', 'C', 'En reparación', 'activo'),
-(4, 'LPDA 1432', 0, 'Principal', 'DWQDEW', '2025-07-02 17:19:56', '2025-07-02 17:22:42', 'AF004', 'LOTE2025001', 'Periferico', 'HP', 'ds', '132', 'i5 14th', '8GB', '125 gb', '', 'tESTEO', 'A', 'En reparación', 'activo'),
-(5, 'LPDA 1434', 0, 'Principal', 'Estante 1 - C Fila A', '2025-07-02 17:38:12', '2025-07-02 17:38:12', NULL, '', 'Portatil', 'Dell', 'ATG1284', 'ProDESKUlta', 'i5 14th', '8GB', '512 SSD', '12', 'sin bateria', 'B', 'En Alistamiento', 'activo');
+INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `item`, `ubicacion`, `posicion`, `fecha_ingreso`, `fecha_modificacion`, `activo_fijo`, `codigo_lote`, `producto`, `marca`, `serial`, `modelo`, `procesador`, `ram`, `disco`, `pulgadas`, `observaciones`, `grado`, `disposicion`, `estado`, `tecnico_id`, `pedido_id`, `producto_id`) VALUES
+(1, 'EQ001', 1, 'Principal	', 'ESTANTE-1-A', '2025-06-30 17:32:02', '2025-06-30 17:32:02', 'AF001', 'LOTE2025001', 'Laptop', 'Dell', 'DL123456789', 'Latitude 5520', 'Intel i5-1135G7', '8GB', '256GB SSD', '15.6', 'Equipo en buen estado', 'A', 'En inventario', 'activo', 13, NULL, NULL),
+(2, 'EQ002', 2, 'Principal	', 'ESTANTE-1-B', '2025-06-30 17:32:02', '2025-06-30 17:32:02', 'AF002', 'LOTE2025001', 'Desktop', 'HP', 'HP987654321', 'EliteDesk 800', 'Intel i7-10700', '16GB', '512GB SSD', 'N/A', 'Requiere limpieza', 'B', 'En diagnóstico', 'activo', 13, NULL, NULL),
+(3, 'EQ003', 3, 'Principal	', 'ESTANTE-2-A', '2025-06-30 17:32:02', '2025-06-30 17:32:02', 'AF003', 'LOTE2025002', 'AIO', 'Lenovo', 'LN456789123', 'ThinkCentre M90a', 'Intel i5-10400T', '8GB', '1TB HDD', '23.8', 'Pantalla con rayones menores', 'C', 'En reparación', 'activo', 16, NULL, NULL),
+(4, 'LPDA 1432', 4, 'Principal', 'DWQDEW', '2025-07-02 17:19:56', '2025-07-02 17:22:42', 'AF004', 'LOTE2025001', 'Periferico', 'HP', 'ds', '132', 'i5 14th', '8GB', '125 gb', '', 'tESTEO', 'A', 'En reparación', 'activo', 14, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -164,7 +165,7 @@ CREATE TABLE `bodega_salidas` (
   `cantidad` int(11) NOT NULL DEFAULT 1,
   `razon_salida` text NOT NULL,
   `observaciones` text DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -179,7 +180,7 @@ CREATE TABLE `cart` (
   `name` text NOT NULL,
   `price` int(11) NOT NULL,
   `quantity` int(11) NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `cart`
@@ -201,7 +202,7 @@ CREATE TABLE `cart_compra` (
   `name` text NOT NULL,
   `price` int(11) NOT NULL,
   `quantity` int(11) NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `cart_compra`
@@ -225,7 +226,7 @@ CREATE TABLE `categoria` (
   `nomca` text NOT NULL,
   `estado` varchar(15) NOT NULL,
   `fere` timestamp NOT NULL DEFAULT current_timestamp()
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `categoria`
@@ -258,7 +259,7 @@ CREATE TABLE `clientes` (
   `dircli` text DEFAULT NULL,
   `ciucli` text DEFAULT NULL,
   `idsede` text DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `clientes`
@@ -296,7 +297,7 @@ CREATE TABLE `compra` (
   `placed_on` text NOT NULL,
   `payment_status` text NOT NULL,
   `tipc` text NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `compra`
@@ -322,7 +323,7 @@ CREATE TABLE `gastos` (
   `detall` text NOT NULL,
   `total` decimal(10,2) NOT NULL,
   `fec` text NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `gastos`
@@ -348,7 +349,7 @@ CREATE TABLE `ingresos` (
   `detalle` text NOT NULL,
   `total` decimal(10,2) NOT NULL,
   `fec` text NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `ingresos`
@@ -393,7 +394,7 @@ CREATE TABLE `marketing` (
   `responsable` varchar(100) DEFAULT NULL,
   `estado` enum('activa','finalizada','pendiente') DEFAULT 'pendiente',
   `fuente_datos` varchar(255) DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -413,7 +414,7 @@ CREATE TABLE `orders` (
   `tipc` text NOT NULL,
   `despacho` varchar(255) DEFAULT NULL,
   `responsable` varchar(55) DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `orders`
@@ -432,7 +433,7 @@ INSERT INTO `orders` (`idord`, `user_id`, `user_cli`, `method`, `total_products`
 (10, 9, 12, 'Efectivo', ', Computador 117 ( 1 )', 15000.00, '2025-06-25', 'Aceptado', 'Ticket', 'DESPACHO TIENDA PUENTE ARANDA', NULL),
 (11, 32, 9, 'Efectivo', ', Computador DELL ( 1 ), Computador 117 ( 1 )', 40000.00, '2025-06-24', 'Aceptado', 'Ticket', 'DESPACHO TIENDA MEDELLIN', NULL),
 (12, 16, 7, 'Efectivo', ', Computador Compax ( 1 ), lenovo ( 1 ), Computador 117 ( 1 )', 5033000.00, '2025-06-26', 'Aceptado', 'Ticket', 'INTERRAPIDISIMO pte aranda', NULL),
-(13, 16, 9, 'Efectivo', ', Computador DELL ( 1 )', 25000.00, '2025-06-25', 'Aceptado', 'Ticket', 'DESPACHO TIENDA PUENTE ARANDA', NULL);
+(13, 10, 9, 'Efectivo', ', Computador DELL ( 1 )', 25000.00, '2025-06-25', 'Aceptado', 'Ticket', 'DESPACHO TIENDA PUENTE ARANDA', NULL);
 
 -- --------------------------------------------------------
 
@@ -447,7 +448,7 @@ CREATE TABLE `plan` (
   `estp` varchar(15) NOT NULL,
   `prec` decimal(10,2) NOT NULL,
   `fere` timestamp NOT NULL DEFAULT current_timestamp()
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `plan`
@@ -486,7 +487,7 @@ CREATE TABLE `producto` (
   `pntpro` varchar(8) DEFAULT NULL,
   `tarpro` varchar(30) DEFAULT NULL,
   `grado` enum('A','B','C','SCRAP','#N/D','','0') DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `producto`
@@ -516,7 +517,7 @@ CREATE TABLE `proveedores` (
   `dire` varchar(30) DEFAULT NULL,
   `cuiprov` varchar(30) DEFAULT NULL,
   `nomenclatura` varchar(10) DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `proveedores`
@@ -546,7 +547,7 @@ CREATE TABLE `servicio` (
   `servtxt` varchar(250) DEFAULT NULL,
   `servfoto` varchar(255) DEFAULT NULL,
   `responsable` varchar(255) DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `servicio`
@@ -580,7 +581,7 @@ CREATE TABLE `setting` (
   `direc2` text NOT NULL,
   `celu` char(16) NOT NULL,
   `foto` text NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `setting`
@@ -606,7 +607,7 @@ CREATE TABLE `usuarios` (
   `estado` char(1) NOT NULL,
   `fere` timestamp NOT NULL DEFAULT current_timestamp(),
   `idsede` varchar(25) DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
@@ -676,262 +677,18 @@ ALTER TABLE `bodega_entradas`
 ALTER TABLE `bodega_inventario`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `codigo_g` (`codigo_g`),
-  ADD UNIQUE KEY `serial` (`serial`);
-
---
--- Indices de la tabla `bodega_salidas`
---
-ALTER TABLE `bodega_salidas`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `inventario_id` (`inventario_id`),
-  ADD KEY `tecnico_id` (`tecnico_id`),
-  ADD KEY `usuario_id` (`usuario_id`);
-
---
--- Indices de la tabla `cart_compra`
---
-ALTER TABLE `cart_compra`
-  ADD PRIMARY KEY (`idcarco`),
-  ADD KEY `fk_cart_compra_usuario` (`user_id`),
-  ADD KEY `fk_cart_compra_producto` (`idprod`);
-
---
--- Indices de la tabla `categoria`
---
-ALTER TABLE `categoria`
-  ADD PRIMARY KEY (`idcate`),
-  ADD UNIQUE KEY `idcate` (`idcate`);
-
---
--- Indices de la tabla `clientes`
---
-ALTER TABLE `clientes`
-  ADD PRIMARY KEY (`idclie`),
-  ADD UNIQUE KEY `numid_UNIQUE` (`numid`),
-  ADD UNIQUE KEY `idclie` (`idclie`),
-  ADD UNIQUE KEY `correo_UNIQUE` (`correo`);
-
---
--- Indices de la tabla `compra`
---
-ALTER TABLE `compra`
-  ADD PRIMARY KEY (`idcomp`),
-  ADD UNIQUE KEY `idcomp` (`idcomp`),
-  ADD KEY `fk_compra_usuario` (`user_id`);
-
---
--- Indices de la tabla `gastos`
---
-ALTER TABLE `gastos`
-  ADD PRIMARY KEY (`idga`),
-  ADD UNIQUE KEY `idga` (`idga`);
-
---
--- Indices de la tabla `ingresos`
---
-ALTER TABLE `ingresos`
-  ADD PRIMARY KEY (`iding`),
-  ADD UNIQUE KEY `iding` (`iding`);
-
---
--- Indices de la tabla `marketing`
---
-ALTER TABLE `marketing`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `orders`
---
-ALTER TABLE `orders`
-  ADD PRIMARY KEY (`idord`),
-  ADD UNIQUE KEY `idord` (`idord`);
-
---
--- Indices de la tabla `plan`
---
-ALTER TABLE `plan`
-  ADD PRIMARY KEY (`idplan`),
-  ADD UNIQUE KEY `idplan` (`idplan`),
-  ADD UNIQUE KEY `idplan_3` (`idplan`),
-  ADD UNIQUE KEY `idplan_2` (`idplan`,`nompla`);
-
---
--- Indices de la tabla `producto`
---
-ALTER TABLE `producto`
-  ADD PRIMARY KEY (`idprod`,`idcate`),
-  ADD UNIQUE KEY `idprod` (`idprod`);
-
---
--- Indices de la tabla `proveedores`
---
-ALTER TABLE `proveedores`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`),
-  ADD UNIQUE KEY `idx_nomenclatura` (`nomenclatura`);
-
---
--- Indices de la tabla `servicio`
---
-ALTER TABLE `servicio`
-  ADD PRIMARY KEY (`idservc`,`idplan`,`idclie`),
-  ADD UNIQUE KEY `idservc` (`idservc`);
-
---
--- Indices de la tabla `setting`
---
-ALTER TABLE `setting`
-  ADD PRIMARY KEY (`idsett`),
-  ADD UNIQUE KEY `idsett` (`idsett`);
-
---
--- Indices de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `usuario` (`usuario`),
-  ADD UNIQUE KEY `correo` (`correo`),
-  ADD UNIQUE KEY `id` (`id`);
+  ADD UNIQUE KEY `serial` (`serial`),
+  ADD UNIQUE KEY `item` (`item`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT de la tabla `bodega_control_calidad`
---
-ALTER TABLE `bodega_control_calidad`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `bodega_diagnosticos`
---
-ALTER TABLE `bodega_diagnosticos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `bodega_entradas`
---
-ALTER TABLE `bodega_entradas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de la tabla `bodega_inventario`
 --
 ALTER TABLE `bodega_inventario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `bodega_salidas`
---
-ALTER TABLE `bodega_salidas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `categoria`
---
-ALTER TABLE `categoria`
-  MODIFY `idcate` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `clientes`
---
-ALTER TABLE `clientes`
-  MODIFY `idclie` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `compra`
---
-ALTER TABLE `compra`
-  MODIFY `idcomp` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `gastos`
---
-ALTER TABLE `gastos`
-  MODIFY `idga` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `ingresos`
---
-ALTER TABLE `ingresos`
-  MODIFY `iding` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `marketing`
---
-ALTER TABLE `marketing`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `orders`
---
-ALTER TABLE `orders`
-  MODIFY `idord` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `producto`
---
-ALTER TABLE `producto`
-  MODIFY `idprod` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `proveedores`
---
-ALTER TABLE `proveedores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `servicio`
---
-ALTER TABLE `servicio`
-  MODIFY `idservc` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `setting`
---
-ALTER TABLE `setting`
-  MODIFY `idsett` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `bodega_control_calidad`
---
-ALTER TABLE `bodega_control_calidad`
-  ADD CONSTRAINT `fk_calidad_inventario` FOREIGN KEY (`inventario_id`) REFERENCES `bodega_inventario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_calidad_tecnico` FOREIGN KEY (`tecnico_id`) REFERENCES `usuarios` (`id`) ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `bodega_diagnosticos`
---
-ALTER TABLE `bodega_diagnosticos`
-  ADD CONSTRAINT `fk_diagnosticos_inventario` FOREIGN KEY (`inventario_id`) REFERENCES `bodega_inventario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_diagnosticos_tecnico` FOREIGN KEY (`tecnico_id`) REFERENCES `usuarios` (`id`) ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `bodega_entradas`
---
-ALTER TABLE `bodega_entradas`
-  ADD CONSTRAINT `fk_entradas_inventario` FOREIGN KEY (`inventario_id`) REFERENCES `bodega_inventario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_entradas_proveedor` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_entradas_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `bodega_salidas`
---
-ALTER TABLE `bodega_salidas`
-  ADD CONSTRAINT `fk_salidas_inventario` FOREIGN KEY (`inventario_id`) REFERENCES `bodega_inventario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_salidas_tecnico` FOREIGN KEY (`tecnico_id`) REFERENCES `usuarios` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_salidas_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON UPDATE CASCADE;
+  MODIFY `item` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Número de ítem secuencial', AUTO_INCREMENT=6;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

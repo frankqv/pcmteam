@@ -217,10 +217,21 @@ if (!in_array($rol, [2, 3, 4,6])) {
     ]]);
 }
 
+# Business room
+if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
+    array_splice($menu, 13, 0, [[
+        'label' => 'Business Room',
+        'url' => '../room/lista.php',
+        'icon' => 'paid'
+    ]]);
+}
+
+
+
 # Bodega 13
 // Crear condicional para que comerciales no puedan ver los listados de portátiles
 if (in_array($rol, [1, 4, 5, 7])) {
-    array_splice($menu, 13, 0, [[
+    array_splice($menu, 14, 0, [[
         'label' => 'Bodega',
         'icon' => 'warehouse',
         'children' => [
@@ -235,7 +246,7 @@ if (in_array($rol, [1, 4, 5, 7])) {
 
 # Reportes 14
 if (in_array($rol, [1, 3])) {
-    array_splice($menu, 14, 0, [[
+    array_splice($menu, 15, 0, [[
         'label' => 'Reportes',
         'icon' => 'signal_cellular_alt',
         'id' => 'reportes',
@@ -249,7 +260,7 @@ if (in_array($rol, [1, 3])) {
 
 # Gráficos 15
 if (in_array($rol, [1, 3])) {
-    array_splice($menu, 15, 0, [[
+    array_splice($menu, 16, 0, [[
         'label' => 'Gráficos',
         'url' => '../graficos/mostrar.php',
         'icon' => 'grain'
@@ -258,7 +269,7 @@ if (in_array($rol, [1, 3])) {
 
 # Marketing 16
 if (in_array($rol, [1])) {
-    array_splice($menu, 16, 0, [[
+    array_splice($menu, 17, 0, [[
         'label' => 'Marketing',
         'url' => '../marketing/mostrar.php',
         'icon' => 'campaign'
@@ -267,21 +278,23 @@ if (in_array($rol, [1])) {
 
 # Usuarios 17
 if (in_array($rol, [1])) {
-    array_splice($menu, 17, 0, [[
+    array_splice($menu, 18, 0, [[
         'label' => 'Usuarios',
         'url' => '../usuario/mostrar.php',
         'icon' => 'manage_accounts'
     ]]);
 }
 
-# Configuraciones 18
+# Configuraciones 20
 if (in_array($rol, [1, 3, 5])) {
-    array_splice($menu, 18, 0, [[
+    array_splice($menu, 20, 0, [[
         'label' => 'Configuración',
         'url' => '../cuenta/configuracion.php',
         'icon' => 'settings'
     ]]);
 }
+
+
 
 # Salir 19
 // Esta por default dentro del menu para todos los usuarios

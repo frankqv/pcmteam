@@ -49,6 +49,20 @@ require_once '../../backend/bd/ctconex.php';
             .preview-section {
                 display: none;
             }
+
+            .preview-fila {
+                display: flex;
+                justify-content: center;
+                gap: 0.2cm;
+                margin-bottom: 0.3cm;
+            }
+
+            .formato-info {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 5px;
+                margin-bottom: 15px;
+            }
         </style>
     </head>
 
@@ -81,9 +95,18 @@ require_once '../../backend/bd/ctconex.php';
                         <div class="col-md-8">
                             <div class="card mt-4">
                                 <div class="card-header bg-primary text-white">
-                                    <h4 class="mb-0" style="color: black;">Generador de Etiquetas (5cm x 2.5cm)</h4>
+                                    <h4 class="mb-0" style="color: black;">Generador de Etiquetas - Formato 2 por Hoja</h4>
                                 </div>
                                 <div class="card-body">
+                                    <div class="formato-info">
+                                        <h6><strong>📏 Formato de Impresión:</strong></h6>
+                                        <ul class="mb-0">
+                                            <li><strong>Hoja:</strong> 10cm (ancho) x 2.5cm (alto)</li>
+                                            <li><strong>Etiquetas:</strong> 2 etiquetas por hoja de 5cm x 2.5cm cada una</li>
+                                            <li><strong>Distribución:</strong> Horizontal lado a lado</li>
+                                        </ul>
+                                    </div>
+
                                     <?php
                                     $errores = [];
                                     $datos = [];
@@ -113,8 +136,9 @@ require_once '../../backend/bd/ctconex.php';
                                                 'fecha' => substr(date('Y'), -2)
                                             ];
 
+                                            $hojas_necesarias = ceil($cantidad / 2);
                                             echo "<div class='alert alert-success text-center'>";
-                                            echo "Datos válidos. Haz clic en Imprimir para generar las etiquetas.";
+                                            echo "Datos válidos. Se generarán <strong>{$hojas_necesarias} hojas</strong> para {$cantidad} etiquetas.";
                                             echo "</div>";
 
                                             // Mostrar previsualización
@@ -126,28 +150,38 @@ require_once '../../backend/bd/ctconex.php';
                                             echo "<div class='card-body'>";
 
                                             // Información del código
-                                            $codigo_ejemplo = generarTexto($datos, 1);
+                                            $codigo_ejemplo1 = generarTexto($datos, 1);
+                                            $codigo_ejemplo2 = generarTexto($datos, 2);
                                             echo "<div class='alert alert-info'>";
-                                            echo "<strong>Código de ejemplo:</strong> <code>{$codigo_ejemplo}</code><br>";
+                                            echo "<strong>Códigos de ejemplo:</strong> <code>{$codigo_ejemplo1}</code> | <code>{$codigo_ejemplo2}</code><br>";
                                             echo "<strong>Cantidad a imprimir:</strong> {$cantidad} etiquetas<br>";
-                                            echo "<strong>Medidas:</strong> 5cm x 2.5cm";
+                                            echo "<strong>Hojas necesarias:</strong> {$hojas_necesarias}<br>";
+                                            echo "<strong>Formato:</strong> 2 etiquetas por hoja (10cm x 2.5cm)";
                                             echo "</div>";
 
-                                            // Ejemplo de etiqueta
+                                            // Ejemplo de fila de etiquetas
                                             echo "<div class='text-center mb-3'>";
-                                            echo "<h6>Ejemplo de etiqueta:</h6>";
+                                            echo "<h6>Ejemplo de hoja (2 etiquetas):</h6>";
+                                            echo "<div class='preview-fila'>";
                                             echo "<div class='etiqueta-preview'>";
                                             echo "<div class='barcode-container'>";
-                                            echo "<svg id='barcode-ejemplo'></svg>";
+                                            echo "<svg id='barcode-ejemplo1'></svg>";
                                             echo "</div>";
-                                            echo "<div class='texto-codigo'>{$codigo_ejemplo}</div>";
+                                            echo "<div class='texto-codigo'>{$codigo_ejemplo1}</div>";
+                                            echo "</div>";
+                                            echo "<div class='etiqueta-preview'>";
+                                            echo "<div class='barcode-container'>";
+                                            echo "<svg id='barcode-ejemplo2'></svg>";
+                                            echo "</div>";
+                                            echo "<div class='texto-codigo'>{$codigo_ejemplo2}</div>";
+                                            echo "</div>";
                                             echo "</div>";
                                             echo "</div>";
 
                                             // Botón de impresión
                                             echo "<div class='text-center mt-3'>";
                                             echo "<button onclick='imprimirEtiquetas()' class='btn btn-success btn-lg'>";
-                                            echo "🖨️ Imprimir {$cantidad} Etiquetas";
+                                            echo "🖨️ Imprimir {$cantidad} Etiquetas ({$hojas_necesarias} Hojas)";
                                             echo "</button>";
                                             echo "</div>";
 
@@ -162,26 +196,79 @@ require_once '../../backend/bd/ctconex.php';
                                             }
                                             ?>
                                             <script>
-                                                // Función para imprimir etiquetas
+                                                // Función para imprimir etiquetas por pares
                                                 function imprimirEtiquetas() {
                                                     var ventana = window.open('', '_blank', 'width=800,height=600');
-                                                    var html = '<html><head><title>Etiquetas</title>';
+                                                    var html = '<html><head><title>Etiquetas por Pares</title>';
                                                     html += '<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"><\/script>';
                                                     html += '<style>';
-                                                    html += '@media print { body { margin: 0; padding: 0; } }';
-                                                    html += '.etiqueta { width: 5cm; height: 2.5cm; border: 1px solid #000; display: inline-block; margin: 0.1cm; padding: 0.2cm; box-sizing: border-box; }';
-                                                    html += '.barcode { text-align: center; margin-bottom: 0.1cm; }';
-                                                    html += '.texto { text-align: center; font-size: 8px; font-family: Arial; }';
+                                                    html += '@page { size: 10cm 2.5cm; margin: 0; }';
+                                                    html += '@media print { ';
+                                                    html += '  body { margin: 0; padding: 0; }';
+                                                    html += '  .hoja { page-break-after: always; }';
+                                                    html += '  .hoja:last-child { page-break-after: avoid; }';
+                                                    html += '}';
+                                                    html += '.hoja {';
+                                                    html += '  width: 10cm;';
+                                                    html += '  height: 2.5cm;';
+                                                    html += '  display: flex;';
+                                                    html += '  flex-direction: row;';
+                                                    html += '  margin: 0;';
+                                                    html += '  padding: 0;';
+                                                    html += '  box-sizing: border-box;';
+                                                    html += '}';
+                                                    html += '.etiqueta {';
+                                                    html += '  width: 5cm;';
+                                                    html += '  height: 2.5cm;';
+                                                    html += '  border: 1px solid #000;';
+                                                    html += '  box-sizing: border-box;';
+                                                    html += '  padding: 0.2cm;';
+                                                    html += '  display: flex;';
+                                                    html += '  flex-direction: column;';
+                                                    html += '  justify-content: center;';
+                                                    html += '  align-items: center;';
+                                                    html += '  background: white;';
+                                                    html += '}';
+                                                    html += '.barcode {';
+                                                    html += '  text-align: center;';
+                                                    html += '  margin-bottom: 0.1cm;';
+                                                    html += '  flex-grow: 1;';
+                                                    html += '  display: flex;';
+                                                    html += '  align-items: center;';
+                                                    html += '  justify-content: center;';
+                                                    html += '}';
+                                                    html += '.texto {';
+                                                    html += '  text-align: center;';
+                                                    html += '  font-size: 8px;';
+                                                    html += '  font-family: Arial;';
+                                                    html += '  margin-top: 0.1cm;';
+                                                    html += '}';
                                                     html += '</style></head><body>';
                                                     
                                                     // Códigos generados desde PHP
                                                     var codigosEtiquetas = <?php echo json_encode($codigos); ?>;
                                                     
-                                                    // Generar HTML para cada etiqueta
-                                                    for (var i = 0; i < codigosEtiquetas.length; i++) {
+                                                    // Generar HTML para cada hoja (2 etiquetas por hoja)
+                                                    for (var i = 0; i < codigosEtiquetas.length; i += 2) {
+                                                        html += '<div class="hoja">';
+                                                        
+                                                        // Primera etiqueta (siempre existe)
                                                         html += '<div class="etiqueta">';
                                                         html += '<div class="barcode"><svg id="barcode' + i + '"></svg></div>';
                                                         html += '<div class="texto">' + codigosEtiquetas[i] + '</div>';
+                                                        html += '</div>';
+                                                        
+                                                        // Segunda etiqueta (si existe)
+                                                        if (i + 1 < codigosEtiquetas.length) {
+                                                            html += '<div class="etiqueta">';
+                                                            html += '<div class="barcode"><svg id="barcode' + (i + 1) + '"></svg></div>';
+                                                            html += '<div class="texto">' + codigosEtiquetas[i + 1] + '</div>';
+                                                            html += '</div>';
+                                                        } else {
+                                                            // Espacio vacío si es número impar
+                                                            html += '<div class="etiqueta" style="border: none; background: transparent;"></div>';
+                                                        }
+                                                        
                                                         html += '</div>';
                                                     }
                                                     
@@ -189,9 +276,15 @@ require_once '../../backend/bd/ctconex.php';
                                                     html += 'window.onload = function() {';
                                                     html += '  var codigos = ' + JSON.stringify(<?php echo json_encode($codigos); ?>) + ';';
                                                     html += '  for (var i = 0; i < codigos.length; i++) {';
-                                                    html += '    JsBarcode("#barcode"+i, codigos[i], {format: "CODE128B", width: 1.5, height: 30, displayValue: false, margin: 2});';
+                                                    html += '    JsBarcode("#barcode"+i, codigos[i], {';
+                                                    html += '      format: "CODE128B",';
+                                                    html += '      width: 1.2,';
+                                                    html += '      height: 25,';
+                                                    html += '      displayValue: false,';
+                                                    html += '      margin: 1';
+                                                    html += '    });';
                                                     html += '  }';
-                                                    html += '  setTimeout(function(){ window.print(); }, 500);';
+                                                    html += '  setTimeout(function(){ window.print(); }, 1000);';
                                                     html += '};';
                                                     html += '<\/script>';
                                                     html += '</body></html>';
@@ -205,7 +298,14 @@ require_once '../../backend/bd/ctconex.php';
                                                 document.addEventListener('DOMContentLoaded', function() {
                                                     document.getElementById('previewSection').style.display = 'block';
                                                     if(typeof JsBarcode !== 'undefined') {
-                                                        JsBarcode('#barcode-ejemplo', '<?php echo $codigo_ejemplo; ?>', {
+                                                        JsBarcode('#barcode-ejemplo1', '<?php echo $codigo_ejemplo1; ?>', {
+                                                            format: 'CODE128',
+                                                            width: 1.5,
+                                                            height: 30,
+                                                            displayValue: false,
+                                                            margin: 2
+                                                        });
+                                                        JsBarcode('#barcode-ejemplo2', '<?php echo $codigo_ejemplo2; ?>', {
                                                             format: 'CODE128',
                                                             width: 1.5,
                                                             height: 30,
@@ -250,13 +350,16 @@ require_once '../../backend/bd/ctconex.php';
                                 </div>
                                 <div class="card-body">
                                     <ol>
-                                        <li>Llena el formulario con los datos requeridos.</li>
-                                        <li>Haz clic en "Generar Previsualización" para ver el ejemplo.</li>
-                                        <li>Haz clic en "Imprimir" para abrir la ventana de impresión.</li>
-                                        <li>Configura tu impresora para papel de etiquetas de 5cm x 2.5cm.</li>
-                                        <li>Imprime las etiquetas.</li>
+                                        <li><strong>Configuración del papel:</strong> 10cm x 2.5cm</li>
+                                        <li><strong>Formato:</strong> 2 etiquetas por hoja, lado a lado</li>
+                                        <li>Llena el formulario con los datos requeridos</li>
+                                        <li>Haz clic en "Generar Previsualización" para ver el ejemplo</li>
+                                        <li>Haz clic en "Imprimir" para abrir la ventana de impresión</li>
+                                        <li>Verifica que tu impresora esté configurada correctamente</li>
                                     </ol>
-                                    <p class="mb-0">💡 Asegúrate de que tu impresora esté configurada para las medidas correctas.</p>
+                                    <div class="alert alert-warning">
+                                        <strong>⚠️ Importante:</strong> Si el número de etiquetas es impar, la última hoja tendrá una etiqueta en blanco a la derecha.
+                                    </div>
                                 </div>
                             </div>
                         </div>

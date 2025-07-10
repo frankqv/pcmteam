@@ -20,24 +20,7 @@ if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4, 7])){
     <!----css3---->
     <link rel="stylesheet" href="../../backend/css/custom.css">
     <style>
-        #loader-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            background-color: rgba(255, 255, 255, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s ease-in-out;
-        }
-        
-        #loader-wrapper.loaded {
-            opacity: 0;
-            visibility: hidden;
-        }
+
         
         .select2-container {
             z-index: 9995;
@@ -85,11 +68,7 @@ if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4, 7])){
 
         <!-- Page Content -->
         <div id="content">
-            <div id="loader-wrapper">
-                 <div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Cargando...</span>
-                </div>
-            </div>
+
             <div class="top-navbar">
                 <nav class="navbar navbar-expand-lg">
                     <div class="container-fluid">
@@ -293,15 +272,7 @@ if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4, 7])){
     <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-        // Función para mostrar el loader
-        function showLoader() {
-            $('#loader-wrapper').removeClass('loaded');
-        }
-        
-        // Función para ocultar el loader
-        function hideLoader() {
-            $('#loader-wrapper').addClass('loaded');
-        }
+
         
         $(document).ready(function() {
             // Ocultar el loader cuando la página esté lista

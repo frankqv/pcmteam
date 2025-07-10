@@ -53,70 +53,8 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                             <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                                 <span class="material-icons">arrow_back_ios</span>
                             </button>
-                            <?php
-                            $titulo = "";
-                            if ($_SESSION['rol'] == 1) {
-                                $titulo = "ADMINISTRADOR";
-                            } elseif ($_SESSION['rol'] == 2) {
-                                $titulo = "DEFAULT";
-                            } elseif ($_SESSION['rol'] == 3) {
-                                $titulo = "CONTABLE";
-                            } elseif ($_SESSION['rol'] == 4) {
-                                $titulo = "COMERCIAL";
-                            } elseif ($_SESSION['rol'] == 5) {
-                                $titulo = "JEFE TÉCNICO";
-                            } elseif ($_SESSION['rol'] == 6) {
-                                $titulo = "TÉCNICO";
-                            } elseif ($_SESSION['rol'] == 7) {
-                                $titulo = "BOGDEGA";
-                            } else {
-                                // Obtener el nombre del usuario actual
-                                $sql = "SELECT nombre FROM usuarios WHERE id = '" . $_SESSION['id'] . "'";
-                                $result = $conn->query($sql);
-                                $user = $result->fetch_assoc();
-                                $titulo = $user['nombre'];
-                            }
-                            ?>
-                            <a class="navbar-brand" href="#"> <?php echo htmlspecialchars($titulo); ?> </a>
                             <a class="navbar-brand" href="#"> Inventario </a>
                         </div>
-                        <ul class="nav navbar-nav ml-auto">
-                            <li class="dropdown nav-item active">
-                                <a href="#" class="nav-link" data-toggle="dropdown">
-                                    <img src="../../backend/img/reere.png">
-                                    <img src="../../backend/img/<?php echo htmlspecialchars($user['foto']); ?>" alt="Foto de perfil" style="width: 30px; height: 30px; border-radius: 50%;">
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <?php
-                                        // Obtener información completa del usuario para el dropdown
-                                        $sql = "SELECT nombre, usuario, correo, rol, foto, idsede FROM usuarios WHERE id = '" . $_SESSION['id'] . "'";
-                                        $result = $conn->query($sql);
-                                        $user = $result->fetch_assoc();
-                                        ?>
-                                        <strong><a href="#"><?php echo htmlspecialchars($user['nombre']); ?></a></strong>
-                                        <a href="#"><?php echo htmlspecialchars($user['usuario']); ?></a>
-                                        <a href="#"><?php echo htmlspecialchars($user['correo']); ?></a>
-                                        <a href="#"><?php echo htmlspecialchars( $user['idsede'])?> </a>
-                                    </li>
-                                    <li>
-                                        <a href="../cuenta/perfil.php">Mi perfil</a>
-                                        
-                                    </li>
-                                    <!-- <li> <a href="../cuenta/salir.php">Salir</a> </li> -->
-                                </ul>
-                            </li>
-                        </ul>
-
-                        
-
-
-                        
-
-
-
-
-
                     </nav>
                 </div>
                 <div class="main-content">

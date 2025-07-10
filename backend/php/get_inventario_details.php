@@ -29,11 +29,13 @@ try {
     $sql = "SELECT i.*, 
             e.fecha_entrada,
             p.nombre as proveedor_nombre,
-            u.nombre as usuario_nombre
+            u.nombre as usuario_nombre,
+            t.nombre as tecnico_nombre
             FROM bodega_inventario i
             LEFT JOIN bodega_entradas e ON i.id = e.inventario_id
             LEFT JOIN proveedores p ON e.proveedor_id = p.id
             LEFT JOIN usuarios u ON e.usuario_id = u.id
+            LEFT JOIN usuarios t ON i.tecnico_id = t.id
             WHERE i.id = ?";
     
     $stmt = $connect->prepare($sql);
@@ -70,7 +72,7 @@ try {
                 <tr><td><strong>Ubicación:</strong></td><td><?php echo htmlspecialchars($equipo['ubicacion']); ?></td></tr>
                 <tr><td><strong>Posición:</strong></td><td><?php echo htmlspecialchars($equipo['posicion']); ?></td></tr>
                 <tr><td><strong>Lote:</strong></td><td><?php echo htmlspecialchars($equipo['codigo_lote']); ?></td></tr>
-                <tr><td><strong>Técnico a cargo:</strong></td><td><?php echo htmlspecialchars($equipo['tecnico_id']); ?></td></tr>
+                <tr><td><strong>Técnico a cargo:</strong></td><td><?php echo htmlspecialchars($equipo['tecnico_nombre']); ?></td></tr>
               
             </table>
         </div>
@@ -135,7 +137,7 @@ try {
 
     <div class="row mt-3">
         <div class="col-md-12 text-center">
-            <a href="editar_inventario.php?id=<?php echo $equipo['id']; ?>" class="btn btn-primary">
+            <a href="../bodega/editar_inventario.php?id=<?php echo $equipo['id']; ?>" class="btn btn-primary">
                 <i class="material-icons">edit</i> Editar Equipo
             </a>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">
