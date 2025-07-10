@@ -221,7 +221,7 @@ if (!in_array($rol, [2, 3, 4,6])) {
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     array_splice($menu, 13, 0, [[
         'label' => 'Business Room',
-        'url' => '../room/lista.php',
+        'url' => '../b_room/lista.php',
         'icon' => 'paid'
     ]]);
 }
@@ -240,6 +240,8 @@ if (in_array($rol, [1, 4, 5, 7])) {
             ['label' => '> Salidas', 'url' => '../bodega/salidas.php'],
             ['label' => '> Listado General', 'url' => '../bodega/mostrar.php'],
             ['label' => '> barcode zabra', 'url' => '../bodega/barcode.php'],
+            ['label' => '> Partes*', 'url' => '../bodega/partes.php'],
+            ['label' => '> Baterias*', 'url' => '../bodega/bateria.php'],
         ]
     ]]);
 }

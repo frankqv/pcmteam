@@ -1,4 +1,4 @@
-<!-- Pagina en Construcion... frontend/bodega/partes.php -->
+<!-- Pagina en Construccion... frontend/bodega/bateria.php -->
 <?php
 ob_start();
 session_start();
@@ -39,7 +39,9 @@ if(isset($_SESSION['id'])) {
         <?php include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php'; ?>
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM Construccion</span></h3>
+                <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM
+                    Construccion
+                </span></h3>
             </div>
             <?php renderMenu($menu); ?>
         </nav>

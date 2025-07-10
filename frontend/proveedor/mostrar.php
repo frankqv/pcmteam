@@ -150,7 +150,7 @@ header('location: ../error404.php');
                                                 <?php } ?>
                                             </td>
                                             <td>
-                                                <a class="btn btn-info btn-sm" href="../proveedor/ver_detalles.php?id=<?php echo $d->id; ?>">
+                                                <a class="btn btn-info btn-sm" href="../proveedor/ver.php?id=<?php echo $d->id; ?>">
                                                     <i class='material-icons' data-toggle='tooltip' title='Ver detalles'>visibility</i>
                                                 </a>
                                                 <a class="btn btn-warning btn-sm" href="../proveedor/editar.php?id=<?php echo $d->id; ?>">
