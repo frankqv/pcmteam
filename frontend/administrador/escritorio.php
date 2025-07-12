@@ -16,35 +16,36 @@ if (!isset($_SESSION['id'])) {
 require '../../backend/bd/ctconex.php';
 
 // Funciones para obtener datos del dashboard
-function getStatistics($connect) {
+function getStatistics($connect)
+{
     $stats = [];
-    
+
     try {
         // Total de clientes
         $stmt = $connect->prepare("SELECT COUNT(*) as total FROM clientes");
         $stmt->execute();
         $stats['clientes'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-        
+
         // Total de productos
         $stmt = $connect->prepare("SELECT COUNT(*) as total FROM producto");
         $stmt->execute();
         $stats['productos'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-        
+
         // Ventas de hoy
         $stmt = $connect->prepare("SELECT COALESCE(SUM(total_price), 0) as total FROM orders WHERE DATE(placed_on) = CURDATE()");
         $stmt->execute();
         $stats['ventas_hoy'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-        
+
         // Total de usuarios
         $stmt = $connect->prepare("SELECT COUNT(*) as total FROM usuarios");
         $stmt->execute();
         $stats['usuarios'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-        
+
         // Productos con stock bajo
         $stmt = $connect->prepare("SELECT COUNT(*) as total FROM producto WHERE stock <= 5");
         $stmt->execute();
         $stats['stock_bajo'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-        
+
     } catch (Exception $e) {
         error_log("Error en getStatistics: " . $e->getMessage());
         $stats = [
@@ -55,11 +56,12 @@ function getStatistics($connect) {
             'stock_bajo' => 0
         ];
     }
-    
+
     return $stats;
 }
 
-function getRecentClients($connect, $limit = 10) {
+function getRecentClients($connect, $limit = 10)
+{
     try {
         $stmt = $connect->prepare("SELECT idclie, nomcli, apecli, celu, correo, DATE(fere) as fecha_registro 
                                   FROM clientes 
@@ -74,7 +76,8 @@ function getRecentClients($connect, $limit = 10) {
     }
 }
 
-function getRecentProducts($connect, $limit = 10) {
+function getRecentProducts($connect, $limit = 10)
+{
     try {
         $stmt = $connect->prepare("SELECT p.idprod, p.nomprd, c.nomca, p.stock, p.precio, DATE(p.fere) as fecha_registro
                                   FROM producto p 
@@ -90,7 +93,8 @@ function getRecentProducts($connect, $limit = 10) {
     }
 }
 
-function getBirthdayClients($connect) {
+function getBirthdayClients($connect)
+{
     try {
         $stmt = $connect->prepare("SELECT nomcli, apecli, celu, naci 
                                   FROM clientes 
@@ -103,7 +107,8 @@ function getBirthdayClients($connect) {
     }
 }
 
-function getProductsForChart($connect) {
+function getProductsForChart($connect)
+{
     try {
         $stmt = $connect->prepare("SELECT p.nomprd, p.stock 
                                   FROM producto p 
@@ -119,7 +124,8 @@ function getProductsForChart($connect) {
     }
 }
 
-function getSalesData($connect) {
+function getSalesData($connect)
+{
     try {
         $stmt = $connect->prepare("SELECT DATE(placed_on) as fecha, SUM(total_price) as total
                                   FROM orders 
@@ -134,6 +140,34 @@ function getSalesData($connect) {
     }
 }
 
+// Función para cumpleaños de empleados
+function getBirthdayEmployees($connect)
+{
+    try {
+        $stmt = $connect->prepare("SELECT id, nombre, usuario, correo, fere, foto, idsede
+                                  FROM usuarios 
+                                  WHERE DAY(fere) = DAY(NOW()) 
+                                  AND MONTH(fere) = MONTH(NOW())
+                                  AND estado = '1'
+                                  ORDER BY nombre ASC");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        error_log("Error en getBirthdayEmployees: " . $e->getMessage());
+        return [];
+    }
+}
+
+// Función para calcular edad
+function calculateAge($birthdate)
+{
+    if (!$birthdate) return null;
+    
+    $today = new DateTime();
+    $birth = new DateTime($birthdate);
+    return $today->diff($birth)->y;
+}
+
 // Obtener todos los datos
 $stats = getStatistics($connect);
 $recentClients = getRecentClients($connect);
@@ -141,6 +175,7 @@ $recentProducts = getRecentProducts($connect);
 $birthdayClients = getBirthdayClients($connect);
 $productsChart = getProductsForChart($connect);
 $salesData = getSalesData($connect);
+$birthdayEmployees = getBirthdayEmployees($connect);
 ?>
 
 <!doctype html>
@@ -167,45 +202,63 @@ $salesData = getSalesData($connect);
     <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
 
     <style>
-    .dashboard-card {
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    }
+        .dashboard-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
 
-    .dashboard-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-    .stat-icon {
-        font-size: 2.5rem;
-        opacity: 0.8;
-    }
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.8;
+        }
 
-    .chart-container {
-        min-height: 400px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+        .chart-container {
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .birthday-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-    }
+        .birthday-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
 
-    .stock-badge {
-        font-size: 0.85rem;
-    }
+        .birthday-item {
+            transition: transform 0.3s ease;
+        }
 
-    .table-responsive {
-        border-radius: 8px;
-        overflow: hidden;
-    }
+        .birthday-item:hover {
+            transform: translateY(-2px);
+            background-color: rgba(255, 255, 255, 0.2) !important;
+        }
 
-    .alert-custom {
-        border-radius: 8px;
-        border: none;
-    }
+        .stock-badge {
+            font-size: 0.85rem;
+        }
+
+        .table-responsive {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .alert-custom {
+            border-radius: 8px;
+            border: none;
+        }
+
+        .text-white-75 {
+            color: rgba(0, 0, 0, 0.75) !important;
+        }
+
+        .text-white-50 {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
     </style>
 </head>
 
@@ -214,7 +267,10 @@ $salesData = getSalesData($connect);
         <div class="body-overlay"></div>
 
         <!-- Sidebar -->
-        <?php include_once '../layouts/nav.php'; include_once '../layouts/menu_data.php'; ?>
+        <?php 
+        include_once '../layouts/nav.php';
+        include_once '../layouts/menu_data.php'; 
+        ?>
         <nav id="sidebar">
             <div class="sidebar-header">
                 <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM</span></h3>
@@ -350,16 +406,16 @@ $salesData = getSalesData($connect);
 
                 <!-- Alert for low stock -->
                 <?php if ($stats['stock_bajo'] > 0): ?>
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="alert alert-warning alert-custom" role="alert">
-                            <i class="material-icons">warning</i>
-                            <strong>Atención:</strong> Hay <?php echo $stats['stock_bajo']; ?> producto(s) con stock
-                            bajo (≤5 unidades).
-                            <a href="../productos/" class="alert-link">Ver productos</a>
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="alert alert-warning alert-custom" role="alert">
+                                <i class="material-icons">warning</i>
+                                <strong>Atención:</strong> Hay <?php echo $stats['stock_bajo']; ?> producto(s) con stock
+                                bajo (≤5 unidades).
+                                <a href="../productos/" class="alert-link">Ver productos</a>
+                            </div>
                         </div>
                     </div>
-                </div>
                 <?php endif; ?>
 
                 <!-- Recent Clients and Products -->
@@ -373,32 +429,31 @@ $salesData = getSalesData($connect);
                             </div>
                             <div class="card-content table-responsive">
                                 <?php if (count($recentClients) > 0): ?>
-                                <table class="table table-hover" id="clientsTable">
-                                    <thead class="text-primary">
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Cliente</th>
-                                            <th>Celular</th>
-                                            <th>Correo</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($recentClients as $client): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($client['idclie']); ?></td>
-                                            <td><?php echo htmlspecialchars($client['nomcli'] . ' ' . $client['apecli']); ?>
-                                            </td>
-                                            <td><?php echo htmlspecialchars($client['celu']); ?></td>
-                                            <td><?php echo htmlspecialchars($client['correo']); ?></td>
-                                        </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
+                                    <table class="table table-hover" id="clientsTable">
+                                        <thead class="text-primary">
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Cliente</th>
+                                                <th>Celular</th>
+                                                <th>Correo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($recentClients as $client): ?>
+                                                <tr>
+                                                    <td><?php echo htmlspecialchars($client['idclie']); ?></td>
+                                                    <td><?php echo htmlspecialchars($client['nomcli'] . ' ' . $client['apecli']); ?></td>
+                                                    <td><?php echo htmlspecialchars($client['celu']); ?></td>
+                                                    <td><?php echo htmlspecialchars($client['correo']); ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
                                 <?php else: ?>
-                                <div class="alert alert-info alert-custom" role="alert">
-                                    <i class="material-icons">info</i>
-                                    No se encontraron clientes recientes.
-                                </div>
+                                    <div class="alert alert-info alert-custom" role="alert">
+                                        <i class="material-icons">info</i>
+                                        No se encontraron clientes recientes.
+                                    </div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -413,44 +468,44 @@ $salesData = getSalesData($connect);
                             </div>
                             <div class="card-content table-responsive">
                                 <?php if (count($recentProducts) > 0): ?>
-                                <table class="table table-hover" id="productsTable">
-                                    <thead class="text-primary">
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Producto</th>
-                                            <th>Categoría</th>
-                                            <th>Stock</th>
-                                            <th>Precio</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($recentProducts as $product): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($product['idprod']); ?></td>
-                                            <td><?php echo htmlspecialchars($product['nomprd']); ?></td>
-                                            <td><?php echo htmlspecialchars($product['nomca']); ?></td>
-                                            <td>
-                                                <?php 
-                                                $stock = $product['stock'];
-                                                if ($stock <= 0) {
-                                                    echo '<span class="badge badge-danger stock-badge">Sin stock</span>';
-                                                } elseif ($stock <= 5) {
-                                                    echo '<span class="badge badge-warning stock-badge">Stock bajo (' . $stock . ')</span>';
-                                                } else {
-                                                    echo '<span class="badge badge-success stock-badge">' . $stock . '</span>';
-                                                }
-                                                ?>
-                                            </td>
-                                            <td>S/<?php echo number_format($product['precio'], 2); ?></td>
-                                        </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
+                                    <table class="table table-hover" id="productsTable">
+                                        <thead class="text-primary">
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Producto</th>
+                                                <th>Categoría</th>
+                                                <th>Stock</th>
+                                                <th>Precio</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($recentProducts as $product): ?>
+                                                <tr>
+                                                    <td><?php echo htmlspecialchars($product['idprod']); ?></td>
+                                                    <td><?php echo htmlspecialchars($product['nomprd']); ?></td>
+                                                    <td><?php echo htmlspecialchars($product['nomca']); ?></td>
+                                                    <td>
+                                                        <?php
+                                                        $stock = $product['stock'];
+                                                        if ($stock <= 0) {
+                                                            echo '<span class="badge badge-danger stock-badge">Sin stock</span>';
+                                                        } elseif ($stock <= 5) {
+                                                            echo '<span class="badge badge-warning stock-badge">Stock bajo (' . $stock . ')</span>';
+                                                        } else {
+                                                            echo '<span class="badge badge-success stock-badge">' . $stock . '</span>';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <td>S/<?php echo number_format($product['precio'], 2); ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
                                 <?php else: ?>
-                                <div class="alert alert-info alert-custom" role="alert">
-                                    <i class="material-icons">info</i>
-                                    No se encontraron productos recientes.
-                                </div>
+                                    <div class="alert alert-info alert-custom" role="alert">
+                                        <i class="material-icons">info</i>
+                                        No se encontraron productos recientes.
+                                    </div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -458,7 +513,7 @@ $salesData = getSalesData($connect);
                 </div>
 
                 <!-- Charts and Birthday Section -->
-                <div class="row mb-4">
+                <div class="row mb-8">
                     <!-- Product Statistics Chart -->
                     <div class="col-lg-8 col-md-12 mb-4">
                         <div class="card dashboard-card" style="min-height: 485px">
@@ -472,36 +527,54 @@ $salesData = getSalesData($connect);
                         </div>
                     </div>
 
-                    <!-- Birthday Clients -->
+
+                    <!-- Birthday Employees -->
                     <div class="col-lg-4 col-md-12 mb-4">
                         <div class="card dashboard-card birthday-card" style="min-height: 485px">
                             <div class="card-header card-header-text">
-                                <h4 class="card-title text-white">🎉 Cumpleaños de Hoy</h4>
-                                <p class="category text-white-50">Clientes que cumplen años hoy</p>
+                                <h4 class="card-title text-white">🎂 Cumpleaños de Empleados</h4>
+                                <p class="category text-white-50">Empleados que cumplen años hoy</p>
                             </div>
                             <div class="card-content text-center">
-                                <img src="../../backend/img/pastel-de-cumple.png" width='120' height='120' class="mb-3"
-                                    alt="Cumpleaños">
-                                <?php if (count($birthdayClients) > 0): ?>
-                                <div class="birthday-list">
-                                    <?php foreach ($birthdayClients as $birthday): ?>
-                                    <div class="birthday-item mb-2 p-2 bg-white bg-opacity-10 rounded">
-                                        <strong><?php echo htmlspecialchars($birthday['nomcli'] . ' ' . $birthday['apecli']); ?></strong><br>
-                                        <small><?php echo htmlspecialchars($birthday['celu']); ?></small>
+                                <img src="../../backend/img/pastel-de-cumple.png" width='120' height='120' class="mb-3" alt="Cumpleaños">
+                                <?php if (count($birthdayEmployees) > 0): ?>
+                                    <div class="birthday-list">
+                                        <?php foreach ($birthdayEmployees as $birthday): ?>
+                                            <div class="birthday-item mb-3 p-3 bg-white bg-opacity-10 rounded">
+                                                <div class="d-flex align-items-center">
+                                                    <?php if (!empty($birthday['foto']) && $birthday['foto'] != '1'): ?>
+                                                        <img src="../../backend/img/usuarios/<?php echo htmlspecialchars($birthday['foto']); ?>"
+                                                            width="40" height="40" class="rounded-circle me-3" alt="Foto">
+                                                    <?php else: ?>
+                                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3"
+                                                            style="width: 40px; height: 40px;">
+                                                            <i class="material-icons text-white">person</i>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                    <div class="text-start">
+                                                        <strong><?php echo htmlspecialchars($birthday['nombre']); ?></strong><br>
+                                                        <small class="text-white-75">
+                                                            @<?php echo htmlspecialchars($birthday['usuario']); ?>
+                                                            <?php if ($birthday['fere']): ?>
+                                                                <br>🎉 <?php echo calculateAge($birthday['fere']); ?> años
+                                                            <?php endif; ?>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
                                     </div>
-                                    <?php endforeach; ?>
-                                </div>
                                 <?php else: ?>
-                                <div class="alert alert-info bg-black bg-opacity-20 border-white text-black"
-                                    role="alert">
-                                    <i class="material-icons">info</i>
-                                    No hay cumpleaños hoy.
-                                </div>
+                                    <div class="alert alert-info bg-black bg-opacity-20 border-black text-black" role="alert">
+                                        <i class="material-icons">info</i>
+                                        No hay cumpleaños de empleados hoy.
+                                    </div>
                                 <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <!-- Sales Chart -->
                 <div class="row mb-4">
                     <div class="col-12">
@@ -515,42 +588,31 @@ $salesData = getSalesData($connect);
                             </div>
                         </div>
                     </div>
-                    <!-- End Sales Chart de hoy 
-                    <div class="col-lg-6 col-md-6">
-                        <div class="card dashboard-card" style="min-height: 485px">
-                            <div class="card-header card-header-text">
-                                <h4 class="card-title">Venta de hoy</h4>
-                            </div>
-                            <div class="card-content">
-                                <div id="sale_values"></div>
-                            </div>
-                        </div>
-                    </div> -->
                 </div>
+
                 <!-- Gastos e Ingresos -->
                 <div class="row">
-                    <div class="col-lg-4 col-md-4"> 
+                    <div class="col-lg-4 col-md-4">
                         <div class="card dashboard-card" style="min-height: 485px">
                             <div class="card-header card-header-text">
                                 <h4 class="card-title">Gastos totales</h4>
                             </div>
                             <div class="card-content">
-                                <div id="gast_div" height="50" wight="50"></div>
+                                <div id="gast_div" class="chart-container"></div>
                             </div>
                         </div>
                     </div>
-                    <!-- Ingresos -->
+
                     <div class="col-lg-8 col-md-8">
                         <div class="card dashboard-card" style="min-height: 485px">
                             <div class="card-header card-header-text">
                                 <h4 class="card-title">Ingresos totales</h4>
                             </div>
                             <div class="card-content">
-                                <div id="chart_div" height="25" wight="25"></div>
+                                <div id="chart_div" class="chart-container"></div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -578,386 +640,386 @@ $salesData = getSalesData($connect);
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
     <script>
-    // Initialize DataTables
-    $(document).ready(function() {
-        $('#clientsTable').DataTable({
-            "pageLength": 5,
-            "ordering": false,
-            "searching": false,
-            "lengthChange": false,
-            "info": false
+        // Initialize DataTables
+        $(document).ready(function () {
+            $('#clientsTable').DataTable({
+                "pageLength": 5,
+                "ordering": false,
+                "searching": false,
+                "lengthChange": false,
+                "info": false
+            });
+
+            $('#productsTable').DataTable({
+                "pageLength": 5,
+                "ordering": false,
+                "searching": false,
+                "lengthChange": false,
+                "info": false
+            });
         });
 
-        $('#productsTable').DataTable({
-            "pageLength": 5,
-            "ordering": false,
-            "searching": false,
-            "lengthChange": false,
-            "info": false
+        // Products Pie Chart
+        google.charts.load('current', {
+            'packages': ['corechart']
         });
-    });
+        google.charts.setOnLoadCallback(drawPieChart);
 
-    // Products Pie Chart
-    google.charts.load('current', {
-        'packages': ['corechart']
-    });
-    google.charts.setOnLoadCallback(drawPieChart);
-
-    function drawPieChart() {
-        var data = google.visualization.arrayToDataTable([
-            ['Producto', 'Stock'],
-            <?php
+        function drawPieChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Producto', 'Stock'],
+                <?php
                 foreach ($productsChart as $product) {
                     echo "['" . addslashes($product['nomprd']) . "', " . $product['stock'] . "],";
                 }
                 ?>
-        ]);
+            ]);
 
-        var options = {
-            pieHole: 0.4,
-            colors: ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#0099C6', '#DD4477', '#66AA00',
-                '#B82E2E', '#316395'
-            ],
-            chartArea: {
-                width: '90%',
-                height: '80%'
-            },
-            legend: {
-                position: 'bottom',
-                textStyle: {
-                    fontSize: 12
+            var options = {
+                pieHole: 0.4,
+                colors: ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#0099C6', '#DD4477', '#66AA00',
+                    '#B82E2E', '#316395'
+                ],
+                chartArea: {
+                    width: '90%',
+                    height: '80%'
+                },
+                legend: {
+                    position: 'bottom',
+                    textStyle: {
+                        fontSize: 12
+                    }
+                },
+                pieSliceTextStyle: {
+                    fontSize: 11
                 }
-            },
-            pieSliceTextStyle: {
-                fontSize: 11
-            }
-        };
+            };
 
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-        chart.draw(data, options);
-    }
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+            chart.draw(data, options);
+        }
 
-    // Sales Line Chart
-    google.charts.setOnLoadCallback(drawSalesChart);
+        // Sales Line Chart
+        google.charts.setOnLoadCallback(drawSalesChart);
 
-    function drawSalesChart() {
-        var data = google.visualization.arrayToDataTable([
-            ['Fecha', 'Ventas'],
-            <?php
+        function drawSalesChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Fecha', 'Ventas'],
+                <?php
                 foreach ($salesData as $sale) {
                     echo "['" . $sale['fecha'] . "', " . $sale['total'] . "],";
                 }
                 ?>
-        ]);
+            ]);
 
-        var options = {
-            curveType: 'function',
-            legend: {
-                position: 'bottom'
-            },
-            hAxis: {
-                title: 'Fecha'
-            },
-            vAxis: {
-                title: 'Monto (S/)',
-                format: 'currency'
-            },
-            chartArea: {
-                width: '85%',
-                height: '70%'
-            },
-            colors: ['#109618']
-        };
+            var options = {
+                curveType: 'function',
+                legend: {
+                    position: 'bottom'
+                },
+                hAxis: {
+                    title: 'Fecha'
+                },
+                vAxis: {
+                    title: 'Monto (S/)',
+                    format: 'currency'
+                },
+                chartArea: {
+                    width: '85%',
+                    height: '70%'
+                },
+                colors: ['#109618']
+            };
 
-        var chart = new google.visualization.LineChart(document.getElementById('salesChart'));
-        chart.draw(data, options);
-    }
+            var chart = new google.visualization.LineChart(document.getElementById('salesChart'));
+            chart.draw(data, options);
+        }
 
-    // Responsive charts
-    window.addEventListener('resize', function() {
-        drawPieChart();
-        drawSalesChart();
-    });
+        // Responsive charts
+        window.addEventListener('resize', function () {
+            drawPieChart();
+            drawSalesChart();
+        });
     </script>
 
     <!-- old-file.php -->
     <script>
-    google.charts.load('current', {
-        'packages': ['corechart']
-    });
-    google.charts.setOnLoadCallback(drawChart);
+        google.charts.load('current', {
+            'packages': ['corechart']
+        });
+        google.charts.setOnLoadCallback(drawChart);
 
-    function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-            ['Articulo', 'Stock'],
-
-
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Articulo', 'Stock'],
 
 
-            <?php
-                        
-        $stmt = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere, producto.serial, producto.marca, producto.ram, producto.disco, producto.prcpro, producto.pntpro, producto.tarpro, producto.grado FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate");
 
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
 
-        while($row = $stmt->fetch()) { 
-            echo "['".$row['nomprd']."', ".$row['stock']."],";
+                <?php
+
+                $stmt = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere, producto.serial, producto.marca, producto.ram, producto.disco, producto.prcpro, producto.pntpro, producto.tarpro, producto.grado FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate");
+
+                $stmt->setFetchMode(PDO::FETCH_ASSOC);
+                $stmt->execute();
+
+                while ($row = $stmt->fetch()) {
+                    echo "['" . $row['nomprd'] . "', " . $row['stock'] . "],";
+                }
+
+                ?>
+            ]);
+            var options = {
+
+                //is3D:true,  
+                pieHole: 0.4
+            };
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+            chart.draw(data, options);
         }
-
-            ?>
-        ]);
-        var options = {
-
-            //is3D:true,  
-            pieHole: 0.4
-        };
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-        chart.draw(data, options);
-    }
     </script>
     <script>
-    google.charts.load('current', {
-        'packages': ['corechart']
-    });
-    google.charts.setOnLoadCallback(drawChart);
+        google.charts.load('current', {
+            'packages': ['corechart']
+        });
+        google.charts.setOnLoadCallback(drawChart);
 
-    function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-            ['Articulo', 'Stock'],
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Articulo', 'Stock'],
 
 
-            <?php
-                        
-        $stmt = $connect->prepare("SELECT * FROM clientes");
+                <?php
 
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
+                $stmt = $connect->prepare("SELECT * FROM clientes");
 
-        while($row = $stmt->fetch()) { 
-            echo "['".$row['apecli']."', ".$row['idclie']."],";
+                $stmt->setFetchMode(PDO::FETCH_ASSOC);
+                $stmt->execute();
+
+                while ($row = $stmt->fetch()) {
+                    echo "['" . $row['apecli'] . "', " . $row['idclie'] . "],";
+                }
+
+                ?>
+            ]);
+            var options = {
+
+                //is3D:true,  
+                pieHole: 0.4
+            };
+            var chart = new google.visualization.PieChart(document.getElementById('piechartcli'));
+            chart.draw(data, options);
         }
-
-            ?>
-        ]);
-        var options = {
-
-            //is3D:true,  
-            pieHole: 0.4
-        };
-        var chart = new google.visualization.PieChart(document.getElementById('piechartcli'));
-        chart.draw(data, options);
-    }
     </script>
 
     <script type="text/javascript">
-    google.charts.load('current', {
-        'packages': ['bar']
-    });
-    google.charts.setOnLoadCallback(drawStuff);
+        google.charts.load('current', {
+            'packages': ['bar']
+        });
+        google.charts.setOnLoadCallback(drawStuff);
 
-    function drawStuff() {
-        var data = new google.visualization.arrayToDataTable([
-            ['Fecha', 'Monto'],
+        function drawStuff() {
+            var data = new google.visualization.arrayToDataTable([
+                ['Fecha', 'Monto'],
 
-            <?php
-        $id=$_SESSION['id'];
-        $stmt = $connect->prepare("SELECT SUM(total_price) total_price,placed_on FROM orders where placed_on = CURDATE()");
+                <?php
+                $id = $_SESSION['id'];
+                $stmt = $connect->prepare("SELECT SUM(total_price) total_price,placed_on FROM orders where placed_on = CURDATE()");
 
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
+                $stmt->setFetchMode(PDO::FETCH_ASSOC);
+                $stmt->execute();
 
-        while($row = $stmt->fetch()) { 
-            echo "['".$row['placed_on']."', ".$row['total_price']."],";
-        }
-
-            ?>
-
-        ]);
-
-        var options = {
-            width: 900,
-            legend: {
-                position: 'none'
-            },
-            chart: {
-                title: '',
-                subtitle: ''
-            },
-            bars: 'horizontal', // Required for Material Bar Charts.
-            axes: {
-                x: {
-                    0: {
-                        side: 'top',
-                        label: 'Monto'
-                    } // Top x-axis.
+                while ($row = $stmt->fetch()) {
+                    echo "['" . $row['placed_on'] . "', " . $row['total_price'] . "],";
                 }
-            },
-            bar: {
-                groupWidth: "90%"
-            }
-        };
 
-        var chart = new google.charts.Bar(document.getElementById('sale_values'));
-        chart.draw(data, options);
-    };
+                ?>
+
+            ]);
+
+            var options = {
+                width: 900,
+                legend: {
+                    position: 'none'
+                },
+                chart: {
+                    title: '',
+                    subtitle: ''
+                },
+                bars: 'horizontal', // Required for Material Bar Charts.
+                axes: {
+                    x: {
+                        0: {
+                            side: 'top',
+                            label: 'Monto'
+                        } // Top x-axis.
+                    }
+                },
+                bar: {
+                    groupWidth: "90%"
+                }
+            };
+
+            var chart = new google.charts.Bar(document.getElementById('sale_values'));
+            chart.draw(data, options);
+        };
     </script>
     <script type="text/javascript">
-    google.charts.load('current', {
-        'packages': ['bar']
-    });
-    google.charts.setOnLoadCallback(drawStuff);
+        google.charts.load('current', {
+            'packages': ['bar']
+        });
+        google.charts.setOnLoadCallback(drawStuff);
 
-    function drawStuff() {
-        var data = new google.visualization.arrayToDataTable([
-            ['Fecha', 'Monto'],
+        function drawStuff() {
+            var data = new google.visualization.arrayToDataTable([
+                ['Fecha', 'Monto'],
 
-            <?php
-        $id=$_SESSION['id'];
-        $stmt = $connect->prepare("SELECT servicio.idservc, plan.idplan, plan.prec,plan.foto, plan.nompla, servicio.ini, servicio.fin, clientes.idclie, clientes.numid, clientes.nomcli, clientes.apecli, clientes.naci, clientes.celu, clientes.correo, servicio.estod, servicio.fere, SUM(prec) as prec FROM servicio INNER JOIN plan ON servicio.idplan = plan.idplan INNER JOIN clientes ON servicio.idclie = clientes.idclie where servicio.ini = CURDATE()");
+                <?php
+                $id = $_SESSION['id'];
+                $stmt = $connect->prepare("SELECT servicio.idservc, plan.idplan, plan.prec,plan.foto, plan.nompla, servicio.ini, servicio.fin, clientes.idclie, clientes.numid, clientes.nomcli, clientes.apecli, clientes.naci, clientes.celu, clientes.correo, servicio.estod, servicio.fere, SUM(prec) as prec FROM servicio INNER JOIN plan ON servicio.idplan = plan.idplan INNER JOIN clientes ON servicio.idclie = clientes.idclie where servicio.ini = CURDATE()");
 
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
+                $stmt->setFetchMode(PDO::FETCH_ASSOC);
+                $stmt->execute();
 
-        while($row = $stmt->fetch()) { 
-            echo "['".$row['ini']."', ".$row['prec']."],";
-        }
-
-            ?>
-
-        ]);
-
-        var options = {
-            width: 900,
-            legend: {
-                position: 'none'
-            },
-            chart: {
-                title: '',
-                subtitle: ''
-            },
-            bars: 'horizontal', // Required for Material Bar Charts.
-            axes: {
-                x: {
-                    0: {
-                        side: 'top',
-                        label: 'Monto'
-                    } // Top x-axis.
+                while ($row = $stmt->fetch()) {
+                    echo "['" . $row['ini'] . "', " . $row['prec'] . "],";
                 }
-            },
-            bar: {
-                groupWidth: "90%"
-            }
-        };
 
-        var chart = new google.charts.Bar(document.getElementById('services_values'));
-        chart.draw(data, options);
-    };
+                ?>
+
+            ]);
+
+            var options = {
+                width: 900,
+                legend: {
+                    position: 'none'
+                },
+                chart: {
+                    title: '',
+                    subtitle: ''
+                },
+                bars: 'horizontal', // Required for Material Bar Charts.
+                axes: {
+                    x: {
+                        0: {
+                            side: 'top',
+                            label: 'Monto'
+                        } // Top x-axis.
+                    }
+                },
+                bar: {
+                    groupWidth: "90%"
+                }
+            };
+
+            var chart = new google.charts.Bar(document.getElementById('services_values'));
+            chart.draw(data, options);
+        };
     </script>
 
     <script type="text/javascript">
-    google.charts.load('current', {
-        'packages': ['bar']
-    });
-    google.charts.setOnLoadCallback(drawStuff);
+        google.charts.load('current', {
+            'packages': ['bar']
+        });
+        google.charts.setOnLoadCallback(drawStuff);
 
-    function drawStuff() {
-        var data = new google.visualization.arrayToDataTable([
-            ['Fecha', 'Monto'],
+        function drawStuff() {
+            var data = new google.visualization.arrayToDataTable([
+                ['Fecha', 'Monto'],
 
-            <?php
-        $id=$_SESSION['id'];
-        $stmt = $connect->prepare("SELECT ingresos.iding, ingresos.detalle, ingresos.total, ingresos.fec, SUM(total) as total FROM ingresos");
+                <?php
+                $id = $_SESSION['id'];
+                $stmt = $connect->prepare("SELECT ingresos.iding, ingresos.detalle, ingresos.total, ingresos.fec, SUM(total) as total FROM ingresos");
 
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
+                $stmt->setFetchMode(PDO::FETCH_ASSOC);
+                $stmt->execute();
 
-        while($row = $stmt->fetch()) { 
-            echo "['".$row['fec']."', ".$row['total']."],";
-        }
-
-            ?>
-
-        ]);
-
-        var options = {
-            width: "90%",
-            legend: {
-                position: 'none'
-            },
-            chart: {
-                title: '',
-                subtitle: ''
-            },
-            bars: 'horizontal', // Required for Material Bar Charts.
-            axes: {
-                x: {
-                    0: {
-                        side: 'top',
-                        label: 'Monto'
-                    } // Top x-axis.
+                while ($row = $stmt->fetch()) {
+                    echo "['" . $row['fec'] . "', " . $row['total'] . "],";
                 }
-            },
-            bar: {
-                groupWidth: "90%"
-            }
-        };
 
-        var chart = new google.charts.Bar(document.getElementById('chart_div'));
-        chart.draw(data, options);
-    };
+                ?>
+
+            ]);
+
+            var options = {
+                width: "90%",
+                legend: {
+                    position: 'none'
+                },
+                chart: {
+                    title: '',
+                    subtitle: ''
+                },
+                bars: 'horizontal', // Required for Material Bar Charts.
+                axes: {
+                    x: {
+                        0: {
+                            side: 'top',
+                            label: 'Monto'
+                        } // Top x-axis.
+                    }
+                },
+                bar: {
+                    groupWidth: "90%"
+                }
+            };
+
+            var chart = new google.charts.Bar(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        };
     </script>
     <script type="text/javascript">
-    google.charts.load('current', {
-        'packages': ['bar']
-    });
-    google.charts.setOnLoadCallback(drawStuff);
+        google.charts.load('current', {
+            'packages': ['bar']
+        });
+        google.charts.setOnLoadCallback(drawStuff);
 
-    function drawStuff() {
-        var data = new google.visualization.arrayToDataTable([
-            ['Fecha', 'Monto'],
+        function drawStuff() {
+            var data = new google.visualization.arrayToDataTable([
+                ['Fecha', 'Monto'],
 
-            <?php
-        $id=$_SESSION['id'];
-        $stmt = $connect->prepare("SELECT gastos.idga, gastos.detall, gastos.total, gastos.fec, SUM(total) as total FROM gastos ");
+                <?php
+                $id = $_SESSION['id'];
+                $stmt = $connect->prepare("SELECT gastos.idga, gastos.detall, gastos.total, gastos.fec, SUM(total) as total FROM gastos ");
 
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
+                $stmt->setFetchMode(PDO::FETCH_ASSOC);
+                $stmt->execute();
 
-        while($row = $stmt->fetch()) { 
-            echo "['".$row['fec']."', ".$row['total']."],";
-        }
-
-            ?>
-
-        ]);
-
-        var options = {
-            width: "90%",
-            legend: {
-                position: 'none'
-            },
-            chart: {
-                title: '',
-                subtitle: ''
-            },
-            bars: 'horizontal', // Required for Material Bar Charts.
-            axes: {
-                x: {
-                    0: {
-                        side: 'top',
-                        label: 'Monto'
-                    } // Top x-axis.
+                while ($row = $stmt->fetch()) {
+                    echo "['" . $row['fec'] . "', " . $row['total'] . "],";
                 }
-            },
-            bar: {
-                groupWidth: "90%"
-            }
-        };
 
-        var chart = new google.charts.Bar(document.getElementById('gast_div'));
-        chart.draw(data, options);
-    };
+                ?>
+
+            ]);
+
+            var options = {
+                width: "90%",
+                legend: {
+                    position: 'none'
+                },
+                chart: {
+                    title: '',
+                    subtitle: ''
+                },
+                bars: 'horizontal', // Required for Material Bar Charts.
+                axes: {
+                    x: {
+                        0: {
+                            side: 'top',
+                            label: 'Monto'
+                        } // Top x-axis.
+                    }
+                },
+                bar: {
+                    groupWidth: "90%"
+                }
+            };
+
+            var chart = new google.charts.Bar(document.getElementById('gast_div'));
+            chart.draw(data, options);
+        };
     </script>
 </body>
 

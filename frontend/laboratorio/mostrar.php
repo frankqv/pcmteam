@@ -139,7 +139,8 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                             <div class="card bg-success text-white mb-4">
                                 <div class="card-body">
                                     <?php
-                                    $sql = "SELECT COUNT(*) as disponibles FROM bodega_inventario WHERE estado = 'activo' AND disposicion = 'disponible' AND tecnico_id = '" . $_SESSION['id'] . "'";
+                                    $sql = "SELECT COUNT(*) as disponibles FROM bodega_inventario WHERE (estado = 'activo' OR  estado = 'inactivo' OR estado = 'Business') AND disposicion = 'disponible' AND tecnico_id = '" . $_SESSION['id'] . "'";
+                                    //WHERE (i.estado = 'activo' OR i.estado = 'Business Room')
                                     $result = $conn->query($sql);
                                     $row = $result->fetch_assoc();
                                     ?>
@@ -251,7 +252,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                     <th>Serial</th>
                                                     <th>Ubicación</th>
                                                     <th>Grado</th>
-                                                    <th>Estado</th>
+                                                    <th>Disposicion</th>
                                                     <th>Diagnóstico</th>
                                                     <th>Técnico a cargo</th>
                                                     <th>Última Modificación</th>

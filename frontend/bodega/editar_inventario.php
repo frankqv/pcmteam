@@ -205,6 +205,7 @@ try {
                                                 <label for="estado">Estado</label>
                                                 <select class="form-control" name="estado" id="estado" required>
                                                     <option value="activo" <?php echo ($equipo['estado'] == 'activo') ? 'selected' : ''; ?>>Activo</option>
+                                                    <option value="Business" <?php echo ($equipo['estado'] == 'Business') ? 'selected' : ''; ?>>Business Room</option>
                                                     <option value="inactivo" <?php echo ($equipo['estado'] == 'inactivo') ? 'selected' : ''; ?>>Inactivo</option>
                                                 </select>
                                             </div>

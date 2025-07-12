@@ -97,7 +97,7 @@ if (!$userInfo) {
                             default: $titulo = $userInfo['nombre']; break;
                         }
                         ?>
-                        <a class="navbar-brand" href="#"> <B>INVENTARIO</B> <?php echo htmlspecialchars($titulo); ?> </a>
+                        <a class="navbar-brand" href="#"> <B>BUSINESS ROOM </B>  <?php echo htmlspecialchars($titulo); ?> </a>
                         <a class="navbar-brand" href="#"> Inventario </a>
                     </div>
                     <ul class="nav navbar-nav ml-auto">
@@ -160,7 +160,7 @@ if (!$userInfo) {
                         <div class="card bg-warning text-white mb-4">
                             <div class="card-body">
                                 <?php
-                                $sql = "SELECT COUNT(*) as en_proceso FROM bodega_inventario WHERE " . $whereClause . " AND disposicion IN ('en_diagnostico', 'en_reparacion', 'en_control', 'En revisión')";
+                                $sql = "SELECT COUNT(*) as en_proceso FROM bodega_inventario WHERE " . $whereClause . " AND disposicion IN ('en_diagnostico', 'en_reparacion', 'en_control', 'En revisión', 'En Alistamiento', 'En_Alistamiento')";
                                 $result = $conn->query($sql);
                                 $row = $result->fetch_assoc();
                                 ?>
@@ -286,7 +286,7 @@ if (!$userInfo) {
                                                 LEFT JOIN bodega_control_calidad cc ON i.id = cc.inventario_id 
                                                     AND cc.id = (SELECT MAX(id) FROM bodega_control_calidad WHERE inventario_id = i.id)
                                                 LEFT JOIN usuarios u ON i.tecnico_id = u.id
-                                                WHERE i.estado = 'activo'";
+                                                WHERE i.estado = 'Business '";
                                             
                                             // Filtrar por técnico si no es administrador
                                             if (in_array($_SESSION['rol'], [5, 6, 7])) {

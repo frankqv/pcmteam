@@ -221,7 +221,7 @@ if (!in_array($rol, [2, 3, 4,6])) {
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     array_splice($menu, 13, 0, [[
         'label' => 'Business Room',
-        'url' => '../b_room/lista.php',
+        'url' => '../b_room/mostrar.php',
         'icon' => 'paid'
     ]]);
 }

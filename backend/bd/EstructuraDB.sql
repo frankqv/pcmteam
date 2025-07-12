@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-07-2025 a las 21:21:22
+-- Tiempo de generación: 10-07-2025 a las 22:14:56
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.1.25
+-- Versión de PHP: 8.3.23
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -105,7 +105,7 @@ INSERT INTO `bodega_entradas` (`id`, `inventario_id`, `fecha_entrada`, `proveedo
 (1, 1, '2025-06-30 17:32:02', 1, 1, 1, 'Entrada inicial de inventario'),
 (2, 2, '2025-06-30 17:32:02', 1, 1, 1, 'Entrada desde proveedor principal'),
 (3, 3, '2025-06-30 17:32:02', 2, 1, 1, 'Entrada desde proveedor secundario'),
-(4, 4, '2025-07-02 17:19:56', 1, 1, 1, 'tESTEO');
+(4, 4, '2025-07-02 17:19:56', 1, 1, 1, 'TESTEO4');
 
 -- --------------------------------------------------------
 
@@ -134,21 +134,22 @@ CREATE TABLE `bodega_inventario` (
   `observaciones` text DEFAULT NULL COMMENT 'Notas técnicas y observaciones',
   `grado` enum('A','B','C') NOT NULL COMMENT 'Clasificación según procedimiento técnico',
   `disposicion` varchar(50) NOT NULL COMMENT 'Estado actual del equipo en el proceso',
-  `estado` enum('activo','inactivo') NOT NULL DEFAULT 'activo',
+  `estado` text NOT NULL DEFAULT '\'activo\'',
   `tecnico_id` int(11) DEFAULT NULL,
   `pedido_id` int(11) DEFAULT NULL,
-  `producto_id` int(11) DEFAULT NULL
+  `producto_id` int(11) DEFAULT NULL,
+  `tactil` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `bodega_inventario`
 --
 
-INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `item`, `ubicacion`, `posicion`, `fecha_ingreso`, `fecha_modificacion`, `activo_fijo`, `codigo_lote`, `producto`, `marca`, `serial`, `modelo`, `procesador`, `ram`, `disco`, `pulgadas`, `observaciones`, `grado`, `disposicion`, `estado`, `tecnico_id`, `pedido_id`, `producto_id`) VALUES
-(1, 'EQ001', 1, 'Principal	', 'ESTANTE-1-A', '2025-06-30 17:32:02', '2025-06-30 17:32:02', 'AF001', 'LOTE2025001', 'Laptop', 'Dell', 'DL123456789', 'Latitude 5520', 'Intel i5-1135G7', '8GB', '256GB SSD', '15.6', 'Equipo en buen estado', 'A', 'En inventario', 'activo', 13, NULL, NULL),
-(2, 'EQ002', 2, 'Principal	', 'ESTANTE-1-B', '2025-06-30 17:32:02', '2025-06-30 17:32:02', 'AF002', 'LOTE2025001', 'Desktop', 'HP', 'HP987654321', 'EliteDesk 800', 'Intel i7-10700', '16GB', '512GB SSD', 'N/A', 'Requiere limpieza', 'B', 'En diagnóstico', 'activo', 13, NULL, NULL),
-(3, 'EQ003', 3, 'Principal	', 'ESTANTE-2-A', '2025-06-30 17:32:02', '2025-06-30 17:32:02', 'AF003', 'LOTE2025002', 'AIO', 'Lenovo', 'LN456789123', 'ThinkCentre M90a', 'Intel i5-10400T', '8GB', '1TB HDD', '23.8', 'Pantalla con rayones menores', 'C', 'En reparación', 'activo', 16, NULL, NULL),
-(4, 'LPDA 1432', 4, 'Principal', 'DWQDEW', '2025-07-02 17:19:56', '2025-07-02 17:22:42', 'AF004', 'LOTE2025001', 'Periferico', 'HP', 'ds', '132', 'i5 14th', '8GB', '125 gb', '', 'tESTEO', 'A', 'En reparación', 'activo', 14, NULL, NULL);
+INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `item`, `ubicacion`, `posicion`, `fecha_ingreso`, `fecha_modificacion`, `activo_fijo`, `codigo_lote`, `producto`, `marca`, `serial`, `modelo`, `procesador`, `ram`, `disco`, `pulgadas`, `observaciones`, `grado`, `disposicion`, `estado`, `tecnico_id`, `pedido_id`, `producto_id`, `tactil`) VALUES
+(1, 'EQ001', 1, 'Principal', 'ESTANTE-1-A', '2025-06-30 17:32:02', '2025-07-10 17:09:46', 'AF001', 'LOTE2025001', 'Portatil', 'Dell', 'DL123456789', 'Latitude 5520', 'Intel i5-1135G7', '8GB', '256GB SSD', '15.6', 'Equipo en buen estado', 'A', 'En Alistamiento', 'Pedientes', 33, NULL, NULL, 'SI'),
+(2, 'EQ002', 2, 'Principal', 'ESTANTE-1-B', '2025-06-30 17:32:02', '2025-07-09 14:51:28', 'AF002', 'LOTE2025001', 'Desktop', 'HP', 'HP987654321', 'EliteDesk 800', 'Intel i7-10700', '16GB', '512GB SSD', '16', 'Requiere limpieza \r\ndisco', 'B', 'En revisión', 'Business_Room', 8, NULL, NULL, 'NO'),
+(3, 'EQ003', 3, 'Principal	', 'ESTANTE-2-A', '2025-06-30 17:32:02', '2025-06-30 17:32:02', 'AF003', 'LOTE2025002', 'AIO', 'Lenovo', 'LN456789123', 'ThinkCentre M90a', 'Intel i5-10400T', '8GB', '1TB HDD', '23.8', 'Pantalla con rayones menores', 'C', 'En reparación', 'activo', 33, NULL, NULL, 'NO'),
+(4, 'LPDA 1432', 4, 'Principal', 'DWQDEW', '2025-07-02 17:19:56', '2025-07-02 17:22:42', 'AF004', 'LOTE2025001', 'Periferico', 'HP', 'ds', '132', 'i5 14th', '8GB', '125 gb', '', 'tESTEO', 'A', 'En reparación', 'Business ', 34, NULL, NULL, 'SI');
 
 -- --------------------------------------------------------
 
@@ -182,13 +183,6 @@ CREATE TABLE `cart` (
   `quantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Volcado de datos para la tabla `cart`
---
-
-INSERT INTO `cart` (`idv`, `user_id`, `idprod`, `name`, `price`, `quantity`) VALUES
-(0, 4, 4, 'Computador DELL', 25000, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -209,7 +203,6 @@ CREATE TABLE `cart_compra` (
 --
 
 INSERT INTO `cart_compra` (`idcarco`, `user_id`, `idprod`, `name`, `price`, `quantity`) VALUES
-(0, 1, 3, 'Computador 117', 15000, 1),
 (2, 3, 3, 'LTE MEMORIAS', 25, 2),
 (3, 4, 4, 'CAJA DE SSD', 13, 4),
 (4, 5, 5, 'LTE PORTAILES', 200000, 1),
@@ -310,7 +303,9 @@ INSERT INTO `compra` (`idcomp`, `user_id`, `method`, `total_products`, `total_pr
 (4, 4, 'Tarjeta', 'Producto2, Producto3, Producto5', 58.50, '2023-09-22', 'Pagado', 'Tipc'),
 (5, 5, 'Efectivo', 'Producto4', 12.50, '2023-10-25', 'Pagado', 'Tipc'),
 (6, 2, 'Transferencia', ', Producto2 ( 3 ), Producto4 ( 1 ), creatina 1Kg ( 1 )', 75500.00, '2024-03-19', 'Aceptado', 'Ticket'),
-(7, 1, 'Efectivo', ', Computador ASUS ( 1 )', 12500.00, '2025-06-20', 'Aceptado', 'Ticket');
+(7, 1, 'Efectivo', ', Computador ASUS ( 1 )', 12500.00, '2025-06-20', 'Aceptado', 'Ticket'),
+(0, 1, 'Efectivo', ', Computador 117 ( 1 )', 15000.00, '2025-07-09', 'Aceptado', 'Ticket'),
+(0, 1, 'Transferencia', ', lenovo ( 1 ), Computador 117 ( 1 )', 5015000.00, '2025-07-09', 'Aceptado', 'Ticket');
 
 -- --------------------------------------------------------
 
@@ -336,7 +331,9 @@ INSERT INTO `gastos` (`idga`, `detall`, `total`, `fec`) VALUES
 (4, 'Gasto4', 18500.00, '2023-09-22'),
 (5, 'Compra de productos de Limpieza Protex', 22000.00, '2023-10-25'),
 (6, 'COMPRA DE PRODUCTOS', 75500.00, '2024-03-19'),
-(7, 'COMPRA DE PRODUCTOS', 12500.00, '2025-06-20');
+(7, 'COMPRA DE PRODUCTOS', 12500.00, '2025-06-20'),
+(0, 'COMPRA DE PRODUCTOS', 15000.00, '2025-07-09'),
+(0, 'COMPRA DE PRODUCTOS', 5015000.00, '2025-07-09');
 
 -- --------------------------------------------------------
 
@@ -373,7 +370,8 @@ INSERT INTO `ingresos` (`iding`, `detalle`, `total`, `fec`) VALUES
 (15, 'VENTA DE PRODUCTOS', 15000.00, '2025-06-25'),
 (16, 'VENTA DE PRODUCTOS', 40000.00, '2025-06-24'),
 (17, 'VENTA DE PRODUCTOS', 5033000.00, '2025-06-26'),
-(18, 'VENTA DE PRODUCTOS', 25000.00, '2025-06-25');
+(18, 'VENTA DE PRODUCTOS', 25000.00, '2025-06-25'),
+(0, 'VENTA DE PRODUCTOS', 244500.00, '2025-07-10');
 
 -- --------------------------------------------------------
 
@@ -432,8 +430,9 @@ INSERT INTO `orders` (`idord`, `user_id`, `user_cli`, `method`, `total_products`
 (9, 10, 5, 'Efectivo', ', Producto1 ( 500 )', 5000000.00, '2024-03-19', 'Aceptado', 'Ticket', 'DESPACHO TIENDA CUCUTA', NULL),
 (10, 9, 12, 'Efectivo', ', Computador 117 ( 1 )', 15000.00, '2025-06-25', 'Aceptado', 'Ticket', 'DESPACHO TIENDA PUENTE ARANDA', NULL),
 (11, 32, 9, 'Efectivo', ', Computador DELL ( 1 ), Computador 117 ( 1 )', 40000.00, '2025-06-24', 'Aceptado', 'Ticket', 'DESPACHO TIENDA MEDELLIN', NULL),
-(12, 16, 7, 'Efectivo', ', Computador Compax ( 1 ), lenovo ( 1 ), Computador 117 ( 1 )', 5033000.00, '2025-06-26', 'Aceptado', 'Ticket', 'INTERRAPIDISIMO pte aranda', NULL),
-(13, 10, 9, 'Efectivo', ', Computador DELL ( 1 )', 25000.00, '2025-06-25', 'Aceptado', 'Ticket', 'DESPACHO TIENDA PUENTE ARANDA', NULL);
+(12, 10, 7, 'Efectivo', ', Computador Compax ( 1 ), lenovo ( 1 ), Computador 117 ( 1 )', 5033000.00, '2025-06-26', 'Aceptado', 'Ticket', 'INTERRAPIDISIMO pte aranda', NULL),
+(13, 16, 9, 'Efectivo', ', Computador DELL ( 1 )', 25000.00, '2025-06-25', 'Aceptado', 'Ticket', 'DESPACHO TIENDA PUENTE ARANDA', NULL),
+(0, 1, 7, 'Efectivo', ', Computador 117 ( 1 ), Computador HP ( 1 )', 244500.00, '2025-07-10', 'Aceptado', 'Ticket', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -494,13 +493,13 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`idprod`, `codba`, `nomprd`, `idcate`, `precio`, `stock`, `foto`, `venci`, `esta`, `fere`, `serial`, `marca`, `ram`, `disco`, `prcpro`, `pntpro`, `tarpro`, `grado`) VALUES
-(1, 'vAZCeYThjC6An7', 'lenovo', 4, 5000000.00, 1, '10878.jpg', '2025-05-01', 'Inactivo', '2025-05-28 20:32:22', 'H7YY7MINAndznR', 'lenovo', NULL, NULL, NULL, NULL, '4GB', '0'),
+(1, 'vAZCeYThjC6An7', 'lenovo', 4, 5000000.00, 2, '10878.jpg', '2025-05-01', 'Inactivo', '2025-05-28 20:32:22', 'H7YY7MINAndznR', 'lenovo', NULL, NULL, NULL, NULL, '4GB', '0'),
 (2, '12345678901234', 'Computador Lenovo', 1, 10000.00, 1000, '115365.jpg', '2024-12-31', 'Activo', '2024-03-15 08:27:45', 'H7YY7MINAndznR', 'lenovo', NULL, NULL, NULL, NULL, 'Integrada', '#N/D'),
-(3, '56789012340123', 'Computador 117', 2, 15000.00, 47, '341946.jpg', '2025-06-30', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', 'SCRAP'),
+(3, '56789012340123', 'Computador 117', 2, 15000.00, 48, '341946.jpg', '2025-06-30', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', 'SCRAP'),
 (4, '67890123451234', 'Computador DELL', 3, 25000.00, 24, '680339.jpg', '2025-12-31', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', ''),
 (5, '78901234562345', 'Computador ASUS', 1, 12500.00, 81, '579718.jpg', '2024-10-31', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', 'C'),
 (6, '89012345673456', 'Computador Compax', 4, 18000.00, 58, '956303.jpg', '2024-08-31', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', 'B'),
-(7, 'H7YY7MINAndznR', 'Computador HP', 1, 229500.00, 1000, '375961.png', '2025-04-01', 'Activo', '2024-03-21 19:19:20', 'H7YY7MINAndznR', 'HP', '16 GB', '256GB SSD', 'i7 8th', '14\"', '2 GB', 'A');
+(7, 'H7YY7MINAndznR', 'Computador HP', 1, 229500.00, 999, '375961.png', '2025-04-01', 'Activo', '2024-03-21 19:19:20', 'H7YY7MINAndznR', 'HP', '16 GB', '256GB SSD', 'i7 8th', '14\"', '2 GB', 'A');
 
 -- --------------------------------------------------------
 
@@ -639,7 +638,7 @@ INSERT INTO `usuarios` (`id`, `nombre`, `usuario`, `correo`, `clave`, `rol`, `fo
 (29, 'frank3', 'frank3', 'frank3@gmail.com', '202cb962ac59075b964b07152d234b70', '3', '1', '1', '2025-06-09 20:07:48', 'Cucuta'),
 (31, 'frank4', 'frank4', 'frank4@gmail.com', '202cb962ac59075b964b07152d234b70', '4', '1', '1', '2025-06-09 20:08:22', 'Unilago'),
 (32, 'frank5', 'frank5', 'frank5@gmail.com', '202cb962ac59075b964b07152d234b70', '5', '1', '1', '2025-06-09 20:08:38', 'Medellin'),
-(33, 'frank6', 'frank6', 'frank6@gmail.com', '202cb962ac59075b964b07152d234b70', '6', '1', '1', '2025-06-09 20:09:04', NULL),
+(33, 'Tecnico FranciscoQV', 'frank6', 'frank6@gmail.com', '202cb962ac59075b964b07152d234b70', '6', '1', '1', '2025-06-09 20:09:04', NULL),
 (34, 'frank7', 'frank7', 'frank7@gmail.com', '202cb962ac59075b964b07152d234b70', '7', '1', '1', '2025-06-09 20:09:18', NULL);
 
 --

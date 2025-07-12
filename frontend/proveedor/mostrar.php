@@ -1,16 +1,15 @@
 <?php
 ob_start();
-    session_start();
+session_start();
 
-if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])){
-header('location: ../error404.php');
+if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])) {
+    header('location: ../error404.php');
 }
 ?>
-<?php if(isset($_SESSION['id'])) { ?>
+<?php if (isset($_SESSION['id'])) { ?>
 
 <!doctype html>
 <html lang="es">
-
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -42,7 +41,8 @@ header('location: ../error404.php');
 
         <!-- layouts nav.php  |  Sidebar -->
         <div class="body-overlay"></div>
-        <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
+        <?php include_once '../layouts/nav.php';
+        include_once '../layouts/menu_data.php'; ?>
         <nav id="sidebar">
             <div class="sidebar-header">
                 <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM</span></h3>
@@ -64,9 +64,9 @@ header('location: ../error404.php');
 
                         <a class="navbar-brand" href="#"> Proveedores </a>
 
-                        <button class="d-inline-block d-lg-none ml-auto more-button" type="button" data-toggle="collapse"
-                            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
+                        <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
+                            data-toggle="collapse" data-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="material-icons">more_vert</span>
                         </button>
 
@@ -107,7 +107,8 @@ header('location: ../error404.php');
                             </div>
                             <br>
                             <a href="../proveedor/nuevo.php" class="btn btn-danger text-white">Nuevo Proveedor</a>
-                            <a href="../proveedor/importar.php" class="btn btn-success text-white ml-2">Importar Excel</a>
+                            <a href="../proveedor/importar.php" class="btn btn-success text-white ml-2">Importar
+                                Excel</a>
                             <br>
                             <div class="card-content table-responsive">
                                 <?php
@@ -115,65 +116,73 @@ header('location: ../error404.php');
                                 $sentencia = $connect->prepare("SELECT * FROM proveedores ORDER BY nombre ASC;");
                                 $sentencia->execute();
                                 $data = array();
-                                if($sentencia){
-                                    while($r = $sentencia->fetchObject()){
+                                if ($sentencia) {
+                                    while ($r = $sentencia->fetchObject()) {
                                         $data[] = $r;
                                     }
                                 }
                                 ?>
-                                <?php if(count($data)>0):?>
-                                <table class="table table-hover" id="example">
-                                    <thead class="text-primary">
-                                        <tr>
-                                            <th>Nomenclatura</th>
-                                            <th>Nombre</th>
-                                            <th>Teléfono</th>
-                                            <th>Correo</th>
-                                            <th>Dirección</th>
-                                            <th>Estado</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach($data as $d):?>
-                                        <tr>
-                                            <td><?php echo $d->nomenclatura; ?></td>
-                                            <td><?php echo $d->nombre; ?></td>
-                                            <td><?php echo $d->celu; ?></td>
-                                            <td><?php echo $d->correo; ?></td>
-                                            <td><?php echo $d->dire; ?></td>
-                                            <td>
-                                                <?php if($d->privado == 1) { ?>
-                                                    <span class="badge badge-success">Activo</span>
-                                                <?php } else { ?>
-                                                    <span class="badge badge-danger">Inactivo</span>
-                                                <?php } ?>
-                                            </td>
-                                            <td>
-                                                <a class="btn btn-info btn-sm" href="../proveedor/ver.php?id=<?php echo $d->id; ?>">
-                                                    <i class='material-icons' data-toggle='tooltip' title='Ver detalles'>visibility</i>
-                                                </a>
-                                                <a class="btn btn-warning btn-sm" href="../proveedor/editar.php?id=<?php echo $d->id; ?>">
-                                                    <i class='material-icons' data-toggle='tooltip' title='Editar'>edit</i>
-                                                </a>
-                                                <?php if($d->privado == 1): ?>
-                                                <a class="btn btn-danger btn-sm" href="../proveedor/desactivar.php?id=<?php echo $d->id; ?>">
-                                                    <i class='material-icons' data-toggle='tooltip' title='Desactivar'>block</i>
-                                                </a>
-                                                <?php else: ?>
-                                                <a class="btn btn-success btn-sm" href="../proveedor/activar.php?id=<?php echo $d->id; ?>">
-                                                    <i class='material-icons' data-toggle='tooltip' title='Activar'>check_circle</i>
-                                                </a>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                                <?php else:?>
-                                <div class="alert alert-warning" role="alert">
-                                    No se encontraron proveedores registrados!
-                                </div>
+                                <?php if (count($data) > 0): ?>
+                                    <table class="table table-hover" id="example">
+                                        <thead class="text-primary">
+                                            <tr>
+                                                <th>Nomenclatura</th>
+                                                <th>Nombre</th>
+                                                <th>Teléfono</th>
+                                                <th>Correo</th>
+                                                <th>Dirección</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($data as $d): ?>
+                                                <tr>
+                                                    <td><?php echo $d->nomenclatura; ?></td>
+                                                    <td><?php echo $d->nombre; ?></td>
+                                                    <td><?php echo $d->celu; ?></td>
+                                                    <td><?php echo $d->correo; ?></td>
+                                                    <td><?php echo $d->dire; ?></td>
+                                                    <td>
+                                                        <?php if ($d->privado == 1) { ?>
+                                                            <span class="badge badge-success">Activo</span>
+                                                        <?php } else { ?>
+                                                            <span class="badge badge-danger">Inactivo</span>
+                                                        <?php } ?>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-info btn-sm"
+                                                            href="../proveedor/ver.php?id=<?php echo $d->id; ?>">
+                                                            <i class='material-icons' data-toggle='tooltip'
+                                                                title='Ver detalles'>visibility</i>
+                                                        </a>
+                                                        <a class="btn btn-warning btn-sm"
+                                                            href="../proveedor/editar.php?id=<?php echo $d->id; ?>">
+                                                            <i class='material-icons' data-toggle='tooltip'
+                                                                title='Editar'>edit</i>
+                                                        </a>
+                                                        <?php if ($d->privado == 1): ?>
+                                                            <a class="btn btn-danger btn-sm"
+                                                                href="../proveedor/desactivar.php?id=<?php echo $d->id; ?>">
+                                                                <i class='material-icons' data-toggle='tooltip'
+                                                                    title='Desactivar'>block</i>
+                                                            </a>
+                                                        <?php else: ?>
+                                                            <a class="btn btn-success btn-sm"
+                                                                href="../proveedor/activar.php?id=<?php echo $d->id; ?>">
+                                                                <i class='material-icons' data-toggle='tooltip'
+                                                                    title='Activar'>check_circle</i>
+                                                            </a>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                <?php else: ?>
+                                    <div class="alert alert-warning" role="alert">
+                                        No se encontraron proveedores registrados!
+                                    </div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -205,33 +214,32 @@ header('location: ../error404.php');
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="../../backend/js/chart/Chart.js"></script>
         <script>
-        google.charts.load('current', {
-            'packages': ['corechart']
-        });
-        google.charts.setOnLoadCallback(drawChart);
+            google.charts.load('current', {
+                'packages': ['corechart']
+            });
+            google.charts.setOnLoadCallback(drawChart);
         </script>
 
-            <script>
-        $(document).ready(function() {
-            if (!$.fn.DataTable.isDataTable('#example')) {
-                $('#example').DataTable({
-                    dom: 'Bfrtip',
-                    buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
-                    ],
-                    language: {
-                        url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
-                    }
-                });
-            }
-        });
-    </script>
+        <script>
+            $(document).ready(function () {
+                if (!$.fn.DataTable.isDataTable('#example')) {
+                    $('#example').DataTable({
+                        dom: 'Bfrtip',
+                        buttons: [
+                            'copy', 'csv', 'excel', 'pdf', 'print'
+                        ],
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
+                        }
+                    });
+                }
+            });
+        </script>
 </body>
-
 </html>
 
 
-<?php }else{ 
-header('Location: ../error404.php');
+<?php } else {
+    header('Location: ../error404.php');
 } ?>
 <?php ob_end_flush(); ?>

@@ -9,13 +9,14 @@ require_once '../../backend/bd/ctconex.php';
 
 $tecnicos = [];
 $resultTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN ('5','6','7')");
-while($rowTec = $resultTec->fetch_assoc()) {
+while ($rowTec = $resultTec->fetch_assoc()) {
     $tecnicos[] = $rowTec;
 }
 ?>
 <?php if (isset($_SESSION['id'])) { ?>
     <!DOCTYPE html>
     <html lang="es">
+
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -31,6 +32,7 @@ while($rowTec = $resultTec->fetch_assoc()) {
         <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
         <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
     </head>
+
     <body>
         <div class="wrapper">
             <div class="body-overlay"></div>
@@ -62,7 +64,7 @@ while($rowTec = $resultTec->fetch_assoc()) {
                             <div class="card bg-primary text-white mb-4">
                                 <div class="card-body">
                                     <?php
-                                    $sql = "SELECT COUNT(*) as total FROM bodega_inventario WHERE estado = 'activo'";
+                                    $sql = "SELECT COUNT(*) as total FROM bodega_inventario";
                                     $result = $conn->query($sql);
                                     $row = $result->fetch_assoc();
                                     ?>
@@ -75,7 +77,7 @@ while($rowTec = $resultTec->fetch_assoc()) {
                             <div class="card bg-success text-white mb-4">
                                 <div class="card-body">
                                     <?php
-                                    $sql = "SELECT COUNT(*) as disponibles FROM bodega_inventario WHERE estado = 'activo' AND disposicion = 'disponible'";
+                                    $sql = "SELECT COUNT(*) as disponibles FROM bodega_inventario WHERE disposicion = 'disponible'";
                                     $result = $conn->query($sql);
                                     $row = $result->fetch_assoc();
                                     ?>
@@ -88,7 +90,7 @@ while($rowTec = $resultTec->fetch_assoc()) {
                             <div class="card bg-warning text-white mb-4">
                                 <div class="card-body">
                                     <?php
-                                    $sql = "SELECT COUNT(*) as en_proceso FROM bodega_inventario WHERE estado = 'activo' AND disposicion IN ('en_diagnostico', 'en_reparacion', 'en_control')";
+                                    $sql = "SELECT COUNT(*) as en_proceso FROM bodega_inventario WHERE disposicion IN ('en_diagnostico', 'en_reparacion', 'en_control')";
                                     $result = $conn->query($sql);
                                     $row = $result->fetch_assoc();
                                     ?>
@@ -101,7 +103,7 @@ while($rowTec = $resultTec->fetch_assoc()) {
                             <div class="card bg-danger text-white mb-4">
                                 <div class="card-body">
                                     <?php
-                                    $sql = "SELECT COUNT(*) as pendientes FROM bodega_inventario WHERE estado = 'activo' AND disposicion = 'pendiente'";
+                                    $sql = "SELECT COUNT(*) as pendientes FROM bodega_inventario WHERE disposicion = 'pendiente'";
                                     $result = $conn->query($sql);
                                     $row = $result->fetch_assoc();
                                     ?>
@@ -130,6 +132,7 @@ while($rowTec = $resultTec->fetch_assoc()) {
                                                     <option value="en_reparacion">En Reparación</option>
                                                     <option value="en_control">En Control de Calidad</option>
                                                     <option value="pendiente">Pendiente</option>
+                                                    <option value="Business Room">Business Room</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -208,7 +211,6 @@ while($rowTec = $resultTec->fetch_assoc()) {
                                                     LEFT JOIN bodega_control_calidad cc ON i.id = cc.inventario_id 
                                                         AND cc.id = (SELECT MAX(id) FROM bodega_control_calidad WHERE inventario_id = i.id)
                                                     LEFT JOIN usuarios u ON i.tecnico_id = u.id
-                                                    WHERE i.estado = 'activo'
                                                     ORDER BY i.fecha_modificacion DESC";
                                                 $result = $conn->query($sql);
                                                 while ($row = $result->fetch_assoc()) {
@@ -221,18 +223,19 @@ while($rowTec = $resultTec->fetch_assoc()) {
                                                     echo "<td>" . htmlspecialchars($row['ubicacion']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['grado']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['estado_actual']) . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row['estado']) . "</td>";
                                                     echo "<td>
-    <form method='post' action='asignar_tecnico.php' style='margin:0;'>
-        <input type='hidden' name='equipo_id' value='" . $row['id'] . "'>
-        <select name='tecnico_id' class='form-control form-control-sm' onchange='this.form.submit()'>
-            <option value=''>Seleccionar</option>";
-            foreach($tecnicos as $tec) {
-                $selected = ($row['tecnico_id'] == $tec['id']) ? "selected" : "";
-                echo "<option value='" . $tec['id'] . "' $selected>" . htmlspecialchars($tec['nombre']) . "</option>";
-            }
-echo "  </select>
-    </form>
-</td>";
+            <form method='post' action='asignar_tecnico.php' style='margin:0;'>
+                <input type='hidden' name='equipo_id' value='" . $row['id'] . "'>
+                <select name='tecnico_id' class='form-control form-control-sm' onchange='this.form.submit()'>
+                    <option value=''>Seleccionar</option>";
+                                                    foreach ($tecnicos as $tec) {
+                                                        $selected = ($row['tecnico_id'] == $tec['id']) ? "selected" : "";
+                                                        echo "<option value='" . $tec['id'] . "' $selected>" . htmlspecialchars($tec['nombre']) . "</option>";
+                                                    }
+                                                    echo "  </select>
+                                                        </form>
+                                                    </td>";
                                                     echo "<td>" . htmlspecialchars($row['fecha_modificacion']) . "</td>";
                                                     echo "<td class='text-center'>
                                                         <a href='javascript:void(0)' class='btn btn-info btn-sm view-btn' data-id='" . $row['id'] . "'><i class='material-icons'>visibility</i></a>
@@ -297,10 +300,19 @@ echo "  </select>
                 // Aplicar filtros
                 $('#applyFilters').click(function () {
                     var estado = $('#filterEstado').val();
+                    var disposicion = $('#filterDisposicion').val();
+                    var estadoEquipo = $('#filterEstadoEquipo').val();
                     var ubicacion = $('#filterUbicacion').val();
                     var grado = $('#filterGrado').val();
 
-                    table.columns(7).search(estado); // Estado
+                    
+                    table.columns(4).search(estado);
+                    // Filtrar por disposición (columna 7)
+                    table.columns(7).search(disposicion);
+                    
+                    // Filtrar por estado del equipo (columna 8)
+                    table.columns(8).search(estadoEquipo);
+                    
                     table.columns(5).search(ubicacion); // Ubicación
                     table.columns(6).search(grado); // Grado
                     table.draw();
