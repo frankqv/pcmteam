@@ -69,23 +69,23 @@ if (in_array($rol, [1, 2, 4, 5])) {
     ];
 }
 # PRIORIDAD 3: SERVICIOS TÉCNICOS - Operación diaria crítica
-/* if (in_array($rol, [1, 4, 5, 6, 7])) {
+if (in_array($rol, [1, 4, 5, 6, 7])) {
     $menu[] = [
         'label' => 'Servicios Técnicos',
         'url' => '../servicio/mostrar.php',
         'icon' => 'view_timeline'
     ];
 }
-*/
+
 # PRIORIDAD 4: MIS SERVICIOS - Trabajo personal del técnico
-if (in_array($rol, [4, 5, 7])) {
+/* if (in_array($rol, [4, 5, 7])) {
     $menu[] = [
         'label' => 'Mis Servicios',
         'icon' => 'dataset',
         'id' => 'planes',
         'url' => '../mis_servicios/mostrar.php'
     ];
-}
+} */
 # PRIORIDAD 5: PRODUCTOS - Inventario y catálogo
 if (in_array($rol, [1, 4, 5, 6, 7])) {
     $menu[] = [
