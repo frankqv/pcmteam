@@ -48,7 +48,7 @@ $menu = [
 # PRIORIDAD 1: CLIENTES - Base del negocio
 if (in_array($rol, [1, 2, 4, 5, 7])) {
     $menu[] = [
-        'label' => 'Clientes',
+        'label' => 'CLIENTES',
         'icon' => 'group',
         'id' => 'clientes',
         'url' => '../clientes/mostrar.php',
@@ -241,4 +241,17 @@ if (!in_array($rol, [0])) {
         'icon' => 'logout'
     ];
 }
+
+# Version del sistema Pcmarket-team
+if (!in_array($rol, [1, 2])) {
+    echo '<p><b>Version</b>0.700</p>';
+}
+
+# PRIORIDAD 21: VERSIÓN DEL SISTEMA - Pie de menú
+$menu[] = [
+     // o 'tag' o 'update'
+    'label' => '<i>Version JULIO 2025</i> ',
+    
+];
+
 ?>

@@ -106,7 +106,7 @@ if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])){
                                     // Validar campos obligatorios
                                     if(empty($nombre) || empty($telefono) || empty($correo)){
                                         echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                            Los campos Nombre, Teléfono y Correo son obligatorios
+                                            Los campos Nombre, Celular y Correo son obligatorios
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
@@ -152,7 +152,7 @@ if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])){
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="bmd-label-floating">Teléfono*</label>
+                                                <label class="bmd-label-floating">Celular*</label>
                                                 <input type="number" name="telefono" class="form-control" required maxlength="10">
                                             </div>
                                         </div>

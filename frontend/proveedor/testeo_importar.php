@@ -140,9 +140,9 @@ if (isset($_POST['importar']) && isset($_FILES['archivo_excel']['tmp_name'])) {
                         continue;
                     }
                     
-                    // Validar teléfono si se proporciona
+                    // Validar Celular si se proporciona
                     if (!empty($telefono) && !preg_match('/^\d{7,15}$/', $telefono)) {
-                        $errores[] = "Fila ".($i+1).": Teléfono debe tener entre 7 y 15 dígitos.";
+                        $errores[] = "Fila ".($i+1).": Celular debe tener entre 7 y 15 dígitos.";
                         continue;
                     }
                     
@@ -298,7 +298,7 @@ if (isset($_GET['descargar_plantilla_generica'])) {
                         <li><strong>nombre</strong> - Nombre del proveedor (obligatorio)</li>
                         <li><strong>nit</strong> - NIT del proveedor (obligatorio, solo números)</li>
                         <li><strong>direccion</strong> - Dirección (opcional)</li>
-                        <li><strong>telefono</strong> - Teléfono (opcional, 7-15 dígitos)</li>
+                        <li><strong>telefono</strong> - Celular (opcional, 7-15 dígitos)</li>
                         <li><strong>email</strong> - Email (opcional, formato válido)</li>
                     </ul>
                 </div>

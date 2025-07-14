@@ -128,7 +128,7 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])) {
                                             <tr>
                                                 <th>Nomenclatura</th>
                                                 <th>Nombre</th>
-                                                <th>Teléfono</th>
+                                                <th>Celular</th>
                                                 <th>Correo</th>
                                                 <th>Dirección</th>
                                                 <th>Estado</th>

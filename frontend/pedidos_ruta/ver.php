@@ -78,7 +78,7 @@ if(!$pedido) die('Pedido no encontrado');
         <tr><th>Cliente</th><td><?php echo htmlspecialchars($pedido['nomcli'] . ' ' . $pedido['apecli']); ?></td></tr>
         <tr><th>N°Idenficador</th><td><?php echo htmlspecialchars($pedido['numid']); ?></td></tr>
         <tr><th>Sede</th><td><?php echo htmlspecialchars($pedido['idsede']); ?></td></tr>
-        <tr><th>Teléfono</th><td><?php echo htmlspecialchars($pedido['celu']); ?></td></tr>
+        <tr><th>Celular</th><td><?php echo htmlspecialchars($pedido['celu']); ?></td></tr>
         <tr><th>Correo</th><td><?php echo htmlspecialchars($pedido['correo']); ?></td></tr>
         <tr><th>Tienda</th><td><?php echo htmlspecialchars($pedido['idsede']); ?></td></tr>
         <tr><th>Despacho</th><td><?php echo htmlspecialchars($pedido['despacho'] ?? ''); ?></td></tr>

@@ -66,7 +66,7 @@ if(!$proveedor){
                                 <dd class="col-sm-8"><?php echo htmlspecialchars($proveedor->nomenclatura); ?></dd>
                                 <dt class="col-sm-4">Nombre</dt>
                                 <dd class="col-sm-8"><?php echo htmlspecialchars($proveedor->nombre); ?></dd>
-                                <dt class="col-sm-4">Teléfono</dt>
+                                <dt class="col-sm-4">Celular</dt>
                                 <dd class="col-sm-8"><?php echo htmlspecialchars($proveedor->celu); ?></dd>
                                 <dt class="col-sm-4">Correo</dt>
                                 <dd class="col-sm-8"><?php echo htmlspecialchars($proveedor->correo); ?></dd>

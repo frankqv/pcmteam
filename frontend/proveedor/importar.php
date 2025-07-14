@@ -6,6 +6,7 @@ if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 5])){
     exit();
 }
 
+
 // Mensajes de resultado
 $mensaje = '';
 $tipo_mensaje = '';
@@ -18,11 +19,14 @@ if (isset($_GET['descargar_plantilla'])) {
     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     // Encabezados
-    $headers = ['', '','nombre', 'nit', 'direccion', 'telefono', 'email'];
+    $headers = ['id', 'privado', 'nombre', 'celu', 'dire', 'cuiprov', 'nomenclatura', 'nit', 'email', 'fecha_creacion', 'fecha_actualizacion'];
     $sheet->fromArray($headers, NULL, 'A1');
     // Fila de ejemplo
-    $ejemplo = ['Ejemplo S.A.S.', '900123456', 'Calle 123 #45-67', '3001234567', 'ejemplo@email.com'];
+    $ejemplo = ['8','1','Ejemplo S.A.S.','3202344974', 'Calle 123 #45-67','Bogota','EJEMSAS','901234567','ejemplo@email.com' , '2025-07-14 12:20:31', '2025-07-14 12:20:31'];
     $sheet->fromArray($ejemplo, NULL, 'A2');
+    // Fila de Ejemplo dos
+    $ejemplo = ['9','1','PcShek Tecnologia Y Servicios S A S','3186890437', 'TV 66 # 35 - 11 MD 3 BG 9','Bogota','PCSH','900413420','comercial@pcshek.com' , '2025-07-14 12:20:31', '2025-07-14 12:20:31'];
+    $sheet->fromArray($ejemplo, NULL, 'A3');
     // Formato visual para encabezados
     $headerStyle = [
         'font' => ['bold' => true],
@@ -58,28 +62,39 @@ if (isset($_POST['importar']) && isset($_FILES['archivo_excel']['tmp_name'])) {
             $sheet = $spreadsheet->getActiveSheet();
             $rows = $sheet->toArray();
             require_once '../../backend/bd/ctconex.php';
-            $con = conexion();
+            $con = $connect;
             $insertados = 0;
             $errores = [];
             foreach ($rows as $i => $row) {
                 if ($i == 0) continue; // Saltar encabezado
-                $nombre = trim($row[0] ?? '');
-                $nit = trim($row[1] ?? '');
-                $direccion = trim($row[2] ?? '');
-                $telefono = trim($row[3] ?? '');
-                $email = trim($row[4] ?? '');
+                $id = trim($row[0] ?? '');
+                $privado = trim($row[1] ?? '');
+                $nombre = trim($row[2] ?? '');
+                $celu = trim($row[3] ?? '');
+                $dire = trim($row[4] ?? '');
+                $cuiprov = trim($row[5] ?? '');
+                $nomenclatura = trim($row[6] ?? '');
+                $nit = trim($row[7] ?? '');
+                $correo = trim($row[8] ?? '');
+                $fecha_creacion = trim($row[9] ?? '');
+                $fecha_actualizacion = trim($row[10] ?? '');
+
+                
                 if ($nombre == '' || $nit == '') {
                     $errores[] = "Fila ".($i+1).": Nombre y NIT son obligatorios.";
                     continue;
                 }
                 // Validación básica de email
-                if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                if ($correo && !filter_var($correo, FILTER_VALIDATE_EMAIL)) {
                     $errores[] = "Fila ".($i+1).": Email inválido.";
                     continue;
                 }
                 // Insertar en la base de datos
-                $stmt = $con->prepare("INSERT INTO proveedor (nombre, nit, direccion, telefono, email) VALUES (?, ?, ?, ?, ?)");
-                if ($stmt->execute([$nombre, $nit, $direccion, $telefono, $email])) {
+                $stmt = $con->prepare("INSERT INTO proveedores (id, privado, nombre, celu, dire, cuiprov, nomenclatura, nit, correo, fecha_creacion, fecha_actualizacion)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON DUPLICATE KEY UPDATE
+privado=VALUES(privado), nombre=VALUES(nombre), celu=VALUES(celu), dire=VALUES(dire), cuiprov=VALUES(cuiprov), nomenclatura=VALUES(nomenclatura), nit=VALUES(nit), correo=VALUES(correo), fecha_creacion=VALUES(fecha_creacion), fecha_actualizacion=VALUES(fecha_actualizacion)");
+                if ($stmt->execute([$id, $privado, $nombre, $celu, $dire, $cuiprov, $nomenclatura, $nit, $correo, $fecha_creacion, $fecha_actualizacion])) {
                     $insertados++;
                 } else {
                     $errores[] = "Fila ".($i+1).": Error al insertar en la base de datos.";
@@ -164,6 +179,7 @@ if (isset($_GET['descargar_plantilla_generica'])) {
                 <a href="mostrar.php" class="btn btn-secondary mt-2">Volver</a>
             </form>
             <hr>
+            <p>Porfavor sr usuario, subir nit de la empresa,  el cual puede encontrar en <b>https://www.datacreditoempresas.com.co/</b></p>
             <p class="text-muted">La plantilla debe tener las siguientes columnas: <b>nombre, nit, direccion, telefono, email</b>.</p>
         </div>
     </div>
@@ -174,3 +190,5 @@ if (isset($_GET['descargar_plantilla_generica'])) {
 </body>
 </html>
 <?php ob_end_flush(); ?>
+
+

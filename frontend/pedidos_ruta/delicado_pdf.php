@@ -15,13 +15,14 @@ try {
     if ($order) {
         // Ahora obtener los datos del cliente
         $sql_cliente = "SELECT c.*, s.celu as celu_remitente, s.nomem as nombre_remitente 
-                       FROM clientes c, setting s 
-                       WHERE c.idclie = ? AND s.idsett = 1";
+            FROM clientes c, setting s 
+            WHERE c.idclie = ? AND s.idsett = 1";
         $stmt = $connect->prepare($sql_cliente);
         $stmt->execute([$order['user_cli']]);
         $datos = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($datos) {
+            
             // Crear PDF
             $pdf = new FPDF();
             $pdf->AddPage();
@@ -32,7 +33,7 @@ try {
             
             // Ciudad
             $pdf->SetFont('Times', 'B', 32);
-            $pdf->Cell(0, 12, utf8_decode( $datos['ciucli']), 0, 1, 'C');
+            $pdf->Cell(0, 12, convertUtf8( $datos['ciucli']), 0, 1, 'C');
             
 
             // Datos del cliente
@@ -40,24 +41,24 @@ try {
             $pdf->Ln(5);
             
             // Nombre completo del cliente
-            $pdf->Cell(0, 8, utf8_decode('Para: ' . $datos['nomcli'] . ' ' . $datos['apecli']), 0, 1, 'C');
+            $pdf->Cell(0, 8, convertUtf8('Para: ' . $datos['nomcli'] . ' ' . $datos['apecli']), 0, 1, 'C');
             
             // Numero de identificacion
-            $pdf->Cell(0, 8, utf8_decode('C.C: ' . $datos['numid']), 0, 1, 'C');
+            $pdf->Cell(0, 8, convertUtf8('C.C: ' . $datos['numid']), 0, 1, 'C');
             
             // Dirección
-            $pdf->Cell(0, 8, utf8_decode('Direccion: ' . $datos['dircli']), 0, 1, 'C');
+            $pdf->Cell(0, 8, convertUtf8('Direccion: ' . $datos['dircli']), 0, 1, 'C');
             
             // Celular del cliente
-            $pdf->Cell(0, 8, utf8_decode('Celular cliente: ' . $datos['celu']), 0, 1, 'C');
+            $pdf->Cell(0, 8, convertUtf8('Celular cliente: ' . $datos['celu']), 0, 1, 'C');
             
             // Datos del remitente
             $pdf->Ln(10);
             $pdf->SetFont('Arial', 'B', 14);
             $pdf->Cell(0, 8, 'DATOS DEL REMITENTE:', 0, 1, 'C');
             $pdf->SetFont('Arial', '', 14);
-            $pdf->Cell(0, 8, utf8_decode($datos['nombre_remitente']), 0, 1, 'C');
-            $pdf->Cell(0, 8, utf8_decode('Celular: ' . $datos['celu_remitente']), 0, 1, 'C');
+            $pdf->Cell(0, 8, convertUtf8($datos['nombre_remitente']), 0, 1, 'C');
+            $pdf->Cell(0, 8, convertUtf8('Celular: ' . $datos['celu_remitente']), 0, 1, 'C');
             
             // Mensaje final
             $pdf->Ln(8);

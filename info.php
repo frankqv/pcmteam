@@ -6,6 +6,10 @@ echo "Versión de PHP: " . phpversion() . "<br>";
 echo "SAPI: " . php_sapi_name() . "<br>";
 echo "Sistema operativo: " . PHP_OS . "<br>";
 
+echo "Zip: " . (extension_loaded('zip') ? '✅ Sí' : '❌ No') . "<br>";
+echo "ZipArchive: " . (class_exists('ZipArchive') ? '✅ Sí' : '❌ No') . "<br>";
+
+
 echo "<h2>Extensiones cargadas</h2>";
 echo "PDO: " . (extension_loaded('pdo') ? '✅ Sí' : '❌ No') . "<br>";
 echo "PDO MySQL: " . (extension_loaded('pdo_mysql') ? '✅ Sí' : '❌ No') . "<br>";
@@ -39,3 +43,4 @@ if (file_put_contents($testFile, 'Test de escritura')) {
 echo "<br><a href='frontend/login.php'>Ir al login</a>";
 echo "<br><a href='test_conexion.php'>Probar conexión a BD</a>";
 ?> 
+

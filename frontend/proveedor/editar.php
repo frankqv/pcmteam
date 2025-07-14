@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <input type="text" name="nombre" class="form-control" value="<?php echo htmlspecialchars($proveedor->nombre); ?>" required>
                                 </div>
                                 <div class="form-group mb-3">
-                                    <label>Teléfono</label>
+                                    <label>Celular</label>
                                     <input type="text" name="celu" class="form-control" value="<?php echo htmlspecialchars($proveedor->celu); ?>">
                                 </div>
                                 <div class="form-group mb-3">
