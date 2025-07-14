@@ -18,7 +18,7 @@ if (isset($_GET['descargar_plantilla'])) {
     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     // Encabezados
-    $headers = ['nombre', 'nit', 'direccion', 'telefono', 'email'];
+    $headers = ['', '','nombre', 'nit', 'direccion', 'telefono', 'email'];
     $sheet->fromArray($headers, NULL, 'A1');
     // Fila de ejemplo
     $ejemplo = ['Ejemplo S.A.S.', '900123456', 'Calle 123 #45-67', '3001234567', 'ejemplo@email.com'];
@@ -147,7 +147,7 @@ if (isset($_GET['descargar_plantilla_generica'])) {
     <div class="card shadow">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Importar Proveedores desde Excel</h5>
-            <a href="?descargar_plantilla=1" class="btn btn-light btn-sm">Descargar plantilla Excel</a>
+            <a href="?descargar_plantilla=1" class="btn btn-info btn-sm">📥 Descargar plantilla Excel</a>
         </div>
         <div class="card-body">
             <?php if($mensaje): ?>
@@ -160,12 +160,11 @@ if (isset($_GET['descargar_plantilla_generica'])) {
                     <label for="archivo_excel">Selecciona archivo Excel (.xlsx):</label>
                     <input type="file" class="form-control-file" id="archivo_excel" name="archivo_excel" accept=".xlsx" required>
                 </div>
-                <button type="submit" name="importar" class="btn btn-success mt-2">Importar</button>
+                <button type="submit" name="importar" class="btn btn-success mt-2">📊 Importar Proveedores</button>
                 <a href="mostrar.php" class="btn btn-secondary mt-2">Volver</a>
             </form>
             <hr>
             <p class="text-muted">La plantilla debe tener las siguientes columnas: <b>nombre, nit, direccion, telefono, email</b>.</p>
-            <a href="?descargar_plantilla_generica=1" class="btn btn-info btn-sm">Descargar plantilla genérica</a>
         </div>
     </div>
 </div>
