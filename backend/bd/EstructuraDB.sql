@@ -3,31 +3,22 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-07-2025 a las 22:42:19
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.3.23
+
+
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
--- Base de datos: `u171145084_pcmteam`
---
 CREATE DATABASE IF NOT EXISTS `u171145084_pcmteam` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `u171145084_pcmteam`;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `bodega_control_calidad`
---
+USE u171145084_pcmteam;
 
 CREATE TABLE `bodega_control_calidad` (
   `id` int(11) NOT NULL,
@@ -39,21 +30,11 @@ CREATE TABLE `bodega_control_calidad` (
   `estado_final` enum('aprobado','rechazado') NOT NULL,
   `categoria_rec` varchar(50) NOT NULL COMMENT 'Categorización REC',
   `observaciones` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `bodega_control_calidad`
---
+) ;
 
 INSERT INTO `bodega_control_calidad` (`id`, `inventario_id`, `fecha_control`, `tecnico_id`, `burning_test`, `sentinel_test`, `estado_final`, `categoria_rec`, `observaciones`) VALUES
 (1, 1, '2025-06-30 17:32:02', 13, 'Pasó 24h sin problemas', 'Sin amenazas detectadas', 'aprobado', 'REC-A', 'Equipo listo para venta'),
 (2, 2, '2025-06-30 17:32:02', 13, 'Pasó 12h, se detuvo por sobrecalentamiento', 'Limpio', 'rechazado', 'REC-SCRAP', 'Requiere revisión del sistema de refrigeración');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `bodega_diagnosticos`
---
 
 CREATE TABLE `bodega_diagnosticos` (
   `id` int(11) NOT NULL,
@@ -70,49 +51,12 @@ CREATE TABLE `bodega_diagnosticos` (
   `disco` text DEFAULT NULL COMMENT 'Resultado prueba de disco',
   `estado_reparacion` enum('falla_mecanica','falla_electrica','reparacion_cosmetica','aprobado') NOT NULL,
   `observaciones` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
---
--- Volcado de datos para la tabla `bodega_diagnosticos`
---
-CREATE TABLE partes_inventario (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  caja VARCHAR(50) NOT NULL,                
-  cantidad INT NOT NULL,                     
-  marca VARCHAR(50) NOT NULL,                
-  modelo VARCHAR(100) NOT NULL,              
-  generacion VARCHAR(50),                    
-  numero_parte VARCHAR(100),               
-  condicion ENUM('Nuevo', 'Usado') NOT NULL, 
-  teclado ENUM('Con Teclado', 'Sin Teclado', 'n/n') DEFAULT 'n/n', -- Si aplica
-  precio DECIMAL(12,2) NOT NULL,             -- Precio unitario
-  precio_nuevo_con_teclado DECIMAL(12,2),    -- Precio nuevo con teclado (si aplica)
-  precio_nuevo_sin_teclado DECIMAL(12,2),    -- Precio nuevo sin teclado (si aplica)
-  precio_usado_con_teclado DECIMAL(12,2),    -- Precio usado con teclado (si aplica)
-  precio_usado_sin_teclado DECIMAL(12,2),    -- Precio usado sin teclado (si aplica)
-  etiquetas VARCHAR(100),                    -- Etiquetas o tipo de producto (ej: Bateria)
-  producto VARCHAR(100),                     -- Tipo de producto (ej: Bateria, Pasamanos)
-  imagen_url TEXT,                           -- URL de la imagen o carpeta
-  fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-
-
---
--- Volcado de datos para la tabla `bodega_diagnosticos`
---
+) ;
 
 INSERT INTO `bodega_diagnosticos` (`id`, `inventario_id`, `fecha_diagnostico`, `tecnico_id`, `camara`, `teclado`, `parlantes`, `bateria`, `microfono`, `pantalla`, `puertos`, `disco`, `estado_reparacion`, `observaciones`) VALUES
 (1, 1, '2025-06-30 17:32:02', 8, 'Funcional', 'Funcional', 'Funcional', '85% capacidad', 'Funcional', 'Sin píxeles muertos', 'Todos funcionales', 'Estado excelente', 'aprobado', 'Equipo en perfectas condiciones'),
 (2, 2, '2025-06-30 17:32:02', 8, 'N/A', 'Funcional', 'Funcional', 'N/A', 'N/A', 'Funcional', 'Puerto USB dañado', 'Buen estado', 'falla_mecanica', 'Requiere cambio de puerto USB'),
 (3, 3, '2025-06-30 17:32:02', 8, 'Funcional', 'Tecla Space pegajosa', 'Funcional', 'N/A', 'Funcional', 'Rayones superficiales', 'Funcionales', 'Fragmentación alta', 'reparacion_cosmetica', 'Requiere limpieza de teclado y desfragmentación');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `bodega_entradas`
---
 
 CREATE TABLE `bodega_entradas` (
   `id` int(11) NOT NULL,
@@ -122,23 +66,13 @@ CREATE TABLE `bodega_entradas` (
   `usuario_id` int(11) NOT NULL COMMENT 'ID del usuario que registra',
   `cantidad` int(11) NOT NULL DEFAULT 1,
   `observaciones` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `bodega_entradas`
---
+) ;
 
 INSERT INTO `bodega_entradas` (`id`, `inventario_id`, `fecha_entrada`, `proveedor_id`, `usuario_id`, `cantidad`, `observaciones`) VALUES
 (1, 1, '2025-06-30 17:32:02', 1, 1, 1, 'Entrada inicial de inventario'),
 (2, 2, '2025-06-30 17:32:02', 1, 1, 1, 'Entrada desde proveedor principal'),
 (3, 3, '2025-06-30 17:32:02', 2, 1, 1, 'Entrada desde proveedor secundario'),
 (4, 4, '2025-07-02 17:19:56', 1, 1, 1, 'TESTEO4');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `bodega_inventario`
---
 
 CREATE TABLE `bodega_inventario` (
   `id` int(11) NOT NULL,
@@ -166,11 +100,7 @@ CREATE TABLE `bodega_inventario` (
   `pedido_id` int(11) DEFAULT NULL,
   `producto_id` int(11) DEFAULT NULL,
   `tactil` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `bodega_inventario`
---
+) ;
 
 INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `item`, `ubicacion`, `posicion`, `fecha_ingreso`, `fecha_modificacion`, `activo_fijo`, `codigo_lote`, `producto`, `marca`, `serial`, `modelo`, `procesador`, `ram`, `disco`, `pulgadas`, `observaciones`, `grado`, `disposicion`, `estado`, `tecnico_id`, `pedido_id`, `producto_id`, `tactil`) VALUES
 (1, 'EQ001', 1, 'Principal', 'ESTANTE-1-A', '2025-06-30 17:32:02', '2025-07-11 18:04:01', 'AF001', 'LOTE2025001', 'Portatil', 'Dell', 'DL123456789', 'Latitude 5520', 'Intel i5-1135G7aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', '8GB', '256GB SSD', '15.6', 'Equipo en buen estado', 'A', 'Business Room', 'Business', 33, NULL, NULL, 'SI'),
@@ -178,11 +108,35 @@ INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `item`, `ubicacion`, `posicio
 (3, 'EQ003', 3, 'Cúcuta', 'ESTANTE-2-A', '2025-06-30 17:32:02', '2025-07-11 15:57:28', 'AF003', 'LOTE2025002', 'AIO', 'Lenovo', 'LN456789123', 'ThinkCentre M90a', 'Intel i5-10400T', '8GB', '1TB HDD', '23.8', 'Pantalla con rayones menores', 'C', 'Business Room', 'activo', 32, NULL, NULL, 'NO'),
 (4, 'LPDA 1432', 4, 'Principal', 'DWQDEW', '2025-07-02 17:19:56', '2025-07-12 10:55:38', 'AF004', 'LOTE2025001', 'Periferico', 'HP', 'ds', '132', 'i5 14th', '8GB', '125 gb', '', 'tESTEO', 'A', 'Para Venta', 'Business', 33, NULL, NULL, 'SI');
 
--- --------------------------------------------------------
+CREATE TABLE `bodega_partes` (
+  `id` int(11) NOT NULL,
+  `caja` varchar(50) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `marca` varchar(50) NOT NULL,
+  `modelo` varchar(100) NOT NULL,
+  `generacion` varchar(50) DEFAULT NULL,
+  `numero_parte` varchar(100) DEFAULT NULL,
+  `condicion` enum('Nuevo','Usado') NOT NULL,
+  `teclado` enum('Con Teclado','Sin Teclado','n/n') DEFAULT 'n/n',
+  `precio` decimal(12,2) NOT NULL,
+  `precio_nuevo_con_teclado` decimal(12,2) DEFAULT NULL,
+  `precio_nuevo_sin_teclado` decimal(12,2) DEFAULT NULL,
+  `precio_usado_con_teclado` decimal(12,2) DEFAULT NULL,
+  `precio_usado_sin_teclado` decimal(12,2) DEFAULT NULL,
+  `etiquetas` varchar(100) DEFAULT NULL,
+  `producto` varchar(100) DEFAULT NULL,
+  `imagen_url` text DEFAULT NULL,
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
+) ;
 
---
--- Estructura de tabla para la tabla `bodega_salidas`
---
+INSERT INTO `bodega_partes` (`id`, `caja`, `cantidad`, `marca`, `modelo`, `generacion`, `numero_parte`, `condicion`, `teclado`, `precio`, `precio_nuevo_con_teclado`, `precio_nuevo_sin_teclado`, `precio_usado_con_teclado`, `precio_usado_sin_teclado`, `etiquetas`, `producto`, `imagen_url`, `fecha_registro`) VALUES
+(1, 'CAJA B2', 30, 'LENOVO', 'L15L3A03', NULL, 'L15L3A03', 'Usado', 'n/n', 230000.00, NULL, NULL, NULL, NULL, 'Bateria', 'Bateria', '#', '2025-07-14 22:58:18'),
+(2, 'CAJA B2', 19, 'LENOVO', 'L20B2PF0', NULL, 'L20B2PF0', 'Usado', 'n/n', 240000.00, NULL, NULL, NULL, NULL, 'Bateria', 'Bateria', '#', '2025-07-14 22:58:18'),
+(3, 'CAJA B2', 30, 'LENOVO', 'L15L3A03', NULL, 'L15L3A03', 'Usado', 'n/n', 230000.00, NULL, NULL, NULL, NULL, 'Bateria', 'Bateria', '#', '2025-07-14 22:58:25'),
+(4, 'CAJA B2', 19, 'LENOVO', 'L20B2PF0', NULL, 'L20B2PF0', 'Usado', 'n/n', 240000.00, NULL, NULL, NULL, NULL, 'Bateria', 'Bateria', '#', '2025-07-14 22:58:25'),
+(5, 'CAJA F1', 12, 'DELL', 'PA-12', 'GEN 3', '0VJCH5', 'Usado', 'n/n', 85000.00, NULL, NULL, NULL, NULL, 'Fuente', 'Fuente', '#', '2025-07-14 22:59:10'),
+(6, 'CAJA F2', 8, 'LENOVO', 'ADLX65NLC3A', 'GEN 2', '36200287', 'Nuevo', 'n/n', 120000.00, NULL, NULL, NULL, NULL, 'Fuente', 'Fuente', '#', '2025-07-14 22:59:10'),
+(7, 'CAJA F3', 5, 'HP', 'PPP009L-E', 'GEN 1', '677774-002', 'Usado', 'n/n', 70000.00, NULL, NULL, NULL, NULL, 'Fuente', 'Fuente', '#', '2025-07-14 22:59:10');
 
 CREATE TABLE `bodega_salidas` (
   `id` int(11) NOT NULL,
@@ -193,13 +147,7 @@ CREATE TABLE `bodega_salidas` (
   `cantidad` int(11) NOT NULL DEFAULT 1,
   `razon_salida` text NOT NULL,
   `observaciones` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `cart`
---
+) ;
 
 CREATE TABLE `cart` (
   `idv` int(11) NOT NULL,
@@ -208,26 +156,18 @@ CREATE TABLE `cart` (
   `name` text NOT NULL,
   `price` int(11) NOT NULL,
   `quantity` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ;
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `cart_compra`
---
 
 CREATE TABLE `cart_compra` (
+
   `idcarco` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `idprod` int(11) NOT NULL,
   `name` text NOT NULL,
   `price` int(11) NOT NULL,
   `quantity` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `cart_compra`
---
+) ;
 
 INSERT INTO `cart_compra` (`idcarco`, `user_id`, `idprod`, `name`, `price`, `quantity`) VALUES
 (2, 3, 3, 'LTE MEMORIAS', 25, 2),
@@ -235,22 +175,12 @@ INSERT INTO `cart_compra` (`idcarco`, `user_id`, `idprod`, `name`, `price`, `qua
 (4, 5, 5, 'LTE PORTAILES', 200000, 1),
 (7, 2, 5, 'LOTE DE CARCASAS', 18000, 2);
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `categoria`
---
-
 CREATE TABLE `categoria` (
   `idcate` int(11) NOT NULL,
   `nomca` text NOT NULL,
   `estado` varchar(15) NOT NULL,
   `fere` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `categoria`
---
+) ;
 
 INSERT INTO `categoria` (`idcate`, `nomca`, `estado`, `fere`) VALUES
 (1, 'COMPUTADOR DE MESA', 'Activo', '2024-03-15 08:27:45'),
@@ -259,12 +189,6 @@ INSERT INTO `categoria` (`idcate`, `nomca`, `estado`, `fere`) VALUES
 (4, 'CELULARES', 'Activo', '2024-03-15 08:27:46'),
 (5, 'MONITOR', 'Inactivo', '2024-03-21 18:58:56'),
 (6, 'TODO EN UNO', 'Activo', '2024-03-21 18:59:10');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `clientes`
---
 
 CREATE TABLE `clientes` (
   `idclie` int(11) NOT NULL,
@@ -279,11 +203,7 @@ CREATE TABLE `clientes` (
   `dircli` text DEFAULT NULL,
   `ciucli` text DEFAULT NULL,
   `idsede` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `clientes`
---
+) ;
 
 INSERT INTO `clientes` (`idclie`, `numid`, `nomcli`, `apecli`, `naci`, `correo`, `celu`, `estad`, `fere`, `dircli`, `ciucli`, `idsede`) VALUES
 (1, '1231213', 'holman', 'grimaldo', '2019-03-13', 'grimaldox@gmail.com', '3026169292', 'Activo', '2024-03-14 04:02:53', 'Cra. 53 #121-51', 'Funza', 'Medellin'),
@@ -305,12 +225,6 @@ INSERT INTO `clientes` (`idclie`, `numid`, `nomcli`, `apecli`, `naci`, `correo`,
 (18, '8', '1', 'Ejemplo S.A.S.', '1900-01-01', 'Calle 123 #45-67', 'Bogota', 'EJEMSAS', '2025-07-14 22:02:45', '900123456', 'ejemplo@email.com', '2025-07-14 12:20:31'),
 (19, '9', '1', 'PcShek Tecnologia Y Servicios S A S', '1900-01-01', 'TV 66 # 35 - 11 MD 3 BG 9', 'Bogota', 'PCSH', '2025-07-14 22:02:46', '900123456', 'comercial@pcshek.com', '2025-07-14 12:20:31');
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `compra`
---
-
 CREATE TABLE `compra` (
   `idcomp` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -320,11 +234,7 @@ CREATE TABLE `compra` (
   `placed_on` text NOT NULL,
   `payment_status` text NOT NULL,
   `tipc` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `compra`
---
+) ;
 
 INSERT INTO `compra` (`idcomp`, `user_id`, `method`, `total_products`, `total_price`, `placed_on`, `payment_status`, `tipc`) VALUES
 (1, 1, 'Tarjeta', 'Producto1', 20.00, '2024-03-15', 'Pagado', 'Tipc'),
@@ -337,22 +247,12 @@ INSERT INTO `compra` (`idcomp`, `user_id`, `method`, `total_products`, `total_pr
 (8, 1, 'Efectivo', ', Computador 117 ( 1 )', 15000.00, '2025-07-09', 'Aceptado', 'Ticket'),
 (9, 1, 'Transferencia', ', lenovo ( 1 ), Computador 117 ( 1 )', 5015000.00, '2025-07-09', 'Aceptado', 'Ticket');
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `gastos`
---
-
 CREATE TABLE `gastos` (
   `idga` int(11) NOT NULL,
   `detall` text NOT NULL,
   `total` decimal(10,2) NOT NULL,
   `fec` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `gastos`
---
+) ;
 
 INSERT INTO `gastos` (`idga`, `detall`, `total`, `fec`) VALUES
 (1, 'Gasto1', 10000.00, '2024-03-15'),
@@ -365,22 +265,12 @@ INSERT INTO `gastos` (`idga`, `detall`, `total`, `fec`) VALUES
 (8, 'COMPRA DE PRODUCTOS', 15000.00, '2025-07-09'),
 (9, 'COMPRA DE PRODUCTOS', 5015000.00, '2025-07-09');
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `ingresos`
---
-
 CREATE TABLE `ingresos` (
   `iding` int(11) NOT NULL,
   `detalle` text NOT NULL,
   `total` decimal(10,2) NOT NULL,
   `fec` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `ingresos`
---
+) ;
 
 INSERT INTO `ingresos` (`iding`, `detalle`, `total`, `fec`) VALUES
 (1, 'Ingreso1', 30000.00, '2024-03-15'),
@@ -403,12 +293,6 @@ INSERT INTO `ingresos` (`iding`, `detalle`, `total`, `fec`) VALUES
 (18, 'VENTA DE PRODUCTOS', 25000.00, '2025-06-25'),
 (19, 'VENTA DE PRODUCTOS', 244500.00, '2025-07-10');
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `marketing`
---
-
 CREATE TABLE `marketing` (
   `id` int(11) NOT NULL,
   `nombre` varchar(100) NOT NULL,
@@ -422,13 +306,7 @@ CREATE TABLE `marketing` (
   `responsable` varchar(100) DEFAULT NULL,
   `estado` enum('activa','finalizada','pendiente') DEFAULT 'pendiente',
   `fuente_datos` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `orders`
---
+) ;
 
 CREATE TABLE `orders` (
   `idord` int(11) NOT NULL,
@@ -442,11 +320,7 @@ CREATE TABLE `orders` (
   `tipc` text NOT NULL,
   `despacho` varchar(255) DEFAULT NULL,
   `responsable` varchar(55) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `orders`
---
+) ;
 
 INSERT INTO `orders` (`idord`, `user_id`, `user_cli`, `method`, `total_products`, `total_price`, `placed_on`, `payment_status`, `tipc`, `despacho`, `responsable`) VALUES
 (1, 34, 1, 'Tarjeta', 'Producto1', 20000.00, '2024-03-15', 'Pagado', 'Tipc', 'DESPACHO TIENDA PUENTE ARANDA', NULL),
@@ -464,12 +338,6 @@ INSERT INTO `orders` (`idord`, `user_id`, `user_cli`, `method`, `total_products`
 (13, 16, 9, 'Efectivo', ', Computador DELL ( 1 )', 25000.00, '2025-06-25', 'Aceptado', 'Ticket', 'DESPACHO TIENDA PUENTE ARANDA', NULL),
 (14, 1, 7, 'Efectivo', ', Computador 117 ( 1 ), Computador HP ( 1 )', 244500.00, '2025-07-10', 'Aceptado', 'Ticket', NULL, NULL);
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `plan`
---
-
 CREATE TABLE `plan` (
   `idplan` int(11) NOT NULL,
   `foto` text NOT NULL,
@@ -477,11 +345,7 @@ CREATE TABLE `plan` (
   `estp` varchar(15) NOT NULL,
   `prec` decimal(10,2) NOT NULL,
   `fere` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `plan`
---
+) ;
 
 INSERT INTO `plan` (`idplan`, `foto`, `nompla`, `estp`, `prec`, `fere`) VALUES
 (1, '515419.png', 'MANTENIMIENTO PREVENTIVO', 'Activo', 89500.00, '2024-03-15 08:27:45'),
@@ -490,12 +354,6 @@ INSERT INTO `plan` (`idplan`, `foto`, `nompla`, `estp`, `prec`, `fere`) VALUES
 (4, '657987.jpg', 'REPARACION', 'Activo', 129000.00, '2024-03-31 08:27:46'),
 (5, '997554.png', 'SERVICIO TECNICO', 'Activo', 6000.00, '2024-03-19 20:35:44'),
 (6, '756730.png', 'reting', 'Activo', 90000.00, '2025-06-19 14:49:49');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `producto`
---
 
 CREATE TABLE `producto` (
   `idprod` int(11) NOT NULL,
@@ -516,11 +374,7 @@ CREATE TABLE `producto` (
   `pntpro` varchar(8) DEFAULT NULL,
   `tarpro` varchar(30) DEFAULT NULL,
   `grado` enum('A','B','C','SCRAP','#N/D','','0') DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `producto`
---
+) ;
 
 INSERT INTO `producto` (`idprod`, `codba`, `nomprd`, `idcate`, `precio`, `stock`, `foto`, `venci`, `esta`, `fere`, `serial`, `marca`, `ram`, `disco`, `prcpro`, `pntpro`, `tarpro`, `grado`) VALUES
 (1, 'vAZCeYThjC6An7', 'lenovo', 4, 5000000.00, 2, '10878.jpg', '2025-05-01', 'Inactivo', '2025-05-28 20:32:22', 'H7YY7MINAndznR', 'lenovo', NULL, NULL, NULL, NULL, '4GB', '0'),
@@ -530,12 +384,6 @@ INSERT INTO `producto` (`idprod`, `codba`, `nomprd`, `idcate`, `precio`, `stock`
 (5, '78901234562345', 'Computador ASUS', 1, 12500.00, 81, '579718.jpg', '2024-10-31', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', 'C'),
 (6, '89012345673456', 'Computador Compax', 4, 18000.00, 58, '956303.jpg', '2024-08-31', 'Activo', '2024-03-15 08:27:46', 'H7YY7MINAndznR', NULL, NULL, NULL, NULL, NULL, 'Integrada', 'B'),
 (7, 'H7YY7MINAndznR', 'Computador HP', 1, 229500.00, 999, '375961.png', '2025-04-01', 'Activo', '2024-03-21 19:19:20', 'H7YY7MINAndznR', 'HP', '16 GB', '256GB SSD', 'i7 8th', '14\"', '2 GB', 'A');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `proveedores`
---
 
 CREATE TABLE `proveedores` (
   `id` int(11) NOT NULL,
@@ -548,24 +396,14 @@ CREATE TABLE `proveedores` (
   `nomenclatura` varchar(10) DEFAULT NULL,
   `nit` int(10) DEFAULT NULL,
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
-  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `proveedores`
---
+  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp()
+) ;
 
 INSERT INTO `proveedores` (`id`, `privado`, `nombre`, `celu`, `correo`, `dire`, `cuiprov`, `nomenclatura`, `nit`, `fecha_creacion`, `fecha_actualizacion`) VALUES
 (1, 1, 'Proveedor Principal', 2147483647, 'proveedor1@email.com', 'Calle 123 #45-67', 'Bogotá', 'PRV001', NULL, '2025-07-14 17:20:31', '2025-07-14 17:20:31'),
 (2, 1, 'Proveedor Secundario', 2147483647, 'proveedor2@email.com', 'Carrera 89 #12-34', 'Medellín', 'PRV002', NULL, '2025-07-14 17:20:31', '2025-07-14 17:20:31'),
 (3, 1, 'SITEC', 2147483647, 'info@sitecsas.com', 'Av Suba #114-69 Local A07, Bog', 'Bogota', 'PRV003', 900432378, '2025-07-14 17:20:31', '2025-07-14 21:02:45'),
 (8, 1, 'PcShek Tecnologia Y Servicios ', 2147483647, 'comercial@pcshek.com', 'TV 66 # 35 - 11 MD 3 BG 9', 'Bogota', 'PCSH', 900123456, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `servicio`
---
 
 CREATE TABLE `servicio` (
   `idservc` int(11) NOT NULL,
@@ -580,11 +418,7 @@ CREATE TABLE `servicio` (
   `servtxt` varchar(250) DEFAULT NULL,
   `servfoto` varchar(255) DEFAULT NULL,
   `responsable` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `servicio`
---
+) ;
 
 INSERT INTO `servicio` (`idservc`, `idplan`, `ini`, `fin`, `idclie`, `estod`, `meto`, `canc`, `fere`, `servtxt`, `servfoto`, `responsable`) VALUES
 (1, 1, '2024-03-15', '2024-05-08', 1, 'Activo', 'Nequi', 20000.00, '2024-03-15 08:27:46', NULL, NULL, NULL),
@@ -598,12 +432,6 @@ INSERT INTO `servicio` (`idservc`, `idplan`, `ini`, `fin`, `idclie`, `estod`, `m
 (9, 5, '2025-06-12', '2025-06-19', 0, 'Activo', 'Nequi_Daviplata', 90000.00, '2025-06-12 22:35:50', 'El equipo enciende y funciona por salida externa. Display dañado físicamente, presenta manchas y líneas. Cliente solicita cambio de pantalla y mantenimiento general.', 'portatil_display.jpeg', 'José Borda'),
 (10, 4, '2025-06-16', '0000-00-00', 5, 'Medellin', 'Transferencia', 90000.00, '2025-06-16 23:01:11', '', '', '');
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `setting`
---
-
 CREATE TABLE `setting` (
   `idsett` int(11) NOT NULL,
   `nomem` text NOT NULL,
@@ -614,20 +442,10 @@ CREATE TABLE `setting` (
   `direc2` text NOT NULL,
   `celu` char(16) NOT NULL,
   `foto` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `setting`
---
+) ;
 
 INSERT INTO `setting` (`idsett`, `nomem`, `ruc`, `decrp`, `corr`, `direc1`, `direc2`, `celu`, `foto`) VALUES
 (1, 'PCMARKET SAS', '901232273', 'PCMARKET SAS', 'comercial@pcmarkett.com', 'Cl. 14 #53-19, Bogotá,', '', '304 4177847', 'logo.jpg');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `usuarios`
---
 
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
@@ -640,11 +458,7 @@ CREATE TABLE `usuarios` (
   `estado` char(1) NOT NULL,
   `fere` timestamp NOT NULL DEFAULT current_timestamp(),
   `idsede` varchar(25) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `usuarios`
---
+) ;
 
 INSERT INTO `usuarios` (`id`, `nombre`, `usuario`, `correo`, `clave`, `rol`, `foto`, `estado`, `fere`, `idsede`) VALUES
 (1, 'FrankQV', 'frank', 'frank@admin.com', '202cb962ac59075b964b07152d234b70', '1', '1', '1', '2025-05-28 14:48:15', 'Cucuta'),
@@ -676,39 +490,24 @@ INSERT INTO `usuarios` (`id`, `nombre`, `usuario`, `correo`, `clave`, `rol`, `fo
 (34, 'frank7', 'frank7', 'frank7@gmail.com', '202cb962ac59075b964b07152d234b70', '7', '1', '1', '2025-06-09 20:09:18', NULL),
 (35, 'salome', 'salome', 'salome@gmail.com', '202cb962ac59075b964b07152d234b70', '2', '1', '1', '2025-07-12 15:22:31', NULL);
 
---
--- Índices para tablas volcadas
---
 
---
--- Indices de la tabla `bodega_control_calidad`
---
 ALTER TABLE `bodega_control_calidad`
   ADD PRIMARY KEY (`id`),
   ADD KEY `inventario_id` (`inventario_id`),
   ADD KEY `tecnico_id` (`tecnico_id`);
 
---
--- Indices de la tabla `bodega_diagnosticos`
---
 ALTER TABLE `bodega_diagnosticos`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id` (`id`),
   ADD KEY `inventario_id` (`inventario_id`),
   ADD KEY `tecnico_id` (`tecnico_id`);
 
---
--- Indices de la tabla `bodega_entradas`
---
 ALTER TABLE `bodega_entradas`
   ADD PRIMARY KEY (`id`),
   ADD KEY `inventario_id` (`inventario_id`),
   ADD KEY `proveedor_id` (`proveedor_id`),
   ADD KEY `usuario_id` (`usuario_id`);
 
---
--- Indices de la tabla `bodega_inventario`
---
 ALTER TABLE `bodega_inventario`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `codigo_g` (`codigo_g`),
@@ -717,226 +516,121 @@ ALTER TABLE `bodega_inventario`
   ADD UNIQUE KEY `id` (`id`),
   ADD UNIQUE KEY `id_2` (`id`);
 
---
--- Indices de la tabla `bodega_salidas`
---
+ALTER TABLE `bodega_partes`
+  ADD PRIMARY KEY (`id`);
+
 ALTER TABLE `bodega_salidas`
   ADD PRIMARY KEY (`id`);
 
---
--- Indices de la tabla `cart`
---
 ALTER TABLE `cart`
   ADD PRIMARY KEY (`idv`);
 
---
--- Indices de la tabla `cart_compra`
---
 ALTER TABLE `cart_compra`
   ADD PRIMARY KEY (`idcarco`);
 
---
--- Indices de la tabla `categoria`
---
 ALTER TABLE `categoria`
   ADD PRIMARY KEY (`idcate`);
 
---
--- Indices de la tabla `clientes`
---
 ALTER TABLE `clientes`
   ADD PRIMARY KEY (`idclie`);
 
---
--- Indices de la tabla `compra`
---
 ALTER TABLE `compra`
   ADD PRIMARY KEY (`idcomp`);
 
---
--- Indices de la tabla `gastos`
---
 ALTER TABLE `gastos`
   ADD PRIMARY KEY (`idga`);
 
---
--- Indices de la tabla `ingresos`
---
 ALTER TABLE `ingresos`
   ADD PRIMARY KEY (`iding`);
 
---
--- Indices de la tabla `marketing`
---
 ALTER TABLE `marketing`
   ADD PRIMARY KEY (`id`);
 
---
--- Indices de la tabla `orders`
---
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`idord`);
 
---
--- Indices de la tabla `plan`
---
 ALTER TABLE `plan`
   ADD UNIQUE KEY `idplan` (`idplan`);
 
---
--- Indices de la tabla `producto`
---
 ALTER TABLE `producto`
   ADD PRIMARY KEY (`idprod`);
 
---
--- Indices de la tabla `proveedores`
---
 ALTER TABLE `proveedores`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nit_unique` (`nit`);
 
---
--- Indices de la tabla `servicio`
---
 ALTER TABLE `servicio`
   ADD PRIMARY KEY (`idservc`);
 
---
--- Indices de la tabla `setting`
---
 ALTER TABLE `setting`
   ADD PRIMARY KEY (`idsett`);
 
---
--- Indices de la tabla `usuarios`
---
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`);
 
---
--- AUTO_INCREMENT de las tablas volcadas
---
 
---
--- AUTO_INCREMENT de la tabla `bodega_control_calidad`
---
 ALTER TABLE `bodega_control_calidad`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `bodega_diagnosticos`
---
 ALTER TABLE `bodega_diagnosticos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `bodega_entradas`
---
 ALTER TABLE `bodega_entradas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `bodega_inventario`
---
 ALTER TABLE `bodega_inventario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `bodega_salidas`
---
+ALTER TABLE `bodega_partes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE `bodega_salidas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `cart`
---
 ALTER TABLE `cart`
   MODIFY `idv` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `cart_compra`
---
 ALTER TABLE `cart_compra`
-  MODIFY `idcarco` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `idcarco` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `categoria`
---
 ALTER TABLE `categoria`
-  MODIFY `idcate` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idcate` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `clientes`
---
 ALTER TABLE `clientes`
-  MODIFY `idclie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `idclie` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `compra`
---
 ALTER TABLE `compra`
-  MODIFY `idcomp` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `idcomp` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `gastos`
---
 ALTER TABLE `gastos`
-  MODIFY `idga` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `idga` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `ingresos`
---
 ALTER TABLE `ingresos`
-  MODIFY `iding` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `iding` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `marketing`
---
 ALTER TABLE `marketing`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `orders`
---
 ALTER TABLE `orders`
-  MODIFY `idord` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `idord` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `plan`
---
 ALTER TABLE `plan`
-  MODIFY `idplan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idplan` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `producto`
---
 ALTER TABLE `producto`
-  MODIFY `idprod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `idprod` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `proveedores`
---
 ALTER TABLE `proveedores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `servicio`
---
 ALTER TABLE `servicio`
-  MODIFY `idservc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idservc` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `setting`
---
 ALTER TABLE `setting`
-  MODIFY `idsett` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idsett` int(11) NOT NULL AUTO_INCREMENT;
 
---
--- AUTO_INCREMENT de la tabla `usuarios`
---
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -30,24 +30,21 @@ if (isset($_SESSION['id']) && isset($_SESSION['rol'])) {
             session_destroy(); // cerrar sesión por seguridad
     }
 }
-
 // Procesar el formulario de login si se envía
 if (isset($_POST['ctglog'])) {
     require_once '../backend/bd/ctconex.php';
-    
     $errMsg = '';
     $usuario = $_POST['usuario'];
     $clave = MD5($_POST['clave']);
-
-    if ($usuario == '') $errMsg = 'Digite su usuario';
-    if ($clave == '') $errMsg = 'Digite su contraseña';
-
+    if ($usuario == '')
+        $errMsg = 'Digite su usuario';
+    if ($clave == '')
+        $errMsg = 'Digite su contraseña';
     if ($errMsg == '') {
         try {
             $stmt = $connect->prepare('SELECT id, nombre, usuario, correo, clave, rol, estado FROM usuarios WHERE usuario = :usuario');
             $stmt->execute([':usuario' => $usuario]);
             $data = $stmt->fetch(PDO::FETCH_ASSOC);
-
             if ($data == false) {
                 $errMsg = "El nombre de usuario: $usuario no se encuentra, puede solicitarlo con el administrador.";
             } else {
@@ -59,7 +56,6 @@ if (isset($_POST['ctglog'])) {
                     $_SESSION['clave'] = $data['clave'];
                     $_SESSION['rol'] = $data['rol'];
                     $_SESSION['estado'] = $data['estado'];
-
                     switch ($_SESSION['rol']) {
                         case 1:
                             header('Location: administrador/escritorio.php');
@@ -95,7 +91,6 @@ if (isset($_POST['ctglog'])) {
     }
 }
 ?>
-
 <html lang="es">
 
 <head>
@@ -105,6 +100,18 @@ if (isset($_POST['ctglog'])) {
     <title>PCMARKETTEAM</title>
     <link rel="stylesheet" href="../backend/css/style.css">
     <link rel="icon" type="image/png" href="../backend/img/favicon.png" />
+    <!-- Hotjar Tracking Code for PcMarketTEAM -->
+    <script>
+        (function (h, o, t, j, a, r) {
+            h.hj = h.hj || function () { (h.hj.q = h.hj.q || []).push(arguments) };
+            h._hjSettings = { hjid: 6474228, hjsv: 6 };
+            a = o.getElementsByTagName('head')[0];
+            r = o.createElement('script'); r.async = 1;
+            r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+            a.appendChild(r);
+        })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+    </script>
+    <!-- script Mapa de calor -->
 </head>
 
 <body>
@@ -120,45 +127,38 @@ if (isset($_POST['ctglog'])) {
                             Bienvenido de nuevo
                         </div>
                         <br>
-                        <?php 
-                            if (isset($errMsg)) {
-                                echo '
-    <div style="color:#FF0000;text-align:center;font-size:20px; font-weight:bold;">'.$errMsg.'</div>
-    ';  ;
-                            }
-
-                        ?>
+                        <?php
+                        if (isset($errMsg)) {
+                            echo '
+                            <div style="color:#FF0000;text-align:center;font-size:20px; font-weight:bold;">' . $errMsg . '</div>';
+                            ;
+                        } ?>
                         <form class="login-form" autocomplete="off" method="post" role="form">
                             <div class="form-group">
                                 <div class="label-text">Nombre de usuario</div>
-                                <input type="text" name="usuario"
-                                    value="<?php if(isset($_POST['usuario'])) echo $_POST['usuario'] ?>"
-                                    autocomplete="off" required class="form-control" placeholder="usuario01">
-                            </div>
-                            <div class="form-group">
-                                <div class="label-text">Contraseña</div>
-                                <input name="clave"
-                                    value="<?php if(isset($_POST['clave'])) echo MD5($_POST['clave']) ?>"
-                                    type="password" required class="form-control" placeholder="********">
-                            </div>
-
+                                <input type="text" name="usuario" value="<?php if (isset($_POST['usuario']))
+                                    echo $_POST['usuario'] ?>" autocomplete="off" required class="form-control"
+                                        placeholder="usuario01">
+                                </div>
+                                <div class="form-group">
+                                    <div class="label-text">Contraseña</div>
+                                    <input name="clave" value="<?php if (isset($_POST['clave']))
+                                    echo MD5($_POST['clave']) ?>" type="password" required class="form-control"
+                                        placeholder="********">
+                                </div>
+                                <div class="actions">
+                                    <button name='ctglog' type="submit" class="btn btn-submit">Acceder</button>
+                                </div>
+                            </form>
                             <div class="actions">
-                                <button name='ctglog' type="submit" class="btn btn-submit">Acceder</button>
+                                <button onclick="window.location.href='./registrar.php'"
+                                    class="btn btn-submit">Registrar</button>
                             </div>
-
-                        </form>
-                        <div class="actions">
-                            <button onclick="window.location.href='./registrar.php'"
-                                class="btn btn-submit">Registrar</button>
                         </div>
                     </div>
-
+                    <button onclick="window.location.href='../home.php'" class="btnHome">Home</button>
                 </div>
-                <button onclick="window.location.href='../home.php'" class="btnHome">Home</button>
-
             </div>
-
         </div>
-    </div>
-    <script src="../backend/js/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="../backend/js/reenvio.js"></script>
+        <script src="../backend/js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="../backend/js/reenvio.js"></script>
