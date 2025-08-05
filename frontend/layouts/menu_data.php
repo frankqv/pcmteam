@@ -1,8 +1,11 @@
+<!-- layout/menu_data.php -->
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 $rol = $_SESSION['rol'] ?? 0; // Obtener el rol de la sesión
+
+// Configuración del panel según rol
 switch ($rol) {
     case 1:
         $panelName = 'Panel Administrativo';
@@ -37,7 +40,8 @@ switch ($rol) {
         $panelUrl = '../administrador/escritorio.php';
         break;
 }
-# Menu Lateral de la Aplicación - Reorganizado por Prioridad
+
+# Menu Lateral de la Aplicación - Reorganizado por Grupos Funcionales
 $menu = [
     [
         'label' => $panelName,
@@ -45,20 +49,67 @@ $menu = [
         'icon' => 'dashboard'
     ],
 ];
-# PRIORIDAD 1: CLIENTES - Base del negocio
-if (in_array($rol, [1, 2, 4, 5, 7])) {
+
+
+
+# ==================== GRUPO 1: TRIAGE Y ATENCIÓN PRIORITARIA ====================
+if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
     $menu[] = [
+        'label' => 'PROCESO',
+        'icon' => 'emergency',
+        'id' => 'triage_group',
+        'children' => [
+            [
+                'label' => 'PROCESO',
+                'icon' => 'dashboard',
+                'children' => [
+                    ['label' => ' > Puente Aranda', 'url' => '../clientes/bodega.php'],
+                    ['label' => ' > Unilago', 'url' => '../clientes/unilago.php'],
+                    ['label' => ' > Cúcuta', 'url' => '../clientes/cucuta.php'],
+                    ['label' => ' > Medellín', 'url' => '../clientes/medellin.php']
+                ]
+            ],
+            [
+                'label' => '2° TRIAGE',
+                'icon' => 'dashboard',
+                'children' => [
+                    ['label' => ' > Puente Aranda', 'url' => '../clientes/bodega.php'],
+                    ['label' => ' > Unilago', 'url' => '../clientes/unilago.php'],
+                    ['label' => ' > Cúcuta', 'url' => '../clientes/cucuta.php'],
+                    ['label' => ' > Medellín', 'url' => '../clientes/medellin.php']
+                ]
+            ],
+            [
+                'label' => '1° TRIAGE',
+                'icon' => 'dashboard',
+                'children' => [
+                    ['icon' => 'store', 'label' => '4) Inventario', 'url' => '../bodega/inventario.php'],
+                    ['icon' => 'app_registration', 'label' => '3) Entradas', 'url' => '../bodega/entradas.php'],
+                    ['icon' => 'barcode_reader', 'label' => '2) BARCODE ZEBRA', 'url' => '../bodega/barcode.php'],
+                    ['icon' => 'local_shipping', 'label' => '1) Proveedores', 'url' => '../proveedor/mostrar.php'],
+                    
+                ]
+            ]
+        ]
+    ];
+}
+
+# ==================== GRUPO 2: GESTIÓN COMERCIAL ====================
+$comercialItems = [];
+
+// Clientes
+if (in_array($rol, [1, 2, 4, 5, 7])) {
+    $comercialItems[] = [
         'label' => 'CLIENTES',
         'icon' => 'group',
-        'id' => 'clientes',
         'url' => '../clientes/mostrar.php',
     ];
 }
-# PRIORIDAD 2: CLIENTES POR TIENDA - Acceso rápido por ubicación
+
+// Clientes por Tienda
 if (in_array($rol, [1, 2, 4, 5])) {
-    $menu[] = [
+    $comercialItems[] = [
         'label' => 'Mis Clientes',
-        'id' => 'tienda',
         'icon' => 'store',
         'children' => [
             ['label' => ' > Puente Aranda', 'url' => '../clientes/bodega.php'],
@@ -68,39 +119,104 @@ if (in_array($rol, [1, 2, 4, 5])) {
         ]
     ];
 }
-# PRIORIDAD 3: SERVICIOS TÉCNICOS - Operación diaria crítica
+
+// Compras
 if (in_array($rol, [1, 4, 5, 6, 7])) {
+    $comercialItems[] = [
+        'label' => 'VENTAS',
+        'icon' => 'shopping_basket',
+        'children' => [
+            ['label' => '> Mostrar', 'url' => '../compra/mostrar.php'],
+            ['label' => '> Nuevo', 'url' => '../compra/nuevo.php']
+        ]
+    ];
+}
+
+
+// Historial de Ventas
+if (in_array($rol, [1, 3, 4])) {
+    $comercialItems[] = [
+        'label' => 'Historial de Ventas',
+        'icon' => 'point_of_sale',
+        'url' => '../venta/mostrar.php'
+    ];
+}
+
+// Marketing
+if (in_array($rol, [1])) {
+    $comercialItems[] = [
+        'label' => 'Marketing',
+        'url' => '../marketing/mostrar.php',
+        'icon' => 'campaign'
+    ];
+}
+
+if (!empty($comercialItems)) {
     $menu[] = [
+        'label' => 'COMERCIAL',
+        'icon' => 'storefront',
+        'id' => 'comercial_group',
+        'children' => $comercialItems
+    ];
+}
+
+# ==================== GRUPO 3: OPERACIONES TÉCNICAS ====================
+$tecnicoItems = [];
+
+// Servicios Técnicos
+if (in_array($rol, [1, 4, 5, 6, 7])) {
+    $tecnicoItems[] = [
         'label' => 'Servicios Técnicos',
         'url' => '../servicio/mostrar.php',
         'icon' => 'view_timeline'
     ];
 }
 
-# PRIORIDAD 4: MIS SERVICIOS - Trabajo personal del técnico
-/* if (in_array($rol, [4, 5, 7])) {
-    $menu[] = [
+// Mis Servicios
+if (in_array($rol, [5, 6, 7])) {
+    $tecnicoItems[] = [
         'label' => 'Mis Servicios',
         'icon' => 'dataset',
-        'id' => 'planes',
         'url' => '../mis_servicios/mostrar.php'
     ];
-} */
-# PRIORIDAD 5: PRODUCTOS - Inventario y catálogo
-if (in_array($rol, [1, 4, 5, 6, 7])) {
+}
+
+// Laboratorio Técnico
+if (in_array($rol, [1, 4, 5, 6])) {
+    $tecnicoItems[] = [
+        'label' => 'Laboratorio Técnico',
+        'url' => '../laboratorio/mostrar.php',
+        'icon' => 'biotech'
+    ];
+}
+
+if (!empty($tecnicoItems)) {
     $menu[] = [
+        'label' => 'AREA TÉCNICA',
+        'icon' => 'engineering',
+        'id' => 'tecnico_group',
+        'children' => $tecnicoItems
+    ];
+}
+
+# ==================== GRUPO 4: INVENTARIO Y LOGÍSTICA ====================
+$inventarioItems = [];
+
+// Productos
+if (in_array($rol, [1, 4, 5, 6, 7])) {
+    $inventarioItems[] = [
         'label' => 'Productos',
         'icon' => 'conveyor_belt',
-        'id' => 'productos',
         'children' => [
             ['label' => '> Lista de Productos', 'url' => '../producto/mostrar.php'],
-            ['label' => '> Categoría', 'id' => 'categorias', 'url' => '../categoria/mostrar.php']
+            ['label' => '> Categoría', 'url' => '../categoria/mostrar.php']
         ]
     ];
 }
-# PRIORIDAD 6: BODEGA - Control de inventario
+
+// Bodega
 if (in_array($rol, [1, 4, 5, 7])) {
-    $menu[] = [
+    $inventarioItems[] = [
         'label' => 'Bodega',
         'icon' => 'warehouse',
         'children' => [
@@ -114,86 +230,60 @@ if (in_array($rol, [1, 4, 5, 7])) {
         ]
     ];
 }
-# PRIORIDAD 7: ALISTAMIENTOS - Preparación de pedidos
+
+// Alistamientos
 if (in_array($rol, [1, 4, 5])) {
-    $menu[] = [
+    $inventarioItems[] = [
         'label' => 'Alistamientos',
         'url' => '../pedidos_ruta/mostrar.php',
         'icon' => 'unarchive'
     ];
 }
-# PRIORIDAD 8: LABORATORIO TÉCNICO - Área especializada
-if (in_array($rol, [1, 4, 5, 6])) {
+
+if (!empty($inventarioItems)) {
     $menu[] = [
-        'label' => 'Laboratorio Técnico',
-        'url' => '../laboratorio/mostrar.php',
-        'icon' => 'biotech'
+        'label' => 'LOGÍSTICA',
+        'icon' => 'inventory_2',
+        'id' => 'inventario_group',
+        'children' => $inventarioItems
     ];
 }
-# PRIORIDAD 9: HISTORIAL DE VENTAS - Seguimiento comercial
-if (in_array($rol, [1, 3, 4])) {
-    $menu[] = [
-        'label' => 'Historial de Ventas',
-        'icon' => 'point_of_sale',
-        'id' => 'ventas',
-        'url' => '../venta/mostrar.php'
-    ];
-}
-# PRIORIDAD 10: COMPRAS - Gestión de proveedores
-if (in_array($rol, [1, 4, 5, 6, 7])) {
-    $menu[] = [
-        'label' => 'Compras',
-        'icon' => 'shopping_basket',
-        'id' => 'compras',
-        'children' => [
-            ['label' => '> Mostrar', 'url' => '../compra/mostrar.php'],
-            ['label' => '> Nuevo', 'url' => '../compra/nuevo.php']
-        ]
-    ];
-}
-# PRIORIDAD 11: PROVEEDORES - Gestión de terceros
-if (!in_array($rol, [2, 3, 4, 6])) {
-    $menu[] = [
-        'label' => 'Proveedores',
-        'url' => '../proveedor/mostrar.php',
-        'icon' => 'local_shipping'
-    ];
-}
-# PRIORIDAD 12: BUSINESS ROOM - Análisis de negocio
-if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
-    $menu[] = [
-        'label' => 'Business Room',
-        'url' => '../b_room/mostrar.php',
-        'icon' => 'paid'
-    ];
-}
-# PRIORIDAD 13: GASTOS GENERALES - Control financiero
+
+# ==================== GRUPO 5: COMPRAS Y PROVEEDORES ====================
+
+
+# ==================== GRUPO 6: FINANZAS Y CONTABILIDAD ====================
+$finanzasItems = [];
+
+// Gastos Generales
 if (in_array($rol, [1, 2, 3, 4])) {
-    $menu[] = [
+    $finanzasItems[] = [
         'label' => 'Gastos Generales',
         'icon' => 'savings',
-        'id' => 'gastos',
         'children' => [
             ['label' => '> Mostrar', 'url' => '../gastos/mostrar.php'],
             ['label' => '> Nuevo', 'url' => '../gastos/nuevo.php']
         ]
     ];
 }
-# PRIORIDAD 14: DOCUMENTOS GENERALES - Recursos de apoyo
-if (!in_array($rol, [0, 8])) {
+
+if (!empty($finanzasItems)) {
     $menu[] = [
-        'label' => 'Docs Generales',
-        'icon' => 'library_books',
-        'id' => 'docs',
-        'url' => '../docs/mostrar.php',
+        'label' => 'CONTABILIDAD',
+        'icon' => 'account_balance',
+        'id' => 'finanzas_group',
+        'children' => $finanzasItems
     ];
 }
-# PRIORIDAD 15: REPORTES - Análisis y estadísticas
+
+# ==================== GRUPO 7: ANÁLISIS Y REPORTES ====================
+$reportesItems = [];
+
+// Reportes
 if (in_array($rol, [1, 3])) {
-    $menu[] = [
+    $reportesItems[] = [
         'label' => 'Reportes',
         'icon' => 'signal_cellular_alt',
-        'id' => 'reportes',
         'children' => [
             ['label' => '> Productos', 'url' => '../reporte/productos.php'],
             ['label' => '> Clientes', 'url' => '../reporte/clientes.php'],
@@ -201,39 +291,66 @@ if (in_array($rol, [1, 3])) {
         ]
     ];
 }
-# PRIORIDAD 16: GRÁFICOS - Visualización de datos
+
+// Gráficos
 if (in_array($rol, [1, 3])) {
-    $menu[] = [
+    $reportesItems[] = [
         'label' => 'Gráficos',
         'url' => '../graficos/mostrar.php',
         'icon' => 'grain'
     ];
 }
-# PRIORIDAD 17: MARKETING - Promoción y publicidad
-if (in_array($rol, [1])) {
+
+if (!empty($reportesItems)) {
     $menu[] = [
-        'label' => 'Marketing',
-        'url' => '../marketing/mostrar.php',
-        'icon' => 'campaign'
+        'label' => 'ANÁLISIS Y REPORTES',
+        'icon' => 'analytics',
+        'id' => 'reportes_group',
+        'children' => $reportesItems
     ];
 }
-# PRIORIDAD 18: USUARIOS - Administración del sistema
-if (in_array($rol, [1])) {
-    $menu[] = [
+
+# ==================== GRUPO 8: ADMINISTRACIÓN DEL SISTEMA ====================
+$adminItems = [];
+
+// Documentos Generales
+if (!in_array($rol, [0])) {
+    $adminItems[] = [
+        'label' => 'Docs Generales',
+        'icon' => 'library_books',
+        'url' => '../docs/mostrar.php',
+    ];
+}
+
+// Usuarios
+if (in_array($rol, [1,3,5])) {
+    $adminItems[] = [
         'label' => 'Usuarios',
         'url' => '../usuario/mostrar.php',
         'icon' => 'manage_accounts'
     ];
 }
-# PRIORIDAD 19: CONFIGURACIÓN - Ajustes del sistema
-if (in_array($rol, [1, 3, 5])) {
-    $menu[] = [
+
+// Configuración
+if (in_array($rol, [1, 3, 5,7])) {
+    $adminItems[] = [
         'label' => 'Configuración',
         'url' => '../cuenta/configuracion.php',
         'icon' => 'settings'
     ];
 }
-# PRIORIDAD 20: SALIR - Siempre al final
+
+if (!empty($adminItems)) {
+    $menu[] = [
+        'label' => 'ADMINISTRACIÓN',
+        'icon' => 'admin_panel_settings',
+        'id' => 'admin_group',
+        'children' => $adminItems
+    ];
+}
+
+# ==================== OPCIONES FINALES ====================
+// Salir
 if (!in_array($rol, [0])) {
     $menu[] = [
         'label' => 'Salir',
@@ -242,16 +359,17 @@ if (!in_array($rol, [0])) {
     ];
 }
 
-# Version del sistema Pcmarket-team
+// Información de versión
 if (!in_array($rol, [1, 2])) {
     echo '<p><b>Version</b>0.700</p>';
 }
 
-# PRIORIDAD 21: VERSIÓN DEL SISTEMA - Pie de menú
 $menu[] = [
-     // o 'tag' o 'update'
     'label' => '<i>Version JULIO 2025</i> ',
-    
+];
+
+$menu[] = [
+    'label' => '<i>Version Beta</i> '
 ];
 
 ?>

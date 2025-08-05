@@ -326,14 +326,14 @@ require_once '../../backend/bd/ctconex.php';
                                     <form method="POST">
                                         <div class="form-group mb-3">
                                             <label>Proveedor:</label>
-                                            <input type="text" name="proveedor" maxlength="10" class="form-control" value="<?php echo htmlspecialchars($_POST['proveedor'] ?? ''); ?>" required>
+                                            <input type="text" name="proveedor" maxlength="4" class="form-control" value="<?php echo htmlspecialchars($_POST['proveedor'] ?? ''); ?>" required>
                                         </div>
                                         <div class="form-group mb-3">
                                             <label>Cantidad de Etiquetas:</label>
                                             <input type="number" name="cantidad" min="1" max="1000" class="form-control" value="<?php echo htmlspecialchars($_POST['cantidad'] ?? ''); ?>" required>
                                         </div>
                                         <div class="form-group mb-3">
-                                            <label>Lote (1 letra):</label>
+                                            <label>Identificador Lote (1 letra):</label>
                                             <input type="text" name="lote" maxlength="1" class="form-control" value="<?php echo htmlspecialchars($_POST['lote'] ?? ''); ?>" required>
                                         </div>
                                         <div class="text-center">
