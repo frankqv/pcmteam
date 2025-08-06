@@ -1,4 +1,3 @@
-<!-- layout/menu_data.php -->
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -41,7 +40,7 @@ switch ($rol) {
         break;
 }
 
-# Menu Lateral de la Aplicación - Reorganizado por Grupos Funcionales
+# Inicializar el menú principal
 $menu = [
     [
         'label' => $panelName,
@@ -50,44 +49,75 @@ $menu = [
     ],
 ];
 
+# ==================== GRUPO 0: CONTROL DE CALIDAD ====================
+if (in_array($rol, [1, 5, 6, 7])) { // Admin, Jefe Técnico, Técnico, Bodega
+    $menu[] = [
+        'label' => 'CONTROL DE CALIDAD',
+        'icon' => 'verified',
+        'id' => 'control_calidad_group',
+        'children' => [
+            [
+                'label' => 'Dashboard QC',
+                'icon' => 'dashboard',
+                'url' => '../control_calidad/dashboard.php'
+            ],
+        ]
+    ];
+}
 
-
-# ==================== GRUPO 1: TRIAGE Y ATENCIÓN PRIORITARIA ====================
+# ==================== GRUPO 1: PROCESO ====================
 if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
     $menu[] = [
         'label' => 'PROCESO',
-        'icon' => 'emergency',
+        'icon' => 'factory',
+        'id' => 'proceso_group',
+        'children' => [
+            [
+                'label' => '3)PROCESO ESTÉTICO',
+                'icon' => 'brush',
+                'url' => '../estetico/limpieza.php'
+                ],
+            
+            [
+                'label' => '2)ÁREA ELECTRÓNICA',
+                'icon' => 'electrical_services',
+                'url' => '..//#'
+            ],
+            [
+                'label' => '1)PROCESO TÉCNICO',
+                'icon' => 'build',
+                'url' => '..//#'
+                
+            ],
+        ]
+    ];
+}
+
+# ==================== GRUPO 2: TRIAGE ====================
+if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
+    $menu[] = [
+        'label' => 'CLASIFICACIÓN',
+        'icon' => 'laptop_mac',
         'id' => 'triage_group',
         'children' => [
             [
-                'label' => 'PROCESO',
-                'icon' => 'dashboard',
-                'children' => [
-                    ['label' => ' > Puente Aranda', 'url' => '../clientes/bodega.php'],
-                    ['label' => ' > Unilago', 'url' => '../clientes/unilago.php'],
-                    ['label' => ' > Cúcuta', 'url' => '../clientes/cucuta.php'],
-                    ['label' => ' > Medellín', 'url' => '../clientes/medellin.php']
-                ]
-            ],
-            [
                 'label' => '2° TRIAGE',
-                'icon' => 'dashboard',
+                'icon' => 'assignment_late',
                 'children' => [
-                    ['label' => ' > Puente Aranda', 'url' => '../clientes/bodega.php'],
-                    ['label' => ' > Unilago', 'url' => '../clientes/unilago.php'],
-                    ['label' => ' > Cúcuta', 'url' => '../clientes/cucuta.php'],
-                    ['label' => ' > Medellín', 'url' => '../clientes/medellin.php']
+                    ['label' => ' > Diagnóstico', 'url' => '../diagnostico/mostrar.php'],
+                    ['label' => ' > Evaluación', 'url' => '../evaluacion/mostrar.php'],
+                    ['label' => ' > Estado Técnico', 'url' => '../estado_tecnico/mostrar.php']
                 ]
             ],
             [
                 'label' => '1° TRIAGE',
-                'icon' => 'dashboard',
+                'icon' => 'assignment_turned_in',
                 'children' => [
-                    ['icon' => 'store', 'label' => '4) Inventario', 'url' => '../bodega/inventario.php'],
+                    ['icon' => 'assignment', 'label' => '5) Asignar Técnico', 'url' => '../bodega/asignar.php'],
+                    ['icon' => 'inventory', 'label' => '4) Inventario', 'url' => '../bodega/inventario.php'],
                     ['icon' => 'app_registration', 'label' => '3) Entradas', 'url' => '../bodega/entradas.php'],
-                    ['icon' => 'barcode_reader', 'label' => '2) BARCODE ZEBRA', 'url' => '../bodega/barcode.php'],
+                    ['icon' => 'barcode_reader', 'label' => '2) barcode Zebra', 'url' => '../bodega/barcode.php'],
                     ['icon' => 'local_shipping', 'label' => '1) Proveedores', 'url' => '../proveedor/mostrar.php'],
-                    
                 ]
             ]
         ]
@@ -120,18 +150,17 @@ if (in_array($rol, [1, 2, 4, 5])) {
     ];
 }
 
-// Compras
+// Ventas
 if (in_array($rol, [1, 4, 5, 6, 7])) {
     $comercialItems[] = [
         'label' => 'VENTAS',
         'icon' => 'shopping_basket',
         'children' => [
-            ['label' => '> Mostrar', 'url' => '../compra/mostrar.php'],
-            ['label' => '> Nuevo', 'url' => '../compra/nuevo.php']
+            ['label' => '> Mostrar Ventas', 'url' => '../compra/mostrar.php'],
+            ['label' => '> Nueva Venta', 'url' => '../compra/nuevo.php']
         ]
     ];
 }
-
 
 // Historial de Ventas
 if (in_array($rol, [1, 3, 4])) {
@@ -192,7 +221,7 @@ if (in_array($rol, [1, 4, 5, 6])) {
 
 if (!empty($tecnicoItems)) {
     $menu[] = [
-        'label' => 'AREA TÉCNICA',
+        'label' => 'ÁREA TÉCNICA',
         'icon' => 'engineering',
         'id' => 'tecnico_group',
         'children' => $tecnicoItems
@@ -249,10 +278,7 @@ if (!empty($inventarioItems)) {
     ];
 }
 
-# ==================== GRUPO 5: COMPRAS Y PROVEEDORES ====================
-
-
-# ==================== GRUPO 6: FINANZAS Y CONTABILIDAD ====================
+# ==================== GRUPO 5: FINANZAS Y CONTABILIDAD ====================
 $finanzasItems = [];
 
 // Gastos Generales
@@ -261,8 +287,20 @@ if (in_array($rol, [1, 2, 3, 4])) {
         'label' => 'Gastos Generales',
         'icon' => 'savings',
         'children' => [
-            ['label' => '> Mostrar', 'url' => '../gastos/mostrar.php'],
-            ['label' => '> Nuevo', 'url' => '../gastos/nuevo.php']
+            ['label' => '> Mostrar Gastos', 'url' => '../gastos/mostrar.php'],
+            ['label' => '> Nuevo Gasto', 'url' => '../gastos/nuevo.php']
+        ]
+    ];
+}
+
+// Facturas y Comprobantes
+if (in_array($rol, [1, 3, 4])) {
+    $finanzasItems[] = [
+        'label' => 'Facturación',
+        'icon' => 'receipt',
+        'children' => [
+            ['label' => '> Facturas', 'url' => '../factura/mostrar.php'],
+            ['label' => '> Comprobantes', 'url' => '../comprobante/mostrar.php']
         ]
     ];
 }
@@ -276,7 +314,7 @@ if (!empty($finanzasItems)) {
     ];
 }
 
-# ==================== GRUPO 7: ANÁLISIS Y REPORTES ====================
+# ==================== GRUPO 6: ANÁLISIS Y REPORTES ====================
 $reportesItems = [];
 
 // Reportes
@@ -288,6 +326,7 @@ if (in_array($rol, [1, 3])) {
             ['label' => '> Productos', 'url' => '../reporte/productos.php'],
             ['label' => '> Clientes', 'url' => '../reporte/clientes.php'],
             ['label' => '> Ventas', 'url' => '../reporte/ventas.php'],
+            ['label' => '> Técnicos', 'url' => '../reporte/tecnicos.php']
         ]
     ];
 }
@@ -310,7 +349,7 @@ if (!empty($reportesItems)) {
     ];
 }
 
-# ==================== GRUPO 8: ADMINISTRACIÓN DEL SISTEMA ====================
+# ==================== GRUPO 7: ADMINISTRACIÓN DEL SISTEMA ====================
 $adminItems = [];
 
 // Documentos Generales
@@ -323,7 +362,7 @@ if (!in_array($rol, [0])) {
 }
 
 // Usuarios
-if (in_array($rol, [1,3,5])) {
+if (in_array($rol, [1, 3, 5])) {
     $adminItems[] = [
         'label' => 'Usuarios',
         'url' => '../usuario/mostrar.php',
@@ -332,7 +371,7 @@ if (in_array($rol, [1,3,5])) {
 }
 
 // Configuración
-if (in_array($rol, [1, 3, 5,7])) {
+if (in_array($rol, [1, 3, 5, 7])) {
     $adminItems[] = [
         'label' => 'Configuración',
         'url' => '../cuenta/configuracion.php',
@@ -350,7 +389,19 @@ if (!empty($adminItems)) {
 }
 
 # ==================== OPCIONES FINALES ====================
-// Salir
+// Información de versión (solo para desarrollo)
+if (in_array($rol, [1, 7])) { // Solo admin y bodega ven la versión
+    $menu[] = [
+        'label' => 'Información',
+        'icon' => 'info',
+        'children' => [
+            ['label' => 'Versión: 0.700', 'url' => '#'],
+            ['label' => 'Beta - Julio 2025', 'url' => '#']
+        ]
+    ];
+}
+
+// Salir - siempre al final
 if (!in_array($rol, [0])) {
     $menu[] = [
         'label' => 'Salir',
@@ -358,18 +409,4 @@ if (!in_array($rol, [0])) {
         'icon' => 'logout'
     ];
 }
-
-// Información de versión
-if (!in_array($rol, [1, 2])) {
-    echo '<p><b>Version</b>0.700</p>';
-}
-
-$menu[] = [
-    'label' => '<i>Version JULIO 2025</i> ',
-];
-
-$menu[] = [
-    'label' => '<i>Version Beta</i> '
-];
-
 ?>

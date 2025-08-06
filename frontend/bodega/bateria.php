@@ -1,4 +1,6 @@
-<!-- Pagina en Construccion... frontend/bodega/bateria.php -->
+Estructura basica para crear asignar.php
+Ten cuenta Claude la estructura de la web 
+<!-- Pagina en Construccion... frontend/bodega/bateria.php  -->
 <?php
 ob_start();
 session_start();

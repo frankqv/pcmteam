@@ -1,3 +1,4 @@
+<!-- /pcmteam/frontend/bodega/escritorio.php -->
 <!-- Rol 7: Bodega -->
 <?php
 ob_start();

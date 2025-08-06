@@ -77,6 +77,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                             <div class="card bg-success text-white mb-4">
                                 <div class="card-body">
                                     <?php
+                                    // Corregido: usar disposicion en lugar de estado no existente
                                     $sql = "SELECT COUNT(*) as disponibles FROM bodega_inventario WHERE disposicion = 'disponible'";
                                     $result = $conn->query($sql);
                                     $row = $result->fetch_assoc();
@@ -100,15 +101,16 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="card bg-danger text-white mb-4">
+                            <div class="card bg-info text-white mb-4">
                                 <div class="card-body">
                                     <?php
-                                    $sql = "SELECT COUNT(*) as pendientes FROM bodega_inventario WHERE disposicion = 'pendiente'";
+                                    // Agregado: Business Room como nueva categoría
+                                    $sql = "SELECT COUNT(*) as business FROM bodega_inventario WHERE disposicion = 'Business Room'";
                                     $result = $conn->query($sql);
                                     $row = $result->fetch_assoc();
                                     ?>
-                                    <h4 class="mb-0"><?php echo $row['pendientes']; ?></h4>
-                                    <div class="text-white-50">Pendientes</div>
+                                    <h4 class="mb-0"><?php echo $row['business']; ?></h4>
+                                    <div class="text-white-50">Business Room</div>
                                 </div>
                             </div>
                         </div>
@@ -122,32 +124,45 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                 </div>
                                 <div class="card-body">
                                     <form id="filterForm" class="row">
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-group">
-                                                <label>Estado</label>
-                                                <select class="form-control" id="filterEstado">
-                                                    <option value="">Todos</option>
+                                                <label>Disposición</label>
+                                                <select class="form-control" id="filterDisposicion">
+                                                    <option value="">Todas</option>
                                                     <option value="disponible">Disponible</option>
                                                     <option value="en_diagnostico">En Diagnóstico</option>
                                                     <option value="en_reparacion">En Reparación</option>
                                                     <option value="en_control">En Control de Calidad</option>
                                                     <option value="pendiente">Pendiente</option>
                                                     <option value="Business Room">Business Room</option>
+                                                    <option value="Para Venta">Para Venta</option>
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Estado</label>
+                                                <select class="form-control" id="filterEstado">
+                                                    <option value="">Todos</option>
+                                                    <option value="activo">Activo</option>
+                                                    <option value="Business">Business</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label>Ubicación</label>
                                                 <select class="form-control" id="filterUbicacion">
                                                     <option value="">Todas</option>
+                                                    <option value="Principal">Principal</option>
+                                                    <option value="Cúcuta">Cúcuta</option>
                                                     <option value="Bodega">Bodega</option>
                                                     <option value="Laboratorio">Laboratorio</option>
                                                     <option value="Exhibición">Exhibición</option>
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label>Grado</label>
                                                 <select class="form-control" id="filterGrado">
@@ -158,7 +173,19 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Producto</label>
+                                                <select class="form-control" id="filterProducto">
+                                                    <option value="">Todos</option>
+                                                    <option value="Portatil">Portátil</option>
+                                                    <option value="Desktop">Desktop</option>
+                                                    <option value="AIO">AIO</option>
+                                                    <option value="Periferico">Periférico</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label>&nbsp;</label>
                                                 <button type="button" class="btn btn-primary btn-block" id="applyFilters">
@@ -167,6 +194,13 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                             </div>
                                         </div>
                                     </form>
+                                    <div class="row mt-2">
+                                        <div class="col-md-12">
+                                            <button type="button" class="btn btn-secondary" id="clearFilters">
+                                                Limpiar Filtros
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -190,6 +224,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                     <th>Serial</th>
                                                     <th>Ubicación</th>
                                                     <th>Grado</th>
+                                                    <th>Disposición</th>
                                                     <th>Estado</th>
                                                     <th>Técnico a cargo</th>
                                                     <th>Última Modificación</th>
@@ -199,17 +234,8 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                             <tbody>
                                                 <?php
                                                 $sql = "SELECT i.*, 
-                                                    CASE 
-                                                        WHEN d.estado_reparacion IS NOT NULL THEN d.estado_reparacion
-                                                        WHEN cc.estado_final IS NOT NULL THEN cc.estado_final
-                                                        ELSE i.disposicion 
-                                                    END as estado_actual,
                                                     u.nombre as tecnico_nombre
                                                     FROM bodega_inventario i
-                                                    LEFT JOIN bodega_diagnosticos d ON i.id = d.inventario_id 
-                                                        AND d.id = (SELECT MAX(id) FROM bodega_diagnosticos WHERE inventario_id = i.id)
-                                                    LEFT JOIN bodega_control_calidad cc ON i.id = cc.inventario_id 
-                                                        AND cc.id = (SELECT MAX(id) FROM bodega_control_calidad WHERE inventario_id = i.id)
                                                     LEFT JOIN usuarios u ON i.tecnico_id = u.id
                                                     ORDER BY i.fecha_modificacion DESC";
                                                 $result = $conn->query($sql);
@@ -222,7 +248,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                     echo "<td>" . htmlspecialchars($row['serial']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['ubicacion']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['grado']) . "</td>";
-                                                    echo "<td>" . htmlspecialchars($row['estado_actual']) . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row['disposicion']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['estado']) . "</td>";
                                                     echo "<td>
             <form method='post' action='asignar_tecnico.php' style='margin:0;'>
@@ -295,30 +321,56 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                     ],
                     language: {
                         url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
-                    }
+                    },
+                    order: [[10, 'desc']] // Ordenar por fecha de modificación descendente
                 });
-                // Aplicar filtros
+
+                // Aplicar filtros - CORREGIDO
                 $('#applyFilters').click(function () {
-                    var estado = $('#filterEstado').val();
                     var disposicion = $('#filterDisposicion').val();
-                    var estadoEquipo = $('#filterEstadoEquipo').val();
+                    var estado = $('#filterEstado').val();
                     var ubicacion = $('#filterUbicacion').val();
                     var grado = $('#filterGrado').val();
+                    var producto = $('#filterProducto').val();
 
+                    // Limpiar filtros anteriores
+                    table.search('').columns().search('').draw();
+
+                    // Aplicar filtros por columna (índices corregidos)
+                    if (disposicion) {
+                        table.column(7).search('^' + disposicion + '$', true, false); // Disposición - columna 7
+                    }
+                    if (estado) {
+                        table.column(8).search('^' + estado + '$', true, false); // Estado - columna 8
+                    }
+                    if (ubicacion) {
+                        table.column(5).search('^' + ubicacion + '$', true, false); // Ubicación - columna 5
+                    }
+                    if (grado) {
+                        table.column(6).search('^' + grado + '$', true, false); // Grado - columna 6
+                    }
+                    if (producto) {
+                        table.column(1).search('^' + producto + '$', true, false); // Producto - columna 1
+                    }
                     
-                    table.columns(4).search(estado);
-                    // Filtrar por disposición (columna 7)
-                    table.columns(7).search(disposicion);
-                    
-                    // Filtrar por estado del equipo (columna 8)
-                    table.columns(8).search(estadoEquipo);
-                    
-                    table.columns(5).search(ubicacion); // Ubicación
-                    table.columns(6).search(grado); // Grado
                     table.draw();
                 });
+
+                // Limpiar filtros - NUEVO
+                $('#clearFilters').click(function () {
+                    // Limpiar todos los selects
+                    $('#filterDisposicion').val('');
+                    $('#filterEstado').val('');
+                    $('#filterUbicacion').val('');
+                    $('#filterGrado').val('');
+                    $('#filterProducto').val('');
+                    
+                    // Limpiar filtros de DataTable
+                    table.search('').columns().search('').draw();
+                });
+
                 // Ver detalles
-                $('.view-btn').click(function () {
+                $(document).on('click', '.view-btn', function () {
                     var id = $(this).data('id');
                     $.ajax({
                         url: '../../backend/php/get_inventario_details.php',
@@ -327,16 +379,21 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                         success: function (response) {
                             $('#viewModalBody').html(response);
                             $('#viewModal').modal('show');
+                        },
+                        error: function() {
+                            alert('Error al cargar los detalles del equipo');
                         }
                     });
                 });
+
                 // Editar equipo
-                $('.edit-btn').click(function () {
+                $(document).on('click', '.edit-btn', function () {
                     var id = $(this).data('id');
                     window.location.href = 'editar_inventario.php?id=' + id;
                 });
+
                 // Eliminar equipo
-                $('.delete-btn').click(function () {
+                $(document).on('click', '.delete-btn', function () {
                     if (confirm('¿Está seguro de que desea eliminar este equipo?')) {
                         var id = $(this).data('id');
                         $.ajax({

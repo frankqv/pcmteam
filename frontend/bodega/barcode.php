@@ -6,13 +6,11 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])) {
     header('location: ../error404.php');
     exit;
 }
-
 require_once '../../backend/bd/ctconex.php';
 ?>
 <?php if (isset($_SESSION['id'])) { ?>
     <!DOCTYPE html>
     <html lang="es">
-
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -293,7 +291,6 @@ require_once '../../backend/bd/ctconex.php';
                                                     ventana.document.close();
                                                     ventana.focus();
                                                 }
-
                                                 // Mostrar previsualización cuando se carga la página
                                                 document.addEventListener('DOMContentLoaded', function() {
                                                     document.getElementById('previewSection').style.display = 'block';
@@ -315,7 +312,6 @@ require_once '../../backend/bd/ctconex.php';
                                                     }
                                                 });
                                             </script>
-
                                             <?php
                                         } else {
                                             echo "<div class='alert alert-danger'>" . implode('<br>', $errores) . "</div>";
