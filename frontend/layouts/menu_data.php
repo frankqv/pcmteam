@@ -395,8 +395,8 @@ if (in_array($rol, [1, 7])) { // Solo admin y bodega ven la versión
         'label' => 'Información',
         'icon' => 'info',
         'children' => [
-            ['label' => 'Versión: 0.700', 'url' => '#'],
-            ['label' => 'Beta - Julio 2025', 'url' => '#']
+            ['label' => 'Versión: 0.790', 'url' => '#'],
+            ['label' => 'Beτα - AGOSTO 2025', 'url' => '#']
         ]
     ];
 }

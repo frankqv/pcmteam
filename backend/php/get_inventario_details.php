@@ -1,29 +1,24 @@
 <?php
 session_start();
 require_once '../bd/ctconex.php';
-
 // Validar autenticación
 if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
     http_response_code(403);
     echo '<div class="alert alert-danger">Acceso no autorizado</div>';
     exit;
 }
-
 // Validar que sea GET y que tenga el ID
 if ($_SERVER['REQUEST_METHOD'] !== 'GET' || !isset($_GET['id'])) {
     http_response_code(400);
     echo '<div class="alert alert-danger">Parámetros inválidos</div>';
     exit;
 }
-
 $inventario_id = intval($_GET['id']);
-
 if ($inventario_id <= 0) {
     http_response_code(400);
     echo '<div class="alert alert-danger">ID de inventario inválido</div>';
     exit;
 }
-
 try {
     // Consulta para obtener todos los detalles del equipo
     $sql = "SELECT i.*, 
@@ -37,28 +32,23 @@ try {
             LEFT JOIN usuarios u ON e.usuario_id = u.id
             LEFT JOIN usuarios t ON i.tecnico_id = t.id
             WHERE i.id = ?";
-    
     $stmt = $connect->prepare($sql);
     $stmt->execute([$inventario_id]);
     $equipo = $stmt->fetch(PDO::FETCH_ASSOC);
-    
     if (!$equipo) {
         echo '<div class="alert alert-warning">Equipo no encontrado</div>';
         exit;
     }
-
     // Obtener diagnóstico más reciente
     $sql_diag = "SELECT * FROM bodega_diagnosticos WHERE inventario_id = ? ORDER BY fecha_diagnostico DESC LIMIT 1";
     $stmt_diag = $connect->prepare($sql_diag);
     $stmt_diag->execute([$inventario_id]);
     $diagnostico = $stmt_diag->fetch(PDO::FETCH_ASSOC);
-
     // Obtener control de calidad más reciente
     $sql_cc = "SELECT * FROM bodega_control_calidad WHERE inventario_id = ? ORDER BY fecha_control DESC LIMIT 1";
     $stmt_cc = $connect->prepare($sql_cc);
     $stmt_cc->execute([$inventario_id]);
     $control_calidad = $stmt_cc->fetch(PDO::FETCH_ASSOC);
-
     ?>
     <div class="row">
         <div class="col-md-6">
@@ -72,8 +62,7 @@ try {
                 <tr><td><strong>Ubicación:</strong></td><td><?php echo htmlspecialchars($equipo['ubicacion']); ?></td></tr>
                 <tr><td><strong>Posición:</strong></td><td><?php echo htmlspecialchars($equipo['posicion']); ?></td></tr>
                 <tr><td><strong>Lote:</strong></td><td><?php echo htmlspecialchars($equipo['codigo_lote']); ?></td></tr>
-                <tr><td><strong>Técnico a cargo:</strong></td><td><?php echo htmlspecialchars($equipo['tecnico_nombre']); ?></td></tr>
-              
+                <tr><td><strong>Técnico a cargo:</strong></td><td><?php echo empty($equipo['tecnico_nombre']) ? '<span class="bg-danger text-white px-2 py-1">Buscando tecnico... Computadora huerfana 🥺 </span>' : htmlspecialchars($equipo['tecnico_nombre']); ?></td></tr>
             </table>
         </div>
         <div class="col-md-6">
@@ -89,7 +78,6 @@ try {
             </table>
         </div>
     </div>
-
     <?php if ($equipo['observaciones']): ?>
     <div class="row mt-3">
         <div class="col-md-12">
@@ -100,7 +88,6 @@ try {
         </div>
     </div>
     <?php endif; ?>
-
     <div class="row mt-3">
         <div class="col-md-6">
             <h5>Información de Entrada</h5>
@@ -119,7 +106,6 @@ try {
                 <small>Fecha: <?php echo htmlspecialchars($diagnostico['fecha_diagnostico']); ?></small>
             </div>
             <?php endif; ?>
-            
             <?php if ($control_calidad): ?>
             <div class="alert alert-<?php echo $control_calidad['estado_final'] == 'aprobado' ? 'success' : 'danger'; ?>">
                 <strong>Control de Calidad:</strong> <?php echo htmlspecialchars($control_calidad['estado_final']); ?><br>
@@ -134,7 +120,6 @@ try {
             <?php endif; ?>
         </div>
     </div>
-
     <div class="row mt-3">
         <div class="col-md-12 text-center">
             <a href="../bodega/editar_inventario.php?id=<?php echo $equipo['id']; ?>" class="btn btn-primary">
@@ -146,7 +131,6 @@ try {
         </div>
     </div>
     <?php
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo '<div class="alert alert-danger">Error al obtener los detalles del equipo: ' . htmlspecialchars($e->getMessage()) . '</div>';

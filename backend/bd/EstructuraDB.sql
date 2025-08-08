@@ -1,13 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Servidor: 127.0.0.1
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.3.23
-
-
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -18,7 +8,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 CREATE DATABASE IF NOT EXISTS `u171145084_pcmteam` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE u171145084_pcmteam;
+USE `u171145084_pcmteam`;
 
 CREATE TABLE `bodega_control_calidad` (
   `id` int(11) NOT NULL,
@@ -30,7 +20,7 @@ CREATE TABLE `bodega_control_calidad` (
   `estado_final` enum('aprobado','rechazado') NOT NULL,
   `categoria_rec` varchar(50) NOT NULL COMMENT 'Categorización REC',
   `observaciones` text DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bodega_control_calidad` (`id`, `inventario_id`, `fecha_control`, `tecnico_id`, `burning_test`, `sentinel_test`, `estado_final`, `categoria_rec`, `observaciones`) VALUES
 (1, 1, '2025-06-30 17:32:02', 13, 'Pasó 24h sin problemas', 'Sin amenazas detectadas', 'aprobado', 'REC-A', 'Equipo listo para venta'),
@@ -51,7 +41,7 @@ CREATE TABLE `bodega_diagnosticos` (
   `disco` text DEFAULT NULL COMMENT 'Resultado prueba de disco',
   `estado_reparacion` enum('falla_mecanica','falla_electrica','reparacion_cosmetica','aprobado') NOT NULL,
   `observaciones` text DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bodega_diagnosticos` (`id`, `inventario_id`, `fecha_diagnostico`, `tecnico_id`, `camara`, `teclado`, `parlantes`, `bateria`, `microfono`, `pantalla`, `puertos`, `disco`, `estado_reparacion`, `observaciones`) VALUES
 (1, 1, '2025-06-30 17:32:02', 8, 'Funcional', 'Funcional', 'Funcional', '85% capacidad', 'Funcional', 'Sin píxeles muertos', 'Todos funcionales', 'Estado excelente', 'aprobado', 'Equipo en perfectas condiciones'),
@@ -66,7 +56,7 @@ CREATE TABLE `bodega_entradas` (
   `usuario_id` int(11) NOT NULL COMMENT 'ID del usuario que registra',
   `cantidad` int(11) NOT NULL DEFAULT 1,
   `observaciones` text DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bodega_entradas` (`id`, `inventario_id`, `fecha_entrada`, `proveedor_id`, `usuario_id`, `cantidad`, `observaciones`) VALUES
 (1, 1, '2025-06-30 17:32:02', 1, 1, 1, 'Entrada inicial de inventario'),
@@ -100,20 +90,20 @@ CREATE TABLE `bodega_inventario` (
   `pedido_id` int(11) DEFAULT NULL,
   `producto_id` int(11) DEFAULT NULL,
   `tactil` text DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `item`, `ubicacion`, `posicion`, `fecha_ingreso`, `fecha_modificacion`, `activo_fijo`, `codigo_lote`, `producto`, `marca`, `serial`, `modelo`, `procesador`, `ram`, `disco`, `pulgadas`, `observaciones`, `grado`, `disposicion`, `estado`, `tecnico_id`, `pedido_id`, `producto_id`, `tactil`) VALUES
-(1, 'EQ001', 1, 'Principal', 'ESTANTE-1-A', '2025-06-30 17:32:02', '2025-07-11 18:04:01', 'AF001', 'LOTE2025001', 'Portatil', 'Dell', 'DL123456789', 'Latitude 5520', 'Intel i5-1135G7aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', '8GB', '256GB SSD', '15.6', 'Equipo en buen estado', 'A', 'Business Room', 'Business', 33, NULL, NULL, 'SI'),
-(2, 'EQ002', 2, 'Principal', 'ESTANTE-1-B', '2025-06-30 17:32:02', '2025-07-12 10:57:12', 'AF002', 'LOTE2025001', 'Desktop', 'HP', 'HP987654321', 'EliteDesk 800', 'Intel i7-10700', '16GB', '512GB SSD', '16', 'EQUIPO LISTO', 'A', 'Para Venta', 'Business', 33, NULL, NULL, 'NO'),
-(3, 'EQ003', 3, 'Cúcuta', 'ESTANTE-2-A', '2025-06-30 17:32:02', '2025-07-11 15:57:28', 'AF003', 'LOTE2025002', 'AIO', 'Lenovo', 'LN456789123', 'ThinkCentre M90a', 'Intel i5-10400T', '8GB', '1TB HDD', '23.8', 'Pantalla con rayones menores', 'C', 'Business Room', 'activo', 32, NULL, NULL, 'NO'),
-(4, 'LPDA 1432', 4, 'Principal', 'DWQDEW', '2025-07-02 17:19:56', '2025-07-12 10:55:38', 'AF004', 'LOTE2025001', 'Periferico', 'HP', 'ds', '132', 'i5 14th', '8GB', '125 gb', '', 'tESTEO', 'A', 'Para Venta', 'Business', 33, NULL, NULL, 'SI');
+(1, 'EQ001', 1, 'Principal', 'ESTANTE-1-A', '2025-06-30 17:32:02', '2025-08-06 15:32:09', 'AF001', 'LOTE2025001', 'Portatil', 'Dell', 'DL123456789', 'Latitude 5520', 'Intel i5-1135G7aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', '8GB', '256GB SSD', '15.6', 'Equipo en buen estado', 'A', 'En revisión', 'activo', 33, NULL, NULL, 'SI'),
+(2, 'EQ002', 2, 'Principal', 'ESTANTE-1-B', '2025-06-30 17:32:02', '2025-08-06 15:32:28', 'AF002', 'LOTE2025001', 'Desktop', 'HP', 'HP987654321', 'EliteDesk 800', 'Intel i7-10700', '16GB', '512GB SSD', '16', 'EQUIPO LISTO', 'A', 'Para Venta', 'activo', 34, NULL, NULL, 'NO'),
+(3, 'EQ003', 3, 'Cúcuta', 'ESTANTE-2-A', '2025-06-30 17:32:02', '2025-08-08 11:24:56', 'AF003', 'LOTE2025002', 'AIO', 'Lenovo', 'LN456789123', 'ThinkCentre M90a', 'Intel i5-10400T', '8GB', '1TB HDD', '23.8', 'ningun Pantalla con rayones menores', 'C', 'en_proceso', 'Business', 10, NULL, NULL, 'NO'),
+(4, 'LPDA 1432', 4, 'Principal', 'DWQDEW', '2025-07-02 17:19:56', '2025-08-06 15:32:59', 'AF004', 'LOTE2025001', 'Periferico', 'HP', 'ds', '132', 'i5 14th', '8GB', '125 gb', '', 'tESTEO', 'A', 'Para Venta', 'inactivo', 13, NULL, NULL, 'SI');
 
 CREATE TABLE `bodega_partes` (
   `id` int(11) NOT NULL,
   `caja` varchar(50) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `marca` varchar(50) NOT NULL,
-  `modelo` varchar(100) NOT NULL,
+  `referencia` varchar(100) NOT NULL,
   `generacion` varchar(50) DEFAULT NULL,
   `numero_parte` varchar(100) DEFAULT NULL,
   `condicion` enum('Nuevo','Usado') NOT NULL,
@@ -123,20 +113,22 @@ CREATE TABLE `bodega_partes` (
   `precio_nuevo_sin_teclado` decimal(12,2) DEFAULT NULL,
   `precio_usado_con_teclado` decimal(12,2) DEFAULT NULL,
   `precio_usado_sin_teclado` decimal(12,2) DEFAULT NULL,
-  `etiquetas` varchar(100) DEFAULT NULL,
   `producto` varchar(100) DEFAULT NULL,
   `imagen_url` text DEFAULT NULL,
-  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
-) ;
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp(),
+  `detalles` varchar(250) DEFAULT NULL,
+  `codigo` varchar(50) DEFAULT NULL,
+  `serial` varchar(25) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `bodega_partes` (`id`, `caja`, `cantidad`, `marca`, `modelo`, `generacion`, `numero_parte`, `condicion`, `teclado`, `precio`, `precio_nuevo_con_teclado`, `precio_nuevo_sin_teclado`, `precio_usado_con_teclado`, `precio_usado_sin_teclado`, `etiquetas`, `producto`, `imagen_url`, `fecha_registro`) VALUES
-(1, 'CAJA B2', 30, 'LENOVO', 'L15L3A03', NULL, 'L15L3A03', 'Usado', 'n/n', 230000.00, NULL, NULL, NULL, NULL, 'Bateria', 'Bateria', '#', '2025-07-14 22:58:18'),
-(2, 'CAJA B2', 19, 'LENOVO', 'L20B2PF0', NULL, 'L20B2PF0', 'Usado', 'n/n', 240000.00, NULL, NULL, NULL, NULL, 'Bateria', 'Bateria', '#', '2025-07-14 22:58:18'),
-(3, 'CAJA B2', 30, 'LENOVO', 'L15L3A03', NULL, 'L15L3A03', 'Usado', 'n/n', 230000.00, NULL, NULL, NULL, NULL, 'Bateria', 'Bateria', '#', '2025-07-14 22:58:25'),
-(4, 'CAJA B2', 19, 'LENOVO', 'L20B2PF0', NULL, 'L20B2PF0', 'Usado', 'n/n', 240000.00, NULL, NULL, NULL, NULL, 'Bateria', 'Bateria', '#', '2025-07-14 22:58:25'),
-(5, 'CAJA F1', 12, 'DELL', 'PA-12', 'GEN 3', '0VJCH5', 'Usado', 'n/n', 85000.00, NULL, NULL, NULL, NULL, 'Fuente', 'Fuente', '#', '2025-07-14 22:59:10'),
-(6, 'CAJA F2', 8, 'LENOVO', 'ADLX65NLC3A', 'GEN 2', '36200287', 'Nuevo', 'n/n', 120000.00, NULL, NULL, NULL, NULL, 'Fuente', 'Fuente', '#', '2025-07-14 22:59:10'),
-(7, 'CAJA F3', 5, 'HP', 'PPP009L-E', 'GEN 1', '677774-002', 'Usado', 'n/n', 70000.00, NULL, NULL, NULL, NULL, 'Fuente', 'Fuente', '#', '2025-07-14 22:59:10');
+INSERT INTO `bodega_partes` (`id`, `caja`, `cantidad`, `marca`, `referencia`, `generacion`, `numero_parte`, `condicion`, `teclado`, `precio`, `precio_nuevo_con_teclado`, `precio_nuevo_sin_teclado`, `precio_usado_con_teclado`, `precio_usado_sin_teclado`, `producto`, `imagen_url`, `fecha_registro`, `detalles`, `codigo`, `serial`) VALUES
+(1, 'CAJA B2', 30, 'LENOVO', 'L15L3A03', NULL, 'L15L3A03', 'Usado', 'n/n', 230000.00, NULL, NULL, NULL, NULL, 'Bateria', '#', '2025-07-14 22:58:18', NULL, 'equipo2000', NULL),
+(2, 'CAJA B2', 19, 'LENOVO', 'L20B2PF0', NULL, 'L20B2PF0', 'Usado', 'n/n', 240000.00, NULL, NULL, NULL, NULL, 'Bateria', '#', '2025-07-14 22:58:18', NULL, NULL, NULL),
+(3, 'CAJA B2', 30, 'LENOVO', 'L15L3A03', NULL, 'L15L3A03', 'Usado', 'n/n', 230000.00, NULL, NULL, NULL, NULL, 'Bateria', '#', '2025-07-14 22:58:25', NULL, NULL, NULL),
+(4, 'CAJA B2', 19, 'LENOVO', 'L20B2PF0', NULL, 'L20B2PF0', 'Usado', 'n/n', 240000.00, NULL, NULL, NULL, NULL, 'Bateria', '#', '2025-07-14 22:58:25', NULL, NULL, NULL),
+(5, 'CAJA F1', 12, 'DELL', 'PA-12', 'GEN 3', '0VJCH5', 'Usado', 'n/n', 85000.00, NULL, NULL, NULL, NULL, 'Fuente', '#', '2025-07-14 22:59:10', NULL, NULL, NULL),
+(6, 'CAJA F2', 8, 'LENOVO', 'ADLX65NLC3A', 'GEN 2', '36200287', 'Nuevo', 'n/n', 120000.00, NULL, NULL, NULL, NULL, 'Fuente', '#', '2025-07-14 22:59:10', NULL, NULL, NULL),
+(7, 'CAJA F3', 5, 'HP', 'PPP009L-E', 'GEN 1', '677774-002', 'Usado', 'n/n', 70000.00, NULL, NULL, NULL, NULL, 'Fuente', '#', '2025-07-14 22:59:10', NULL, NULL, NULL);
 
 CREATE TABLE `bodega_salidas` (
   `id` int(11) NOT NULL,
@@ -147,7 +139,10 @@ CREATE TABLE `bodega_salidas` (
   `cantidad` int(11) NOT NULL DEFAULT 1,
   `razon_salida` text NOT NULL,
   `observaciones` text DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `bodega_salidas` (`id`, `inventario_id`, `fecha_salida`, `tecnico_id`, `usuario_id`, `cantidad`, `razon_salida`, `observaciones`) VALUES
+(1, 3, '2025-08-08 11:24:56', 10, 1, 1, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1');
 
 CREATE TABLE `cart` (
   `idv` int(11) NOT NULL,
@@ -156,18 +151,16 @@ CREATE TABLE `cart` (
   `name` text NOT NULL,
   `price` int(11) NOT NULL,
   `quantity` int(11) NOT NULL
-) ;
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `cart_compra` (
-
   `idcarco` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `idprod` int(11) NOT NULL,
   `name` text NOT NULL,
   `price` int(11) NOT NULL,
   `quantity` int(11) NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `cart_compra` (`idcarco`, `user_id`, `idprod`, `name`, `price`, `quantity`) VALUES
 (2, 3, 3, 'LTE MEMORIAS', 25, 2),
@@ -180,7 +173,7 @@ CREATE TABLE `categoria` (
   `nomca` text NOT NULL,
   `estado` varchar(15) NOT NULL,
   `fere` timestamp NOT NULL DEFAULT current_timestamp()
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `categoria` (`idcate`, `nomca`, `estado`, `fere`) VALUES
 (1, 'COMPUTADOR DE MESA', 'Activo', '2024-03-15 08:27:45'),
@@ -203,7 +196,7 @@ CREATE TABLE `clientes` (
   `dircli` text DEFAULT NULL,
   `ciucli` text DEFAULT NULL,
   `idsede` text DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `clientes` (`idclie`, `numid`, `nomcli`, `apecli`, `naci`, `correo`, `celu`, `estad`, `fere`, `dircli`, `ciucli`, `idsede`) VALUES
 (1, '1231213', 'holman', 'grimaldo', '2019-03-13', 'grimaldox@gmail.com', '3026169292', 'Activo', '2024-03-14 04:02:53', 'Cra. 53 #121-51', 'Funza', 'Medellin'),
@@ -234,7 +227,7 @@ CREATE TABLE `compra` (
   `placed_on` text NOT NULL,
   `payment_status` text NOT NULL,
   `tipc` text NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `compra` (`idcomp`, `user_id`, `method`, `total_products`, `total_price`, `placed_on`, `payment_status`, `tipc`) VALUES
 (1, 1, 'Tarjeta', 'Producto1', 20.00, '2024-03-15', 'Pagado', 'Tipc'),
@@ -252,7 +245,7 @@ CREATE TABLE `gastos` (
   `detall` text NOT NULL,
   `total` decimal(10,2) NOT NULL,
   `fec` text NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `gastos` (`idga`, `detall`, `total`, `fec`) VALUES
 (1, 'Gasto1', 10000.00, '2024-03-15'),
@@ -270,7 +263,7 @@ CREATE TABLE `ingresos` (
   `detalle` text NOT NULL,
   `total` decimal(10,2) NOT NULL,
   `fec` text NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ingresos` (`iding`, `detalle`, `total`, `fec`) VALUES
 (1, 'Ingreso1', 30000.00, '2024-03-15'),
@@ -306,7 +299,7 @@ CREATE TABLE `marketing` (
   `responsable` varchar(100) DEFAULT NULL,
   `estado` enum('activa','finalizada','pendiente') DEFAULT 'pendiente',
   `fuente_datos` varchar(255) DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `orders` (
   `idord` int(11) NOT NULL,
@@ -320,7 +313,7 @@ CREATE TABLE `orders` (
   `tipc` text NOT NULL,
   `despacho` varchar(255) DEFAULT NULL,
   `responsable` varchar(55) DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `orders` (`idord`, `user_id`, `user_cli`, `method`, `total_products`, `total_price`, `placed_on`, `payment_status`, `tipc`, `despacho`, `responsable`) VALUES
 (1, 34, 1, 'Tarjeta', 'Producto1', 20000.00, '2024-03-15', 'Pagado', 'Tipc', 'DESPACHO TIENDA PUENTE ARANDA', NULL),
@@ -345,7 +338,7 @@ CREATE TABLE `plan` (
   `estp` varchar(15) NOT NULL,
   `prec` decimal(10,2) NOT NULL,
   `fere` timestamp NOT NULL DEFAULT current_timestamp()
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `plan` (`idplan`, `foto`, `nompla`, `estp`, `prec`, `fere`) VALUES
 (1, '515419.png', 'MANTENIMIENTO PREVENTIVO', 'Activo', 89500.00, '2024-03-15 08:27:45'),
@@ -374,7 +367,7 @@ CREATE TABLE `producto` (
   `pntpro` varchar(8) DEFAULT NULL,
   `tarpro` varchar(30) DEFAULT NULL,
   `grado` enum('A','B','C','SCRAP','#N/D','','0') DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `producto` (`idprod`, `codba`, `nomprd`, `idcate`, `precio`, `stock`, `foto`, `venci`, `esta`, `fere`, `serial`, `marca`, `ram`, `disco`, `prcpro`, `pntpro`, `tarpro`, `grado`) VALUES
 (1, 'vAZCeYThjC6An7', 'lenovo', 4, 5000000.00, 2, '10878.jpg', '2025-05-01', 'Inactivo', '2025-05-28 20:32:22', 'H7YY7MINAndznR', 'lenovo', NULL, NULL, NULL, NULL, '4GB', '0'),
@@ -396,8 +389,8 @@ CREATE TABLE `proveedores` (
   `nomenclatura` varchar(10) DEFAULT NULL,
   `nit` int(10) DEFAULT NULL,
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
-  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp()
-) ;
+  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `proveedores` (`id`, `privado`, `nombre`, `celu`, `correo`, `dire`, `cuiprov`, `nomenclatura`, `nit`, `fecha_creacion`, `fecha_actualizacion`) VALUES
 (1, 1, 'Proveedor Principal', 2147483647, 'proveedor1@email.com', 'Calle 123 #45-67', 'Bogotá', 'PRV001', NULL, '2025-07-14 17:20:31', '2025-07-14 17:20:31'),
@@ -418,7 +411,7 @@ CREATE TABLE `servicio` (
   `servtxt` varchar(250) DEFAULT NULL,
   `servfoto` varchar(255) DEFAULT NULL,
   `responsable` varchar(255) DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `servicio` (`idservc`, `idplan`, `ini`, `fin`, `idclie`, `estod`, `meto`, `canc`, `fere`, `servtxt`, `servfoto`, `responsable`) VALUES
 (1, 1, '2024-03-15', '2024-05-08', 1, 'Activo', 'Nequi', 20000.00, '2024-03-15 08:27:46', NULL, NULL, NULL),
@@ -442,10 +435,10 @@ CREATE TABLE `setting` (
   `direc2` text NOT NULL,
   `celu` char(16) NOT NULL,
   `foto` text NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `setting` (`idsett`, `nomem`, `ruc`, `decrp`, `corr`, `direc1`, `direc2`, `celu`, `foto`) VALUES
-(1, 'PCMARKET SAS', '901232273', 'PCMARKET SAS', 'comercial@pcmarkett.com', 'Cl. 14 #53-19, Bogotá,', '', '304 4177847', 'logo.jpg');
+(1, 'PCMARKET SAS', '901232273', 'PCMARKET SAS', 'comercial@pcmarkett.com', 'Cl. 14 #53-19, Bogota', '', '304 4177847', 'logo.jpg');
 
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
@@ -458,7 +451,7 @@ CREATE TABLE `usuarios` (
   `estado` char(1) NOT NULL,
   `fere` timestamp NOT NULL DEFAULT current_timestamp(),
   `idsede` varchar(25) DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `usuarios` (`id`, `nombre`, `usuario`, `correo`, `clave`, `rol`, `foto`, `estado`, `fere`, `idsede`) VALUES
 (1, 'FrankQV', 'frank', 'frank@admin.com', '202cb962ac59075b964b07152d234b70', '1', '1', '1', '2025-05-28 14:48:15', 'Cucuta'),
@@ -570,67 +563,67 @@ ALTER TABLE `usuarios`
 
 
 ALTER TABLE `bodega_control_calidad`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 ALTER TABLE `bodega_diagnosticos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 ALTER TABLE `bodega_entradas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 ALTER TABLE `bodega_inventario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 ALTER TABLE `bodega_partes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 ALTER TABLE `bodega_salidas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 ALTER TABLE `cart`
   MODIFY `idv` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `cart_compra`
-  MODIFY `idcarco` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idcarco` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 ALTER TABLE `categoria`
-  MODIFY `idcate` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idcate` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 ALTER TABLE `clientes`
-  MODIFY `idclie` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idclie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 ALTER TABLE `compra`
-  MODIFY `idcomp` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idcomp` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 ALTER TABLE `gastos`
-  MODIFY `idga` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idga` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 ALTER TABLE `ingresos`
-  MODIFY `iding` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `iding` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 ALTER TABLE `marketing`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `orders`
-  MODIFY `idord` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idord` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 ALTER TABLE `plan`
-  MODIFY `idplan` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idplan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 ALTER TABLE `producto`
-  MODIFY `idprod` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idprod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 ALTER TABLE `proveedores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 ALTER TABLE `servicio`
-  MODIFY `idservc` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idservc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 ALTER TABLE `setting`
-  MODIFY `idsett` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idsett` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

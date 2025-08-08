@@ -1,32 +1,38 @@
 <?php
-// /backend/php/get_entrada_details.php
+// Activar reporte de errores
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/errores.log');
+
 session_start();
 require_once '../bd/ctconex.php';
 
 header('Content-Type: application/json');
 
-// Validar autenticación
+// 1. Validar autenticación
 if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
     http_response_code(403);
     echo json_encode(['error' => 'Acceso no autorizado']);
     exit;
 }
 
-// Validar que sea POST
+// 2. Validar que sea POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'Método no permitido']);
     exit;
 }
 
-// Validar campos requeridos
+// 3. Validar campos requeridos
 $required = [
     'codigo_g', 'ubse', 'posicion', 'producto', 'marca', 'serial', 'modelo',
     'ram', 'grado', 'disposicion', 'proveedor'
 ];
 
 foreach ($required as $field) {
-    if (!isset($_POST[$field]) || $_POST[$field] === '') {
+    if (!isset($_POST[$field]) || trim($_POST[$field]) === '') {
         http_response_code(400);
         echo json_encode(['error' => "Falta el campo requerido: $field"]);
         exit;
@@ -34,10 +40,10 @@ foreach ($required as $field) {
 }
 
 try {
-    // Iniciar transacción
+    // 4. Iniciar transacción
     $connect->beginTransaction();
-    
-    // 1. Insertar en bodega_inventario
+
+    // 5. Insertar en bodega_inventario
     $sql_inv = "INSERT INTO bodega_inventario 
         (codigo_g, ubicacion, posicion, producto, marca, serial, modelo, procesador, ram, disco, pulgadas, observaciones, grado, disposicion, estado)
         VALUES
@@ -61,10 +67,10 @@ try {
         ':disposicion' => $_POST['disposicion'],
         ':estado' => 'activo'
     ]);
-    
+
     $inventario_id = $connect->lastInsertId();
 
-    // 2. Insertar en bodega_entradas
+    // 6. Insertar en bodega_entradas
     $sql_ent = "INSERT INTO bodega_entradas 
         (inventario_id, proveedor_id, usuario_id, observaciones)
         VALUES
@@ -74,28 +80,33 @@ try {
     $stmt_ent->execute([
         ':inventario_id' => $inventario_id,
         ':proveedor_id' => $_POST['proveedor'],
-        ':usuario_id' => $_SESSION['id'],
+        ':usuario_id' => $_SESSION['id'] ?? null,
         ':observaciones' => $_POST['observaciones'] ?? ''
     ]);
 
-    // Confirmar transacción
+    // 7. Confirmar transacción
     $connect->commit();
 
     echo json_encode([
-        'success' => true, 
+        'success' => true,
         'message' => 'Entrada registrada exitosamente',
         'inventario_id' => $inventario_id
     ]);
 
 } catch (PDOException $e) {
     // Revertir transacción en caso de error
-    $connect->rollback();
-    
+    if ($connect->inTransaction()) {
+        $connect->rollBack();
+    }
+
     http_response_code(500);
     echo json_encode([
-        'error' => 'Error al guardar en la base de datos', 
+        'error' => 'Error al guardar en la base de datos',
         'detalle' => $e->getMessage()
     ]);
+
     error_log("Error en st_add_entrada.php: " . $e->getMessage());
 }
 ?>
+
+

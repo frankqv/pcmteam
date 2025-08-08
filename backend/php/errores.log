@@ -1,0 +1,8 @@
+[08-Aug-2025 16:58:10 UTC] Error en st_add_entrada.php: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'EQ003' for key 'codigo_g'
+[08-Aug-2025 16:58:14 UTC] Error en st_add_entrada.php: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'EQ003' for key 'codigo_g'
+[08-Aug-2025 17:01:10 UTC] Error en st_add_entrada.php: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'LN456789123' for key 'serial'
+[08-Aug-2025 17:01:29 UTC] Error en st_add_entrada.php: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'LN456789123' for key 'serial'
+[08-Aug-2025 22:00:49 UTC] Error en st_add_entrada.php: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'DL123456789' for key 'serial'
+[08-Aug-2025 22:01:06 UTC] Error en st_add_entrada.php: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'DL123456789' for key 'serial'
+[08-Aug-2025 22:07:46 UTC] Error en st_add_entrada.php: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'DL123456789' for key 'serial'
+[08-Aug-2025 22:45:28 UTC] Error en st_add_entrada.php: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'HP987654321' for key 'serial'

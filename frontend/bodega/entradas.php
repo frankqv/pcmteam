@@ -12,7 +12,6 @@ require_once '../../backend/bd/ctconex.php';
 <?php if (isset($_SESSION['id'])) { ?>
     <!DOCTYPE html>
     <html lang="es">
-
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -24,13 +23,11 @@ require_once '../../backend/bd/ctconex.php';
         <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
         <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
     </head>
-
     <body>
         <div class="wrapper">
             <div class="body-overlay"></div>
             <?php include_once '../layouts/nav.php';
             include_once '../layouts/menu_data.php'; ?>
-
             <!-- Sidebar -->
             <nav id="sidebar">
                 <div class="sidebar-header">
@@ -38,7 +35,6 @@ require_once '../../backend/bd/ctconex.php';
                 </div>
                 <?php renderMenu($menu); ?>
             </nav>
-
             <!-- Page Content -->
             <div id="content">
                 <div class="top-navbar">
@@ -51,7 +47,6 @@ require_once '../../backend/bd/ctconex.php';
                         </div>
                     </nav>
                 </div>
-
                 <div class="main-content">
                     <div class="row">
                         <div class="col-md-12">
@@ -116,12 +111,11 @@ require_once '../../backend/bd/ctconex.php';
                                                         placeholder="Serial del fabricante" required>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="modelo">Modelo específico del equipo</label>
+                                                    <label for="modelo">Referencia o Modelo del equipo</label>
                                                     <input type="text" class="form-control" name="modelo" id="modelo"
-                                                        placeholder="Modelo específico" required>
+                                                        placeholder="Referencia o Modelo del Equipo" required>
                                                 </div>
                                             </div>
-
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="procesador">Especificaciones del procesador</label>
@@ -177,7 +171,6 @@ require_once '../../backend/bd/ctconex.php';
                                                 </div>
                                             </div>
                                         </div>
-
                                         <!-- Sección de Proveedor y Responsable -->
                                         <div class="row">
                                             <div class="col-md-6">
@@ -209,7 +202,7 @@ require_once '../../backend/bd/ctconex.php';
                                                 <div class="form-group">
                                                     <label for="responsable">Responsable <span class="text-danger">*</span></label>
                                                     <select class="form-control" required name="responsable">
-                                                        <option value="">----------Seleccione Responsable------------</option>
+                                                        <option value="0">----------Seleccione Responsable------------</option>
                                                         <?php
                                                         try {
                                                             $stmt_responsables = $connect->prepare("SELECT id, nombre, rol FROM usuarios WHERE rol IN (1, 7) AND estado = '1' ORDER BY nombre ASC");
@@ -232,7 +225,6 @@ require_once '../../backend/bd/ctconex.php';
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
@@ -243,7 +235,6 @@ require_once '../../backend/bd/ctconex.php';
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="row mt-3">
                                             <div class="col-md-12 text-center">
                                                 <button type="submit" class="btn btn-primary">
@@ -259,7 +250,6 @@ require_once '../../backend/bd/ctconex.php';
                             </div>
                         </div>
                     </div>
-
                     <!-- Tabla de últimas entradas -->
                     <div class="row mt-4">
                         <div class="col-md-12">
@@ -290,7 +280,6 @@ require_once '../../backend/bd/ctconex.php';
                                                         e.cantidad,
                                                         e.observaciones as entrada_observaciones,
                                                         i.codigo_g,
-                                                        i.item,
                                                         i.producto,
                                                         i.marca,
                                                         i.modelo,
@@ -308,9 +297,7 @@ require_once '../../backend/bd/ctconex.php';
                                                     LEFT JOIN usuarios u ON e.usuario_id = u.id
                                                     ORDER BY e.fecha_entrada DESC 
                                                     LIMIT 10";
-
                                                     $result = $connect->query($sql);
-
                                                     if ($result) {
                                                         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                                                             echo "<tr>";
@@ -347,7 +334,6 @@ require_once '../../backend/bd/ctconex.php';
                 </div>
             </div>
         </div>
-
         <!-- Modal para ver detalles de entrada -->
         <div class="modal fade" id="detallesModal" tabindex="-1" role="dialog" aria-labelledby="detallesModalLabel"
             aria-hidden="true">
@@ -373,20 +359,17 @@ require_once '../../backend/bd/ctconex.php';
                 </div>
             </div>
         </div>
-
         <!-- Scripts -->
         <script src="../../backend/js/jquery-3.3.1.min.js"></script>
         <script src="../../backend/js/popper.min.js"></script>
         <script src="../../backend/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="../../backend/js/sidebarCollapse.js"></script>
         <script src="../../backend/js/loader.js"></script>
-
         <script>
             $(document).ready(function () {
                 // Manejar envío del formulario
                 $('#entradaForm').submit(function (e) {
                     e.preventDefault();
-
                     // Validar campos requeridos
                     let isValid = true;
                     $(this).find('[required]').each(function () {
@@ -397,12 +380,10 @@ require_once '../../backend/bd/ctconex.php';
                             $(this).removeClass('is-invalid');
                         }
                     });
-
                     if (!isValid) {
                         alert('Por favor complete todos los campos requeridos');
                         return;
                     }
-
                     $.ajax({
                         url: $(this).attr('action'),
                         type: 'POST',
@@ -427,14 +408,11 @@ require_once '../../backend/bd/ctconex.php';
                         }
                     });
                 });
-
                 // Manejar clic en botón ver detalles
                 $(document).on('click', '.view-btn', function () {
                     const entradaId = $(this).data('id');
-
                     // Mostrar modal
                     $('#detallesModal').modal('show');
-
                     // Cargar detalles vía AJAX
                     $.ajax({
                         url: '../../backend/php/get_entrada_details.php',
@@ -459,7 +437,6 @@ require_once '../../backend/bd/ctconex.php';
                                             <h6><strong>Información General</strong></h6>
                                             <table class="table table-sm">
                                                 <tr><td><strong>Código:</strong></td><td>${data.codigo_g || 'N/A'}</td></tr>
-                                                <tr><td><strong>Item:</strong></td><td>${data.item || 'N/A'}</td></tr>
                                                 <tr><td><strong>Fecha Entrada:</strong></td><td>${data.fecha_entrada || 'N/A'}</td></tr>
                                                 <tr><td><strong>Ubicación:</strong></td><td>${data.ubicacion || 'N/A'}</td></tr>
                                                 <tr><td><strong>Posición:</strong></td><td>${data.posicion || 'N/A'}</td></tr>
@@ -526,7 +503,6 @@ require_once '../../backend/bd/ctconex.php';
                         }
                     });
                 });
-
                 // Función auxiliar para obtener clase de badge según el grado
                 function getGradeBadgeClass(grado) {
                     switch (grado) {
@@ -536,29 +512,24 @@ require_once '../../backend/bd/ctconex.php';
                         default: return 'secondary';
                     }
                 }
-
                 // Remover clase de error cuando el usuario empiece a escribir
                 $('[required]').on('input change', function () {
                     $(this).removeClass('is-invalid');
                 });
-
                 // Inicializar tooltips
                 $('[data-toggle="tooltip"]').tooltip();
             });
         </script>
-
         <style>
             .is-invalid {
                 border-color: #dc3545 !important;
             }
-
             .btn i {
                 vertical-align: middle;
                 margin-right: 5px;
             }
         </style>
     </body>
-
     </html>
 <?php } else {
     header('Location: ../error404.php');
