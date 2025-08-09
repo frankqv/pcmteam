@@ -62,22 +62,27 @@ INSERT INTO `bodega_entradas` (`id`, `inventario_id`, `fecha_entrada`, `proveedo
 (1, 1, '2025-06-30 17:32:02', 1, 1, 1, 'Entrada inicial de inventario'),
 (2, 2, '2025-06-30 17:32:02', 1, 1, 1, 'Entrada desde proveedor principal'),
 (3, 3, '2025-06-30 17:32:02', 2, 1, 1, 'Entrada desde proveedor secundario'),
-(4, 4, '2025-07-02 17:19:56', 1, 1, 1, 'TESTEO4');
+(4, 4, '2025-07-02 17:19:56', 1, 1, 1, 'TESTEO4'),
+(5, 15, '2025-08-08 17:01:12', 2, 1, 1, 'tallado tapas ypantalla'),
+(6, 6, '2025-08-08 17:45:33', 1, 1, 1, 'tallado'),
+(7, 7, '2025-08-09 09:29:28', 1, 1, 1, 'pantalla tallada'),
+(8, 8, '2025-08-09 10:50:25', 8, 1, 1, 'teclas dañas J y la T'),
+(9, 9, '2025-08-09 10:57:09', 1, 4, 1, 'PANTALLA TALLADA'),
+(10, 10, '2025-08-09 11:13:30', 1, 1, 1, 'tallado'),
+(11, 11, '2025-08-09 11:17:04', 1, 3, 1, ''),
+(12, 12, '2025-08-09 11:44:38', 8, 1, 1, 'rayones en tapas');
 
 CREATE TABLE `bodega_inventario` (
   `id` int(11) NOT NULL,
   `codigo_g` varchar(50) NOT NULL COMMENT 'Código general del equipo',
-  `item` int(11) NOT NULL COMMENT 'Número de ítem secuencial',
   `ubicacion` varchar(100) NOT NULL COMMENT 'Zona específica en bodega/laboratorio',
   `posicion` varchar(50) NOT NULL COMMENT 'Posición exacta dentro de la ubicación',
   `fecha_ingreso` datetime NOT NULL DEFAULT current_timestamp(),
   `fecha_modificacion` datetime NOT NULL DEFAULT current_timestamp(),
-  `activo_fijo` varchar(50) DEFAULT NULL COMMENT 'Identificador de activo fijo',
-  `codigo_lote` varchar(50) NOT NULL COMMENT 'Código de lote de ingreso',
   `producto` varchar(50) NOT NULL COMMENT 'Tipo de producto (Laptop, Desktop, Monitor, AIO, etc.)',
   `marca` varchar(50) NOT NULL COMMENT 'Marca del equipo',
   `serial` varchar(100) NOT NULL COMMENT 'Número de serie del fabricante',
-  `modelo` varchar(100) NOT NULL COMMENT 'Modelo específico del equipo',
+  `modelo` varchar(100) NOT NULL COMMENT 'Modelo o Referencia del equipo\r\n',
   `procesador` varchar(100) DEFAULT NULL COMMENT 'Especificaciones del procesador',
   `ram` varchar(50) DEFAULT NULL COMMENT 'Memoria RAM instalada',
   `disco` varchar(100) DEFAULT NULL COMMENT 'Tipo y capacidad del disco',
@@ -92,11 +97,19 @@ CREATE TABLE `bodega_inventario` (
   `tactil` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `item`, `ubicacion`, `posicion`, `fecha_ingreso`, `fecha_modificacion`, `activo_fijo`, `codigo_lote`, `producto`, `marca`, `serial`, `modelo`, `procesador`, `ram`, `disco`, `pulgadas`, `observaciones`, `grado`, `disposicion`, `estado`, `tecnico_id`, `pedido_id`, `producto_id`, `tactil`) VALUES
-(1, 'EQ001', 1, 'Principal', 'ESTANTE-1-A', '2025-06-30 17:32:02', '2025-08-06 15:32:09', 'AF001', 'LOTE2025001', 'Portatil', 'Dell', 'DL123456789', 'Latitude 5520', 'Intel i5-1135G7aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', '8GB', '256GB SSD', '15.6', 'Equipo en buen estado', 'A', 'En revisión', 'activo', 33, NULL, NULL, 'SI'),
-(2, 'EQ002', 2, 'Principal', 'ESTANTE-1-B', '2025-06-30 17:32:02', '2025-08-06 15:32:28', 'AF002', 'LOTE2025001', 'Desktop', 'HP', 'HP987654321', 'EliteDesk 800', 'Intel i7-10700', '16GB', '512GB SSD', '16', 'EQUIPO LISTO', 'A', 'Para Venta', 'activo', 34, NULL, NULL, 'NO'),
-(3, 'EQ003', 3, 'Cúcuta', 'ESTANTE-2-A', '2025-06-30 17:32:02', '2025-08-08 11:24:56', 'AF003', 'LOTE2025002', 'AIO', 'Lenovo', 'LN456789123', 'ThinkCentre M90a', 'Intel i5-10400T', '8GB', '1TB HDD', '23.8', 'ningun Pantalla con rayones menores', 'C', 'en_proceso', 'Business', 10, NULL, NULL, 'NO'),
-(4, 'LPDA 1432', 4, 'Principal', 'DWQDEW', '2025-07-02 17:19:56', '2025-08-06 15:32:59', 'AF004', 'LOTE2025001', 'Periferico', 'HP', 'ds', '132', 'i5 14th', '8GB', '125 gb', '', 'tESTEO', 'A', 'Para Venta', 'inactivo', 13, NULL, NULL, 'SI');
+INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `ubicacion`, `posicion`, `fecha_ingreso`, `fecha_modificacion`, `producto`, `marca`, `serial`, `modelo`, `procesador`, `ram`, `disco`, `pulgadas`, `observaciones`, `grado`, `disposicion`, `estado`, `tecnico_id`, `pedido_id`, `producto_id`, `tactil`) VALUES
+(1, 'EQ001', 'Principal', 'ESTANTE-1-A', '2025-06-30 17:32:02', '2025-08-06 15:32:09', 'Portatil', 'Dell', 'DL123456789', 'Latitude 5520', 'Intel i5-1135G7aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', '8GB', '256GB SSD', '15.6', 'Equipo en buen estado', 'A', 'En revisión', 'activo', 33, NULL, NULL, 'SI'),
+(2, 'EQ002', 'Principal', 'ESTANTE-1-B', '2025-06-30 17:32:02', '2025-08-06 15:32:28', 'Desktop', 'HP', 'HP987654321', 'EliteDesk 800', 'Intel i7-10700', '16GB', '512GB SSD', '16', 'EQUIPO LISTO', 'A', 'Para Venta', 'activo', 34, NULL, NULL, 'NO'),
+(3, 'EQ003', 'Cúcuta', 'ESTANTE-2-A', '2025-06-30 17:32:02', '2025-08-08 11:24:56', 'AIO', 'Lenovo', 'LN456789123', 'ThinkCentre M90a', 'Intel i5-10400T', '8GB', '1TB HDD', '23.8', 'ningun Pantalla con rayones menores', 'C', 'en_proceso', 'Business', 0, NULL, NULL, 'NO'),
+(4, 'LPDA 1432', 'Principal', 'DWQDEW', '2025-07-02 17:19:56', '2025-08-06 15:32:59', 'Periferico', 'HP', 'ds', '132', 'i5 14th', '8GB', '125 gb', '', 'tESTEO', 'A', 'Para Venta', 'inactivo', 13, NULL, NULL, 'SI'),
+(5, 'EQ004', 'Principal', 'ESTANTE-2-A', '2025-08-08 17:01:12', '2025-08-08 18:02:23', 'Desktop', 'HP', 'DL123456782', 'Latitude 55223', 'Intel i7-10700', '16GB', '512GB SSD', '16', 'tallado tapas ypantalla', 'B', 'en_diagnostico', 'activo', 33, NULL, NULL, NULL),
+(6, 'EQ006', 'Principal', 'ESTANTE-1-A', '2025-08-08 17:45:33', '2025-08-08 17:45:33', 'Desktop', 'Dell', 'HP987654322', 'EliteDesk 800', 'Intel i5-1135G7', '8GB', '512GB SSD', '16', 'tallado', 'B', 'En revisión', 'activo', 34, NULL, NULL, NULL),
+(7, 'EQ007', 'Principal', 'ESTANTE-2-A', '2025-08-09 09:29:28', '2025-08-09 09:29:28', 'Portatil', 'Lenovo', 'LN456789124', 'lenovo x280', 'Intel i7-10700', '16GB', '256GB SSD', '14', 'pantalla tallada', 'B', 'En revisión', 'activo', NULL, NULL, NULL, NULL),
+(8, 'EQ008', 'Principal', 'ESTANTE-1-B', '2025-08-09 10:50:25', '2025-08-09 10:50:25', 'Portatil', 'Dell', 'DL123456922', 'DELL LATITUDE 7340', 'Intel i9-10700', '8GB', '256GB SSD', '20', 'teclas dañas J y la T', 'B', 'En revisión', 'activo', NULL, NULL, NULL, NULL),
+(9, 'LPDA-1432', 'Unilago', 'Estante 1 - B', '2025-08-09 10:57:09', '2025-08-09 10:57:09', 'Portatil', 'Lenovo', 'ATG1288', 'X280', 'i5 13th', '16GB', '256 SSD', '16', 'PANTALLA TALLADA', 'B', 'En revisión', 'activo', NULL, NULL, NULL, NULL),
+(10, 'EQ009', 'Medellín', 'ESTANTE-1-B', '2025-08-09 11:13:30', '2025-08-09 11:13:30', 'Portatil', 'Dell', 'DL123456791', 'Latitude 5520', 'Intel i5-10700', '8GB', '512GB SSD', '14', 'tallado', 'B', 'En revisión', 'activo', NULL, NULL, NULL, NULL),
+(11, 'EQ010', 'Unilago', 'Estante 1 - C Fila B', '2025-08-09 11:17:04', '2025-08-09 11:17:04', 'Desktop', 'Dell', 'ATG128387', 'HP Elite GEN 5 ', 'i5 10th', '8GB', '512 SSD', '12', '', 'A', 'Para Venta', 'activo', NULL, NULL, NULL, NULL),
+(12, 'EQ011', 'Unilago', 'ESTANTE-2-A', '2025-08-09 11:44:38', '2025-08-09 11:44:38', 'Portatil', 'Dell', 'DL123456989', 'Latitude 5520', 'Intel i5-10400T', '8GB', '256GB SSD', '15.6', 'rayones en tapas', 'C', 'En revisión', 'activo', NULL, NULL, NULL, 'SI');
 
 CREATE TABLE `bodega_partes` (
   `id` int(11) NOT NULL,
@@ -142,7 +155,8 @@ CREATE TABLE `bodega_salidas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bodega_salidas` (`id`, `inventario_id`, `fecha_salida`, `tecnico_id`, `usuario_id`, `cantidad`, `razon_salida`, `observaciones`) VALUES
-(1, 3, '2025-08-08 11:24:56', 10, 1, 1, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1');
+(1, 3, '2025-08-08 11:24:56', 10, 1, 1, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1'),
+(2, 5, '2025-08-08 18:02:23', 9, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1');
 
 CREATE TABLE `cart` (
   `idv` int(11) NOT NULL,
@@ -505,7 +519,6 @@ ALTER TABLE `bodega_inventario`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `codigo_g` (`codigo_g`),
   ADD UNIQUE KEY `serial` (`serial`),
-  ADD UNIQUE KEY `item` (`item`),
   ADD UNIQUE KEY `id` (`id`),
   ADD UNIQUE KEY `id_2` (`id`);
 
@@ -569,16 +582,16 @@ ALTER TABLE `bodega_diagnosticos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 ALTER TABLE `bodega_entradas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 ALTER TABLE `bodega_inventario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 ALTER TABLE `bodega_partes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 ALTER TABLE `bodega_salidas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 ALTER TABLE `cart`
   MODIFY `idv` int(11) NOT NULL AUTO_INCREMENT;

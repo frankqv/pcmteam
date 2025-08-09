@@ -1,3 +1,4 @@
+<!-- /backend/php/get_inventario_details.php -->
 <?php
 session_start();
 require_once '../bd/ctconex.php';
@@ -61,7 +62,6 @@ try {
                 <tr><td><strong>Serial:</strong></td><td><?php echo htmlspecialchars($equipo['serial']); ?></td></tr>
                 <tr><td><strong>Ubicación:</strong></td><td><?php echo htmlspecialchars($equipo['ubicacion']); ?></td></tr>
                 <tr><td><strong>Posición:</strong></td><td><?php echo htmlspecialchars($equipo['posicion']); ?></td></tr>
-                <tr><td><strong>Lote:</strong></td><td><?php echo htmlspecialchars($equipo['codigo_lote']); ?></td></tr>
                 <tr><td><strong>Técnico a cargo:</strong></td><td><?php echo empty($equipo['tecnico_nombre']) ? '<span class="bg-danger text-white px-2 py-1">Buscando tecnico... Computadora huerfana 🥺 </span>' : htmlspecialchars($equipo['tecnico_nombre']); ?></td></tr>
             </table>
         </div>

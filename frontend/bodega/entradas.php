@@ -5,6 +5,7 @@ session_start();
 
 if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
     header('location: ../error404.php');
+    exit();
 }
 
 require_once '../../backend/bd/ctconex.php';
@@ -59,13 +60,13 @@ require_once '../../backend/bd/ctconex.php';
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="codigo_g">Código general del equipo</label>
+                                                    <label for="codigo_g">Código general del equipo <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" name="codigo_g" id="codigo_g"
                                                         placeholder="Código general del equipo" required>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label>Ubicación en sede</label>
-                                                    <select class="form-control" name="ubse" required>
+                                                    <label for="ubse">Ubicación en sede <span class="text-danger">*</span></label>
+                                                    <select class="form-control" name="ubse" id="ubse" required>
                                                         <option value="">----Seleccionar Ubicación en sede----</option>
                                                         <option value="Principal">Principal</option>
                                                         <option value="Unilago">Unilago</option>
@@ -74,12 +75,12 @@ require_once '../../backend/bd/ctconex.php';
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="posicion">Posición exacta dentro de la ubicación</label>
+                                                    <label for="posicion">Posición exacta dentro de la ubicación <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" name="posicion" id="posicion"
                                                         placeholder="Posición exacta dentro de la ubicación" required>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="producto">Tipo de producto</label>
+                                                    <label for="producto">Tipo de producto <span class="text-danger">*</span></label>
                                                     <select class="form-control" name="producto" id="producto" required>
                                                         <option value="">Seleccione el tipo de producto</option>
                                                         <option value="Portatil">Portatil</option>
@@ -94,7 +95,7 @@ require_once '../../backend/bd/ctconex.php';
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="marca">Marca del equipo</label>
+                                                    <label for="marca">Marca del equipo <span class="text-danger">*</span></label>
                                                     <select class="form-control" name="marca" id="marca" required>
                                                         <option value="">Seleccione la marca</option>
                                                         <option value="HP">HP</option>
@@ -106,12 +107,12 @@ require_once '../../backend/bd/ctconex.php';
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="serial">Serial del fabricante</label>
+                                                    <label for="serial">Serial del fabricante <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" name="serial" id="serial"
                                                         placeholder="Serial del fabricante" required>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="modelo">Referencia o Modelo del equipo</label>
+                                                    <label for="modelo">Referencia o Modelo del equipo <span class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" name="modelo" id="modelo"
                                                         placeholder="Referencia o Modelo del Equipo" required>
                                                 </div>
@@ -123,7 +124,7 @@ require_once '../../backend/bd/ctconex.php';
                                                         id="procesador" placeholder="Ej: Intel i5 8th Gen">
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="ram">Memoria RAM instalada</label>
+                                                    <label for="ram">Memoria RAM instalada <span class="text-danger">*</span></label>
                                                     <select class="form-control" name="ram" id="ram" required>
                                                         <option value="">Seleccione la memoria RAM</option>
                                                         <option value="4GB">4GB</option>
@@ -149,7 +150,7 @@ require_once '../../backend/bd/ctconex.php';
                                                         rows="3" placeholder="Notas técnicas y observaciones"></textarea>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="grado">Clasificación según procedimiento técnico</label>
+                                                    <label for="grado">Clasificación según procedimiento técnico <span class="text-danger">*</span></label>
                                                     <select class="form-control" name="grado" id="grado" required>
                                                         <option value="">Seleccione grado</option>
                                                         <option value="A">A</option>
@@ -160,12 +161,14 @@ require_once '../../backend/bd/ctconex.php';
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="disposicion">Estado actual del equipo en el proceso</label>
+                                                    <label for="disposicion">Estado actual del equipo en el proceso <span class="text-danger">*</span></label>
                                                     <select class="form-control" name="disposicion" id="disposicion" required>
+                                                        <option value="">Seleccione el estado</option>
                                                         <option value="En revisión">En revisión</option>
                                                         <option value="Por Alistamiento">Por Alistamiento</option>
                                                         <option value="En Laboratorio">En Laboratorio</option>
                                                         <option value="En Bodega">En Bodega</option>
+                                                        <option value="Disposicion final">Disposicion final</option>
                                                         <option value="Para Venta">Para Venta</option>
                                                     </select>
                                                 </div>
@@ -180,7 +183,7 @@ require_once '../../backend/bd/ctconex.php';
                                                         <option value="">----------Seleccione Proveedor------------</option>
                                                         <?php
                                                         try {
-                                                            $stmt_proveedores = $connect->prepare("SELECT id, nombre, nomenclatura FROM proveedores ORDER BY nombre ASC");
+                                                            $stmt_proveedores = $connect->prepare("SELECT id, nombre, nomenclatura FROM proveedores WHERE nombre IS NOT NULL ORDER BY nombre ASC");
                                                             $stmt_proveedores->execute();
                                                             while ($row_prov = $stmt_proveedores->fetch(PDO::FETCH_ASSOC)) {
                                                                 ?>
@@ -200,27 +203,11 @@ require_once '../../backend/bd/ctconex.php';
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="responsable">Responsable <span class="text-danger">*</span></label>
-                                                    <select class="form-control" required name="responsable">
-                                                        <option value="0">----------Seleccione Responsable------------</option>
-                                                        <?php
-                                                        try {
-                                                            $stmt_responsables = $connect->prepare("SELECT id, nombre, rol FROM usuarios WHERE rol IN (1, 7) AND estado = '1' ORDER BY nombre ASC");
-                                                            $stmt_responsables->execute();
-                                                            while ($row_resp = $stmt_responsables->fetch(PDO::FETCH_ASSOC)) {
-                                                                $rol_texto = ($row_resp['rol'] == 1) ? 'Admin' : (($row_resp['rol'] == 7) ? 'Bodega' : 'Técnico');
-                                                                ?>
-                                                                <option value="<?php echo htmlspecialchars($row_resp['nombre']); ?>">
-                                                                    <?php echo htmlspecialchars($row_resp['nombre']); ?> -
-                                                                    <?php echo $rol_texto; ?>
-                                                                </option>
-                                                                <?php
-                                                            }
-                                                        } catch (PDOException $e) {
-                                                            echo "<option value=''>Error al cargar responsables</option>";
-                                                            error_log("Error en consulta responsables: " . $e->getMessage());
-                                                        }
-                                                        ?>
+                                                    <label for="tactil">¿El equipo es táctil? <span class="text-danger">*</span></label>
+                                                    <select class="form-control" required name="tactil" id="tactil">
+                                                        <option value="">----------Seleccione-----------</option>
+                                                        <option value="SI">Sí</option>
+                                                        <option value="NO">No</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -230,17 +217,17 @@ require_once '../../backend/bd/ctconex.php';
                                                 <div class="form-group">
                                                     <label for="estado">Estado</label>
                                                     <input type="hidden" name="estado" value="activo">
-                                                    <input type="text" class="form-control" id="estado" value="Activo" readonly style="background-color: #e9ecef;">
+                                                    <input type="text" class="form-control" id="estado_display" value="Activo" readonly style="background-color: #e9ecef;">
                                                     <small class="form-text text-muted">Todas las nuevas entradas se registran como activas</small>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row mt-3">
                                             <div class="col-md-12 text-center">
-                                                <button type="submit" class="btn btn-primary">
+                                                <button type="submit" class="btn btn-primary btn-lg">
                                                     <i class="material-icons">save</i> Registrar Entrada
                                                 </button>
-                                                <button type="reset" class="btn btn-secondary">
+                                                <button type="reset" class="btn btn-secondary btn-lg ml-2">
                                                     <i class="material-icons">clear</i> Limpiar
                                                 </button>
                                             </div>
@@ -298,7 +285,7 @@ require_once '../../backend/bd/ctconex.php';
                                                     ORDER BY e.fecha_entrada DESC 
                                                     LIMIT 10";
                                                     $result = $connect->query($sql);
-                                                    if ($result) {
+                                                    if ($result && $result->rowCount() > 0) {
                                                         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                                                             echo "<tr>";
                                                             echo "<td>" . htmlspecialchars(date('d/m/Y H:i', strtotime($row['fecha_entrada']))) . "</td>";
@@ -317,10 +304,10 @@ require_once '../../backend/bd/ctconex.php';
                                                             echo "</tr>";
                                                         }
                                                     } else {
-                                                        echo "<tr><td colspan='7'>No hay entradas registradas</td></tr>";
+                                                        echo "<tr><td colspan='7' class='text-center'>No hay entradas registradas</td></tr>";
                                                     }
                                                 } catch (PDOException $e) {
-                                                    echo "<tr><td colspan='7'>Error al cargar datos: " . htmlspecialchars($e->getMessage()) . "</td></tr>";
+                                                    echo "<tr><td colspan='7' class='text-center text-danger'>Error al cargar datos: " . htmlspecialchars($e->getMessage()) . "</td></tr>";
                                                     error_log("Error en consulta entradas: " . $e->getMessage());
                                                 }
                                                 ?>
@@ -372,24 +359,43 @@ require_once '../../backend/bd/ctconex.php';
                     e.preventDefault();
                     // Validar campos requeridos
                     let isValid = true;
+                    let firstInvalid = null;
+                    
                     $(this).find('[required]').each(function () {
-                        if (!$(this).val()) {
+                        if (!$(this).val() || $(this).val().trim() === '') {
                             $(this).addClass('is-invalid');
+                            if (!firstInvalid) {
+                                firstInvalid = $(this);
+                            }
                             isValid = false;
                         } else {
                             $(this).removeClass('is-invalid');
                         }
                     });
+                    
                     if (!isValid) {
                         alert('Por favor complete todos los campos requeridos');
+                        if (firstInvalid) {
+                            firstInvalid.focus();
+                        }
                         return;
                     }
+                    
+                    // Validar que el código no tenga espacios
+                    const codigo = $('#codigo_g').val().trim();
+                    if (codigo.includes(' ')) {
+                        alert('El código general no puede contener espacios');
+                        $('#codigo_g').addClass('is-invalid').focus();
+                        return;
+                    }
+                    
                     $.ajax({
                         url: $(this).attr('action'),
                         type: 'POST',
                         data: $(this).serialize(),
+                        dataType: 'json',
                         beforeSend: function () {
-                            $('button[type="submit"]').prop('disabled', true).text('Procesando...');
+                            $('button[type="submit"]').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Procesando...');
                         },
                         success: function (response) {
                             if (response.success) {
@@ -400,7 +406,14 @@ require_once '../../backend/bd/ctconex.php';
                             }
                         },
                         error: function (xhr, status, error) {
-                            alert('Error al registrar la entrada: ' + error);
+                            let errorMsg = 'Error al registrar la entrada: ';
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                errorMsg += response.error || error;
+                            } catch (e) {
+                                errorMsg += error;
+                            }
+                            alert(errorMsg);
                             console.error('Error:', xhr.responseText);
                         },
                         complete: function () {
@@ -408,11 +421,14 @@ require_once '../../backend/bd/ctconex.php';
                         }
                     });
                 });
+                
                 // Manejar clic en botón ver detalles
                 $(document).on('click', '.view-btn', function () {
                     const entradaId = $(this).data('id');
+                    
                     // Mostrar modal
                     $('#detallesModal').modal('show');
+                    
                     // Cargar detalles vía AJAX
                     $.ajax({
                         url: '../../backend/php/get_entrada_details.php',
@@ -440,7 +456,6 @@ require_once '../../backend/bd/ctconex.php';
                                                 <tr><td><strong>Fecha Entrada:</strong></td><td>${data.fecha_entrada || 'N/A'}</td></tr>
                                                 <tr><td><strong>Ubicación:</strong></td><td>${data.ubicacion || 'N/A'}</td></tr>
                                                 <tr><td><strong>Posición:</strong></td><td>${data.posicion || 'N/A'}</td></tr>
-                                                <tr><td><strong>Lote:</strong></td><td>${data.codigo_lote || 'N/A'}</td></tr>
                                             </table>
                                         </div>
                                         <div class="col-md-6">
@@ -452,6 +467,9 @@ require_once '../../backend/bd/ctconex.php';
                                                 <tr><td><strong>Serial:</strong></td><td>${data.serial || 'N/A'}</td></tr>
                                                 <tr><td><strong>Procesador:</strong></td><td>${data.procesador || 'N/A'}</td></tr>
                                                 <tr><td><strong>RAM:</strong></td><td>${data.ram || 'N/A'}</td></tr>
+                                                <tr><td><strong>Disco:</strong></td><td>${data.disco || 'N/A'}</td></tr>
+                                                <tr><td><strong>Pulgadas:</strong></td><td>${data.pulgadas || 'N/A'}</td></tr>
+                                                <tr><td><strong>Tactil:</strong></td><td>${data.tactil || 'N/A'}</td></tr>
                                             </table>
                                         </div>
                                     </div>
@@ -468,7 +486,7 @@ require_once '../../backend/bd/ctconex.php';
                                             <h6><strong>Proveedor y Usuario</strong></h6>
                                             <table class="table table-sm">
                                                 <tr><td><strong>Proveedor:</strong></td><td>${data.proveedor_nombre || 'N/A'} ${data.proveedor_nomenclatura ? '- ' + data.proveedor_nomenclatura : ''}</td></tr>
-                                                <tr><td><strong>Usuario:</strong></td><td>${data.usuario_nombre || 'N/A'}</td></tr>
+                                                <tr><td><strong>Entrada Realizada por:</strong></td><td>${data.usuario_nombre || 'N/A'}</td></tr>
                                                 <tr><td><strong>Cantidad:</strong></td><td>${data.cantidad || '1'}</td></tr>
                                             </table>
                                         </div>
@@ -503,35 +521,92 @@ require_once '../../backend/bd/ctconex.php';
                         }
                     });
                 });
+                
                 // Función auxiliar para obtener clase de badge según el grado
                 function getGradeBadgeClass(grado) {
                     switch (grado) {
                         case 'A': return 'success';
                         case 'B': return 'warning';
                         case 'C': return 'danger';
+                        case 'SCRAP': return 'dark';
                         default: return 'secondary';
                     }
                 }
+                
                 // Remover clase de error cuando el usuario empiece a escribir
                 $('[required]').on('input change', function () {
                     $(this).removeClass('is-invalid');
                 });
+                
+                // Validación en tiempo real para código general
+                $('#codigo_g').on('input', function () {
+                    const value = $(this).val();
+                    if (value.includes(' ')) {
+                        $(this).addClass('is-invalid');
+                        $(this).siblings('.invalid-feedback').remove();
+                        $(this).after('<div class="invalid-feedback">El código no puede contener espacios</div>');
+                    } else {
+                        $(this).removeClass('is-invalid');
+                        $(this).siblings('.invalid-feedback').remove();
+                    }
+                });
+                
                 // Inicializar tooltips
                 $('[data-toggle="tooltip"]').tooltip();
+                
+                // Auto-generar código si está vacío
+                $('#producto, #marca').on('change', function () {
+                    if ($('#codigo_g').val() === '') {
+                        const producto = $('#producto').val();
+                        const marca = $('#marca').val();
+                        if (producto && marca) {
+                            const prefix = producto.substring(0, 2).toUpperCase() + marca.substring(0, 2).toUpperCase();
+                            const timestamp = Date.now().toString().slice(-6);
+                            $('#codigo_g').val(prefix + timestamp);
+                        }
+                    }
+                });
             });
         </script>
         <style>
             .is-invalid {
                 border-color: #dc3545 !important;
+                box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
             }
             .btn i {
                 vertical-align: middle;
                 margin-right: 5px;
+            }
+            .form-group label .text-danger {
+                font-size: 0.9em;
+            }
+            .card {
+                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+                border: 1px solid rgba(0, 0, 0, 0.125);
+            }
+            .table th {
+                background-color: #f8f9fa;
+                font-weight: 600;
+            }
+            .badge {
+                font-size: 0.8em;
+            }
+            .spinner-border-sm {
+                width: 1rem;
+                height: 1rem;
+            }
+            .btn:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+            .invalid-feedback {
+                display: block;
             }
         </style>
     </body>
     </html>
 <?php } else {
     header('Location: ../error404.php');
+    exit();
 } ?>
 <?php ob_end_flush(); ?>
