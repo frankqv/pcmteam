@@ -2,7 +2,6 @@
 // /backend/php/get_entrada_details.php
 session_start();
 header('Content-Type: application/json');
-
 // Verificar sesión y permisos
 if (!isset($_SESSION['id']) || !isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
     http_response_code(401);
@@ -42,6 +41,8 @@ try {
         i.disposicion,
         i.estado,
         i.tactil,
+        i.lote,
+        i.activo_fijo,
         p.nombre as proveedor_nombre,
         p.nomenclatura as proveedor_nomenclatura,
         u.nombre as usuario_nombre
@@ -50,32 +51,25 @@ try {
     LEFT JOIN proveedores p ON e.proveedor_id = p.id 
     LEFT JOIN usuarios u ON e.usuario_id = u.id
     WHERE e.id = ?";
-
     $stmt = $connect->prepare($sql);
     $stmt->execute([$entrada_id]);
-
     $data = $stmt->fetch(PDO::FETCH_ASSOC);
-
     if (!$data) {
         throw new Exception('Entrada no encontrada');
     }
-
     // Formatear fecha
     if ($data['fecha_entrada']) {
         $data['fecha_entrada'] = date('d/m/Y H:i', strtotime($data['fecha_entrada']));
     }
-
     // Respuesta exitosa
     echo json_encode([
         'success' => true,
         'data' => $data
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
     error_log("Error PDO en get_entrada_details: " . $e->getMessage());
     echo json_encode(['success' => false, 'error' => 'Error de base de datos']);
-
 } catch (Exception $e) {
     http_response_code(400);
     error_log("Error en get_entrada_details: " . $e->getMessage());
