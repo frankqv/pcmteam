@@ -1,4 +1,5 @@
-<!--frontend/bodega/triage_2.php -->
+<!-- Proceso triage | poner logica negocio | y conectar elemnetos ocn sql -->
+<!--frontend/bodega/proceso_triage_2.php -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -39,6 +40,7 @@
             padding: 15px;
             margin-bottom: 15px;
         }
+
         .scan-icon {
             width: 100px;
             height: 100px;
@@ -51,6 +53,7 @@
             color: white;
             margin: 0 auto 15px auto;
         }
+
         .form-control,
         .form-select {
             background-color: #212529;
@@ -58,6 +61,7 @@
             color: #fff;
             font-family: 'Courier New', monospace;
         }
+
         .form-control:focus,
         .form-select:focus {
             background-color: #212529;
@@ -65,12 +69,14 @@
             color: #fff;
             box-shadow: 0 0 5px rgba(23, 162, 184, 0.5);
         }
+
         .btn-custom {
             font-family: 'Courier New', monospace;
             font-weight: bold;
             margin: 5px;
             min-width: 120px;
         }
+
         .component-row {
             background-color: #1a1a1a;
             margin-bottom: 8px;
@@ -78,6 +84,7 @@
             border-radius: 5px;
             border-left: 3px solid #17a2b8;
         }
+
         .equipment-counter {
             background: linear-gradient(135deg, #17a2b8, #20c997);
             color: white;
@@ -87,14 +94,17 @@
             font-size: 1.5rem;
             font-weight: bold;
         }
+
         .loading-spinner {
             display: none;
             color: #17a2b8;
         }
+
         @media print {
             .no-print {
                 display: none !important;
             }
+
             body {
                 color: #000 !important;
                 background: #fff !important;
@@ -102,6 +112,7 @@
         }
     </style>
 </head>
+
 <body class="bg-dark text-light">
     <div class="container-fluid">
         <!-- Header Section -->
@@ -159,7 +170,7 @@
                     </div>
                 </div>
                 <!-- Diagnostic Components -->
-                <h1 class="alert alert-success">RESULTADO DEL TRIAGE 2</h1>
+                <h1 class="alert alert-success">PROSESO DEL TRIAGE 2</h1>
                 <div class="section-border">
                     <h5 class="text-info mb-3">COMPONENTES DE DIAGNÓSTICO si es un portatil</h5>
                     <!-- Left side components -->
@@ -482,11 +493,12 @@
                             <div class="col-4"><strong>¿A QUE AREA(S) REMITE?</strong></div>
                             <div class="col-8">
                                 <select class="form-select form-select-sm" id="**">
-                                    <option value="Proceso técnico" selected>1| Proceso técnico</option>
-                                    <option value="Electrica" selected>2| Pr Electrica</option>
-                                    <option value="pintura">3| PROCESO ESTÉTICO</option>
-                                    <option value="Control-Calidad">4| QC | Control-Calidad</option>
-                                    <option value="Business"> 5| Business Room</option>
+                                    <option value="bodega_triage2" selected>1| BODEGA_TRIAGE_2</option>
+                                    <option value="Proceso técnico" selected>2| PROCESO TÉCNICO</option>
+                                    <option value="Electrica" selected>3| PROCESO ELECTRONICO</option>
+                                    <option value="pintura">4| PROCESO ESTÉTICO</option>
+                                    <option value="Control-Calidad">5| QC | CONTROL-CLAIDAD</option>
+                                    <option value="Business"> 6| BUSINESS ROOM</option>
                                 </select>
                             </div>
                         </div>

@@ -35,7 +35,6 @@ require_once '../../backend/bd/ctconex.php';
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
         <!-- Page Content -->
         <div id="content">
             <div class="top-navbar">

@@ -71,9 +71,7 @@ require_once '../../backend/bd/ctconex.php';
                                             </a>
                                         </div>
                                     </div>
-
                                     <hr>
-
                                     <form id="entradaForm" method="POST" action="../../backend/php/st_add_entrada.php">
                                         <div class="row">
                                             <div class="col-md-6">

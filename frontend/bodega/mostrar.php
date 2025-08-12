@@ -183,7 +183,6 @@ if (!$userInfo) {
                         </div>
                     </div>
                 </div>
-                
                 <!-- Filtros -->
                 <div class="row mb-4">
                     <div class="col-md-12">
