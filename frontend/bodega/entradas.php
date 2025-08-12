@@ -13,6 +13,7 @@ require_once '../../backend/bd/ctconex.php';
 <?php if (isset($_SESSION['id'])) { ?>
     <!DOCTYPE html>
     <html lang="es">
+
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -24,6 +25,7 @@ require_once '../../backend/bd/ctconex.php';
         <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
         <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
     </head>
+
     <body>
         <div class="wrapper">
             <div class="body-overlay"></div>
@@ -51,21 +53,48 @@ require_once '../../backend/bd/ctconex.php';
                 <div class="main-content">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="card">
+                            <div class="card fade-in">
                                 <div class="card-header">
-                                    <h4>Nueva Entrada de Equipo</h4>
+                                    <h4><i class="material-icons">add_box</i> Nueva Entrada de Equipo</h4>
                                 </div>
                                 <div class="card-body">
+                                    <!-- Botones de acción -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-12 text-center">
+                                            <button type="button" class="btn btn-success btn-lg" data-toggle="modal"
+                                                data-target="#importModal">
+                                                <i class="material-icons">upload_file</i> Importar desde Excel
+                                            </button>
+                                            <a href="../../backend/php/download_excel_template.php"
+                                                class="btn btn-info btn-lg ml-2">
+                                                <i class="material-icons">download</i> Descargar Plantilla
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <hr>
+
                                     <form id="entradaForm" method="POST" action="../../backend/php/st_add_entrada.php">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="codigo_g">Código general del equipo <span class="text-danger">*</span></label>
+                                                    <label for="codigo_g">Código general del equipo <span
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" name="codigo_g" id="codigo_g"
                                                         placeholder="Código general del equipo" required>
+                                                    <div class="invalid-feedback">El código general es requerido y no puede
+                                                        contener espacios</div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="ubse">Ubicación en sede <span class="text-danger">*</span></label>
+                                                    <label for="lote">Nombre del lote</label>
+                                                    <input type="text" class="form-control" name="lote" id="lote"
+                                                        placeholder="Nombre del lote Ejem: SistecLPPAD-1432">
+                                                    <small class="form-text text-muted">Campo opcional para agrupar
+                                                        equipos</small>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="ubse">Ubicación en sede <span
+                                                            class="text-danger">*</span></label>
                                                     <select class="form-control" name="ubse" id="ubse" required>
                                                         <option value="">----Seleccionar Ubicación en sede----</option>
                                                         <option value="Principal">Principal</option>
@@ -73,14 +102,18 @@ require_once '../../backend/bd/ctconex.php';
                                                         <option value="Cúcuta">Cúcuta</option>
                                                         <option value="Medellín">Medellín</option>
                                                     </select>
+                                                    <div class="invalid-feedback">Debe seleccionar una ubicación</div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="posicion">Posición exacta dentro de la ubicación <span class="text-danger">*</span></label>
+                                                    <label for="posicion">Posición exacta dentro de la ubicación <span
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" name="posicion" id="posicion"
                                                         placeholder="Posición exacta dentro de la ubicación" required>
+                                                    <div class="invalid-feedback">La posición es requerida</div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="producto">Tipo de producto <span class="text-danger">*</span></label>
+                                                    <label for="producto">Tipo de producto <span
+                                                            class="text-danger">*</span></label>
                                                     <select class="form-control" name="producto" id="producto" required>
                                                         <option value="">Seleccione el tipo de producto</option>
                                                         <option value="Portatil">Portatil</option>
@@ -93,9 +126,11 @@ require_once '../../backend/bd/ctconex.php';
                                                         <option value="Periferico">Periferico Computador</option>
                                                         <option value="otro">Otro</option>
                                                     </select>
+                                                    <div class="invalid-feedback">Debe seleccionar un tipo de producto</div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="marca">Marca del equipo <span class="text-danger">*</span></label>
+                                                    <label for="marca">Marca del equipo <span
+                                                            class="text-danger">*</span></label>
                                                     <select class="form-control" name="marca" id="marca" required>
                                                         <option value="">Seleccione la marca</option>
                                                         <option value="HP">HP</option>
@@ -105,16 +140,21 @@ require_once '../../backend/bd/ctconex.php';
                                                         <option value="CompuMax">CompuMax</option>
                                                         <option value="Otro">Otro</option>
                                                     </select>
+                                                    <div class="invalid-feedback">Debe seleccionar una marca</div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="serial">Serial del fabricante <span class="text-danger">*</span></label>
+                                                    <label for="serial">Serial del fabricante <span
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" name="serial" id="serial"
                                                         placeholder="Serial del fabricante" required>
+                                                    <div class="invalid-feedback">El serial es requerido</div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="modelo">Referencia o Modelo del equipo <span class="text-danger">*</span></label>
+                                                    <label for="modelo">Referencia o Modelo del equipo <span
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" class="form-control" name="modelo" id="modelo"
                                                         placeholder="Referencia o Modelo del Equipo" required>
+                                                    <div class="invalid-feedback">El modelo es requerido</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -124,7 +164,8 @@ require_once '../../backend/bd/ctconex.php';
                                                         id="procesador" placeholder="Ej: Intel i5 8th Gen">
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="ram">Memoria RAM instalada <span class="text-danger">*</span></label>
+                                                    <label for="ram">Memoria RAM instalada <span
+                                                            class="text-danger">*</span></label>
                                                     <select class="form-control" name="ram" id="ram" required>
                                                         <option value="">Seleccione la memoria RAM</option>
                                                         <option value="4GB">4GB</option>
@@ -133,6 +174,7 @@ require_once '../../backend/bd/ctconex.php';
                                                         <option value="32GB">32GB</option>
                                                         <option value="otro">Otro</option>
                                                     </select>
+                                                    <div class="invalid-feedback">Debe seleccionar la memoria RAM</div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="disco">Tipo y capacidad del disco</label>
@@ -150,7 +192,8 @@ require_once '../../backend/bd/ctconex.php';
                                                         rows="3" placeholder="Notas técnicas y observaciones"></textarea>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="grado">Clasificación según procedimiento técnico <span class="text-danger">*</span></label>
+                                                    <label for="grado">Clasificación según procedimiento técnico <span
+                                                            class="text-danger">*</span></label>
                                                     <select class="form-control" name="grado" id="grado" required>
                                                         <option value="">Seleccione grado</option>
                                                         <option value="A">A</option>
@@ -159,10 +202,13 @@ require_once '../../backend/bd/ctconex.php';
                                                         <option value="SCRAP">SCRAP</option>
                                                         <option value="#N/D">#N/D</option>
                                                     </select>
+                                                    <div class="invalid-feedback">Debe seleccionar un grado</div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="disposicion">Estado actual del equipo en el proceso <span class="text-danger">*</span></label>
-                                                    <select class="form-control" name="disposicion" id="disposicion" required>
+                                                    <label for="disposicion">Estado actual del equipo en el proceso <span
+                                                            class="text-danger">*</span></label>
+                                                    <select class="form-control" name="disposicion" id="disposicion"
+                                                        required>
                                                         <option value="">Seleccione el estado</option>
                                                         <option value="En revisión">En revisión</option>
                                                         <option value="Por Alistamiento">Por Alistamiento</option>
@@ -171,6 +217,7 @@ require_once '../../backend/bd/ctconex.php';
                                                         <option value="Disposicion final">Disposicion final</option>
                                                         <option value="Para Venta">Para Venta</option>
                                                     </select>
+                                                    <div class="invalid-feedback">Debe seleccionar un estado</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -178,7 +225,8 @@ require_once '../../backend/bd/ctconex.php';
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="proveedor">Proveedor <span class="text-danger">*</span></label>
+                                                    <label for="proveedor">Proveedor <span
+                                                            class="text-danger">*</span></label>
                                                     <select class="form-control" name="proveedor" id="proveedor" required>
                                                         <option value="">----------Seleccione Proveedor------------</option>
                                                         <?php
@@ -199,16 +247,19 @@ require_once '../../backend/bd/ctconex.php';
                                                         }
                                                         ?>
                                                     </select>
+                                                    <div class="invalid-feedback">Debe seleccionar un proveedor</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="tactil">¿El equipo es táctil? <span class="text-danger">*</span></label>
+                                                    <label for="tactil">¿El equipo es táctil? <span
+                                                            class="text-danger">*</span></label>
                                                     <select class="form-control" required name="tactil" id="tactil">
                                                         <option value="">----------Seleccione-----------</option>
                                                         <option value="SI">Sí</option>
                                                         <option value="NO">No</option>
                                                     </select>
+                                                    <div class="invalid-feedback">Debe seleccionar si es táctil o no</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -217,8 +268,10 @@ require_once '../../backend/bd/ctconex.php';
                                                 <div class="form-group">
                                                     <label for="estado">Estado</label>
                                                     <input type="hidden" name="estado" value="activo">
-                                                    <input type="text" class="form-control" id="estado_display" value="Activo" readonly style="background-color: #e9ecef;">
-                                                    <small class="form-text text-muted">Todas las nuevas entradas se registran como activas</small>
+                                                    <input type="text" class="form-control" id="estado_display"
+                                                        value="Activo" readonly style="background-color: #e9ecef;">
+                                                    <small class="form-text text-muted">Todas las nuevas entradas se
+                                                        registran como activas</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -240,9 +293,9 @@ require_once '../../backend/bd/ctconex.php';
                     <!-- Tabla de últimas entradas -->
                     <div class="row mt-4">
                         <div class="col-md-12">
-                            <div class="card">
+                            <div class="card slide-in">
                                 <div class="card-header">
-                                    <h4>Últimas Entradas</h4>
+                                    <h4><i class="material-icons">history</i> Últimas Entradas</h4>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -275,6 +328,7 @@ require_once '../../backend/bd/ctconex.php';
                                                         i.disposicion,
                                                         i.ubicacion,
                                                         i.posicion,
+                                                        i.lote,
                                                         p.nombre as proveedor_nombre,
                                                         p.nomenclatura as proveedor_nomenclatura,
                                                         u.nombre as usuario_nombre
@@ -346,6 +400,64 @@ require_once '../../backend/bd/ctconex.php';
                 </div>
             </div>
         </div>
+
+        <!-- Modal para importación masiva -->
+        <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="importModalLabel">
+                            <i class="material-icons">upload_file</i> Importación Masiva desde Excel
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-info">
+                            <h6><i class="material-icons">info</i> Instrucciones:</h6>
+                            <ul class="mb-0">
+                                <li>Descarga la plantilla Excel y llénala con tus datos</li>
+                                <li>Los campos marcados con * son obligatorios</li>
+                                <li>Si un código ya existe, se omitirá ese equipo y continuará con los demás</li>
+                                <li>Máximo 10MB por archivo</li>
+                                <li>Formatos soportados: .xlsx, .xls</li>
+                            </ul>
+                        </div>
+
+                        <form id="importForm" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="excel_file">Seleccionar archivo Excel:</label>
+                                <input type="file" class="form-control-file" id="excel_file" name="excel_file"
+                                    accept=".xlsx,.xls" required>
+                                <small class="form-text text-muted">Selecciona el archivo Excel con los datos de los
+                                    equipos</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="import_observations">Observaciones generales (opcional):</label>
+                                <textarea class="form-control" id="import_observations" name="import_observations" rows="3"
+                                    placeholder="Observaciones que se aplicarán a todos los equipos importados"></textarea>
+                            </div>
+                        </form>
+
+                        <!-- Área de resultados -->
+                        <div id="importResults" style="display: none;">
+                            <hr>
+                            <h6><i class="material-icons">assessment</i> Resultados de la Importación:</h6>
+                            <div id="resultsContent"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-success" id="startImport">
+                            <i class="material-icons">upload</i> Iniciar Importación
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Scripts -->
         <script src="../../backend/js/jquery-3.3.1.min.js"></script>
         <script src="../../backend/js/popper.min.js"></script>
@@ -354,72 +466,238 @@ require_once '../../backend/bd/ctconex.php';
         <script src="../../backend/js/loader.js"></script>
         <script>
             $(document).ready(function () {
-                // Manejar envío del formulario
-                $('#entradaForm').submit(function (e) {
-                    e.preventDefault();
-                    // Validar campos requeridos
+                // Función para mostrar notificaciones mejorada
+                function showNotification(message, type = 'success') {
+                    // Remover notificaciones existentes
+                    $('.alert.notification').remove();
+                    
+                    const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+                    const icon = type === 'success' ? 'check_circle' : 'error';
+                    
+                    const notification = $(`
+                        <div class="alert ${alertClass} alert-dismissible fade show notification" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+                            <i class="material-icons" style="vertical-align: middle; margin-right: 8px;">${icon}</i>
+                            ${message}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    `);
+                    
+                    $('body').append(notification);
+                    
+                    // Auto-ocultar después de 5 segundos
+                    setTimeout(() => {
+                        notification.fadeOut(() => notification.remove());
+                    }, 5000);
+                }
+                
+                // Validación mejorada del formulario
+                function validateForm() {
                     let isValid = true;
                     let firstInvalid = null;
                     
-                    $(this).find('[required]').each(function () {
-                        if (!$(this).val() || $(this).val().trim() === '') {
-                            $(this).addClass('is-invalid');
+                    // Limpiar mensajes de error previos
+                    $('.is-invalid').removeClass('is-invalid');
+                    $('.invalid-feedback').hide();
+                    
+                    // Validar campos requeridos
+                    $('#entradaForm [required]').each(function () {
+                        const field = $(this);
+                        const value = field.val().trim();
+                        
+                        if (!value) {
+                            field.addClass('is-invalid');
+                            field.siblings('.invalid-feedback').show();
+                            
                             if (!firstInvalid) {
-                                firstInvalid = $(this);
+                                firstInvalid = field;
                             }
                             isValid = false;
-                        } else {
-                            $(this).removeClass('is-invalid');
                         }
                     });
                     
-                    if (!isValid) {
-                        alert('Por favor complete todos los campos requeridos');
-                        if (firstInvalid) {
-                            firstInvalid.focus();
-                        }
-                        return;
-                    }
-                    
-                    // Validar que el código no tenga espacios
+                    // Validaciones específicas
                     const codigo = $('#codigo_g').val().trim();
-                    if (codigo.includes(' ')) {
-                        alert('El código general no puede contener espacios');
-                        $('#codigo_g').addClass('is-invalid').focus();
+                    if (codigo && codigo.includes(' ')) {
+                        $('#codigo_g').addClass('is-invalid');
+                        $('#codigo_g').siblings('.invalid-feedback').text('El código general no puede contener espacios').show();
+                        if (!firstInvalid) firstInvalid = $('#codigo_g');
+                        isValid = false;
+                    }
+                    
+                    if (codigo && codigo.length < 3) {
+                        $('#codigo_g').addClass('is-invalid');
+                        $('#codigo_g').siblings('.invalid-feedback').text('El código debe tener al menos 3 caracteres').show();
+                        if (!firstInvalid) firstInvalid = $('#codigo_g');
+                        isValid = false;
+                    }
+                    
+                    // Validar formato de serial (opcional pero recomendado)
+                    const serial = $('#serial').val().trim();
+                    if (serial && serial.length < 5) {
+                        $('#serial').addClass('is-invalid');
+                        $('#serial').siblings('.invalid-feedback').text('El serial debe tener al menos 5 caracteres').show();
+                        if (!firstInvalid) firstInvalid = $('#serial');
+                        isValid = false;
+                    }
+                    
+                    // Scroll al primer campo inválido
+                    if (!isValid && firstInvalid) {
+                        firstInvalid.focus();
+                        $('html, body').animate({
+                            scrollTop: firstInvalid.offset().top - 100
+                        }, 500);
+                    }
+                    
+                    return isValid;
+                }
+                
+                // Manejar envío del formulario con mejor manejo de errores
+                $('#entradaForm').submit(function (e) {
+                    e.preventDefault();
+                    
+                    // Validar formulario
+                    if (!validateForm()) {
+                        showNotification('Por favor complete todos los campos requeridos correctamente', 'error');
                         return;
                     }
                     
+                    // Deshabilitar botón y mostrar loading
+                    const submitBtn = $('button[type="submit"]');
+                    const originalText = submitBtn.html();
+                    
+                    submitBtn.prop('disabled', true)
+                        .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Procesando...');
+                    
+                    // Enviar formulario vía AJAX
                     $.ajax({
                         url: $(this).attr('action'),
                         type: 'POST',
                         data: $(this).serialize(),
                         dataType: 'json',
-                        beforeSend: function () {
-                            $('button[type="submit"]').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Procesando...');
-                        },
+                        timeout: 30000, // 30 segundos de timeout
                         success: function (response) {
                             if (response.success) {
-                                alert('Entrada registrada exitosamente');
-                                location.reload();
+                                showNotification(response.message || 'Entrada registrada exitosamente', 'success')
+                                // Limpiar formulario
+                                $('#entradaForm')[0].reset();
+                                $('.is-invalid').removeClass('is-invalid');
+                                $('.invalid-feedback').hide();
+                                
+                                // Recargar tabla de entradas
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2000);
                             } else {
-                                alert('Error: ' + (response.error || 'Error desconocido'));
+                                showNotification(response.error || 'Error al registrar la entrada', 'error');
                             }
                         },
                         error: function (xhr, status, error) {
-                            let errorMsg = 'Error al registrar la entrada: ';
+                            console.error('Error AJAX completo:', {
+                                status: xhr.status,
+                                statusText: xhr.statusText,
+                                responseText: xhr.responseText,
+                                error: error
+                            });
+                            
+                            let errorMsg = 'Error al registrar la entrada';
+                            
                             try {
                                 const response = JSON.parse(xhr.responseText);
-                                errorMsg += response.error || error;
+                                if (response.error) {
+                                    errorMsg = response.error;
+                                }
                             } catch (e) {
-                                errorMsg += error;
+                                if (xhr.status === 500) {
+                                    errorMsg = 'Error interno del servidor. Por favor contacte al administrador.';
+                                } else if (xhr.status === 0) {
+                                    errorMsg = 'Error de conexión. Verifique su conexión a internet.';
+                                } else if (xhr.status === 401) {
+                                    errorMsg = 'Sesión expirada. Por favor inicie sesión nuevamente.';
+                                    setTimeout(() => {
+                                        window.location.href = '../login.php';
+                                    }, 2000);
+                                } else if (xhr.status === 404) {
+                                    errorMsg = 'Archivo del servidor no encontrado. Contacte al administrador.';
+                                } else {
+                                    errorMsg = `Error ${xhr.status}: ${error}`;
+                                }
                             }
-                            alert(errorMsg);
-                            console.error('Error:', xhr.responseText);
+                            
+                            showNotification(errorMsg, 'error');
                         },
                         complete: function () {
-                            $('button[type="submit"]').prop('disabled', false).html('<i class="material-icons">save</i> Registrar Entrada');
+                            // Restaurar botón
+                            submitBtn.prop('disabled', false).html(originalText);
                         }
                     });
+                });
+                
+                // Validación en tiempo real mejorada
+                $('#codigo_g').on('input', function () {
+                    const value = $(this).val();
+                    const field = $(this);
+                    const feedback = field.siblings('.invalid-feedback');
+                    
+                    if (value.includes(' ')) {
+                        field.addClass('is-invalid');
+                        feedback.text('No se permiten espacios').show();
+                    } else if (value.length > 0 && value.length < 3) {
+                        field.addClass('is-invalid');
+                        feedback.text('Mínimo 3 caracteres').show();
+                    } else {
+                        field.removeClass('is-invalid');
+                        feedback.hide();
+                    }
+                });
+                
+                // Validación para serial
+                $('#serial').on('input', function () {
+                    const value = $(this).val();
+                    const field = $(this);
+                    const feedback = field.siblings('.invalid-feedback');
+                    
+                    if (value.length > 0 && value.length < 5) {
+                        field.addClass('is-invalid');
+                        feedback.text('El serial debe tener al menos 5 caracteres').show();
+                    } else {
+                        field.removeClass('is-invalid');
+                        feedback.hide();
+                    }
+                });
+                
+                // Limpiar validaciones cuando el usuario cambia los valores
+                $('input, select, textarea').on('input change', function () {
+                    $(this).removeClass('is-invalid');
+                    $(this).siblings('.invalid-feedback').hide();
+                });
+                
+                // Auto-completar campos basado en selecciones
+                $('#producto, #marca').on('change', function () {
+                    if ($('#codigo_g').val() === '') {
+                        const producto = $('#producto').val();
+                        const marca = $('#marca').val();
+                        if (producto && marca) {
+                            const prefix = producto.substring(0, 2).toUpperCase() + marca.substring(0, 2).toUpperCase();
+                            const timestamp = Date.now().toString().slice(-6);
+                            $('#codigo_g').val(prefix + timestamp);
+                        }
+                    }
+                });
+                
+                // Auto-completar lote
+                $('#proveedor').on('change', function() {
+                    if ($('#lote').val() === '') {
+                        const proveedor = $(this).find('option:selected').text();
+                        if (proveedor && proveedor !== '----------Seleccione Proveedor------------') {
+                            const nomenclatura = proveedor.split(' - ')[1];
+                            if (nomenclatura) {
+                                const fecha = new Date().toISOString().slice(2,10).replace(/-/g, '');
+                                $('#lote').val(nomenclatura + fecha);
+                            }
+                        }
+                    }
                 });
                 
                 // Manejar clic en botón ver detalles
@@ -456,6 +734,7 @@ require_once '../../backend/bd/ctconex.php';
                                                 <tr><td><strong>Fecha Entrada:</strong></td><td>${data.fecha_entrada || 'N/A'}</td></tr>
                                                 <tr><td><strong>Ubicación:</strong></td><td>${data.ubicacion || 'N/A'}</td></tr>
                                                 <tr><td><strong>Posición:</strong></td><td>${data.posicion || 'N/A'}</td></tr>
+                                                <tr><td><strong>Lote:</strong></td><td>${data.lote || 'N/A'}</td></tr>
                                             </table>
                                         </div>
                                         <div class="col-md-6">
@@ -533,38 +812,182 @@ require_once '../../backend/bd/ctconex.php';
                     }
                 }
                 
-                // Remover clase de error cuando el usuario empiece a escribir
-                $('[required]').on('input change', function () {
-                    $(this).removeClass('is-invalid');
-                });
-                
-                // Validación en tiempo real para código general
-                $('#codigo_g').on('input', function () {
-                    const value = $(this).val();
-                    if (value.includes(' ')) {
-                        $(this).addClass('is-invalid');
-                        $(this).siblings('.invalid-feedback').remove();
-                        $(this).after('<div class="invalid-feedback">El código no puede contener espacios</div>');
-                    } else {
-                        $(this).removeClass('is-invalid');
-                        $(this).siblings('.invalid-feedback').remove();
-                    }
-                });
-                
                 // Inicializar tooltips
                 $('[data-toggle="tooltip"]').tooltip();
                 
-                // Auto-generar código si está vacío
-                $('#producto, #marca').on('change', function () {
-                    if ($('#codigo_g').val() === '') {
-                        const producto = $('#producto').val();
-                        const marca = $('#marca').val();
-                        if (producto && marca) {
-                            const prefix = producto.substring(0, 2).toUpperCase() + marca.substring(0, 2).toUpperCase();
-                            const timestamp = Date.now().toString().slice(-6);
-                            $('#codigo_g').val(prefix + timestamp);
-                        }
+                // Importación masiva desde Excel
+                $('#startImport').on('click', function () {
+                    const fileInput = $('#excel_file')[0];
+                    const observations = $('#import_observations').val();
+                    
+                    if (!fileInput.files.length) {
+                        showNotification('❌ Por favor selecciona un archivo Excel', 'error');
+                        return;
                     }
+                    
+                    const file = fileInput.files[0];
+                    const maxSize = 10 * 1024 * 1024; // 10MB
+                    
+                    if (file.size > maxSize) {
+                        showNotification('❌ El archivo es demasiado grande. Máximo 10MB permitido', 'error');
+                        return;
+                    }
+                    
+                    // Crear FormData
+                    const formData = new FormData();
+                    formData.append('excel_file', file);
+                    if (observations) {
+                        formData.append('import_observations', observations);
+                    }
+                    
+                    // Deshabilitar botón y mostrar loading
+                    const btn = $(this);
+                    const originalText = btn.html();
+                    
+                    btn.prop('disabled', true)
+                        .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Importando...');
+                    
+                    // Ocultar resultados previos
+                    $('#importResults').hide();
+                    
+                    // Realizar importación
+                    $.ajax({
+                        url: '../../backend/php/import_excel_equipos.php',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        dataType: 'json',
+                        success: function (response) {
+                            if (response.success) {
+                                showNotification('✅ ' + response.message, 'success');
+                                displayImportResults(response.results);
+                                
+                                // Recargar tabla después de 2 segundos
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2000);
+                            } else {
+                                showNotification('❌ ' + response.error, 'error');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            let errorMsg = 'Error al importar archivo';
+                            
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.error) {
+                                    errorMsg = response.error;
+                                }
+                            } catch (e) {
+                                if (xhr.status === 500) {
+                                    errorMsg = 'Error interno del servidor';
+                                } else if (xhr.status === 0) {
+                                    errorMsg = 'Error de conexión';
+                                } else {
+                                    errorMsg = `Error ${xhr.status}: ${error}`;
+                                }
+                            }
+                            
+                            showNotification('❌ ' + errorMsg, 'error');
+                            console.error('Error de importación:', xhr.responseText);
+                        },
+                        complete: function () {
+                            btn.prop('disabled', false).html(originalText);
+                        }
+                    });
+                });
+                
+                // Función para mostrar resultados de importación
+                function displayImportResults(results) {
+                    const resultsContent = $('#resultsContent');
+                    let html = '';
+                    
+                    // Resumen general
+                    html += `
+                        <div class="row mb-3 fade-in-up">
+                            <div class="col-md-3">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body text-center">
+                                        <h4>${results.total_rows}</h4>
+                                        <small>Total de filas</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body text-center">
+                                        <h4>${results.success}</h4>
+                                        <small>Importados</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-warning text-white">
+                                    <div class="card-body text-center">
+                                        <h4>${results.skipped}</h4>
+                                        <small>Omitidos</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-danger text-white">
+                                    <div class="card-body text-center">
+                                        <h4>${results.errors.length}</h4>
+                                        <small>Errores</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Detalles de equipos importados
+                    if (results.success > 0) {
+                        html += '<h6 class="text-success slide-in-right">✅ Equipos Importados Exitosamente:</h6>';
+                        html += '<div class="table-responsive slide-in-right"><table class="table table-sm table-success">';
+                        html += '<thead><tr><th>Fila</th><th>Código</th><th>Estado</th></tr></thead><tbody>';
+                        
+                        results.details.filter(d => d.status === 'success').forEach(detail => {
+                            html += `<tr><td>${detail.row}</td><td>${detail.codigo}</td><td>${detail.message}</td></tr>`;
+                        });
+                        
+                        html += '</tbody></table></div>';
+                    }
+                    
+                    // Detalles de equipos omitidos
+                    if (results.skipped > 0) {
+                        html += '<h6 class="text-warning slide-in-right">⚠️ Equipos Omitidos:</h6>';
+                        html += '<div class="table-responsive slide-in-right"><table class="table table-sm table-warning">';
+                        html += '<thead><tr><th>Fila</th><th>Código</th><th>Razón</th></tr></thead><tbody>';
+                        
+                        results.details.filter(d => d.status === 'skipped').forEach(detail => {
+                            html += `<tr><td>${detail.row}</td><td>${detail.codigo}</td><td>${detail.message}</td></tr>`;
+                        });
+                        
+                        html += '</tbody></table></div>';
+                    }
+                    
+                    // Detalles de errores
+                    if (results.errors.length > 0) {
+                        html += '<h6 class="text-danger slide-in-right">❌ Errores Encontrados:</h6>';
+                        html += '<div class="table-responsive slide-in-right"><table class="table table-sm table-danger">';
+                        html += '<thead><tr><th>Fila</th><th>Código</th><th>Error</th></tr></thead><tbody>';
+                        
+                        results.errors.forEach(error => {
+                            html += `<tr><td>${error.row}</td><td>${error.codigo}</td><td>${error.error}</td></tr>`;
+                        });
+                        
+                        html += '</tbody></table></div>';
+                    }
+                    
+                    resultsContent.html(html);
+                    $('#importResults').show();
+                }
+                
+                // Limpiar modal al cerrar
+                $('#importModal').on('hidden.bs.modal', function () {
+                    $('#importForm')[0].reset();
+                    $('#importResults').hide();
                 });
             });
         </script>
@@ -573,37 +996,330 @@ require_once '../../backend/bd/ctconex.php';
                 border-color: #dc3545 !important;
                 box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
             }
+
+            .is-valid {
+                border-color: #28a745 !important;
+                box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+            }
+
             .btn i {
                 vertical-align: middle;
                 margin-right: 5px;
             }
+
             .form-group label .text-danger {
                 font-size: 0.9em;
             }
+
             .card {
                 box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
                 border: 1px solid rgba(0, 0, 0, 0.125);
+                margin-bottom: 20px;
             }
+
             .table th {
                 background-color: #f8f9fa;
                 font-weight: 600;
+                border-top: none;
             }
+
             .badge {
                 font-size: 0.8em;
+                padding: 0.4em 0.6em;
             }
+
             .spinner-border-sm {
                 width: 1rem;
                 height: 1rem;
             }
+
             .btn:disabled {
                 opacity: 0.6;
                 cursor: not-allowed;
             }
+
             .invalid-feedback {
-                display: block;
+                display: none;
+                color: #dc3545;
+                font-size: 0.875em;
+                margin-top: 0.25rem;
+            }
+
+            .form-text {
+                font-size: 0.875em;
+                color: #6c757d;
+            }
+
+            .alert {
+                border-radius: 0.375rem;
+                border: 1px solid transparent;
+                margin-bottom: 1rem;
+            }
+
+            .alert-success {
+                color: #0f5132;
+                background-color: #d1e7dd;
+                border-color: #badbcc;
+            }
+
+            .alert-danger {
+                color: #842029;
+                background-color: #f8d7da;
+                border-color: #f5c2c7;
+            }
+
+            .alert i {
+                margin-right: 8px;
+                vertical-align: middle;
+            }
+
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+
+            .form-control:focus {
+                border-color: #80bdff;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            }
+
+            .btn-lg {
+                padding: 0.75rem 1.5rem;
+                font-size: 1.1rem;
+            }
+
+            .btn-primary {
+                background-color: #007bff;
+                border-color: #007bff;
+            }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #0056b3;
+            }
+
+            .btn-secondary {
+                background-color: #6c757d;
+                border-color: #6c757d;
+            }
+
+            .btn-secondary:hover {
+                background-color: #545b62;
+                border-color: #545b62;
+            }
+
+            .table-responsive {
+                border-radius: 0.375rem;
+                overflow: hidden;
+            }
+
+            .table-hover tbody tr:hover {
+                background-color: rgba(0, 123, 255, 0.075);
+            }
+
+            .view-btn {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            .modal-header {
+                background-color: #f8f9fa;
+                border-bottom: 1px solid #dee2e6;
+            }
+
+            .modal-title {
+                color: #495057;
+                font-weight: 600;
+            }
+
+            .table-sm td,
+            .table-sm th {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+
+
+            .card-header {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border-bottom: 1px solid #dee2e6;
+                font-weight: 600;
+            }
+
+            .card-header h4 {
+                margin: 0;
+                color: #495057;
+            }
+
+            /* Animaciones */
+            .fade-in {
+                animation: fadeIn 0.5s ease-in;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .slide-in {
+                animation: slideIn 0.3s ease-out;
+            }
+
+            @keyframes slideIn {
+                from {
+                    transform: translateX(-100%);
+                }
+
+                to {
+                    transform: translateX(0);
+                }
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .btn-lg {
+                    padding: 0.5rem 1rem;
+                    font-size: 1rem;
+                }
+
+                .form-group {
+                    margin-bottom: 1rem;
+                }
+
+                .card-body {
+                    padding: 1rem;
+                }
+            }
+
+            /* Estilos para importación */
+            .modal-lg {
+                max-width: 800px;
+            }
+
+            .table-sm th,
+            .table-sm td {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            .table-success {
+                background-color: #d4edda;
+            }
+
+            .table-warning {
+                background-color: #fff3cd;
+            }
+
+            .table-danger {
+                background-color: #f8d7da;
+            }
+
+            .bg-primary {
+                background-color: #007bff !important;
+            }
+
+            .bg-success {
+                background-color: #28a745 !important;
+            }
+
+            .bg-warning {
+                background-color: #ffc107 !important;
+            }
+
+            .bg-danger {
+                background-color: #dc3545 !important;
+            }
+
+            .card.bg-primary,
+            .card.bg-success,
+            .card.bg-warning,
+            .card.bg-danger {
+                border: none;
+            }
+
+            .card.bg-primary .card-body,
+            .card.bg-success .card-body,
+            .card.bg-warning .card-body,
+            .card.bg-danger .card-body {
+                padding: 1rem;
+            }
+
+            .card.bg-primary h4,
+            .card.bg-success h4,
+            .card.bg-warning h4,
+            .card.bg-danger h4 {
+                margin: 0;
+                font-size: 1.5rem;
+                font-weight: bold;
+            }
+
+            .card.bg-primary small,
+            .card.bg-success small,
+            .card.bg-warning small,
+            .card.bg-danger small {
+                font-size: 0.875rem;
+                opacity: 0.9;
+            }
+
+            .form-control-file {
+                border: 2px dashed #dee2e6;
+                border-radius: 0.375rem;
+                padding: 1rem;
+                text-align: center;
+                background-color: #f8f9fa;
+                transition: all 0.3s ease;
+            }
+
+            .form-control-file:hover {
+                border-color: #007bff;
+                background-color: #e7f3ff;
+            }
+
+            .form-control-file:focus {
+                border-color: #80bdff;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            }
+
+            /* Animaciones para resultados */
+            .fade-in-up {
+                animation: fadeInUp 0.6s ease-out;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .slide-in-right {
+                animation: slideInRight 0.5s ease-out;
+            }
+
+            @keyframes slideInRight {
+                from {
+                    opacity: 0;
+                    transform: translateX(30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
             }
         </style>
     </body>
+
     </html>
 <?php } else {
     header('Location: ../error404.php');

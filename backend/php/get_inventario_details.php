@@ -1,139 +1,159 @@
-<!-- /backend/php/get_inventario_details.php -->
 <?php
 session_start();
-require_once '../bd/ctconex.php';
-// Validar autenticación
-if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
+
+// Ruta al archivo de conexión - ajústala si es necesario
+require_once __DIR__ . '/../bd/ctconex.php';
+
+// Verificar que la conexión exista (esperamos $conn como mysqli)
+if (!isset($conn) || !($conn instanceof mysqli)) {
+    http_response_code(500);
+    echo "<div class='alert alert-danger'>Error de configuración: no se encontró la conexión a la BD (\$conn).</div>";
+    error_log("get_inventario_details.php: \$conn no existe o no es mysqli.");
+    exit;
+}
+
+// Permisos (ajusta roles si quieres otros)
+if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1,2,5,6,7])) {
     http_response_code(403);
-    echo '<div class="alert alert-danger">Acceso no autorizado</div>';
+    echo "<div class='alert alert-danger'>Acceso no autorizado</div>";
     exit;
 }
-// Validar que sea GET y que tenga el ID
-if ($_SERVER['REQUEST_METHOD'] !== 'GET' || !isset($_GET['id'])) {
+
+// Validar ID
+if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     http_response_code(400);
-    echo '<div class="alert alert-danger">Parámetros inválidos</div>';
+    echo "<div class='alert alert-danger'>ID inválido</div>";
     exit;
 }
-$inventario_id = intval($_GET['id']);
-if ($inventario_id <= 0) {
-    http_response_code(400);
-    echo '<div class="alert alert-danger">ID de inventario inválido</div>';
-    exit;
-}
-try {
-    // Consulta para obtener todos los detalles del equipo
-    $sql = "SELECT i.*, 
-            e.fecha_entrada,
-            p.nombre as proveedor_nombre,
-            u.nombre as usuario_nombre,
-            t.nombre as tecnico_nombre
-            FROM bodega_inventario i
-            LEFT JOIN bodega_entradas e ON i.id = e.inventario_id
-            LEFT JOIN proveedores p ON e.proveedor_id = p.id
-            LEFT JOIN usuarios u ON e.usuario_id = u.id
-            LEFT JOIN usuarios t ON i.tecnico_id = t.id
-            WHERE i.id = ?";
-    $stmt = $connect->prepare($sql);
-    $stmt->execute([$inventario_id]);
-    $equipo = $stmt->fetch(PDO::FETCH_ASSOC);
+$id = intval($_GET['id']);
+
+$sql = "
+SELECT i.*, 
+    e.fecha_entrada,
+    p.nombre AS proveedor_nombre,
+    u.nombre AS usuario_nombre,
+    t.nombre AS tecnico_nombre
+FROM bodega_inventario i
+LEFT JOIN bodega_entradas e ON i.id = e.inventario_id
+LEFT JOIN proveedores p ON e.proveedor_id = p.id
+LEFT JOIN usuarios u ON e.usuario_id = u.id
+LEFT JOIN usuarios t ON i.tecnico_id = t.id
+WHERE i.id = ?
+LIMIT 1
+";
+
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $equipo = $res->fetch_assoc();
+    $stmt->close();
+
     if (!$equipo) {
-        echo '<div class="alert alert-warning">Equipo no encontrado</div>';
+        echo "<div class='alert alert-warning'>Equipo no encontrado</div>";
         exit;
     }
-    // Obtener diagnóstico más reciente
+
+    // Obtener diagnóstico más reciente (mysqli)
+    $diag = null;
     $sql_diag = "SELECT * FROM bodega_diagnosticos WHERE inventario_id = ? ORDER BY fecha_diagnostico DESC LIMIT 1";
-    $stmt_diag = $connect->prepare($sql_diag);
-    $stmt_diag->execute([$inventario_id]);
-    $diagnostico = $stmt_diag->fetch(PDO::FETCH_ASSOC);
+    if ($s2 = $conn->prepare($sql_diag)) {
+        $s2->bind_param("i", $id);
+        $s2->execute();
+        $r2 = $s2->get_result();
+        $diag = $r2->fetch_assoc();
+        $s2->close();
+    }
+
     // Obtener control de calidad más reciente
+    $cc = null;
     $sql_cc = "SELECT * FROM bodega_control_calidad WHERE inventario_id = ? ORDER BY fecha_control DESC LIMIT 1";
-    $stmt_cc = $connect->prepare($sql_cc);
-    $stmt_cc->execute([$inventario_id]);
-    $control_calidad = $stmt_cc->fetch(PDO::FETCH_ASSOC);
+    if ($s3 = $conn->prepare($sql_cc)) {
+        $s3->bind_param("i", $id);
+        $s3->execute();
+        $r3 = $s3->get_result();
+        $cc = $r3->fetch_assoc();
+        $s3->close();
+    }
+
+    // Generar HTML (puedes adaptar diseño)
     ?>
     <div class="row">
         <div class="col-md-6">
             <h5>Información General</h5>
             <table class="table table-sm">
-                <tr><td><strong>Código:</strong></td><td><?php echo htmlspecialchars($equipo['codigo_g']); ?></td></tr>
-                <tr><td><strong>Producto:</strong></td><td><?php echo htmlspecialchars($equipo['producto']); ?></td></tr>
-                <tr><td><strong>Marca:</strong></td><td><?php echo htmlspecialchars($equipo['marca']); ?></td></tr>
-                <tr><td><strong>Modelo:</strong></td><td><?php echo htmlspecialchars($equipo['modelo']); ?></td></tr>
-                <tr><td><strong>Serial:</strong></td><td><?php echo htmlspecialchars($equipo['serial']); ?></td></tr>
-                <tr><td><strong>Ubicación:</strong></td><td><?php echo htmlspecialchars($equipo['ubicacion']); ?></td></tr>
-                <tr><td><strong>Posición:</strong></td><td><?php echo htmlspecialchars($equipo['posicion']); ?></td></tr>
-                <tr><td><strong>Técnico a cargo:</strong></td><td><?php echo empty($equipo['tecnico_nombre']) ? '<span class="bg-danger text-white px-2 py-1">Buscando tecnico... Computadora huerfana 🥺 </span>' : htmlspecialchars($equipo['tecnico_nombre']); ?></td></tr>
+                <tr><td><strong>Código:</strong></td><td><?= htmlspecialchars($equipo['codigo_g'] ?? $equipo['codigo'] ?? 'N/A') ?></td></tr>
+                <tr><td><strong>Producto:</strong></td><td><?= htmlspecialchars($equipo['producto'] ?? 'N/A') ?></td></tr>
+                <tr><td><strong>Marca:</strong></td><td><?= htmlspecialchars($equipo['marca'] ?? 'N/A') ?></td></tr>
+                <tr><td><strong>Modelo:</strong></td><td><?= htmlspecialchars($equipo['modelo'] ?? 'N/A') ?></td></tr>
+                <tr><td><strong>Serial:</strong></td><td><?= htmlspecialchars($equipo['serial'] ?? 'N/A') ?></td></tr>
+                <tr><td><strong>Ubicación:</strong></td><td><?= htmlspecialchars($equipo['ubicacion'] ?? 'N/A') ?></td></tr>
+                <tr><td><strong>Técnico a cargo:</strong></td><td><?= htmlspecialchars($equipo['tecnico_nombre'] ?? 'Sin asignar') ?></td></tr>
             </table>
         </div>
         <div class="col-md-6">
-            <h5>Especificaciones Técnicas</h5>
+            <h5>Especificaciones</h5>
             <table class="table table-sm">
-                <tr><td><strong>Procesador:</strong></td><td><?php echo htmlspecialchars($equipo['procesador'] ?: 'N/A'); ?></td></tr>
-                <tr><td><strong>RAM:</strong></td><td><?php echo htmlspecialchars($equipo['ram']); ?></td></tr>
-                <tr><td><strong>Disco:</strong></td><td><?php echo htmlspecialchars($equipo['disco'] ?: 'N/A'); ?></td></tr>
-                <tr><td><strong>Pantalla:</strong></td><td><?php echo htmlspecialchars($equipo['pulgadas'] ?: 'N/A'); ?></td></tr>
-                <tr><td><strong>Grado:</strong></td><td><span class="badge badge-<?php echo $equipo['grado'] == 'A' ? 'success' : ($equipo['grado'] == 'B' ? 'warning' : 'danger'); ?>"><?php echo htmlspecialchars($equipo['grado']); ?></span></td></tr>
-                <tr><td><strong>Disposición:</strong></td><td><?php echo htmlspecialchars($equipo['disposicion']); ?></td></tr>
-                <tr><td><strong>Estado:</strong></td><td><span class="badge badge-<?php echo $equipo['estado'] == 'activo' ? 'success' : 'secondary'; ?>"><?php echo htmlspecialchars($equipo['estado']); ?></span></td></tr>
+                <tr><td><strong>Procesador:</strong></td><td><?= htmlspecialchars($equipo['procesador'] ?? 'N/A') ?></td></tr>
+                <tr><td><strong>RAM:</strong></td><td><?= htmlspecialchars($equipo['ram'] ?? 'N/A') ?></td></tr>
+                <tr><td><strong>Disco:</strong></td><td><?= htmlspecialchars($equipo['disco'] ?? 'N/A') ?></td></tr>
+                <tr><td><strong>Grado:</strong></td><td><?= htmlspecialchars($equipo['grado'] ?? 'N/A') ?></td></tr>
+                <tr><td><strong>Disposición:</strong></td><td><?= htmlspecialchars($equipo['disposicion'] ?? 'N/A') ?></td></tr>
             </table>
         </div>
     </div>
-    <?php if ($equipo['observaciones']): ?>
-    <div class="row mt-3">
+
+    <?php if (!empty($equipo['observaciones'])): ?>
+    <div class="row mt-2">
         <div class="col-md-12">
             <h5>Observaciones</h5>
-            <div class="alert alert-info">
-                <?php echo nl2br(htmlspecialchars($equipo['observaciones'])); ?>
-            </div>
+            <div class="alert alert-info"><?= nl2br(htmlspecialchars($equipo['observaciones'])) ?></div>
         </div>
     </div>
     <?php endif; ?>
+
     <div class="row mt-3">
         <div class="col-md-6">
             <h5>Información de Entrada</h5>
             <table class="table table-sm">
-                <tr><td><strong>Fecha de entrada:</strong></td><td><?php echo htmlspecialchars($equipo['fecha_entrada'] ?: 'N/A'); ?></td></tr>
-                <tr><td><strong>Proveedor:</strong></td><td><?php echo htmlspecialchars($equipo['proveedor_nombre'] ?: 'N/A'); ?></td></tr>
-                <tr><td><strong>Registrado por:</strong></td><td><?php echo htmlspecialchars($equipo['usuario_nombre'] ?: 'N/A'); ?></td></tr>
-                <tr><td><strong>Última modificación:</strong></td><td><?php echo htmlspecialchars($equipo['fecha_modificacion']); ?></td></tr>
+                <tr><td><strong>Fecha entrada:</strong></td><td><?= htmlspecialchars($equipo['fecha_entrada'] ?? 'N/A') ?></td></tr>
+                <tr><td><strong>Proveedor:</strong></td><td><?= htmlspecialchars($equipo['proveedor_nombre'] ?? 'N/A') ?></td></tr>
+                <tr><td><strong>Registrado por:</strong></td><td><?= htmlspecialchars($equipo['usuario_nombre'] ?? 'N/A') ?></td></tr>
             </table>
         </div>
         <div class="col-md-6">
             <h5>Historial Técnico</h5>
-            <?php if ($diagnostico): ?>
-            <div class="alert alert-info">
-                <strong>Diagnóstico:</strong> <?php echo htmlspecialchars($diagnostico['estado_reparacion']); ?><br>
-                <small>Fecha: <?php echo htmlspecialchars($diagnostico['fecha_diagnostico']); ?></small>
-            </div>
+            <?php if ($diag): ?>
+                <div class="alert alert-info">
+                    <strong>Diagnóstico:</strong> <?= htmlspecialchars($diag['estado_reparacion'] ?? $diag['descripcion'] ?? 'N/A') ?><br>
+                    <small>Fecha: <?= htmlspecialchars($diag['fecha_diagnostico'] ?? 'N/A') ?></small>
+                </div>
             <?php endif; ?>
-            <?php if ($control_calidad): ?>
-            <div class="alert alert-<?php echo $control_calidad['estado_final'] == 'aprobado' ? 'success' : 'danger'; ?>">
-                <strong>Control de Calidad:</strong> <?php echo htmlspecialchars($control_calidad['estado_final']); ?><br>
-                <small>Fecha: <?php echo htmlspecialchars($control_calidad['fecha_control']); ?></small>
-            </div>
+
+            <?php if ($cc): ?>
+                <div class="alert <?= ($cc['estado_final'] ?? '') === 'aprobado' ? 'alert-success' : 'alert-danger' ?>">
+                    <strong>Control de Calidad:</strong> <?= htmlspecialchars($cc['estado_final'] ?? 'N/A') ?><br>
+                    <small>Fecha: <?= htmlspecialchars($cc['fecha_control'] ?? 'N/A') ?></small>
+                </div>
             <?php endif; ?>
-            
-            <?php if (!$diagnostico && !$control_calidad): ?>
-            <div class="alert alert-secondary">
-                No hay historial técnico disponible
-            </div>
+
+            <?php if (!$diag && !$cc): ?>
+                <div class="alert alert-secondary">No hay historial técnico disponible</div>
             <?php endif; ?>
         </div>
     </div>
+
     <div class="row mt-3">
         <div class="col-md-12 text-center">
-            <a href="../bodega/editar_inventario.php?id=<?php echo $equipo['id']; ?>" class="btn btn-primary">
-                <i class="material-icons">edit</i> Editar Equipo
-            </a>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                <i class="material-icons">close</i> Cerrar
-            </button>
+            <a href="../bodega/editar_inventario.php?id=<?= intval($equipo['id']) ?>" class="btn btn-primary"><i class="material-icons">edit</i> Editar Equipo</a>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="material-icons">close</i> Cerrar</button>
         </div>
     </div>
     <?php
-} catch (PDOException $e) {
+
+} else {
     http_response_code(500);
-    echo '<div class="alert alert-danger">Error al obtener los detalles del equipo: ' . htmlspecialchars($e->getMessage()) . '</div>';
-    error_log("Error en get_inventario_details.php: " . $e->getMessage());
+    echo "<div class='alert alert-danger'>Error en la preparación de la consulta</div>";
+    error_log("get_inventario_details.php prepare failed: " . $conn->error);
 }
-?> 
+?>

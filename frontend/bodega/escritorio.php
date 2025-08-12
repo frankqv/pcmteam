@@ -294,7 +294,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                         <a href='javascript:void(0)' class='btn btn-info btn-sm view-btn' data-id='" . $row['id'] . "'><i class='material-icons'>visibility</i></a>
                                                         <a href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "'><i class='material-icons'>edit</i></a>
                                                         <a href='javascript:void(0)' class='btn btn-danger btn-sm delete-btn' data-id='" . $row['id'] . "'><i class='material-icons'>delete</i></a>
-                                                      </td>";
+                                                    </td>";
                                                     echo "</tr>";
                                                 }
                                                 ?>

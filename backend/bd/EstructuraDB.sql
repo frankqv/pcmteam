@@ -70,7 +70,8 @@ INSERT INTO `bodega_entradas` (`id`, `inventario_id`, `fecha_entrada`, `proveedo
 (9, 9, '2025-08-09 10:57:09', 1, 4, 1, 'PANTALLA TALLADA'),
 (10, 10, '2025-08-09 11:13:30', 1, 1, 1, 'tallado'),
 (11, 11, '2025-08-09 11:17:04', 1, 3, 1, ''),
-(12, 12, '2025-08-09 11:44:38', 8, 1, 1, 'rayones en tapas');
+(12, 12, '2025-08-09 11:44:38', 8, 1, 1, 'rayones en tapas'),
+(13, 27, '2025-08-11 14:28:04', 3, 33, 1, 'Pantalla talada');
 
 CREATE TABLE `bodega_inventario` (
   `id` int(11) NOT NULL,
@@ -94,22 +95,25 @@ CREATE TABLE `bodega_inventario` (
   `tecnico_id` int(11) DEFAULT NULL,
   `pedido_id` int(11) DEFAULT NULL,
   `producto_id` int(11) DEFAULT NULL,
-  `tactil` text DEFAULT NULL
+  `tactil` text DEFAULT NULL,
+  `lote` varchar(50) DEFAULT NULL,
+  `activo_fijo` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `ubicacion`, `posicion`, `fecha_ingreso`, `fecha_modificacion`, `producto`, `marca`, `serial`, `modelo`, `procesador`, `ram`, `disco`, `pulgadas`, `observaciones`, `grado`, `disposicion`, `estado`, `tecnico_id`, `pedido_id`, `producto_id`, `tactil`) VALUES
-(1, 'EQ001', 'Principal', 'ESTANTE-1-A', '2025-06-30 17:32:02', '2025-08-06 15:32:09', 'Portatil', 'Dell', 'DL123456789', 'Latitude 5520', 'Intel i5-1135G7aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', '8GB', '256GB SSD', '15.6', 'Equipo en buen estado', 'A', 'En revisión', 'activo', 33, NULL, NULL, 'SI'),
-(2, 'EQ002', 'Principal', 'ESTANTE-1-B', '2025-06-30 17:32:02', '2025-08-06 15:32:28', 'Desktop', 'HP', 'HP987654321', 'EliteDesk 800', 'Intel i7-10700', '16GB', '512GB SSD', '16', 'EQUIPO LISTO', 'A', 'Para Venta', 'activo', 34, NULL, NULL, 'NO'),
-(3, 'EQ003', 'Cúcuta', 'ESTANTE-2-A', '2025-06-30 17:32:02', '2025-08-08 11:24:56', 'AIO', 'Lenovo', 'LN456789123', 'ThinkCentre M90a', 'Intel i5-10400T', '8GB', '1TB HDD', '23.8', 'ningun Pantalla con rayones menores', 'C', 'en_proceso', 'Business', 0, NULL, NULL, 'NO'),
-(4, 'LPDA 1432', 'Principal', 'DWQDEW', '2025-07-02 17:19:56', '2025-08-06 15:32:59', 'Periferico', 'HP', 'ds', '132', 'i5 14th', '8GB', '125 gb', '', 'tESTEO', 'A', 'Para Venta', 'inactivo', 13, NULL, NULL, 'SI'),
-(5, 'EQ004', 'Principal', 'ESTANTE-2-A', '2025-08-08 17:01:12', '2025-08-08 18:02:23', 'Desktop', 'HP', 'DL123456782', 'Latitude 55223', 'Intel i7-10700', '16GB', '512GB SSD', '16', 'tallado tapas ypantalla', 'B', 'en_diagnostico', 'activo', 33, NULL, NULL, NULL),
-(6, 'EQ006', 'Principal', 'ESTANTE-1-A', '2025-08-08 17:45:33', '2025-08-08 17:45:33', 'Desktop', 'Dell', 'HP987654322', 'EliteDesk 800', 'Intel i5-1135G7', '8GB', '512GB SSD', '16', 'tallado', 'B', 'En revisión', 'activo', 34, NULL, NULL, NULL),
-(7, 'EQ007', 'Principal', 'ESTANTE-2-A', '2025-08-09 09:29:28', '2025-08-09 09:29:28', 'Portatil', 'Lenovo', 'LN456789124', 'lenovo x280', 'Intel i7-10700', '16GB', '256GB SSD', '14', 'pantalla tallada', 'B', 'En revisión', 'activo', NULL, NULL, NULL, NULL),
-(8, 'EQ008', 'Principal', 'ESTANTE-1-B', '2025-08-09 10:50:25', '2025-08-09 10:50:25', 'Portatil', 'Dell', 'DL123456922', 'DELL LATITUDE 7340', 'Intel i9-10700', '8GB', '256GB SSD', '20', 'teclas dañas J y la T', 'B', 'En revisión', 'activo', NULL, NULL, NULL, NULL),
-(9, 'LPDA-1432', 'Unilago', 'Estante 1 - B', '2025-08-09 10:57:09', '2025-08-09 10:57:09', 'Portatil', 'Lenovo', 'ATG1288', 'X280', 'i5 13th', '16GB', '256 SSD', '16', 'PANTALLA TALLADA', 'B', 'En revisión', 'activo', NULL, NULL, NULL, NULL),
-(10, 'EQ009', 'Medellín', 'ESTANTE-1-B', '2025-08-09 11:13:30', '2025-08-09 11:13:30', 'Portatil', 'Dell', 'DL123456791', 'Latitude 5520', 'Intel i5-10700', '8GB', '512GB SSD', '14', 'tallado', 'B', 'En revisión', 'activo', NULL, NULL, NULL, NULL),
-(11, 'EQ010', 'Unilago', 'Estante 1 - C Fila B', '2025-08-09 11:17:04', '2025-08-09 11:17:04', 'Desktop', 'Dell', 'ATG128387', 'HP Elite GEN 5 ', 'i5 10th', '8GB', '512 SSD', '12', '', 'A', 'Para Venta', 'activo', NULL, NULL, NULL, NULL),
-(12, 'EQ011', 'Unilago', 'ESTANTE-2-A', '2025-08-09 11:44:38', '2025-08-09 11:44:38', 'Portatil', 'Dell', 'DL123456989', 'Latitude 5520', 'Intel i5-10400T', '8GB', '256GB SSD', '15.6', 'rayones en tapas', 'C', 'En revisión', 'activo', NULL, NULL, NULL, 'SI');
+INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `ubicacion`, `posicion`, `fecha_ingreso`, `fecha_modificacion`, `producto`, `marca`, `serial`, `modelo`, `procesador`, `ram`, `disco`, `pulgadas`, `observaciones`, `grado`, `disposicion`, `estado`, `tecnico_id`, `pedido_id`, `producto_id`, `tactil`, `lote`, `activo_fijo`) VALUES
+(1, 'EQ001', 'Principal', 'ESTANTE-1-A', '2025-06-30 17:32:02', '2025-08-11 10:19:34', 'Portatil', 'Dell', 'DL123456789', 'Latitude 5520', 'Intel i5-1135G7', '8GB', '256GB SSD', '15.6', 'Equipo en buen estado', 'A', 'En revisión', 'activo', 33, NULL, NULL, 'SI', 'pchekt542007-25', NULL),
+(2, 'EQ002', 'Principal', 'ESTANTE-1-B', '2025-06-30 17:32:02', '2025-08-06 15:32:28', 'Desktop', 'HP', 'HP987654321', 'EliteDesk 800', 'Intel i7-10700', '16GB', '512GB SSD', '16', 'EQUIPO LISTO', 'A', 'Para Venta', 'activo', 34, NULL, NULL, 'NO', 'sitecPc08-25', NULL),
+(3, 'EQ003', 'Cúcuta', 'ESTANTE-2-A', '2025-06-30 17:32:02', '2025-08-08 11:24:56', 'AIO', 'Lenovo', 'LN456789123', 'ThinkCentre M90a', 'Intel i5-10400T', '8GB', '1TB HDD', '23.8', 'ningun Pantalla con rayones menores', 'C', 'en_proceso', 'Business', 0, NULL, NULL, 'NO', 'sitecPc08-25', NULL),
+(4, 'LPDA 1432', 'Principal', 'DWQDEW', '2025-07-02 17:19:56', '2025-08-06 15:32:59', 'Periferico', 'HP', 'ds', '132', 'i5 14th', '8GB', '125 gb', '', 'tESTEO', 'A', 'Para Venta', 'inactivo', 13, NULL, NULL, 'SI', 'pchekt542007-25', NULL),
+(5, 'EQ004', 'Principal', 'ESTANTE-2-A', '2025-08-08 17:01:12', '2025-08-11 12:53:58', 'Desktop', 'HP', 'DL123456782', 'Latitude 55223', 'Intel i7-10700', '16GB', '512GB SSD', '16', 'tallado tapas ypantalla', 'B', 'En Laboratorio', 'activo', 33, NULL, NULL, NULL, 'pchekt542007-25', NULL),
+(6, 'EQ006', 'Principal', 'ESTANTE-1-A', '2025-08-08 17:45:33', '2025-08-08 17:45:33', 'Desktop', 'Dell', 'HP987654322', 'EliteDesk 800', 'Intel i5-1135G7', '8GB', '512GB SSD', '16', 'tallado', 'B', 'En revisión', 'activo', 34, NULL, NULL, NULL, 'pchekt542007-25', NULL),
+(7, 'EQ007', 'Principal', 'ESTANTE-2-A', '2025-08-09 09:29:28', '2025-08-09 09:29:28', 'Portatil', 'Lenovo', 'LN456789124', 'lenovo x280', 'Intel i7-10700', '16GB', '256GB SSD', '14', 'pantalla tallada', 'B', 'En revisión', 'activo', NULL, NULL, NULL, NULL, 'sitecPc08-25', NULL),
+(8, 'EQ008', 'Principal', 'ESTANTE-1-B', '2025-08-09 10:50:25', '2025-08-09 10:50:25', 'Portatil', 'Dell', 'DL123456922', 'DELL LATITUDE 7340', 'Intel i9-10700', '8GB', '256GB SSD', '20', 'teclas dañas J y la T', 'B', 'En revisión', 'activo', NULL, NULL, NULL, NULL, 'pchekt542007-25', NULL),
+(9, 'LPDA-1432', 'Unilago', 'Estante 1 - B', '2025-08-09 10:57:09', '2025-08-09 10:57:09', 'Portatil', 'Lenovo', 'ATG1288', 'X280', 'i5 13th', '16GB', '256 SSD', '16', 'PANTALLA TALLADA', 'B', 'En revisión', 'activo', NULL, NULL, NULL, NULL, 'pchekt542007-25', NULL),
+(10, 'EQ009', 'Medellín', 'ESTANTE-1-B', '2025-08-09 11:13:30', '2025-08-09 11:13:30', 'Portatil', 'Dell', 'DL123456791', 'Latitude 5520', 'Intel i5-10700', '8GB', '512GB SSD', '14', 'tallado', 'B', 'En revisión', 'activo', NULL, NULL, NULL, NULL, 'sitecPc08-25', NULL),
+(11, 'EQ010', 'Unilago', 'Estante 1 - C Fila B', '2025-08-09 11:17:04', '2025-08-09 11:17:04', 'Desktop', 'Dell', 'ATG128387', 'HP Elite GEN 5 ', 'i5 10th', '8GB', '512 SSD', '12', '', 'A', 'Para Venta', 'activo', 32, NULL, NULL, NULL, 'pchekt542007-25', NULL),
+(12, 'EQ011', 'Unilago', 'ESTANTE-2-A', '2025-08-09 11:44:38', '2025-08-11 14:08:37', 'Portatil', 'Dell', 'DL123456989', 'Latitude 5520', 'Intel i5-10400T', '8GB', '256GB SSD', '15.6', 'rayones en tapas', 'C', 'en_diagnostico', 'activo', 1, NULL, NULL, 'SI', 'sitecPc08-25', NULL),
+(27, 'EQ012', 'Principal', 'Estante 2 - C Fila A', '2025-08-11 14:28:04', '2025-08-11 14:30:06', 'Portatil', 'Dell', 'ATG1292', 'Latitude 55223', 'i5 11th', '8GB', '256 SSD', '12', 'Pantalla talada', 'B', 'en_diagnostico', 'activo', 33, NULL, NULL, 'NO', NULL, NULL);
 
 CREATE TABLE `bodega_partes` (
   `id` int(11) NOT NULL,
@@ -156,7 +160,9 @@ CREATE TABLE `bodega_salidas` (
 
 INSERT INTO `bodega_salidas` (`id`, `inventario_id`, `fecha_salida`, `tecnico_id`, `usuario_id`, `cantidad`, `razon_salida`, `observaciones`) VALUES
 (1, 3, '2025-08-08 11:24:56', 10, 1, 1, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1'),
-(2, 5, '2025-08-08 18:02:23', 9, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1');
+(2, 5, '2025-08-08 18:02:23', 9, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(3, 12, '2025-08-11 14:08:38', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(4, 27, '2025-08-11 14:30:06', 33, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1');
 
 CREATE TABLE `cart` (
   `idv` int(11) NOT NULL,
@@ -468,34 +474,34 @@ CREATE TABLE `usuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `usuarios` (`id`, `nombre`, `usuario`, `correo`, `clave`, `rol`, `foto`, `estado`, `fere`, `idsede`) VALUES
-(1, 'FrankQV', 'frank', 'frank@admin.com', '202cb962ac59075b964b07152d234b70', '1', '1', '1', '2025-05-28 14:48:15', 'Cucuta'),
-(2, 'Cristhian Romero', 'CristhianRomeropc', 'cr123@data.com', '53c9051e332d17250009640d364414c4', '1', '1', '1', '2025-05-28 22:37:54', NULL),
-(3, 'Jasson Robles', 'Jassonroblespc', 'jr123@data.com', '75dbf8a92d4276fb51528da4e4a9d2c3', '1', '1', '1', '2025-05-28 22:38:35', NULL),
-(4, 'Andrés Buitrago', 'AndresBuitragopc', 'ab123@data.com', '4b812d068c142583012bfb70131a61ab', '1', '1', '1', '2025-05-28 22:38:57', NULL),
-(5, 'Nohelia Jaraba', 'Noheliajarabapc', 'nj123@data.com', '58b906fa888b10ebd49aa571bcef5149', '1', '1', '1', '2025-05-28 22:39:16', NULL),
-(6, 'Anyi González', 'AnyiGonzalezpc', 'anyig123@data.com', '45deac01a8028dd922151f30e78e54ae', '1', '1', '1', '2025-05-28 22:39:49', NULL),
-(7, 'Francisco Quiñonez', 'FranciscoQV', 'fqv123@data.com', 'e555b59d75e072eb5f18124db1cf1e22', '1', '1', '1', '2025-05-28 22:40:11', NULL),
-(8, 'Sergio Lara', 'Sergiolarapc', 'sl123@data.com', '16170c99b0432f43d245347aa04aceaf', '6', '1', '1', '2025-05-28 22:40:48', NULL),
-(9, 'Juan González', 'Juangonzalezpc', 'jg123@data.com', '210a23d675fe23128f532944f408089c', '5', '1', '1', '2025-05-28 22:41:07', NULL),
-(10, 'Luis González', 'Luisgonzalezpc', 'lg123@data.com', '2f04e635bab80099208ccdd506acad69', '6', '1', '1', '2025-05-28 22:41:31', NULL),
-(11, 'Natali Florez', 'Nataliflorezpc', 'nf123@data.com', 'd8ef5df38ad01af8d7c5e6e7a478f00d', '2', '1', '1', '2025-05-29 14:25:58', NULL),
-(12, 'Fabian Sanchez', 'Fabiansanchezpc', 'fs123@data.com', 'c7417ff8f3f5c8600b914497b6b73492', '6', '1', '1', '2025-05-29 14:27:34', NULL),
-(13, 'José Borda', 'Josebordapc', 'jb123@data.com', '4cd26c72d84d1e1d8fe7da2194d5153e', '5', '1', '1', '2025-05-29 14:30:57', NULL),
-(14, 'Felipe Romero', 'Feliperomeropc', 'fr123@data.com', 'c843da53f7e567b80ff967cb3ba23aee', '5', '1', '1', '2025-05-29 14:31:24', NULL),
-(15, 'Rodrigo Martínez', 'Rodrigomartinezpc', 'rm123@data.com', 'eafabe7aff85735469db0f134663b7cb', '7', '1', '1', '2025-05-29 14:31:43', NULL),
-(16, 'Deivi Lopez', 'Deivilopezpc', 'dl123@data.com', 'facbcd76dde2c647198b1bab1d5d834d', '7', '1', '1', '2025-05-29 14:32:08', NULL),
-(17, 'Maricela Tabla', 'Maricelatablapc', 'mt123@data.com', '0e57650e147ce827aec8b788db5a25ab', '3', '1', '1', '2025-05-29 14:32:29', ''),
-(18, 'Ana Gaviria', 'Anagaviriapc', 'ag123@data.com', '30e5488c3c420588715fe3a51143e7ec', '3', '1', '1', '2025-05-29 14:32:51', NULL),
-(19, 'Laura Pedraza', 'Laurapedrazapc', 'lp123@data.com', '39382aa4884af196f11ed8feba7d128f', '4', '1', '1', '2025-05-29 14:33:16', 'Unilago'),
-(21, 'Gabriela Gutiérrez', 'gabrielagutierrezpc', 'gg123@data.com', '7d9bfd94d852319998c99d2c07980246', '4', '1', '1', '2025-05-29 14:33:42', 'Cucuta'),
-(22, 'Mónica Valencia', 'Monicavalenciapc', 'mv123@data.com', '213a253bf5cce2d84e4032ace9e29aa7', '4', '1', '1', '2025-05-29 14:34:06', 'Principal'),
-(28, 'frank2', 'frank2', 'frank2@gmail.com', '202cb962ac59075b964b07152d234b70', '2', '1', '1', '2025-06-06 21:40:21', '2'),
-(29, 'frank3', 'frank3', 'frank3@gmail.com', '202cb962ac59075b964b07152d234b70', '3', '1', '1', '2025-06-09 20:07:48', 'Cucuta'),
-(31, 'frank4', 'frank4', 'frank4@gmail.com', '202cb962ac59075b964b07152d234b70', '4', '1', '1', '2025-06-09 20:08:22', 'Unilago'),
-(32, 'frank5', 'frank5', 'frank5@gmail.com', '202cb962ac59075b964b07152d234b70', '5', '1', '1', '2025-06-09 20:08:38', 'Medellin'),
-(33, 'Tecnico FranciscoQV', 'frank6', 'frank6@gmail.com', '202cb962ac59075b964b07152d234b70', '6', '1', '1', '2025-06-09 20:09:04', NULL),
-(34, 'frank7', 'frank7', 'frank7@gmail.com', '202cb962ac59075b964b07152d234b70', '7', '1', '1', '2025-06-09 20:09:18', NULL),
-(35, 'salome', 'salome', 'salome@gmail.com', '202cb962ac59075b964b07152d234b70', '2', '1', '1', '2025-07-12 15:22:31', NULL);
+(1, 'FrankQV', 'frank', 'frank@admin.com', '202cb962ac59075b964b07152d234b70', '1', 'reere.png', '1', '2025-05-28 14:48:15', 'Cucuta'),
+(2, 'Cristhian Romero', 'CristhianRomeropc', 'cr123@data.com', '53c9051e332d17250009640d364414c4', '1', 'reere.png', '1', '2025-05-28 22:37:54', 'Principal'),
+(3, 'Jasson Robles', 'Jassonroblespc', 'jr123@data.com', '75dbf8a92d4276fb51528da4e4a9d2c3', '1', 'reere.png', '1', '2025-05-28 22:38:35', 'Principal'),
+(4, 'Andrés Buitrago', 'AndresBuitragopc', 'ab123@data.com', '4b812d068c142583012bfb70131a61ab', '1', 'reere.png', '1', '2025-05-28 22:38:57', 'Principal'),
+(5, 'Nohelia Jaraba', 'Noheliajarabapc', 'nj123@data.com', '58b906fa888b10ebd49aa571bcef5149', '1', 'reere.png', '1', '2025-05-28 22:39:16', 'Principal'),
+(6, 'Anyi González', 'AnyiGonzalezpc', 'anyig123@data.com', '45deac01a8028dd922151f30e78e54ae', '1', 'reere.png', '1', '2025-05-28 22:39:49', 'Principal'),
+(7, 'Francisco Quiñonez', 'FranciscoQV', 'fqv123@data.com', 'e555b59d75e072eb5f18124db1cf1e22', '1', 'reere.png', '1', '2025-05-28 22:40:11', 'Principal'),
+(8, 'Sergio Lara', 'Sergiolarapc', 'sl123@data.com', '16170c99b0432f43d245347aa04aceaf', '6', 'reere.png', '1', '2025-05-28 22:40:48', 'Principal'),
+(9, 'Juan González', 'Juangonzalezpc', 'jg123@data.com', '210a23d675fe23128f532944f408089c', '5', 'reere.png', '1', '2025-05-28 22:41:07', 'Principal'),
+(10, 'Luis González', 'Luisgonzalezpc', 'lg123@data.com', '2f04e635bab80099208ccdd506acad69', '6', 'reere.png', '1', '2025-05-28 22:41:31', 'Principal'),
+(11, 'Natali Florez', 'Nataliflorezpc', 'nf123@data.com', 'd8ef5df38ad01af8d7c5e6e7a478f00d', '2', 'reere.png', '1', '2025-05-29 14:25:58', 'Principal'),
+(12, 'Fabian Sanchez', 'Fabiansanchezpc', 'fs123@data.com', 'c7417ff8f3f5c8600b914497b6b73492', '6', 'reere.png', '1', '2025-05-29 14:27:34', 'Principal'),
+(13, 'José Borda', 'Josebordapc', 'jb123@data.com', '4cd26c72d84d1e1d8fe7da2194d5153e', '5', 'reere.png', '1', '2025-05-29 14:30:57', 'Principal'),
+(14, 'Felipe Romero', 'Feliperomeropc', 'fr123@data.com', 'c843da53f7e567b80ff967cb3ba23aee', '5', 'reere.png', '1', '2025-05-29 14:31:24', 'Principal'),
+(15, 'Rodrigo Martínez', 'Rodrigomartinezpc', 'rm123@data.com', 'eafabe7aff85735469db0f134663b7cb', '7', 'reere.png', '1', '2025-05-29 14:31:43', 'Principal'),
+(16, 'Deivi Lopez', 'Deivilopezpc', 'dl123@data.com', 'facbcd76dde2c647198b1bab1d5d834d', '7', 'reere.png', '1', '2025-05-29 14:32:08', 'Principal'),
+(17, 'Maricela Tabla', 'Maricelatablapc', 'mt123@data.com', '0e57650e147ce827aec8b788db5a25ab', '3', 'reere.png', '1', '2025-05-29 14:32:29', 'Principal'),
+(18, 'Ana Gaviria', 'Anagaviriapc', 'ag123@data.com', '30e5488c3c420588715fe3a51143e7ec', '3', 'reere.png', '1', '2025-05-29 14:32:51', 'Remoto'),
+(19, 'Laura Pedraza', 'Laurapedrazapc', 'lp123@data.com', '39382aa4884af196f11ed8feba7d128f', '4', 'reere.png', '1', '2025-05-29 14:33:16', 'Unilago'),
+(21, 'Gabriela Gutiérrez', 'gabrielagutierrezpc', 'gg123@data.com', '7d9bfd94d852319998c99d2c07980246', '4', 'reere.png', '1', '2025-05-29 14:33:42', 'Cucuta'),
+(22, 'Mónica Valencia', 'Monicavalenciapc', 'mv123@data.com', '213a253bf5cce2d84e4032ace9e29aa7', '4', 'reere.png', '1', '2025-05-29 14:34:06', 'Medellin'),
+(28, 'frank2', 'frank2', 'frank2@gmail.com', '202cb962ac59075b964b07152d234b70', '2', 'reere.png', '1', '2025-06-06 21:40:21', 'Principal'),
+(29, 'frank3', 'frank3', 'frank3@gmail.com', '202cb962ac59075b964b07152d234b70', '3', 'reere.png', '1', '2025-06-09 20:07:48', 'Cucuta'),
+(31, 'frank4', 'frank4', 'frank4@gmail.com', '202cb962ac59075b964b07152d234b70', '4', 'reere.png', '1', '2025-06-09 20:08:22', 'Unilago'),
+(32, 'frank5', 'frank5', 'frank5@gmail.com', '202cb962ac59075b964b07152d234b70', '5', 'reere.png', '1', '2025-06-09 20:08:38', 'Medellin'),
+(33, 'Tecnico FranciscoQV', 'frank6', 'frank6@gmail.com', '202cb962ac59075b964b07152d234b70', '6', 'reere.png', '1', '2025-06-09 20:09:04', NULL),
+(34, 'frank7', 'frank7', 'frank7@gmail.com', '202cb962ac59075b964b07152d234b70', '7', 'reere.png', '1', '2025-06-09 20:09:18', 'Principal'),
+(35, 'salome', 'salome', 'salome@gmail.com', '202cb962ac59075b964b07152d234b70', '2', 'reere.png', '1', '2025-07-12 15:22:31', 'Medellin');
 
 
 ALTER TABLE `bodega_control_calidad`
@@ -582,16 +588,16 @@ ALTER TABLE `bodega_diagnosticos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 ALTER TABLE `bodega_entradas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 ALTER TABLE `bodega_inventario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 ALTER TABLE `bodega_partes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 ALTER TABLE `bodega_salidas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 ALTER TABLE `cart`
   MODIFY `idv` int(11) NOT NULL AUTO_INCREMENT;
