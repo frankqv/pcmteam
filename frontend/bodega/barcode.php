@@ -32,29 +32,24 @@ require_once '../../backend/bd/ctconex.php';
                 box-sizing: border-box;
                 background: white;
             }
-
             .barcode-container {
                 text-align: center;
                 margin-bottom: 0.1cm;
             }
-
             .texto-codigo {
                 text-align: center;
                 font-size: 8px;
                 font-family: Arial;
             }
-
             .preview-section {
                 display: none;
             }
-
             .preview-fila {
                 display: flex;
                 justify-content: center;
                 gap: 0.2cm;
                 margin-bottom: 0.3cm;
             }
-
             .formato-info {
                 background: #f8f9fa;
                 padding: 15px;
@@ -63,7 +58,6 @@ require_once '../../backend/bd/ctconex.php';
             }
         </style>
     </head>
-
     <body>
         <div class="wrapper">
             <div class="body-overlay"></div>
@@ -78,16 +72,75 @@ require_once '../../backend/bd/ctconex.php';
             </nav>
             <!-- Page Content -->
             <div id="content">
-                <div class="top-navbar">
-                    <nav class="navbar navbar-expand-lg">
-                        <div class="container-fluid">
-                            <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
-                                <span class="material-icons">arrow_back_ios</span>
-                            </button>
-                            <a class="navbar-brand" href="#"> Generador de Etiquetas </a>
-                        </div>
-                    </nav>
-                </div>
+<!-- begin:: top-navbar -->
+<div class="top-navbar">
+    <nav class="navbar navbar-expand-lg" style="background:rgb(250, 107, 107);">
+        <div class="container-fluid">
+        <!-- Botón Sidebar -->
+        <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-none d-none">
+        <span class="material-icons">arrow_back_ios</span>
+        </button>
+        <!-- Título dinámico -->
+        <?php
+        $titulo = "";
+        switch ($_SESSION['rol']) {
+        case 1:
+        $titulo = "ADMINISTRADOR";
+        break;
+        case 2:
+        $titulo = "DEFAULT";
+        break;
+        case 3:
+        $titulo = "CONTABLE";
+        break;
+        case 4:
+        $titulo = "COMERCIAL";
+        break;
+        case 5:
+        $titulo = "JEFE TÉCNICO";
+        break;
+        case 6:
+        $titulo = "TÉCNICO";
+        break;
+        case 7:
+        $titulo = "BODEGA";
+        break;
+        default:
+        $titulo = $userInfo['nombre'] ?? 'USUARIO';
+        break;
+        }
+        ?>
+        <!-- Branding -->
+        <a class="navbar-brand" href="#" style="color: #fff; font-weight: bold;">
+        <i class="fas fa-tools" style="margin-right: 8px; color: #f39c12;"></i>
+    GENERADOR DE ETIQUETAS | <?php echo htmlspecialchars($titulo); ?>
+        </a>
+        <!-- Menú derecho (usuario) -->
+        <ul class="nav navbar-nav ml-auto">
+        <li class="dropdown nav-item active">
+        <a href="#" class="nav-link" data-toggle="dropdown">
+        <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.png'); ?>"
+            alt="Foto de perfil"
+            style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+        </a>
+        <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
+        <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong></li>
+        <li><?php echo htmlspecialchars($userInfo['usuario'] ?? 'usuario'); ?></li>
+        <li><?php echo htmlspecialchars($userInfo['correo'] ?? 'correo@ejemplo.com'); ?></li>
+        <li>
+            <?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?>
+        </li>
+        <li class="mt-2">
+            <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi
+                perfil</a>
+        </li>
+        </ul>
+        </li>
+        </ul>
+        </div>
+    </nav>
+</div>
+<!--- end:: top_navbar -->
                 <div class="main-content">
                     <div class="row justify-content-center">
                         <div class="col-md-8">
@@ -104,28 +157,23 @@ require_once '../../backend/bd/ctconex.php';
                                             <li><strong>Distribución:</strong> Horizontal lado a lado</li>
                                         </ul>
                                     </div>
-
                                     <?php
                                     $errores = [];
                                     $datos = [];
-
                                     function generarTexto($datos, $numero)
                                     {
                                         return $datos['proveedor'] . $datos['lote'] . str_pad($numero, 3, '0', STR_PAD_LEFT) . $datos['fecha'];
                                     }
-
                                     if ($_POST) {
                                         $proveedor = strtoupper(trim($_POST['proveedor'] ?? ''));
                                         $cantidad = filter_var($_POST['cantidad'] ?? 0, FILTER_VALIDATE_INT);
                                         $lote = strtoupper(trim($_POST['lote'] ?? ''));
-
                                         if (empty($proveedor))
                                             $errores[] = "Proveedor requerido";
                                         if ($cantidad <= 0)
                                             $errores[] = "Cantidad debe ser mayor a 0";
                                         if (empty($lote) || strlen($lote) !== 1)
                                             $errores[] = "Lote debe ser una letra";
-
                                         if (empty($errores)) {
                                             $datos = [
                                                 'proveedor' => $proveedor,
@@ -133,12 +181,10 @@ require_once '../../backend/bd/ctconex.php';
                                                 'lote' => $lote,
                                                 'fecha' => substr(date('Y'), -2)
                                             ];
-
                                             $hojas_necesarias = ceil($cantidad / 2);
                                             echo "<div class='alert alert-success text-center'>";
                                             echo "Datos válidos. Se generarán <strong>{$hojas_necesarias} hojas</strong> para {$cantidad} etiquetas.";
                                             echo "</div>";
-
                                             // Mostrar previsualización
                                             echo "<div class='preview-section' id='previewSection'>";
                                             echo "<div class='card'>";
@@ -146,7 +192,6 @@ require_once '../../backend/bd/ctconex.php';
                                             echo "<h5 class='mb-0'>📋 Previsualización de Etiquetas</h5>";
                                             echo "</div>";
                                             echo "<div class='card-body'>";
-
                                             // Información del código
                                             $codigo_ejemplo1 = generarTexto($datos, 1);
                                             $codigo_ejemplo2 = generarTexto($datos, 2);
@@ -156,7 +201,6 @@ require_once '../../backend/bd/ctconex.php';
                                             echo "<strong>Hojas necesarias:</strong> {$hojas_necesarias}<br>";
                                             echo "<strong>Formato:</strong> 2 etiquetas por hoja (10cm x 2.5cm)";
                                             echo "</div>";
-
                                             // Ejemplo de fila de etiquetas
                                             echo "<div class='text-center mb-3'>";
                                             echo "<h6>Ejemplo de hoja (2 etiquetas):</h6>";
@@ -175,18 +219,15 @@ require_once '../../backend/bd/ctconex.php';
                                             echo "</div>";
                                             echo "</div>";
                                             echo "</div>";
-
                                             // Botón de impresión
                                             echo "<div class='text-center mt-3'>";
                                             echo "<button onclick='imprimirEtiquetas()' class='btn btn-success btn-lg'>";
                                             echo "🖨️ Imprimir {$cantidad} Etiquetas ({$hojas_necesarias} Hojas)";
                                             echo "</button>";
                                             echo "</div>";
-
                                             echo "</div>";
                                             echo "</div>";
                                             echo "</div>";
-
                                             // Generar códigos para JavaScript
                                             $codigos = [];
                                             for ($i = 1; $i <= $datos['cantidad']; $i++) {

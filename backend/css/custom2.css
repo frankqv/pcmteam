@@ -258,24 +258,17 @@ a:focus {
     position: relative;
     margin-right: 10px;
     top: 5px;
-	color: #afafaf;
+	color: #f7f7f7;
     margin-left: 10px;
 }
 
-
-
-
-
 /* ---------------------------------------------------
-   sidebar end
+    sidebar end
 ----------------------------------------------------- */
 
-
-
-
 /*=======================================================
-   main-content navbar-design start
-   ===============================================*/
+    main-content navbar-design start
+===============================================*/
 
 
 
@@ -338,10 +331,10 @@ a:focus {
 
 
 .navbar-nav > li.active{
-   color: #FFFFFF;
-   border-radius:4px;
+    color: #FFFFFF;
+    border-radius:4px;
     background-color: rgba(0, 0, 0, 0.08);  
- }
+}
 
 .navbar-nav > li > a {
     color: #FFFFFF;
@@ -349,7 +342,7 @@ a:focus {
 
 
 .navbar .notification {
-	 position: absolute;
+    position: absolute;
     top: 5px;
     right: 10px;
 	display: block;
@@ -358,7 +351,7 @@ a:focus {
     font-size: 10px;
     background: var(--primary-color);
     min-width: 15px;
-	 text-align: center;
+	text-align: center;
     padding: 1px 5px;
     height: 15px;
     border-radius: 2px;
@@ -395,19 +388,19 @@ a:focus {
 }
 
 /*=======================================================
-   main-content navbar-design end
-   ===============================================*/
+    main-content navbar-design end
+===============================================*/
 
 
 
 /*=======================================================
-   main-content navbar-design start
-   ===============================================*/
+    main-content navbar-design start
+===============================================*/
 
 
 /*=======================================================
-   main-content inner design like card start
-   ===============================================*/
+    main-content inner design like card start
+===============================================*/
 
 
 .card {
@@ -493,7 +486,7 @@ a:focus {
     margin-bottom: 0;
 }
 .card .category:not([class*="text-"]) {
-    color: #afafaf;
+    color: #7b7b7b;
     font-size: 14px;
     font-weight: 400;
 }
@@ -509,7 +502,7 @@ a:focus {
 
 .card .card-footer .stats {
     line-height: 22px;
-    color: #afafaf;
+    color: #7b7b7b;
     font-size: 15px;
 }
 
@@ -652,11 +645,8 @@ footer .copyright {
 
 
 /*=============================================
-  footer design end
-  =========================================*/
-  
-
-
+    footer design end
+=========================================*/
 #sidebar.show-nav,.body-overlay.show-nav{
 	transform:translatex(0%);
 	opacity:1;

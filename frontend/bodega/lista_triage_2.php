@@ -1,0 +1,1 @@
+frontend/bodega/lista_triage_2.php

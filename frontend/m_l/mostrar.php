@@ -147,86 +147,13 @@ if (isset($_SESSION['id'])) {
                                 <h4 class="card-title material-symbols-outlined"> delivery_truck_bolt Proveedores</h4>
                                 <p class="category">Lista de proveedores registrados en el sistema</p>
                             </div>
-                            <br>
-                            <a href="../proveedor/nuevo.php" class="btn btn-danger text-white">Nuevo Proveedor</a>
-                            <a href="../proveedor/importar.php" class="btn btn-success text-white ml-2">Importar
-                                Excel</a>
-                            <br>
-                            <div class="card-content table-responsive">
-                                <?php
-                                // La conexión ya está incluida arriba
-                                $sentencia = $connect->prepare("SELECT * FROM proveedores ORDER BY nombre ASC;");
-                                $sentencia->execute();
-                                $data = array();
-                                if ($sentencia) {
-                                    while ($r = $sentencia->fetchObject()) {
-                                        $data[] = $r;
-                                    }
-                                }
-                                ?>
-                                <?php if (count($data) > 0): ?>
-                                    <table class="table table-hover" id="example">
-                                        <thead class="text-primary">
-                                            <tr>
-                                                <th>Nomenclatura</th>
-                                                <th>Nombre</th>
-                                                <th>Celular</th>
-                                                <th>Correo</th>
-                                                <th>Dirección</th>
-                                                <th>Estado</th>
-                                                <th>Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($data as $d): ?>
-                                                <tr>
-                                                    <td><?php echo $d->nomenclatura; ?></td>
-                                                    <td><?php echo $d->nombre; ?></td>
-                                                    <td><?php echo $d->celu; ?></td>
-                                                    <td><?php echo $d->correo; ?></td>
-                                                    <td><?php echo $d->dire; ?></td>
-                                                    <td>
-                                                        <?php if ($d->privado == 1) { ?>
-                                                            <span class="badge badge-success">Activo</span>
-                                                        <?php } else { ?>
-                                                            <span class="badge badge-danger">Inactivo</span>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td>
-                                                        <a class="btn btn-info btn-sm"
-                                                            href="../proveedor/ver.php?id=<?php echo $d->id; ?>">
-                                                            <i class='material-icons' data-toggle='tooltip'
-                                                                title='Ver detalles'>visibility</i>
-                                                        </a>
-                                                        <a class="btn btn-warning btn-sm"
-                                                            href="../proveedor/editar.php?id=<?php echo $d->id; ?>">
-                                                            <i class='material-icons' data-toggle='tooltip'
-                                                                title='Editar'>edit</i>
-                                                        </a>
-                                                        <?php if ($d->privado == 1): ?>
-                                                            <a class="btn btn-danger btn-sm"
-                                                                href="../proveedor/desactivar.php?id=<?php echo $d->id; ?>">
-                                                                <i class='material-icons' data-toggle='tooltip'
-                                                                    title='Desactivar'>block</i>
-                                                            </a>
-                                                        <?php else: ?>
-                                                            <a class="btn btn-success btn-sm"
-                                                                href="../proveedor/activar.php?id=<?php echo $d->id; ?>">
-                                                                <i class='material-icons' data-toggle='tooltip'
-                                                                    title='Activar'>check_circle</i>
-                                                            </a>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                <?php else: ?>
-                                    <div class="alert alert-warning" role="alert">
-                                        No se encontraron proveedores registrados!
-                                    </div>
-                                <?php endif; ?>
-                            </div>
+
+
+
+
+
+
+                            
                         </div>
                     </div>
                 </div>

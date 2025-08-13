@@ -2,18 +2,15 @@
 <?php
 ob_start();
 session_start();
-
 if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
     header('location: ../error404.php');
     exit();
 }
-
 require_once '../../backend/bd/ctconex.php';
 ?>
 <?php if (isset($_SESSION['id'])) { ?>
     <!DOCTYPE html>
     <html lang="es">
-
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -25,7 +22,6 @@ require_once '../../backend/bd/ctconex.php';
         <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
         <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
     </head>
-
     <body>
         <div class="wrapper">
             <div class="body-overlay"></div>
@@ -40,16 +36,75 @@ require_once '../../backend/bd/ctconex.php';
             </nav>
             <!-- Page Content -->
             <div id="content">
+<!-- begin:: top-navbar -->
                 <div class="top-navbar">
-                    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg" style="background:rgb(250, 107, 107);">
                         <div class="container-fluid">
-                            <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
+        <!-- Botón Sidebar -->
+        <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-none d-none">
                                 <span class="material-icons">arrow_back_ios</span>
                             </button>
-                            <a class="navbar-brand"> Registro de Entradas </a>
+        <!-- Título dinámico -->
+        <?php
+        $titulo = "";
+        switch ($_SESSION['rol']) {
+        case 1:
+        $titulo = "ADMINISTRADOR";
+        break;
+        case 2:
+        $titulo = "DEFAULT";
+        break;
+        case 3:
+        $titulo = "CONTABLE";
+        break;
+        case 4:
+        $titulo = "COMERCIAL";
+        break;
+        case 5:
+        $titulo = "JEFE TÉCNICO";
+        break;
+        case 6:
+        $titulo = "TÉCNICO";
+        break;
+        case 7:
+        $titulo = "BODEGA";
+        break;
+        default:
+        $titulo = $userInfo['nombre'] ?? 'USUARIO';
+        break;
+        }
+        ?>
+        <!-- Branding -->
+        <a class="navbar-brand" href="#" style="color: #fff;">
+        <i class="fas fa-tools" style="margin-right: 8px; color: #f39c12;"></i>
+        <?php echo htmlspecialchars($titulo); ?> | <b>RESGISTRO DE ENTREDA</b>
+        </a>
+        <!-- Menú derecho (usuario) -->
+        <ul class="nav navbar-nav ml-auto">
+        <li class="dropdown nav-item active">
+        <a href="#" class="nav-link" data-toggle="dropdown">
+        <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.png'); ?>"
+            alt="Foto de perfil"
+            style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+        </a>
+        <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
+        <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong></li>
+        <li><?php echo htmlspecialchars($userInfo['usuario'] ?? 'usuario'); ?></li>
+        <li><?php echo htmlspecialchars($userInfo['correo'] ?? 'correo@ejemplo.com'); ?></li>
+        <li>
+            <?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?>
+        </li>
+        <li class="mt-2">
+            <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi
+                perfil</a>
+        </li>
+        </ul>
+        </li>
+        </ul>
                         </div>
                     </nav>
                 </div>
+<!--- end:: top_navbar -->
                 <div class="main-content">
                     <div class="row">
                         <div class="col-md-12">
@@ -542,7 +597,7 @@ require_once '../../backend/bd/ctconex.php';
                     
                     // Scroll al primer campo inválido
                     if (!isValid && firstInvalid) {
-                        firstInvalid.focus();
+                            firstInvalid.focus();
                         $('html, body').animate({
                             scrollTop: firstInvalid.offset().top - 100
                         }, 500);
@@ -585,7 +640,7 @@ require_once '../../backend/bd/ctconex.php';
                                 
                                 // Recargar tabla de entradas
                                 setTimeout(() => {
-                                    location.reload();
+                                location.reload();
                                 }, 2000);
                             } else {
                                 showNotification(response.error || 'Error al registrar la entrada', 'error');
@@ -865,7 +920,7 @@ require_once '../../backend/bd/ctconex.php';
                                 setTimeout(() => {
                                     location.reload();
                                 }, 2000);
-                            } else {
+                    } else {
                                 showNotification('❌ ' + response.error, 'error');
                             }
                         },

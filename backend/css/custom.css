@@ -4,13 +4,13 @@
 body, html {
 	line-height: 1.8;
     font-family: 'Poppins', sans-serif;
-     color: #555e58;
-	 text-transform:none;
+    color: #555e58;
+	text-transform:none;
 	text-rendering: optimizeLegibility !important;
 	-webkit-font-smoothing: antialiased !important;
-	 font-weight: 400;
-	 margin:0px;
-     padding:0px;
+	font-weight: 400;
+	margin:0px;
+    padding:0px;
 }
 
 
@@ -106,15 +106,11 @@ a:focus {
 /*=======================================================
   material-icons  copy & paste form site google material-icons
   ==================================================*/
-
-
-
 .wrapper {
 	position: relative;
     width:100%;
 	overflow:auto;
 }
-
 /* ---------------------------------------------------
     SUB menu lateral
 ----------------------------------------------------- */
@@ -125,9 +121,6 @@ a:focus {
 /* ---------------------------------------------------
     SIDEBAR STYLE start
 ----------------------------------------------------- */
-
-
-
 #sidebar {
     position:fixed;
 	height:100vh!important;
@@ -234,20 +227,12 @@ a:focus {
     position: relative;
     margin-right: 10px;
     top: 5px;
-	color: #afafaf;
+	color: #f7f7f7;
     margin-left: 10px;
 }
-
-
-
-
-
 /* ---------------------------------------------------
    sidebar end
 ----------------------------------------------------- */
-
-
-
 
 /*=======================================================
    main-content navbar-design start
@@ -469,7 +454,7 @@ a:focus {
     margin-bottom: 0;
 }
 .card .category:not([class*="text-"]) {
-    color: #afafaf;
+    color: #7b7b7b;
     font-size: 14px;
     font-weight: 400;
 }
@@ -485,7 +470,7 @@ a:focus {
 
 .card .card-footer .stats {
     line-height: 22px;
-    color: #afafaf;
+    color: #fffffa;
     font-size: 15px;
 }
 
@@ -835,6 +820,3 @@ footer .copyright {
     margin-left: 5px;
     z-index: 1000;
 }
-
-
-

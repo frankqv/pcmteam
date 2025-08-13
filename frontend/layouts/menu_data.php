@@ -1,3 +1,4 @@
+<!-- menu.php-->
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -49,22 +50,6 @@ $menu = [
     ],
 ];
 
-# ==================== GRUPO 0: CONTROL DE CALIDAD ====================
-if (in_array($rol, [1, 5, 6, 7])) { // Admin, Jefe Técnico, Técnico, Bodega
-    $menu[] = [
-        'label' => 'CONTROL DE CALIDAD',
-        'icon' => 'verified',
-        'id' => 'control_calidad_group',
-        'children' => [
-            [
-                'label' => 'Dashboard QC',
-                'icon' => 'dashboard',
-                'url' => '../control_calidad/dashboard.php'
-            ],
-        ]
-    ];
-}
-
 # ==================== GRUPO 1: PROCESO ====================
 if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
     $menu[] = [
@@ -73,56 +58,62 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
         'id' => 'proceso_group',
         'children' => [
             [
-                'label' => '3)PROCESO ESTÉTICO',
-                'icon' => 'brush',
-                'url' => '../estetico/limpieza.php'
-                ],
-            
-            [
-                'label' => '2)ÁREA ELECTRÓNICA',
-                'icon' => 'electrical_services',
-                'url' => '..//#'
-            ],
-            [
-                'label' => '1)PROCESO TÉCNICO',
-                'icon' => 'build',
-                'url' => '..//#'
-                
-            ],
-        ]
-    ];
-}
-
-# ==================== GRUPO 2: TRIAGE ====================
-if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
-    $menu[] = [
-        'label' => 'CLASIFICACIÓN',
-        'icon' => 'laptop_mac',
-        'id' => 'triage_group',
-        'children' => [
-            [
-                'label' => '2° TRIAGE',
-                'icon' => 'assignment_late',
-                'children' => [
-                    ['label' => ' > Diagnóstico', 'url' => '../diagnostico/mostrar.php'],
-                    ['label' => ' > Evaluación', 'url' => '../evaluacion/mostrar.php'],
-                    ['label' => ' > Estado Técnico', 'url' => '../estado_tecnico/mostrar.php']
-                ]
-            ],
-            [
                 'label' => '1° TRIAGE',
                 'icon' => 'assignment_turned_in',
+                'class' => 'style-triage1',
                 'children' => [
-                    ['icon' => 'assignment', 'label' => '5) Asignar Técnico', 'url' => '../bodega/asignar.php'],
-                    ['icon' => 'inventory', 'label' => '4) Inventario', 'url' => '../bodega/inventario.php'],
-                    ['icon' => 'app_registration', 'label' => '3) Entradas', 'url' => '../bodega/entradas.php'],
-                    ['icon' => 'barcode_reader', 'label' => '2) barcode Zebra', 'url' => '../bodega/barcode.php'],
                     ['icon' => 'local_shipping', 'label' => '1) Proveedores', 'url' => '../proveedor/mostrar.php'],
+                    ['icon' => 'barcode_reader', 'label' => '2) barcode Zebra', 'url' => '../bodega/barcode.php'],
+                    ['icon' => 'app_registration', 'label' => '3) Entradas', 'url' => '../bodega/entradas.php'],
+                    ['icon' => 'inventory', 'label' => '4) Inventario', 'url' => '../bodega/inventario.php'],
+                    ['icon' => 'assignment', 'label' => '5) Asignar Técnico', 'url' => '../bodega/asignar.php'],
                 ]
+            ],
+            [
+                'label' => '2° TRIAGE',
+                'class' => 'style-triage2',
+                'icon' => 'assignment_late',
+                'children' => [
+                    ['label' => '◖ LISTADO TRIAGE 2', 'url' => '../bodega/lista_triage_2.php'],
+                    ['label' => '◖ TRIAGE 2', 'url' => '../bodega/triage_2.php'],
+                ]
+            ],
+            [
+                'label' => 'MANTENIMIENTO LIMPIEZA',
+                'class' => 'style-mantenimiento',
+                'children' => [
+                    ['label' => '◖LISTADO EQUIPOS', 'url' => '../laboratorio/mostrar.php'],
+                    ['label' => '◖INGRESAR', 'url' => '../lab/myl.php'],
+                ]
+            ],
+            [
+                'label' => 'ELECTRICO', 
+                'url' => '../bodega/electrico.php',
+                'class' => 'style-electrico'
+            ],
+            [
+                'label' => 'ESTETICO',
+                'url' => '../bodega/estetico.php',
+                'class' => 'style-estetico'
+            ],            
+            [
+                'label' => 'CONTROL DE CALIDAD',
+                'icon' => 'verified',
+                'id' => 'control_calidad_group',
+                'url' => '../control_calidad/dashboard.php',
+                'class' => 'style-control-calidad'
+            ],
+            [
+                'label' => 'BUSINESS ROOM',
+                'icon' => 'paid',
+                'id' => 'control_calidad_group',
+                'url' => '../b_room/mostrar.php',
+                'class' => 'business'
             ]
         ]
     ];
 }
+
 
 # ==================== GRUPO 2: GESTIÓN COMERCIAL ====================
 $comercialItems = [];

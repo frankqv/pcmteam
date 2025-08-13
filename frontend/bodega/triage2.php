@@ -1,1034 +1,715 @@
+<!--frontend/bodega/triage_2.php -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Limpieza y Mantenimiento</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title>SEGUNDO TRIAGE - Sistema de Diagnóstico</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom CSS -->
     <style>
-        :root {
-            --primary-cyan: #00d4ff;
-            --secondary-cyan: #00a8cc;
-            --dark-bg: #1a1a1a;
-            --card-bg: #2d2d2d;
-            --border-color: #444;
-            --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
-            --info: #17a2b8;
-        }
-
         body {
-            background: linear-gradient(135deg, var(--dark-bg) 0%, #2d2d2d 100%);
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Courier New', monospace;
+            background-color: #000;
+            color: #fff;
             min-height: 100vh;
         }
-
-        .dashboard-header {
-            background: linear-gradient(90deg, var(--primary-cyan) 0%, var(--secondary-cyan) 100%);
-            color: #000;
-            padding: 1rem 0;
-            text-align: center;
+        .container-fluid {
+            padding: 20px;
+        }
+        .header-section {
+            border-bottom: 2px solid #17a2b8;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        .main-title {
+            font-size: 2.5rem;
             font-weight: bold;
-            font-size: 1.5rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+            letter-spacing: 3px;
         }
-
-        .stats-row {
-            margin-bottom: 2rem;
+        .date-display {
+            font-size: 1.2rem;
+            color: #17a2b8;
         }
-
-        .stat-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
+        .section-border {
+            border: 1px solid #17a2b8;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
         }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-cyan);
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: #ccc;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .ficha-equipo, .mantenimiento-form {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-        }
-
-        .section-title {
-            color: var(--primary-cyan);
-            font-size: 1.3rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            border-bottom: 2px solid var(--primary-cyan);
-            padding-bottom: 0.5rem;
-        }
-
-        .search-container {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .form-control, .form-select {
-            background: #3d3d3d;
-            border: 1px solid var(--border-color);
-            color: #fff;
-            border-radius: 8px;
-        }
-
-        .form-control:focus, .form-select:focus {
-            background: #3d3d3d;
-            border-color: var(--primary-cyan);
-            color: #fff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 212, 255, 0.25);
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, var(--primary-cyan), var(--secondary-cyan));
-            border: none;
-            border-radius: 8px;
-            padding: 0.75rem 1.5rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(45deg, var(--secondary-cyan), var(--primary-cyan));
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
-        }
-
-        .btn-success {
-            background: linear-gradient(45deg, var(--success), #34ce57);
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .equipment-card {
-            background: #3d3d3d;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .equipment-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .equipment-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(45deg, var(--primary-cyan), var(--secondary-cyan));
+        .scan-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #17a2b8, #20c997);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            color: #000;
+            font-size: 2rem;
+            color: white;
+            margin: 0 auto 15px auto;
         }
-
-        .equipment-info h5 {
-            color: var(--primary-cyan);
-            margin-bottom: 0.5rem;
+        .form-control,
+        .form-select {
+            background-color: #212529;
+            border: 1px solid #17a2b8;
+            color: #fff;
+            font-family: 'Courier New', monospace;
         }
-
-        .equipment-tests {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
+        .form-control:focus,
+        .form-select:focus {
+            background-color: #212529;
+            border-color: #20c997;
+            color: #fff;
+            box-shadow: 0 0 5px rgba(23, 162, 184, 0.5);
         }
-
-        .test-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem;
-            background: #2a2a2a;
-            border-radius: 5px;
-        }
-
-        .badge {
-            font-size: 0.8rem;
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-        }
-
-        .badge-success { background: var(--success); }
-        .badge-warning { background: var(--warning); color: #000; }
-        .badge-danger { background: var(--danger); }
-        .badge-info { background: var(--info); }
-        .badge-secondary { background: #6c757d; }
-
-        .maintenance-table {
-            width: 100%;
-            margin-top: 1rem;
-        }
-
-        .maintenance-table th {
-            background: var(--primary-cyan);
-            color: #000;
-            padding: 1rem 0.75rem;
+        .btn-custom {
+            font-family: 'Courier New', monospace;
             font-weight: bold;
-            text-align: center;
-            border-radius: 5px 5px 0 0;
+            margin: 5px;
+            min-width: 120px;
         }
-
-        .maintenance-table td {
-            padding: 0.75rem;
-            border-bottom: 1px solid var(--border-color);
+        .component-row {
+            background-color: #1a1a1a;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #17a2b8;
         }
-
-        .process-row {
-            background: #3d3d3d;
-        }
-
-        .process-row:hover {
-            background: #4d4d4d;
-        }
-
-        .alert {
+        .equipment-counter {
+            background: linear-gradient(135deg, #17a2b8, #20c997);
+            color: white;
+            padding: 20px;
             border-radius: 10px;
-            border: none;
-            margin-top: 1rem;
-        }
-
-        .alert-info {
-            background: rgba(23, 162, 184, 0.2);
-            color: #ffffff;
-            border-left: 4px solid var(--info);
-        }
-
-        .empty-state {
             text-align: center;
-            padding: 3rem 1rem;
-            color: #888;
+            font-size: 1.5rem;
+            font-weight: bold;
         }
-
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-
-        .loading {
+        .loading-spinner {
             display: none;
-            text-align: center;
-            padding: 2rem;
+            color: #17a2b8;
         }
-
-        .spinner {
-            border: 3px solid #444;
-            border-top: 3px solid var(--primary-cyan);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1050;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            min-width: 300px;
-        }
-
-        .toast-success {
-            border-left: 4px solid var(--success);
-        }
-
-        .toast-error {
-            border-left: 4px solid var(--danger);
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
+        @media print {
+            .no-print {
+                display: none !important;
             }
-            
-            .equipment-tests {
-                grid-template-columns: 1fr;
+            body {
+                color: #000 !important;
+                background: #fff !important;
             }
         }
     </style>
 </head>
-<body>
-    <!-- Header -->
-    <div class="dashboard-header">
-        <i class="fas fa-tools"></i> Limpieza y Mantenimiento
-    </div>
-
-    <div class="container-fluid py-4">
-        <!-- Stats Row -->
-        <div class="row stats-row">
+<body class="bg-dark text-light">
+    <div class="container-fluid">
+        <!-- Header Section -->
+        <div class="row header-section">
+            <div class="col-md-8">
+                <button class="btn btn-success btn-custom no-print" onclick="location.reload()">
+                    #REFI
+                </button>
+                <div class="mt-2 small">FECHA ASIGNACION</div>
+            </div>
+            <div class="col-md-4 text-center">
+                <h1 class="main-title text-info">SEGUNDO TRIAGE</h1>
+            </div>
+            <div class="col-md-12 text-end">
+                <div class="date-display" id="currentDate"></div>
+                <button class="btn btn-outline-light btn-sm no-print" onclick="window.close()">
+                    BORRAR
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Left Column -->
             <div class="col-md-6">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalAsignados">103</div>
-                    <div class="stat-label">Total Equipos Asignados</div>
+                <!-- Scan Icon Section -->
+                <div class="section-border text-center">
+                    <div class="section-border">
+                        <div class="row">
+                            <div class="col-6">
+                                <label class="form-label text-info fw-bold">TOTAL EQUIPOS ASIGNADOS</label>
+                                <input type="text" class="form-control" id="total-equipos-asingnados" readonly>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label text-info fw-bold">TOTAL EQUIPOS PROCESADOS</label>
+                                <input type="text" class="form-control" id="total-equipos-procesados" readonly>
+                            </div>
+                        </div>
+                        <h5 class="text-info mb-3">EQUIPOS INGRESADOS</h5>
+                        <div class="equipment-counter">
+                            <div id="equiposCounter"><?php ?></div>
+                            <small>EQUIPOS PROCESADOS HOY</small>
+                        </div>
+                    </div>
+                </div>
+                <!-- Equipment Info -->
+                <div class="section-border">
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="form-label text-info fw-bold">CODIGO</label>
+                            <input type="text" class="form-control" id="equipoCodigo" readonly>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-info fw-bold">SERIAL</label>
+                            <input type="text" class="form-control" id="equipoSerial" readonly>
+                        </div>
+                    </div>
+                </div>
+                <!-- Diagnostic Components -->
+                <h1 class="alert alert-success">RESULTADO DEL TRIAGE 2</h1>
+                <div class="section-border">
+                    <h5 class="text-info mb-3">COMPONENTES DE DIAGNÓSTICO si es un portatil</h5>
+                    <!-- Left side components -->
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>PARLANTE</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="Parlante">
+                                    <option value="BUENO" selected>BUENO</option>
+                                    <option value="MALO">MALO</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>CAMARA</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="CAMARA">
+                                    <option value="BUENO" selected>BUENO</option>
+                                    <option value="MALO">MALO</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>PANTALLA</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="PANTALLA">
+                                    <option value="BUENO" selected>BUENO</option>
+                                    <option value="MALO">MALO</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>TECLADO</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="teclado">
+                                    <option value="BUENO" selected>BUENO</option>
+                                    <option value="MALO">MALO</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>BATERIA</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="bateria">
+                                    <option value="BUENO" selected>BUENO</option>
+                                    <option value="MALO">MALO</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>MICROFONO</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="microfono">
+                                    <option value="BUENO" selected>BUENO</option>
+                                    <option value="MALO">MALO</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>DISCO</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="disco">
+                                    <option value="BUENO" selected>BUENO</option>
+                                    <option value="MALO">MALO</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right side components -->
+                <div class="section-border">
+                    <div class="component-row">
+                        <h5 class="text-info mb-3">COMPONENTES DE DIAGNÓSTICO tanto para portatiles O Computadores de
+                            mesa.</h5>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>PUERTO VGA</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="puerto_vga">
+                                    <option value="BUENO" selected>BUENO</option>
+                                    <option value="MALO">MALO</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>PUERTO DVI</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="puerto_DVI">
+                                    <option value="BUENO" selected>BUENO</option>
+                                    <option value="MALO">MALO</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>PUERTO HDMI</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="puerto_hdmi">
+                                    <option value="BUENO" selected>BUENO</option>
+                                    <option value="MALO">MALO</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>PUERTO USB</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="puerto_usb">
+                                    <option value="BUENO" selected>BUENO</option>
+                                    <option value="MALO">MALO</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>PUERTO RED</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="puerto_red">
+                                    <option value="BUENO" selected>BUENO</option>
+                                    <option value="MALO">MALO</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>VIDA UTIL DISCO</strong></div>
+                            <div class="col-8">
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="vida_util_disco" value="100" min="0"
+                                        max="100">
+                                    <span class="input-group-text bg-info text-dark">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Observations -->
+                    <div class="section-border">
+                        <h5 class="text-info mb-3">OBSERVACIONES</h5>
+                        <textarea class="form-control" id="observaciones" rows="4"
+                            placeholder="Ingrese observaciones del diagnóstico..."></textarea>
+                    </div>
+                    <!-- Equipment Status -->
+                    <div class="section-border">
+                        <h5 class="text-info mb-3">ESTADO DEL TRIAGE</h5>
+                        <select class="form-select" id="estadoTriage">
+                            <option value="aprobado">APROBADO</option>
+                            <option value="falla_mecanica">FALLA MECÁNICA</option>
+                            <option value="falla_electrica">FALLA ELÉCTRICA</option>
+                            <option value="reparacion_cosmetica">REPARACIÓN COSMÉTICA</option>
+                        </select>
+                    </div>
                 </div>
             </div>
+            <!-- Right Column -->
             <div class="col-md-6">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalProcesados">84</div>
-                    <div class="stat-label">Total Equipos Procesados</div>
+                <!-- Technician Info -->
+                <div class="section-border">
+                    <h5 class="text-info mb-3">TÉCNICO ASIGNADO</h5>
+                    <div class="alert alert-info" id="technicanInfo">
+                        <strong id="technicianName">nombre tecnico</strong>
+                        <br><small>Técnico de Diagnóstico</small>
+                    </div>
+                </div>
+                <!-- LIMPIEZA Y MANTENIMIENTO -->
+                <h1 class="alert alert-success">LIMPIEZA Y MANTENIMIENTO</h1>
+                <div class="section-border">
+                    <h5 class="text-info mb-3">SECCION DE LIMPIEZA Y MANTENIMIENTO</h5>
+                    <!-- Left side components -->
+                    <h4>PROCESO DE LIMPIEZA</h4>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>LIMPIEZA ELECTRONICO</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="proceso-limpieza">
+                                    <option value="REALIZADA" selected>REALIZADA</option>
+                                    <option value="PENDIENTES">PENDIENTES</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <h4>PROCESO DE MANTENIMIENTO</h4>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>CAMBIO DE CREMA DISCIPADORA</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="crema-discipadora">
+                                    <option value="REALIZADA" selected>REALIZADA</option>
+                                    <option value="PENDIENTES">PENDIENTES</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>MANTENIMIENTO DE PARTES</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="mantenimiento-parte">
+                                    <option value="REALIZADA" selected>REALIZADA</option>
+                                    <option value="PENDIENTES">PENDIENTES</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>CAMBIO DE PIEZAS QUE NO FUNCIONAN</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="pieza-funcionan">
+                                    <option value="SI" selected>SI</option>
+                                    <option value="NO">NO</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>¿QUE PIEZAS SE CAMBIARON?</strong></div>
+                            <div class="col-8">
+                                <label class="form-select form-select-sm" id="pieza-cambiaron" arial-placeholder="Componete Cambiado">a</label>
+                            </div>
+                        </div>
+                    </div>
+                    <h4>PROCESO DE RECONSTRUCCION</h4>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>RECONSTRUCCION</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="reconstruccion">
+                                    <option value="REALIZADA" selected>NO</option>
+                                    <option value="PENDIENTES">SI</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>PARTE RECONSTRUIDA</strong></div>
+                            <div class="col-8">
+                                <label class="form-select form-select-sm" id="parte-reconstuida">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <h4>PROCESO DE LIMPIEZA</h4>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>LIMPIEZA GENERAL</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="**">
+                                    <option value="REALIZADA" selected>REALIZADA</option>
+                                    <option value="PENDIENTES">PENDIENTES</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <h4>OTRA AREA</h4>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>¿REMITE A OTRA AREA?</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="remitir-area">
+                                    <option value="SI" selected>SI</option>
+                                    <option value="NO">NO</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-row">
+                        <div class="row align-items-center">
+                            <div class="col-4"><strong>¿A QUE AREA(S) REMITE?</strong></div>
+                            <div class="col-8">
+                                <select class="form-select form-select-sm" id="**">
+                                    <option value="Proceso técnico" selected>1| Proceso técnico</option>
+                                    <option value="Electrica" selected>2| Pr Electrica</option>
+                                    <option value="pintura">3| PROCESO ESTÉTICO</option>
+                                    <option value="Control-Calidad">4| QC | Control-Calidad</option>
+                                    <option value="Business"> 5| Business Room</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Equipment Counter -->
+                    <div class="section-border">
+                        <h5 class="text-info mb-3">EQUIPOS INGRESADOS</h5>
+                        <div class="equipment-counter">
+                            <div id="equiposCounter"><?php ?></div>
+                            <small>EQUIPOS PROCESADOS HOY</small>
+                        </div>
+                        <!-- Equipment Image Placeholder -->
+                        <div class="mt-3 text-center">
+                            <div
+                                style="width: 120px; height: 90px; background: #333; border-radius: 8px; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                                <span style="font-size: 2rem;">💻</span>
+                            </div>
+                            <small class="text-muted mt-2 d-block">EQUIPO ACTUAL</small>
+                        </div>
+                    </div>
+                    <!-- Action Buttons -->
+                    <div class="section-border no-print">
+                        <div class="row">
+                            <div class="col-4">
+                                <button class="btn btn-success w-100 btn-custom" onclick="guardarDiagnostico()">
+                                    <div class="loading-spinner" id="loadingGuardar">
+                                        <div class="spinner-border spinner-border-sm me-2"></div>
+                                    </div>
+                                    GUARDAR
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-info w-100 btn-custom" onclick="imprimirReporte()">
+                                    IMPRIMIR
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-warning w-100 btn-custom" onclick="siguienteEquipo()">
+                                    SIGUIENTE
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Left Column: Equipment Info -->
-            <div class="ficha-equipo">
-                <h3 class="section-title">
-                    <i class="fas fa-laptop"></i> Ficha de Equipo
-                </h3>
-
-                <!-- Search -->
-                <div class="search-container">
-                    <input type="text" 
-                           class="form-control flex-grow-1" 
-                           id="codigoSearch" 
-                           placeholder="Buscar por código (ej: EQ001)">
-                    <button class="btn btn-primary" onclick="buscarEquipo()">
-                        <i class="fas fa-search"></i> Buscar
-                    </button>
-                </div>
-
-                <!-- Loading -->
-                <div class="loading" id="loadingEquipo">
-                    <div class="spinner"></div>
-                    <p>Buscando equipo...</p>
-                </div>
-
-                <!-- Equipment Details -->
-                <div id="equipmentDetails" class="empty-state">
-                    <i class="fas fa-search"></i>
-                    <p>Ingresa un código para buscar el equipo</p>
-                </div>
-            </div>
-
-            <!-- Right Column: Maintenance Form -->
-            <div class="mantenimiento-form">
-                <h3 class="section-title">
-                    <i class="fas fa-wrench"></i> Limpieza y Mantenimiento
-                </h3>
-
-                <form id="mantenimientoForm">
-                    <input type="hidden" id="inventarioId" name="inventario_id">
-                    
-                    <table class="table maintenance-table">
-                        <thead>
-                            <tr>
-                                <th>Proceso</th>
-                                <th>Estado</th>
-                                <th>¿Qué piezas?</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="process-row">
-                                <td><strong>Limpieza Electrónica</strong></td>
-                                <td>
-                                    <select class="form-select" name="limpieza_electronica">
-                                        <option value="pendiente">Pendiente</option>
-                                        <option value="realizado">Realizado</option>
-                                        <option value="rechazado">Rechazado</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" name="piezas_limpieza_electronica" placeholder="Detallar piezas">
-                                </td>
-                            </tr>
-                            <tr class="process-row">
-                                <td><strong>Mantenimiento</strong></td>
-                                <td>
-                                    <select class="form-select" name="mantenimiento">
-                                        <option value="pendiente">Pendiente</option>
-                                        <option value="realizado">Realizado</option>
-                                        <option value="rechazado">Rechazado</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" name="piezas_mantenimiento" placeholder="Detallar piezas">
-                                </td>
-                            </tr>
-                            <tr class="process-row">
-                                <td><strong>Reconstrucción</strong></td>
-                                <td>
-                                    <select class="form-select" name="reconstruccion">
-                                        <option value="pendiente">Pendiente</option>
-                                        <option value="realizado">Realizado</option>
-                                        <option value="rechazado">Rechazado</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" name="piezas_reconstruccion" placeholder="Detallar piezas">
-                                </td>
-                            </tr>
-                            <tr class="process-row">
-                                <td><strong>Limpieza General</strong></td>
-                                <td>
-                                    <select class="form-select" name="limpieza_general">
-                                        <option value="pendiente">Pendiente</option>
-                                        <option value="realizado">Realizado</option>
-                                        <option value="rechazado">Rechazado</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" name="piezas_limpieza_general" placeholder="Detallar piezas">
-                                </td>
-                            </tr>
-                            <tr class="process-row">
-                                <td><strong>Remisión</strong></td>
-                                <td>
-                                    <select class="form-select" name="remision">
-                                        <option value="pendiente">Pendiente</option>
-                                        <option value="realizado">Realizado</option>
-                                        <option value="rechazado">Rechazado</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control" name="piezas_remision" placeholder="Detallar piezas">
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="row mt-4">
-                        <div class="col-md-6">
-                            <label class="form-label">Observaciones</label>
-                            <textarea class="form-control" name="observaciones" rows="3" placeholder="Observaciones generales"></textarea>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Partes Solicitadas</label>
-                            <textarea class="form-control" name="partes_solicitadas" rows="3" placeholder="Lista de partes solicitadas"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Técnico Responsable</label>
-                            <select class="form-select" name="tecnico_id" required>
-                                <option value="">Seleccionar técnico...</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 d-flex align-items-end">
-                            <button type="submit" class="btn btn-success w-100" disabled id="guardarBtn">
-                                <i class="fas fa-save"></i> Guardar Mantenimiento
-                            </button>
-                        </div>
-                    </div>
-                </form>
-
-                <div class="alert alert-info" style="display: none;" id="infoAlert">
-                    <i class="fas fa-info-circle"></i> 
-                    Selecciona un equipo para habilitar el formulario de mantenimiento
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Container -->
-    <div id="toastContainer"></div>
-
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Función helper para sanitizar datos
-        function safe(value, defaultValue = 'N/A') {
-            if (value === null || value === undefined || value === '') {
-                return defaultValue;
-            }
-            return String(value).trim();
-        }
-
-        // Variables globales
-        let currentEquipmentId = null;
-        let searchTimeout = null;
-
-        // CSRF Token simple
-        let csrfToken = Math.random().toString(36).substring(2);
-
-        // Inicializar la aplicación
-        document.addEventListener('DOMContentLoaded', function() {
-            loadTechnicians();
-            setupSearchDebounce();
-            setupFormValidation();
-            
-            // Mostrar mensaje inicial
-            document.getElementById('infoAlert').style.display = 'block';
-        });
-
-        // Configurar búsqueda con debounce
-        function setupSearchDebounce() {
-            const searchInput = document.getElementById('codigoSearch');
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                const codigo = this.value.trim();
-                
-                if (codigo.length >= 3) {
-                    searchTimeout = setTimeout(() => {
-                        buscarEquipo();
-                    }, 300);
-                } else if (codigo.length === 0) {
-                    resetEquipmentDisplay();
-                }
+        <!-- Hidden data -->
+        <input type="hidden" id="currentEquipmentId" value="">
+        <input type="hidden" id="technicianId" value="">
+        <script>
+            // Variables globales
+            let equiposDisponibles = [];
+            let equipoActualIndex = 0;
+            let equiposProcesados = 0;
+            // Inicialización al cargar la página
+            document.addEventListener('DOMContentLoaded', function () {
+                actualizarFecha();
+                cargarDatosSesion();
+                cargarEquiposAsignados();
+                actualizarContadorEquipos();
             });
-
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    buscarEquipo();
+            // Actualizar fecha actual
+            function actualizarFecha() {
+                const now = new Date();
+                const fecha = now.toLocaleDateString('es-CO', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
+                document.getElementById('currentDate').textContent = fecha;
+            }
+            // Cargar datos de sesión (simulado para demo)
+            function cargarDatosSesion() {
+                // En implementación real, estos datos vendrían de PHP/sesión
+                document.getElementById('technicianName').textContent = 'nombre del tecnico';
+                document.getElementById('technicianId').value = '19'; // ID del técnico
+            }
+            // Simular carga de equipos asignados desde BD
+            function cargarEquiposAsignados() {
+                // En implementación real, esto sería una llamada AJAX a un endpoint PHP
+                equiposDisponibles = [
+                    {
+                        id: 1,
+                        codigo: 'EQ001',
+                        serial: 'gwert111',
+                        marca: 'Dell',
+                        modelo: 'Latitude 5520'
+                    },
+                    {
+                        id: 27,
+                        codigo: 'EQ012',
+                        serial: 'ATG1292',
+                        marca: 'Dell',
+                        modelo: 'Latitude 55223'
+                    }
+                ];
+                if (equiposDisponibles.length > 0) {
+                    cargarEquipoActual();
+                } else {
+                    alert('No hay equipos asignados para diagnóstico.');
                 }
-            });
-        }
-
-        // Cargar técnicos para el select
-        function loadTechnicians() {
-            const technicianSelect = document.querySelector('select[name="tecnico_id"]');
-            
-            // Datos de técnicos simulados basados en la BD
-            const technicians = [
-                {id: 8, nombre: 'Sergio Lara'},
-                {id: 9, nombre: 'Juan González'},
-                {id: 10, nombre: 'Luis González'},
-                {id: 12, nombre: 'Fabian Sanchez'},
-                {id: 13, nombre: 'José Borda'},
-                {id: 14, nombre: 'Felipe Romero'},
-                {id: 15, nombre: 'Rodrigo Martínez'},
-                {id: 16, nombre: 'Deivi Lopez'},
-                {id: 32, nombre: 'frank5'},
-                {id: 33, nombre: 'Tecnico FranciscoQV'},
-                {id: 34, nombre: 'frank7'}
-            ];
-
-            technicians.forEach(tech => {
-                const option = document.createElement('option');
-                option.value = tech.id;
-                option.textContent = tech.nombre;
-                technicianSelect.appendChild(option);
-            });
-        }
-
-        // Buscar equipo por código
-        async function buscarEquipo() {
-            const codigo = document.getElementById('codigoSearch').value.trim();
-            
-            if (!codigo) {
-                showToast('Por favor ingresa un código', 'error');
-                return;
             }
-
-            const loading = document.getElementById('loadingEquipo');
-            const details = document.getElementById('equipmentDetails');
-            
-            loading.style.display = 'block';
-            details.innerHTML = '';
-
-            try {
-                // Simular llamada AJAX - en implementación real usarías fetch()
-                setTimeout(() => {
-                    // Datos simulados basados en la BD
-                    const equipmentData = getSimulatedEquipmentData(codigo);
-                    
-                    loading.style.display = 'none';
-                    
-                    if (equipmentData) {
-                        displayEquipmentDetails(equipmentData);
-                        enableMaintenanceForm(equipmentData.id);
-                    } else {
-                        showEquipmentNotFound();
-                    }
-                }, 800);
-
-            } catch (error) {
-                loading.style.display = 'none';
-                showToast('Error al buscar el equipo', 'error');
-                console.error('Error:', error);
-            }
-        }
-
-        // Obtener datos simulados del equipo
-        function getSimulatedEquipmentData(codigo) {
-            // Datos basados en la BD proporcionada
-            const equipos = {
-                'EQ001': {
-                    id: 1,
-                    codigo_g: 'EQ001',
-                    serial: 'DL123456789',
-                    producto: 'Portatil',
-                    marca: 'Dell',
-                    modelo: 'Latitude 5520',
-                    procesador: 'Intel i5-1135G7',
-                    ram: '8GB',
-                    disco: '256GB SSD',
-                    pulgadas: '15.6',
-                    observaciones: 'Equipo en buen estado',
-                    grado: 'A',
-                    ubicacion: 'Principal',
-                    tecnico_nombre: 'Tecnico FranciscoQV',
-                    diagnostico: {
-                        camara: 'Funcional',
-                        teclado: 'Funcional',
-                        parlantes: 'Funcional',
-                        bateria: '85% capacidad',
-                        microfono: 'Funcional',
-                        disco: 'Estado excelente'
-                    }
-                },
-                'EQ002': {
-                    id: 2,
-                    codigo_g: 'EQ002',
-                    serial: 'HP987654321',
-                    producto: 'Desktop',
-                    marca: 'HP',
-                    modelo: 'EliteDesk 800',
-                    procesador: 'Intel i7-10700',
-                    ram: '16GB',
-                    disco: '512GB SSD',
-                    pulgadas: '16',
-                    observaciones: 'EQUIPO LISTO',
-                    grado: 'A',
-                    ubicacion: 'Principal',
-                    tecnico_nombre: 'frank7',
-                    diagnostico: {
-                        camara: 'N/A',
-                        teclado: 'Funcional',
-                        parlantes: 'Funcional',
-                        bateria: 'N/A',
-                        microfono: 'N/A',
-                        disco: 'Buen estado'
-                    }
-                },
-                'EQ003': {
-                    id: 3,
-                    codigo_g: 'EQ003',
-                    serial: 'LN456789123',
-                    producto: 'AIO',
-                    marca: 'Lenovo',
-                    modelo: 'ThinkCentre M90a',
-                    procesador: 'Intel i5-10400T',
-                    ram: '8GB',
-                    disco: '1TB HDD',
-                    pulgadas: '23.8',
-                    observaciones: 'Pantalla con rayones menores',
-                    grado: 'C',
-                    ubicacion: 'Cúcuta',
-                    tecnico_nombre: 'N/A',
-                    diagnostico: {
-                        camara: 'Funcional',
-                        teclado: 'Tecla Space pegajosa',
-                        parlantes: 'Funcional',
-                        bateria: 'N/A',
-                        microfono: 'Funcional',
-                        disco: 'Fragmentación alta'
-                    }
+            // Cargar equipo actual en la interfaz
+            function cargarEquipoActual() {
+                if (equipoActualIndex >= equiposDisponibles.length) {
+                    alert('No hay más equipos pendientes de diagnóstico.');
+                    return;
                 }
-            };
-
-            return equipos[codigo.toUpperCase()] || null;
-        }
-
-        // Mostrar detalles del equipo
-        function displayEquipmentDetails(equipment) {
-            const details = document.getElementById('equipmentDetails');
-            const diagnostico = equipment.diagnostico || {};
-            
-            const html = `
-                <div class="equipment-card">
-                    <div class="equipment-header">
-                        <div class="equipment-icon">
-                            <i class="fas ${getEquipmentIcon(equipment.producto)}"></i>
-                        </div>
-                        <div class="equipment-info">
-                            <h5>${safe(equipment.codigo_g)}</h5>
-                            <p class="mb-0 text-muted">Serial: ${safe(equipment.serial)}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <small class="text-muted">Producto</small>
-                            <p class="mb-1">${safe(equipment.producto)} ${safe(equipment.marca)}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <small class="text-muted">Modelo</small>
-                            <p class="mb-1">${safe(equipment.modelo)}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="equipment-tests">
-                        <div class="test-item">
-                            <span>Cámara</span>
-                            <span class="badge ${getBadgeClass(diagnostico.camara)}">${safe(diagnostico.camara)}</span>
-                        </div>
-                        <div class="test-item">
-                            <span>Teclado</span>
-                            <span class="badge ${getBadgeClass(diagnostico.teclado)}">${safe(diagnostico.teclado)}</span>
-                        </div>
-                        <div class="test-item">
-                            <span>Parlantes</span>
-                            <span class="badge ${getBadgeClass(diagnostico.parlantes)}">${safe(diagnostico.parlantes)}</span>
-                        </div>
-                        <div class="test-item">
-                            <span>Batería</span>
-                            <span class="badge ${getBadgeClass(diagnostico.bateria)}">${safe(diagnostico.bateria)}</span>
-                        </div>
-                        <div class="test-item">
-                            <span>Micrófono</span>
-                            <span class="badge ${getBadgeClass(diagnostico.microfono)}">${safe(diagnostico.microfono)}</span>
-                        </div>
-                        <div class="test-item">
-                            <span>Disco</span>
-                            <span class="badge ${getBadgeClass(diagnostico.disco)}">${safe(diagnostico.disco)}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-3">
-                        <small class="text-muted">Observaciones</small>
-                        <p class="mb-1">${safe(equipment.observaciones)}</p>
-                    </div>
-                    
-                    <div class="row mt-2">
-                        <div class="col-md-6">
-                            <small class="text-muted">Técnico que ingresó</small>
-                            <p class="mb-1">${safe(equipment.tecnico_nombre)}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <small class="text-muted">Vida útil disco</small>
-                            <p class="mb-1">${getDiscoLifeStatus(diagnostico.disco)}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            details.innerHTML = html;
-        }
-
-        // Obtener icono según tipo de equipo
-        function getEquipmentIcon(producto) {
-            const icons = {
-                'Portatil': 'fa-laptop',
-                'Desktop': 'fa-desktop',
-                'AIO': 'fa-tv',
-                'Monitor': 'fa-tv'
-            };
-            return icons[producto] || 'fa-computer';
-        }
-
-        // Obtener clase de badge según estado
-        function getBadgeClass(value) {
-            if (!value || value === 'N/A') return 'badge-secondary';
-            
-            const lowerValue = value.toLowerCase();
-            if (lowerValue.includes('funcional') || lowerValue.includes('excelente') || lowerValue.includes('bueno')) {
-                return 'badge-success';
-            } else if (lowerValue.includes('dañad') || lowerValue.includes('no funciona')) {
-                return 'badge-danger';
-            } else if (lowerValue.includes('%') || lowerValue.includes('pegajosa') || lowerValue.includes('rayones')) {
-                return 'badge-warning';
+                const equipo = equiposDisponibles[equipoActualIndex];
+                document.getElementById('equipoCodigo').value = equipo.codigo;
+                document.getElementById('equipoSerial').value = equipo.serial;
+                document.getElementById('currentEquipmentId').value = equipo.id;
+                // Limpiar formulario para nuevo diagnóstico
+                limpiarFormulario();
+                // Cargar diagnóstico existente si existe
+                cargarDiagnosticoExistente(equipo.id);
             }
-            return 'badge-info';
-        }
-
-        // Obtener estado de vida útil del disco
-        function getDiscoLifeStatus(discoState) {
-            if (!discoState || discoState === 'N/A') return 'N/A';
-            
-            const lower = discoState.toLowerCase();
-            if (lower.includes('excelente')) return '100%';
-            if (lower.includes('bueno')) return '85%';
-            if (lower.includes('fragmentación')) return '60%';
-            return '75%';
-        }
-
-        // Mostrar mensaje de equipo no encontrado
-        function showEquipmentNotFound() {
-            const details = document.getElementById('equipmentDetails');
-            details.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <p>Equipo no encontrado</p>
-                    <small class="text-muted">Verifica el código e intenta nuevamente</small>
-                </div>
-            `;
-        }
-
-        // Resetear vista de equipo
-        function resetEquipmentDisplay() {
-            const details = document.getElementById('equipmentDetails');
-            details.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-search"></i>
-                    <p>Ingresa un código para buscar el equipo</p>
-                </div>
-            `;
-            disableMaintenanceForm();
-        }
-
-        // Habilitar formulario de mantenimiento
-        function enableMaintenanceForm(equipmentId) {
-            currentEquipmentId = equipmentId;
-            document.getElementById('inventarioId').value = equipmentId;
-            document.getElementById('guardarBtn').disabled = false;
-            document.getElementById('infoAlert').style.display = 'none';
-            
             // Limpiar formulario
-            document.getElementById('mantenimientoForm').reset();
-            document.getElementById('inventarioId').value = equipmentId;
-        }
-
-        // Deshabilitar formulario de mantenimiento
-        function disableMaintenanceForm() {
-            currentEquipmentId = null;
-            document.getElementById('inventarioId').value = '';
-            document.getElementById('guardarBtn').disabled = true;
-            document.getElementById('infoAlert').style.display = 'block';
-            document.getElementById('mantenimientoForm').reset();
-        }
-
-        // Configurar validación del formulario
-        function setupFormValidation() {
-            const form = document.getElementById('mantenimientoForm');
-            
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                if (!currentEquipmentId) {
-                    showToast('Selecciona un equipo primero', 'error');
-                    return;
-                }
-
-                const tecnicoId = document.querySelector('select[name="tecnico_id"]').value;
-                if (!tecnicoId) {
-                    showToast('Selecciona un técnico responsable', 'error');
-                    return;
-                }
-
-                await guardarMantenimiento();
-            });
-        }
-
-        // Guardar mantenimiento
-        async function guardarMantenimiento() {
-            const form = document.getElementById('mantenimientoForm');
-            const formData = new FormData(form);
-            const guardarBtn = document.getElementById('guardarBtn');
-            
-            // Mostrar loading en el botón
-            guardarBtn.disabled = true;
-            guardarBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
-
-            try {
-                // Preparar datos para envío
-                const data = {
-                    csrf_token: csrfToken,
-                    inventario_id: currentEquipmentId,
-                    tecnico_id: formData.get('tecnico_id'),
-                    observaciones: formData.get('observaciones') || '',
-                    partes_solicitadas: formData.get('partes_solicitadas') || '',
-                    procesos: {
-                        limpieza_electronica: {
-                            estado: formData.get('limpieza_electronica'),
-                            piezas: formData.get('piezas_limpieza_electronica') || ''
-                        },
-                        mantenimiento: {
-                            estado: formData.get('mantenimiento'),
-                            piezas: formData.get('piezas_mantenimiento') || ''
-                        },
-                        reconstruccion: {
-                            estado: formData.get('reconstruccion'),
-                            piezas: formData.get('piezas_reconstruccion') || ''
-                        },
-                        limpieza_general: {
-                            estado: formData.get('limpieza_general'),
-                            piezas: formData.get('piezas_limpieza_general') || ''
-                        },
-                        remision: {
-                            estado: formData.get('remision'),
-                            piezas: formData.get('piezas_remision') || ''
-                        }
-                    }
-                };
-
-                // Simular llamada AJAX - en implementación real usarías fetch()
-                setTimeout(() => {
-                    // Simular respuesta exitosa
-                    const response = {
-                        ok: true,
-                        msg: 'Mantenimiento guardado correctamente'
-                    };
-
-                    if (response.ok) {
-                        showToast(response.msg, 'success');
-                        // Limpiar formulario pero mantener el equipo seleccionado
-                        form.reset();
-                        document.getElementById('inventarioId').value = currentEquipmentId;
-                        
-                        // Actualizar estadísticas (opcional)
-                        updateStats();
-                    } else {
-                        showToast(response.msg || 'Error al guardar', 'error');
-                    }
-
-                    // Restaurar botón
-                    guardarBtn.disabled = false;
-                    guardarBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Mantenimiento';
-                }, 1000);
-
-            } catch (error) {
-                console.error('Error:', error);
-                showToast('Error de conexión', 'error');
-                
-                // Restaurar botón
-                guardarBtn.disabled = false;
-                guardarBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Mantenimiento';
+            function limpiarFormulario() {
+                // Resetear todos los componentes a "BUENO"
+                ['teclado', 'parlante', 'bateria', 'microfono', 'disco',
+                    'pantalla', 'puerto_vga', 'puerto_hdmi', 'puerto_usb', 'puerto_red'].forEach(id => {
+                        document.getElementById(id).value = 'BUENO';
+                    });
+                document.getElementById('vida_util_disco').value = '100';
+                document.getElementById('observaciones').value = '';
+                document.getElementById('estadoTriage').value = 'aprobado';
             }
-        }
-
-        // Actualizar estadísticas
-        function updateStats() {
-            // Simular actualización de stats
-            const totalProcesados = document.getElementById('totalProcesados');
-            const currentValue = parseInt(totalProcesados.textContent);
-            totalProcesados.textContent = currentValue + 1;
-            
-            // Animación simple
-            totalProcesados.style.transform = 'scale(1.2)';
-            setTimeout(() => {
-                totalProcesados.style.transform = 'scale(1)';
-            }, 300);
-        }
-
-        // Mostrar toast de notificación
-        function showToast(message, type = 'info') {
-            const toastContainer = document.getElementById('toastContainer');
-            const toastId = 'toast_' + Date.now();
-            
-            const toastHtml = `
-                <div class="toast toast-${type}" id="${toastId}" role="alert" aria-live="assertive" aria-atomic="true">
-                    <div class="toast-header">
-                        <i class="fas ${getToastIcon(type)} me-2"></i>
-                        <strong class="me-auto">${getToastTitle(type)}</strong>
-                        <small>Ahora</small>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                    </div>
-                    <div class="toast-body">
-                        ${message}
-                    </div>
+            // Cargar diagnóstico existente (simulado)
+            function cargarDiagnosticoExistente(equipoId) {
+                // En implementación real, esto sería una llamada AJAX
+                // Por ahora, simulamos datos existentes para el equipo 27
+                if (equipoId === 27) {
+                    document.getElementById('observaciones').value = 'pantalla tallada resto ok';
+                    document.getElementById('pantalla').value = 'MALO';
+                }
+            }
+            // Actualizar contador de equipos
+            function actualizarContadorEquipos() {
+                // En implementación real, esto consultaría la BD
+                document.getElementById('equiposCounter').textContent = equiposProcesados + <?php ?>;
+            }
+            // Guardar diagnóstico
+            function guardarDiagnostico() {
+                const equipoId = document.getElementById('currentEquipmentId').value;
+                const tecnicoId = document.getElementById('technicianId').value;
+                if (!equipoId) {
+                    alert('No hay equipo seleccionado para guardar.');
+                    return;
+                }
+                // Mostrar loading
+                document.getElementById('loadingGuardar').style.display = 'inline-block';
+                // Recopilar datos del diagnóstico
+                const diagnosticoData = {
+                    inventario_id: equipoId,
+                    tecnico_id: tecnicoId,
+                    camara: 'Funcional', // Valor fijo por ahora
+                    teclado: document.getElementById('teclado').value,
+                    parlantes: document.getElementById('parlante').value,
+                    bateria: document.getElementById('bateria').value,
+                    microfono: document.getElementById('microfono').value,
+                    pantalla: document.getElementById('pantalla').value,
+                    puertos: `VGA: ${document.getElementById('puerto_vga').value}, HDMI: ${document.getElementById('puerto_hdmi').value}, USB: ${document.getElementById('puerto_usb').value}, RED: ${document.getElementById('puerto_red').value}`,
+                    disco: `${document.getElementById('disco').value} - Vida útil: ${document.getElementById('vida_util_disco').value}%`,
+                    estado_reparacion: document.getElementById('estadoTriage').value,
+                    observaciones: document.getElementById('observaciones').value
+                };
+                // Simular guardado exitoso
+                setTimeout(() => {
+                    document.getElementById('loadingGuardar').style.display = 'none';
+                    alert('Diagnóstico guardado exitosamente.');
+                    equiposProcesados++;
+                    actualizarContadorEquipos();
+                }, 1500);
+            }
+            // Imprimir reporte
+            function imprimirReporte() {
+                window.print();
+            }
+            // Cargar siguiente equipo
+            function siguienteEquipo() {
+                if (equipoActualIndex < equiposDisponibles.length - 1) {
+                    equipoActualIndex++;
+                    cargarEquipoActual();
+                } else {
+                    alert('No hay más equipos pendientes. Este es el último equipo.');
+                }
+            }
+            // Funciones de utilidad
+            function mostrarAlerta(mensaje, tipo = 'info') {
+                const alertClass = tipo === 'error' ? 'alert-danger' : 'alert-info';
+                const alertHTML = `
+                <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+                    style="top: 20px; right: 20px; z-index: 9999; max-width: 400px;" role="alert">
+                    ${mensaje}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             `;
-            
-            toastContainer.insertAdjacentHTML('beforeend', toastHtml);
-            
-            const toastElement = document.getElementById(toastId);
-            const toast = new bootstrap.Toast(toastElement, {
-                autohide: true,
-                delay: 5000
+                document.body.insertAdjacentHTML('beforeend', alertHTML);
+                // Auto-remover después de 5 segundos
+                setTimeout(() => {
+                    const alert = document.querySelector('.alert');
+                    if (alert) alert.remove();
+                }, 5000);
+            }
+            // Validar formulario antes de guardar
+            function validarFormulario() {
+                const observaciones = document.getElementById('observaciones').value.trim();
+                if (observaciones.length < 10) {
+                    mostrarAlerta('Las observaciones deben tener al menos 10 caracteres.', 'error');
+                    return false;
+                }
+                return true;
+            }
+            // Atajos de teclado
+            document.addEventListener('keydown', function (e) {
+                // Ctrl + S para guardar
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    guardarDiagnostico();
+                }
+                // Ctrl + P para imprimir
+                if (e.ctrlKey && e.key === 'p') {
+                    e.preventDefault();
+                    imprimirReporte();
+                }
+                // Ctrl + N para siguiente equipo
+                if (e.ctrlKey && e.key === 'n') {
+                    e.preventDefault();
+                    siguienteEquipo();
+                }
             });
-            
-            toast.show();
-            
-            // Remover del DOM después de que se oculte
-            toastElement.addEventListener('hidden.bs.toast', function() {
-                toastElement.remove();
-            });
-        }
-
-        // Obtener icono para toast
-        function getToastIcon(type) {
-            const icons = {
-                'success': 'fa-check-circle',
-                'error': 'fa-exclamation-circle',
-                'warning': 'fa-exclamation-triangle',
-                'info': 'fa-info-circle'
-            };
-            return icons[type] || 'fa-info-circle';
-        }
-
-        // Obtener título para toast
-        function getToastTitle(type) {
-            const titles = {
-                'success': 'Éxito',
-                'error': 'Error',
-                'warning': 'Advertencia',
-                'info': 'Información'
-            };
-            return titles[type] || 'Notificación';
-        }
-
-        // Función para generar datos de prueba adicionales (opcional)
-        function generateTestData() {
-            const equipos = ['EQ004', 'EQ005', 'EQ006', 'LPDA-1432'];
-            const select = document.getElementById('codigoSearch');
-            
-            // Agregar datalist para autocompletado
-            const datalist = document.createElement('datalist');
-            datalist.id = 'equiposList';
-            
-            equipos.forEach(codigo => {
-                const option = document.createElement('option');
-                option.value = codigo;
-                datalist.appendChild(option);
-            });
-            
-            select.setAttribute('list', 'equiposList');
-            document.body.appendChild(datalist);
-        }
-
-        // Llamar función de datos de prueba
-        generateTestData();
-    </script>
+        </script>
+        <!-- Font Awesome para iconos (opcional) -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </body>
+
 </html>

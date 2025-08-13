@@ -5,7 +5,6 @@ session_start();
 if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])){
     header('location: ../error404.php');
 }
-
 require_once '../../backend/bd/ctconex.php';
 ?>
 <?php if(isset($_SESSION['id'])) { ?>
@@ -22,7 +21,6 @@ require_once '../../backend/bd/ctconex.php';
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
 </head>
-
 <body>
     <div class="wrapper">
         <div class="body-overlay"></div>
@@ -47,7 +45,6 @@ require_once '../../backend/bd/ctconex.php';
                     </div>
                 </nav>
             </div>
-
             <div class="main-content">
                 <div class="row">
                     <div class="col-md-12">
@@ -72,9 +69,9 @@ require_once '../../backend/bd/ctconex.php';
                                                     $result = $conn->query($sql);
                                                     while($row = $result->fetch_assoc()) {
                                                         echo "<option value='" . $row['id'] . "'>" . 
-                                                             htmlspecialchars($row['codigo_g'] . ' - ' . $row['producto'] . ' ' . 
-                                                             $row['marca'] . ' ' . $row['modelo'] . ' (' . $row['serial'] . ')') . 
-                                                             "</option>";
+                                                            htmlspecialchars($row['codigo_g'] . ' - ' . $row['producto'] . ' ' . 
+                                                            $row['marca'] . ' ' . $row['modelo'] . ' (' . $row['serial'] . ')') . 
+                                                        "</option>";
                                                     }
                                                     ?>
                                                 </select>
@@ -100,12 +97,11 @@ require_once '../../backend/bd/ctconex.php';
                                                     $result = $conn->query($sql);
                                                     while($row = $result->fetch_assoc()) {
                                                         echo "<option value='" . $row['id'] . "'>" . 
-                                                             htmlspecialchars($row['nombre_completo']) . "</option>";
+                                                            htmlspecialchars($row['nombre_completo']) . "</option>";
                                                     }
                                                     ?>
                                                 </select>
                                             </div>
- 
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -121,7 +117,7 @@ require_once '../../backend/bd/ctconex.php';
                                                     $result = $conn->query($sql);
                                                     while($row = $result->fetch_assoc()) {
                                                         echo "<option value='" . $row['idclie'] . "'>" . 
-                                                             htmlspecialchars($row['nomclie']) . "</option>";
+                                                            htmlspecialchars($row['nomclie']) . "</option>";
                                                     }
                                                     ?>
                                                 </select>
@@ -143,7 +139,6 @@ require_once '../../backend/bd/ctconex.php';
                         </div>
                     </div>
                 </div>
-
                 <!-- Tabla de últimas salidas -->
                 <div class="row mt-4">
                     <div class="col-md-12">
@@ -185,7 +180,7 @@ require_once '../../backend/bd/ctconex.php';
                                                 echo "<td>" . htmlspecialchars($row['estado']) . "</td>";
                                                 echo "<td>
                                                         <a href='javascript:void(0)' class='btn btn-info btn-sm view-btn' data-id='" . $row['id'] . "'><i class='material-icons'>visibility</i></a>
-                                                      </td>";
+                                                    </td>";
                                                 echo "</tr>";
                                             }
                                             ?>
@@ -199,14 +194,12 @@ require_once '../../backend/bd/ctconex.php';
             </div>
         </div>
     </div>
-
     <!-- Scripts -->
     <script src="../../backend/js/jquery-3.3.1.min.js"></script>
     <script src="../../backend/js/popper.min.js"></script>
     <script src="../../backend/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../backend/js/sidebarCollapse.js"></script>
     <script src="../../backend/js/loader.js"></script>
-
     <script>
     $(document).ready(function() {
         // Manejar envío del formulario
@@ -225,7 +218,6 @@ require_once '../../backend/bd/ctconex.php';
                 }
             });
         });
-
         // Ver detalles
         $('.view-btn').click(function() {
             var id = $(this).data('id');

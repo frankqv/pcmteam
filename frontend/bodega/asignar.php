@@ -388,16 +388,16 @@ if ($resultEquipos) {
             $titulo = $titulos[$userInfo['rol']] ?? $userInfo['nombre'];
             ?>
             <!-- Navbar -->
-            <div class="top-navbar" style="background: #000;">
-                <nav class="navbar navbar-expand-lg">
+            <div class="top-navbar" ">
+                <nav class="navbar navbar-expand-lg" style="background:rgb(250, 107, 107);">
                     <div class="container-fluid">
                         <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-none d-none">
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
                     </div>
-            <a class="navbar-brand" href="#" style="color: var(--text-primary); font-weight: 600;">
+                    <a class="navbar-brand" href="#" style="color: var(--text-primary); font-weight: 600;">
                         <i class="fas fa-tools" style="margin-right: 8px; color: var(--accent-orange);"></i>
-                        Dashboard Asignación | EQUIPOS </a>
+                        ASINGNACION  TECNICO | EQUIPOS </a>
                         <?php echo htmlspecialchars($titulo); ?>
                     <ul class="nav navbar-nav ml-auto">
                         <li class="dropdown nav-item active">
