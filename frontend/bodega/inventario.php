@@ -109,10 +109,14 @@ while ($rowTec = $resultTec->fetch_assoc()) {
         </li>
         </ul>
         </div>
+        <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
+            data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="material-icons">more_vert</span>
+        </button>
     </nav>
 </div>
 <!--- end:: top_navbar -->
-
                 <div class="main-content">
                     <!-- Resumen de Inventario -->
                     <div class="row">

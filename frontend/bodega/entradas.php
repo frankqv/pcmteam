@@ -11,6 +11,7 @@ require_once '../../backend/bd/ctconex.php';
 <?php if (isset($_SESSION['id'])) { ?>
     <!DOCTYPE html>
     <html lang="es">
+
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -22,6 +23,7 @@ require_once '../../backend/bd/ctconex.php';
         <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
         <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
     </head>
+
     <body>
         <div class="wrapper">
             <div class="body-overlay"></div>
@@ -36,75 +38,82 @@ require_once '../../backend/bd/ctconex.php';
             </nav>
             <!-- Page Content -->
             <div id="content">
-<!-- begin:: top-navbar -->
+                <!-- begin:: top-navbar -->
                 <div class="top-navbar">
-    <nav class="navbar navbar-expand-lg" style="background:rgb(250, 107, 107);">
+                    <nav class="navbar navbar-expand-lg" style="background:rgb(250, 107, 107);">
                         <div class="container-fluid">
-        <!-- Botón Sidebar -->
-        <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-none d-none">
+                            <!-- Botón Sidebar -->
+                            <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-none d-none">
                                 <span class="material-icons">arrow_back_ios</span>
                             </button>
-        <!-- Título dinámico -->
-        <?php
-        $titulo = "";
-        switch ($_SESSION['rol']) {
-        case 1:
-        $titulo = "ADMINISTRADOR";
-        break;
-        case 2:
-        $titulo = "DEFAULT";
-        break;
-        case 3:
-        $titulo = "CONTABLE";
-        break;
-        case 4:
-        $titulo = "COMERCIAL";
-        break;
-        case 5:
-        $titulo = "JEFE TÉCNICO";
-        break;
-        case 6:
-        $titulo = "TÉCNICO";
-        break;
-        case 7:
-        $titulo = "BODEGA";
-        break;
-        default:
-        $titulo = $userInfo['nombre'] ?? 'USUARIO';
-        break;
-        }
-        ?>
-        <!-- Branding -->
-        <a class="navbar-brand" href="#" style="color: #fff;">
-        <i class="fas fa-tools" style="margin-right: 8px; color: #f39c12;"></i>
-        <?php echo htmlspecialchars($titulo); ?> | <b>RESGISTRO DE ENTREDA</b>
-        </a>
-        <!-- Menú derecho (usuario) -->
-        <ul class="nav navbar-nav ml-auto">
-        <li class="dropdown nav-item active">
-        <a href="#" class="nav-link" data-toggle="dropdown">
-        <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.png'); ?>"
-            alt="Foto de perfil"
-            style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
-        </a>
-        <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
-        <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong></li>
-        <li><?php echo htmlspecialchars($userInfo['usuario'] ?? 'usuario'); ?></li>
-        <li><?php echo htmlspecialchars($userInfo['correo'] ?? 'correo@ejemplo.com'); ?></li>
-        <li>
-            <?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?>
-        </li>
-        <li class="mt-2">
-            <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi
-                perfil</a>
-        </li>
-        </ul>
-        </li>
-        </ul>
+                            <!-- Título dinámico -->
+                            <?php
+                            $titulo = "";
+                            switch ($_SESSION['rol']) {
+                                case 1:
+                                    $titulo = "ADMINISTRADOR";
+                                    break;
+                                case 2:
+                                    $titulo = "DEFAULT";
+                                    break;
+                                case 3:
+                                    $titulo = "CONTABLE";
+                                    break;
+                                case 4:
+                                    $titulo = "COMERCIAL";
+                                    break;
+                                case 5:
+                                    $titulo = "JEFE TÉCNICO";
+                                    break;
+                                case 6:
+                                    $titulo = "TÉCNICO";
+                                    break;
+                                case 7:
+                                    $titulo = "BODEGA";
+                                    break;
+                                default:
+                                    $titulo = $userInfo['nombre'] ?? 'USUARIO';
+                                    break;
+                            }
+                            ?>
+                            <!-- Branding -->
+                            <a class="navbar-brand" href="#" style="color: #fff;">
+                                <i class="fas fa-tools" style="margin-right: 8px; color: #f39c12;"></i>
+                                <?php echo htmlspecialchars($titulo); ?> | <b>RESGISTRO DE ENTREDA</b>
+                            </a>
+                            <!-- Menú derecho (usuario) -->
+                            <ul class="nav navbar-nav ml-auto">
+                                <li class="dropdown nav-item active">
+                                    <a href="#" class="nav-link" data-toggle="dropdown">
+                                        <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.png'); ?>"
+                                            alt="Foto de perfil"
+                                            style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+                                    </a>
+                                    <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
+                                        <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong>
+                                        </li>
+                                        <li><?php echo htmlspecialchars($userInfo['usuario'] ?? 'usuario'); ?></li>
+                                        <li><?php echo htmlspecialchars($userInfo['correo'] ?? 'correo@ejemplo.com'); ?>
+                                        </li>
+                                        <li>
+                                            <?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?>
+                                        </li>
+                                        <li class="mt-2">
+                                            <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi
+                                                perfil</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
                         </div>
+                        <button class="d-inline-block d-lg-none ml-auto more-button" type="button" data-toggle="collapse"
+                            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="material-icons">more_vert</span>
+                        </button>
                     </nav>
                 </div>
-<!--- end:: top_navbar -->
+                <!--- end:: top_navbar -->
                 <div class="main-content">
                     <div class="row">
                         <div class="col-md-12">
@@ -523,10 +532,10 @@ require_once '../../backend/bd/ctconex.php';
                 function showNotification(message, type = 'success') {
                     // Remover notificaciones existentes
                     $('.alert.notification').remove();
-                    
+
                     const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
                     const icon = type === 'success' ? 'check_circle' : 'error';
-                    
+
                     const notification = $(`
                         <div class="alert ${alertClass} alert-dismissible fade show notification" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
                             <i class="material-icons" style="vertical-align: middle; margin-right: 8px;">${icon}</i>
@@ -536,40 +545,40 @@ require_once '../../backend/bd/ctconex.php';
                             </button>
                         </div>
                     `);
-                    
+
                     $('body').append(notification);
-                    
+
                     // Auto-ocultar después de 5 segundos
                     setTimeout(() => {
                         notification.fadeOut(() => notification.remove());
                     }, 5000);
                 }
-                
+
                 // Validación mejorada del formulario
                 function validateForm() {
                     let isValid = true;
                     let firstInvalid = null;
-                    
+
                     // Limpiar mensajes de error previos
                     $('.is-invalid').removeClass('is-invalid');
                     $('.invalid-feedback').hide();
-                    
+
                     // Validar campos requeridos
                     $('#entradaForm [required]').each(function () {
                         const field = $(this);
                         const value = field.val().trim();
-                        
+
                         if (!value) {
                             field.addClass('is-invalid');
                             field.siblings('.invalid-feedback').show();
-                            
+
                             if (!firstInvalid) {
                                 firstInvalid = field;
                             }
                             isValid = false;
                         }
                     });
-                    
+
                     // Validaciones específicas
                     const codigo = $('#codigo_g').val().trim();
                     if (codigo && codigo.includes(' ')) {
@@ -578,14 +587,14 @@ require_once '../../backend/bd/ctconex.php';
                         if (!firstInvalid) firstInvalid = $('#codigo_g');
                         isValid = false;
                     }
-                    
+
                     if (codigo && codigo.length < 3) {
                         $('#codigo_g').addClass('is-invalid');
                         $('#codigo_g').siblings('.invalid-feedback').text('El código debe tener al menos 3 caracteres').show();
                         if (!firstInvalid) firstInvalid = $('#codigo_g');
                         isValid = false;
                     }
-                    
+
                     // Validar formato de serial (opcional pero recomendado)
                     const serial = $('#serial').val().trim();
                     if (serial && serial.length < 5) {
@@ -594,35 +603,35 @@ require_once '../../backend/bd/ctconex.php';
                         if (!firstInvalid) firstInvalid = $('#serial');
                         isValid = false;
                     }
-                    
+
                     // Scroll al primer campo inválido
                     if (!isValid && firstInvalid) {
-                            firstInvalid.focus();
+                        firstInvalid.focus();
                         $('html, body').animate({
                             scrollTop: firstInvalid.offset().top - 100
                         }, 500);
                     }
-                    
+
                     return isValid;
                 }
-                
+
                 // Manejar envío del formulario con mejor manejo de errores
                 $('#entradaForm').submit(function (e) {
                     e.preventDefault();
-                    
+
                     // Validar formulario
                     if (!validateForm()) {
                         showNotification('Por favor complete todos los campos requeridos correctamente', 'error');
                         return;
                     }
-                    
+
                     // Deshabilitar botón y mostrar loading
                     const submitBtn = $('button[type="submit"]');
                     const originalText = submitBtn.html();
-                    
+
                     submitBtn.prop('disabled', true)
                         .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Procesando...');
-                    
+
                     // Enviar formulario vía AJAX
                     $.ajax({
                         url: $(this).attr('action'),
@@ -637,10 +646,10 @@ require_once '../../backend/bd/ctconex.php';
                                 $('#entradaForm')[0].reset();
                                 $('.is-invalid').removeClass('is-invalid');
                                 $('.invalid-feedback').hide();
-                                
+
                                 // Recargar tabla de entradas
                                 setTimeout(() => {
-                                location.reload();
+                                    location.reload();
                                 }, 2000);
                             } else {
                                 showNotification(response.error || 'Error al registrar la entrada', 'error');
@@ -653,9 +662,9 @@ require_once '../../backend/bd/ctconex.php';
                                 responseText: xhr.responseText,
                                 error: error
                             });
-                            
+
                             let errorMsg = 'Error al registrar la entrada';
-                            
+
                             try {
                                 const response = JSON.parse(xhr.responseText);
                                 if (response.error) {
@@ -677,7 +686,7 @@ require_once '../../backend/bd/ctconex.php';
                                     errorMsg = `Error ${xhr.status}: ${error}`;
                                 }
                             }
-                            
+
                             showNotification(errorMsg, 'error');
                         },
                         complete: function () {
@@ -686,13 +695,13 @@ require_once '../../backend/bd/ctconex.php';
                         }
                     });
                 });
-                
+
                 // Validación en tiempo real mejorada
                 $('#codigo_g').on('input', function () {
                     const value = $(this).val();
                     const field = $(this);
                     const feedback = field.siblings('.invalid-feedback');
-                    
+
                     if (value.includes(' ')) {
                         field.addClass('is-invalid');
                         feedback.text('No se permiten espacios').show();
@@ -704,13 +713,13 @@ require_once '../../backend/bd/ctconex.php';
                         feedback.hide();
                     }
                 });
-                
+
                 // Validación para serial
                 $('#serial').on('input', function () {
                     const value = $(this).val();
                     const field = $(this);
                     const feedback = field.siblings('.invalid-feedback');
-                    
+
                     if (value.length > 0 && value.length < 5) {
                         field.addClass('is-invalid');
                         feedback.text('El serial debe tener al menos 5 caracteres').show();
@@ -719,13 +728,13 @@ require_once '../../backend/bd/ctconex.php';
                         feedback.hide();
                     }
                 });
-                
+
                 // Limpiar validaciones cuando el usuario cambia los valores
                 $('input, select, textarea').on('input change', function () {
                     $(this).removeClass('is-invalid');
                     $(this).siblings('.invalid-feedback').hide();
                 });
-                
+
                 // Auto-completar campos basado en selecciones
                 $('#producto, #marca').on('change', function () {
                     if ($('#codigo_g').val() === '') {
@@ -738,28 +747,28 @@ require_once '../../backend/bd/ctconex.php';
                         }
                     }
                 });
-                
+
                 // Auto-completar lote
-                $('#proveedor').on('change', function() {
+                $('#proveedor').on('change', function () {
                     if ($('#lote').val() === '') {
                         const proveedor = $(this).find('option:selected').text();
                         if (proveedor && proveedor !== '----------Seleccione Proveedor------------') {
                             const nomenclatura = proveedor.split(' - ')[1];
                             if (nomenclatura) {
-                                const fecha = new Date().toISOString().slice(2,10).replace(/-/g, '');
+                                const fecha = new Date().toISOString().slice(2, 10).replace(/-/g, '');
                                 $('#lote').val(nomenclatura + fecha);
                             }
                         }
                     }
                 });
-                
+
                 // Manejar clic en botón ver detalles
                 $(document).on('click', '.view-btn', function () {
                     const entradaId = $(this).data('id');
-                    
+
                     // Mostrar modal
                     $('#detallesModal').modal('show');
-                    
+
                     // Cargar detalles vía AJAX
                     $.ajax({
                         url: '../../backend/php/get_entrada_details.php',
@@ -853,7 +862,7 @@ require_once '../../backend/bd/ctconex.php';
                         }
                     });
                 });
-                
+
                 // Función auxiliar para obtener clase de badge según el grado
                 function getGradeBadgeClass(grado) {
                     switch (grado) {
@@ -864,45 +873,45 @@ require_once '../../backend/bd/ctconex.php';
                         default: return 'secondary';
                     }
                 }
-                
+
                 // Inicializar tooltips
                 $('[data-toggle="tooltip"]').tooltip();
-                
+
                 // Importación masiva desde Excel
                 $('#startImport').on('click', function () {
                     const fileInput = $('#excel_file')[0];
                     const observations = $('#import_observations').val();
-                    
+
                     if (!fileInput.files.length) {
                         showNotification('❌ Por favor selecciona un archivo Excel', 'error');
                         return;
                     }
-                    
+
                     const file = fileInput.files[0];
                     const maxSize = 10 * 1024 * 1024; // 10MB
-                    
+
                     if (file.size > maxSize) {
                         showNotification('❌ El archivo es demasiado grande. Máximo 10MB permitido', 'error');
                         return;
                     }
-                    
+
                     // Crear FormData
                     const formData = new FormData();
                     formData.append('excel_file', file);
                     if (observations) {
                         formData.append('import_observations', observations);
                     }
-                    
+
                     // Deshabilitar botón y mostrar loading
                     const btn = $(this);
                     const originalText = btn.html();
-                    
+
                     btn.prop('disabled', true)
                         .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Importando...');
-                    
+
                     // Ocultar resultados previos
                     $('#importResults').hide();
-                    
+
                     // Realizar importación
                     $.ajax({
                         url: '../../backend/php/import_excel_equipos.php',
@@ -915,18 +924,18 @@ require_once '../../backend/bd/ctconex.php';
                             if (response.success) {
                                 showNotification('✅ ' + response.message, 'success');
                                 displayImportResults(response.results);
-                                
+
                                 // Recargar tabla después de 2 segundos
                                 setTimeout(() => {
                                     location.reload();
                                 }, 2000);
-                    } else {
+                            } else {
                                 showNotification('❌ ' + response.error, 'error');
                             }
                         },
                         error: function (xhr, status, error) {
                             let errorMsg = 'Error al importar archivo';
-                            
+
                             try {
                                 const response = JSON.parse(xhr.responseText);
                                 if (response.error) {
@@ -941,7 +950,7 @@ require_once '../../backend/bd/ctconex.php';
                                     errorMsg = `Error ${xhr.status}: ${error}`;
                                 }
                             }
-                            
+
                             showNotification('❌ ' + errorMsg, 'error');
                             console.error('Error de importación:', xhr.responseText);
                         },
@@ -950,12 +959,12 @@ require_once '../../backend/bd/ctconex.php';
                         }
                     });
                 });
-                
+
                 // Función para mostrar resultados de importación
                 function displayImportResults(results) {
                     const resultsContent = $('#resultsContent');
                     let html = '';
-                    
+
                     // Resumen general
                     html += `
                         <div class="row mb-3 fade-in-up">
@@ -993,50 +1002,50 @@ require_once '../../backend/bd/ctconex.php';
                             </div>
                         </div>
                     `;
-                    
+
                     // Detalles de equipos importados
                     if (results.success > 0) {
                         html += '<h6 class="text-success slide-in-right">✅ Equipos Importados Exitosamente:</h6>';
                         html += '<div class="table-responsive slide-in-right"><table class="table table-sm table-success">';
                         html += '<thead><tr><th>Fila</th><th>Código</th><th>Estado</th></tr></thead><tbody>';
-                        
+
                         results.details.filter(d => d.status === 'success').forEach(detail => {
                             html += `<tr><td>${detail.row}</td><td>${detail.codigo}</td><td>${detail.message}</td></tr>`;
                         });
-                        
+
                         html += '</tbody></table></div>';
                     }
-                    
+
                     // Detalles de equipos omitidos
                     if (results.skipped > 0) {
                         html += '<h6 class="text-warning slide-in-right">⚠️ Equipos Omitidos:</h6>';
                         html += '<div class="table-responsive slide-in-right"><table class="table table-sm table-warning">';
                         html += '<thead><tr><th>Fila</th><th>Código</th><th>Razón</th></tr></thead><tbody>';
-                        
+
                         results.details.filter(d => d.status === 'skipped').forEach(detail => {
                             html += `<tr><td>${detail.row}</td><td>${detail.codigo}</td><td>${detail.message}</td></tr>`;
                         });
-                        
+
                         html += '</tbody></table></div>';
                     }
-                    
+
                     // Detalles de errores
                     if (results.errors.length > 0) {
                         html += '<h6 class="text-danger slide-in-right">❌ Errores Encontrados:</h6>';
                         html += '<div class="table-responsive slide-in-right"><table class="table table-sm table-danger">';
                         html += '<thead><tr><th>Fila</th><th>Código</th><th>Error</th></tr></thead><tbody>';
-                        
+
                         results.errors.forEach(error => {
                             html += `<tr><td>${error.row}</td><td>${error.codigo}</td><td>${error.error}</td></tr>`;
                         });
-                        
+
                         html += '</tbody></table></div>';
                     }
-                    
+
                     resultsContent.html(html);
                     $('#importResults').show();
                 }
-                
+
                 // Limpiar modal al cerrar
                 $('#importModal').on('hidden.bs.modal', function () {
                     $('#importForm')[0].reset();

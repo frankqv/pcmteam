@@ -38,9 +38,7 @@ ob_start();
 </head>
 
 <body>
-
     <div class="wrapper">
-
         <div class="body-overlay"></div>
         <!-- layouts nav.php  |  Sidebar -->
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
@@ -50,7 +48,6 @@ ob_start();
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
         <!-- Page Content  -->
         <div id="content">
             <div class='pre-loader'>
@@ -59,19 +56,15 @@ ob_start();
             <div class="top-navbar">
                 <nav class="navbar navbar-expand-lg">
                     <div class="container-fluid">
-
                         <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
-
                         <a class="navbar-brand" href="#"> Clientes </a>
-
                         <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
                             data-toggle="collapse" data-target="#navbarSupportedContent"
                             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="material-icons">more_vert</span>
                         </button>
-
                         <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
                             id="navbarSupportedContent">
                             <ul class="nav navbar-nav ml-auto">
@@ -82,9 +75,7 @@ ob_start();
                                 </li>
                                 <li class="dropdown nav-item active">
                                     <a href="#" class="nav-link" data-toggle="dropdown">
-
                                         <img src="../../backend/img/reere.png">
-
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
@@ -93,19 +84,14 @@ ob_start();
                                         <li>
                                             <a href="../cuenta/salir.php">Salir</a>
                                         </li>
-
                                     </ul>
                                 </li>
-
                             </ul>
                         </div>
                     </div>
                 </nav>
             </div>
-
-
             <div class="main-content">
-
                 <div class="row ">
                     <div class="col-lg-12 col-md-12">
                         <div class="card" style="min-height: 485px">
@@ -116,15 +102,12 @@ ob_start();
                             <br>
                             <a href="../clientes/nuevo.php" class="btn btn-danger text-white">Nuevo cliente</a>
                             <a href="../clientes/importar.php" class="btn btn-success text-white ml-2">Subir archivo Excel</a>
-
-
                             <br>
                             <div class="card-content table-responsive">
                                 <?php
-                               require '../../backend/bd/ctconex.php'; 
+                                require '../../backend/bd/ctconex.php'; 
                                 $sentencia = $connect->prepare("SELECT * FROM clientes order BY nomcli DESC;");
                                 $sentencia->execute();
-
                                 $data =  array();
                                 if($sentencia){
                                 while($r = $sentencia->fetchObject()){

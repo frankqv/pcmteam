@@ -43,8 +43,8 @@ while ($rowTec = $resultTec->fetch_assoc()) {
             </nav>
             <!-- Page Content -->
             <div id="content">
-                <div class="top-navbar" style="background: #000000;">
-                    <nav class="navbar navbar-expand-lg">
+                <div class="top-navbar">
+                    <nav class="navbar navbar-expand-lg" style="background: #1abc9c;">
                         <div class="container-fluid">
                             <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                                 <span class="material-icons">arrow_back_ios</span>

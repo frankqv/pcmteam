@@ -75,7 +75,7 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
                 'icon' => 'assignment_late',
                 'children' => [
                     ['label' => '◖ LISTADO TRIAGE 2', 'url' => '../bodega/lista_triage_2.php'],
-                    ['label' => '◖ TRIAGE 2', 'url' => '../bodega/triage_2.php'],
+                    ['label' => '◖ INGRESAR TRIAGE 2', 'url' => '../bodega/triage2.php'],
                 ]
             ],
             [
