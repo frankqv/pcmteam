@@ -30,7 +30,6 @@ SELECT
     inv.fecha_modificacion,
     inv.observaciones,
     u.nombre AS tecnico_inventario,
-    
     t.estado AS triage_estado,
     t.categoria AS triage_categoria,
     t.observaciones AS triage_observaciones,
@@ -90,7 +89,7 @@ if (!$result) {
 <div class="wrapper">
     <div class="body-overlay"></div>
 
-    <?php include_once '../../layouts/nav.php'; include_once '../../layouts/menu_data.php'; ?>
+    <?php include_once '../layouts/nav.php'; include_once '../layouts/menu_data.php'; ?>
     <nav id="sidebar">
         <div class="sidebar-header">
             <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM</span></h3>
