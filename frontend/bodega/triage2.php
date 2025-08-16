@@ -13,7 +13,7 @@ $mysqli = null;
 $db_type = null; // 'pdo' or 'mysqli'
 // intenta incluir ctconex.php (ruta relativa desde /frontend/bodega/)
 $root = dirname(__DIR__, 2); // .../pcmteam
-$ctconex = $root . '/backend/bd/ctconex.php';
+$ctconex = $root . '../backend/bd/ctconex.php';
 if (file_exists($ctconex)) {
     require_once $ctconex;
 }
