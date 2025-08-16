@@ -10,48 +10,66 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5, 6, 7])) {
 require_once '../../backend/bd/ctconex.php';
 // Procesar asignación AJAX
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
-    header('Content-Type: application/json');
+    header('Content-Type: application/json; charset=utf-8');
+
     if ($_POST['action'] == 'assign_equipment') {
-        $equipoId = intval($_POST['equipo_id']);
-        $tecnicoId = intval($_POST['tecnico_id']);
-        $tipo = $_POST['tipo']; // 'triage' o 'process'
+        // datos
+        $equipoId  = intval($_POST['equipo_id'] ?? 0);
+        $tecnicoId = intval($_POST['tecnico_id'] ?? 0);
+        $tipo      = trim($_POST['tipo'] ?? 'triage');
+        $usuarioId = isset($_SESSION['id']) ? (int)$_SESSION['id'] : 0;
+
+        // validaciones basicas
+        if ($equipoId <= 0 || $tecnicoId <= 0 || $usuarioId <= 0) {
+            echo json_encode(['success' => false, 'message' => 'Parámetros inválidos (equipo/tecnico/sesión).']);
+            exit();
+        }
+
+        // Forzar que mysqli lance excepciones y poder catch
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
         try {
             $conn->begin_transaction();
-            $disposicion = ($tipo == 'triage') ? 'en_diagnostico' : 'en_proceso';
+
+            $disposicion = ($tipo === 'triage') ? 'en_diagnostico' : 'en_proceso';
+
+            // UPDATE inventario
             $stmt = $conn->prepare("UPDATE bodega_inventario SET tecnico_id = ?, disposicion = ?, fecha_modificacion = NOW() WHERE id = ?");
+            // tipos: i (tecnicoId), s (disposicion), i (equipoId)
             $stmt->bind_param("isi", $tecnicoId, $disposicion, $equipoId);
-            if ($stmt->execute()) {
-                // Registrar en log de asignaciones
-                $stmt2 = $conn->prepare("INSERT INTO bodega_salidas (inventario_id, tecnico_id, usuario_id, razon_salida, observaciones) VALUES (?, ?, ?, ?, ?)");
-                $razon = "Asignación para " . $tipo;
-                $observaciones = "Asignado desde dashboard por usuario ID: " . $_SESSION['id'];
-                $stmt2->bind_param("iisss", $equipoId, $tecnicoId, $_SESSION['id'], $razon, $observaciones);
-                $stmt2->execute();
-                $conn->commit();
-                echo json_encode(['success' => true, 'message' => 'Equipo asignado exitosamente']);
-            } else {
-                throw new Exception('Error al asignar equipo');
+            $stmt->execute();
+            $affected = $stmt->affected_rows;
+            $stmt->close();
+
+            if ($affected < 0) {
+                throw new Exception('No se pudo actualizar el inventario.');
             }
-        } catch (Exception $e) {
-            $conn->rollback();
-            echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+
+            // INSERT en bodega_salidas (log)
+            $stmt2 = $conn->prepare("INSERT INTO bodega_salidas (inventario_id, tecnico_id, usuario_id, razon_salida, observaciones) VALUES (?, ?, ?, ?, ?)");
+            $razon = "Asignación para " . $tipo;
+            $observaciones = "Asignado desde dashboard por usuario ID: " . $usuarioId;
+            // tipos: i (inventario_id), i (tecnico_id), i (usuario_id), s (razon), s (observaciones)
+            $stmt2->bind_param("iiiss", $equipoId, $tecnicoId, $usuarioId, $razon, $observaciones);
+            $stmt2->execute();
+            $stmt2->close();
+
+            $conn->commit();
+
+            echo json_encode(['success' => true, 'message' => 'Equipo asignado exitosamente']);
+            exit();
+        } catch (Throwable $e) {
+            // rollback si la transacción sigue abierta
+            if ($conn->errno) {
+                // intentar rollback silencioso si se puede
+                try { $conn->rollback(); } catch (Throwable $_ex) {}
+            }
+            // Log detallado para revisar en servidor (no exponer al cliente información sensible)
+            error_log("Asignar equipo error: " . $e->getMessage() . " | equipoId={$equipoId}, tecnicoId={$tecnicoId}, usuarioId={$usuarioId}");
+            // Respuesta JSON simple al cliente
+            echo json_encode(['success' => false, 'message' => 'Error al asignar equipo. Revisa logs o intenta nuevamente.']);
+            exit();
         }
-        exit();
-    }
-    if ($_POST['action'] == 'get_stats') {
-        $stats = [];
-        $sqlStats = "SELECT u.nombre, COUNT(bi.id) as total_equipos 
-            FROM usuarios u 
-            LEFT JOIN bodega_inventario bi ON u.id = bi.tecnico_id 
-            WHERE u.rol IN ('1','5','6','7') AND u.estado = '1'
-            GROUP BY u.id, u.nombre 
-            ORDER BY total_equipos DESC";
-        $result = $conn->query($sqlStats);
-        while ($row = $result->fetch_assoc()) {
-            $stats[] = $row;
-        }
-        echo json_encode($stats);
-        exit();
     }
 }
 // Obtener técnicos
@@ -636,7 +654,7 @@ if ($resultEquipos) {
                             },
                             error: function (xhr, status, error) {
                                 console.error('Error:', error);
-                                showAlert('Error de conexión. Intente nuevamente.', 'danger');
+                                showAlert('Error de conexión. Intente nuevamente.', 'success');
                             }
                         });
                     });
@@ -668,12 +686,12 @@ if ($resultEquipos) {
                                     // Remover el equipo del select
                                     $('#processEquipmentSelect option[value="' + equipoId + '"]').remove();
                                 } else {
-                                    showAlert(response.message, 'danger');
+                                    showAlert(response.message, 'success');
                                 }
                             },
                             error: function (xhr, status, error) {
                                 console.error('Error:', error);
-                                showAlert('Error de conexión. Intente nuevamente.', 'danger');
+                                showAlert('Revision Conexion.', 'success');
                             }
                         });
                     });

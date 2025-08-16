@@ -7,84 +7,139 @@ if (!isset($_SESSION['rol']) || !in_array((int)$_SESSION['rol'], [1, 2, 7, 6])) 
     header('location: ../error404.php');
     exit();
 }
+
+
 /* -------------------- Conexión (normaliza PDO / MySQLi / fallback) -------------------- */
-$pdo = null;
-$mysqli = null;
-$db_type = null; // 'pdo' or 'mysqli'
-// intenta incluir ctconex.php (ruta relativa desde /frontend/bodega/)
-$root = dirname(__DIR__, 2); // .../pcmteam
-$ctconex = $root . '../backend/bd/ctconex.php';
-if (file_exists($ctconex)) {
-    require_once $ctconex;
-}
-// detecta objetos expuestos por ctconex.php
-if (isset($conexion)) {
-    // puede ser PDO o mysqli
-    if ($conexion instanceof PDO) {
-        $pdo = $conexion;
-        $db_type = 'pdo';
-    } elseif ($conexion instanceof mysqli) {
-        $mysqli = $conexion;
-        $db_type = 'mysqli';
-    }
-}
-if (!$db_type && isset($con) && $con instanceof PDO) { $pdo = $con; $db_type='pdo'; }
-if (!$db_type && isset($con) && $con instanceof mysqli) { $mysqli = $con; $db_type='mysqli'; }
-if (!$db_type && isset($db) && $db instanceof PDO) { $pdo = $db; $db_type='pdo'; }
-if (!$db_type && isset($db) && $db instanceof mysqli) { $mysqli = $db; $db_type='mysqli'; }
-// fallback PDO típico XAMPP (localhost, usuario root sin pass)
-// si ya existe $pdo lo respetamos
-if (!$db_type) {
-    try {
-        $pdo = new PDO('mysql:host=127.0.0.1;dbname=u171145084_pcmteam;charset=utf8mb4', 'root', '');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        $db_type = 'pdo';
-    } catch (Throwable $e) {
-        die('No se pudo conectar a la base de datos. Detalle: ' . htmlspecialchars($e->getMessage()));
-    }
-}
-/* Helper: fetchAll para PDO o MySQLi */
-function db_fetch_all($sql, $params = []) {
-    global $db_type, $pdo, $mysqli;
-    if ($db_type === 'pdo') {
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->fetchAll();
-    } else {
-        // mysqli
-        $stmt = $mysqli->prepare($sql);
-        if ($stmt === false) throw new Exception('MySQLi prepare error: ' . $mysqli->error);
-        if (!empty($params)) {
-            // bind dynamically as strings
-            $types = str_repeat('s', count($params));
-            $stmt->bind_param($types, ...array_values($params));
-        }
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $rows = $res->fetch_all(MYSQLI_ASSOC);
-        $stmt->close();
-        return $rows;
-    }
-}
-/* Helper: execute (INSERT/UPDATE) con params */
-function db_execute($sql, $params = []) {
-    global $db_type, $pdo, $mysqli;
-    if ($db_type === 'pdo') {
-        $stmt = $pdo->prepare($sql);
-        return $stmt->execute($params);
-    } else {
-        $stmt = $mysqli->prepare($sql);
-        if ($stmt === false) throw new Exception('MySQLi prepare error: ' . $mysqli->error);
-        if (!empty($params)) {
-            $types = str_repeat('s', count($params));
-            $stmt->bind_param($types, ...array_values($params));
-        }
-        $ok = $stmt->execute();
-        $stmt->close();
-        return $ok;
-    }
-}
+/* Nota: Reemplaza la sección antigua por esta. Busca ctconex.php en varias rutas,
+   detecta conexiones ya creadas y, si no hay, intenta crear una PDO usando
+   constantes/variables o variables de entorno. */
+
+   $pdo = null;
+   $mysqli = null;
+   $db_type = null; // 'pdo' o 'mysqli'
+   
+   // Rutas comunes donde puede estar ctconex.php (ajusta si hace falta)
+   $ct_paths = [
+       __DIR__ . '/../../backend/bd/ctconex.php',
+       __DIR__ . '/../../../backend/bd/ctconex.php',
+       dirname(__DIR__, 2) . '/backend/bd/ctconex.php',
+       dirname(__DIR__, 3) . '/backend/bd/ctconex.php',
+       __DIR__ . '/../backend/bd/ctconex.php',
+       __DIR__ . '/../../bd/ctconex.php'
+   ];
+   foreach ($ct_paths as $p) {
+       if (file_exists($p)) {
+           require_once $p;
+           break;
+       }
+   }
+   
+   // Helper para leer credenciales desde varias fuentes (constantes, env, variables globales)
+   function pick_cred($names, $default = null) {
+       // $names: array de nombres posibles de constantes/env/variables
+       foreach ($names as $n) {
+           // constantes (dbhost, DB_HOST, ...)
+           if (defined($n)) return constant($n);
+           // variables de entorno
+           $env = getenv($n);
+           if ($env !== false && $env !== '') return $env;
+           // variables globales definidas en ctconex.php como $dbhost, $db_user, etc.
+           if (isset($GLOBALS[$n]) && $GLOBALS[$n] !== '') return $GLOBALS[$n];
+       }
+       return $default;
+   }
+   
+   // Intentar detectar una conexión ya creada por ctconex.php con nombres frecuentes
+   $possible_conns = ['connect','conn','conexion','con','db','pdo','mysqli'];
+   foreach ($possible_conns as $name) {
+       if (isset($$name)) {
+           $obj = $$name;
+           if ($obj instanceof PDO) { $pdo = $obj; $db_type = 'pdo'; break; }
+           if ($obj instanceof mysqli) { $mysqli = $obj; $db_type = 'mysqli'; break; }
+       }
+   }
+   
+   // Intentar detectar $connect (PDO) y $conn (mysqli) específicamente
+   if (!$db_type) {
+       if (isset($connect) && $connect instanceof PDO) { $pdo = $connect; $db_type = 'pdo'; }
+       if (isset($conn) && $conn instanceof mysqli) { $mysqli = $conn; $db_type = 'mysqli'; }
+   }
+   
+   // Si aún no hay conexión, leer credenciales (soportamos varios nombres)
+   $host = pick_cred(['dbhost','DB_HOST','DBHOST','db_host','DBHOSTNAME'], 'localhost');
+   $dbname = pick_cred(['dbname','DB_NAME','DBNAME','db_name'], 'u171145084_pcmteam');
+   $dbuser = pick_cred(['dbuser','DB_USER','DBUSER','db_user'], 'root');
+   $dbpass = pick_cred(['dbpass','DB_PASS','DBPASS','db_pass'], '');
+   
+   // Intentar crear PDO si no hay conexión
+   if (!$db_type) {
+       try {
+           // Asegurar que host y dbname estén definidos (si no, avisar)
+           if (empty($host) || empty($dbname) || empty($dbuser)) {
+               throw new Exception('Faltan credenciales de base de datos (host, dbname o usuario). Revisa backend/bd/ctconex.php o variables de entorno.');
+           }
+           $dsn = "mysql:host={$host};dbname={$dbname};charset=utf8mb4";
+           $pdo = new PDO($dsn, $dbuser, $dbpass, [
+               PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+               PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+           ]);
+           $db_type = 'pdo';
+       } catch (Throwable $e) {
+           // Mensaje claro para el administrador (no imprimimos la contraseña)
+           die('No se pudo conectar a la base de datos. Revisa credenciales en backend/bd/ctconex.php o variables de entorno. Detalle: ' . htmlspecialchars($e->getMessage()));
+       }
+   }
+   
+   // Si detectamos mysqli, aseguramos charset
+   if ($db_type === 'mysqli' && $mysqli instanceof mysqli) {
+       $mysqli->set_charset('utf8mb4');
+   }
+   
+   /* Helper: fetchAll para PDO o MySQLi */
+   function db_fetch_all($sql, $params = []) {
+       global $db_type, $pdo, $mysqli;
+       if ($db_type === 'pdo') {
+           $stmt = $pdo->prepare($sql);
+           $stmt->execute($params);
+           return $stmt->fetchAll();
+       } else {
+           // mysqli
+           $stmt = $mysqli->prepare($sql);
+           if ($stmt === false) throw new Exception('MySQLi prepare error: ' . $mysqli->error);
+           if (!empty($params)) {
+               // bind dinámico como strings
+               $types = str_repeat('s', count($params));
+               $stmt->bind_param($types, ...array_values($params));
+           }
+           $stmt->execute();
+           $res = $stmt->get_result();
+           $rows = $res->fetch_all(MYSQLI_ASSOC);
+           $stmt->close();
+           return $rows;
+       }
+   }
+   
+   /* Helper: execute (INSERT/UPDATE) con params */
+   function db_execute($sql, $params = []) {
+       global $db_type, $pdo, $mysqli;
+       if ($db_type === 'pdo') {
+           $stmt = $pdo->prepare($sql);
+           return $stmt->execute($params);
+       } else {
+           $stmt = $mysqli->prepare($sql);
+           if ($stmt === false) throw new Exception('MySQLi prepare error: ' . $mysqli->error);
+           if (!empty($params)) {
+               $types = str_repeat('s', count($params));
+               $stmt->bind_param($types, ...array_values($params));
+           }
+           $ok = $stmt->execute();
+           $stmt->close();
+           return $ok;
+       }
+   }
+   
+
+
 /* -------------------- Datos / Defaults -------------------- */
 $tecnico_id = isset($_SESSION['id']) ? (int)$_SESSION['id'] : 0;
 $mensaje = '';
@@ -268,7 +323,7 @@ if (!empty($ids_equipo) && $inventarioInfo === null) {
     <title>INGRESAR TRIAGE 2 - PCMARKETTEAM</title>
     <link rel="stylesheet" href="../../backend/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../backend/css/custom.css">
-    <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+    <link rel="icon" type="image/png" href="../../backend/img/favicon.png"/>
     <style>
         .form-section h2{font-size:1.05rem;margin-top:1rem}
         .form-section ul{list-style:none;padding-left:0}
