@@ -230,6 +230,7 @@ require_once '../../backend/bd/ctconex.php';
                                                             class="text-danger">*</span></label>
                                                     <select class="form-control" name="ram" id="ram" required>
                                                         <option value="">Seleccione la memoria RAM</option>
+                                                        <option value="N/A">N/A</option>
                                                         <option value="4GB">4GB</option>
                                                         <option value="8GB">8GB</option>
                                                         <option value="16GB">16GB</option>

@@ -1,31 +1,27 @@
+<!-- frontend/bodega/lista_triage_2.php
+-->
 <?php
 ob_start();
 session_start();
-
 if (!isset($_SESSION['rol']) || !in_array((int)$_SESSION['rol'], [1, 2, 7])) {
     header('Location: ../error404.php');
     exit;
 }
-
 require_once '../../backend/bd/ctconex.php';
-
 // Obtener técnicos para filtros o mostrar nombre
 $tecnicos = [];
 $resTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN (1,5,6,7) ORDER BY nombre");
 while ($r = $resTec->fetch_assoc()) {
     $tecnicos[$r['id']] = $r['nombre'];
 }
-
 // --- DETECCIÓN: si existe bodega_triages o bodega_diagnosticos usamos la que haya ---
 function table_exists($conn, $table) {
     $safe = $conn->real_escape_string($table);
     $res = $conn->query("SHOW TABLES LIKE '{$safe}'");
     return ($res && $res->num_rows > 0);
 }
-
 $use_triages = table_exists($conn, 'bodega_triages');
 $use_diagnos = table_exists($conn, 'bodega_diagnosticos');
-
 if ($use_triages) {
     // Si existe la tabla bodega_triages (compatibilidad con tu diseño original)
     $sql = "
@@ -116,12 +112,9 @@ if ($use_triages) {
     <link rel="stylesheet" href="../../backend/css/bootstrap.min.css" />
     <link rel="stylesheet" href="../../backend/css/datatable.css" />
     <link rel="stylesheet" href="../../backend/css/buttonsdataTables.css" />
-
     <link rel="stylesheet" href="../../backend/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../backend/css/custom.css">
     <link rel="icon" type="image/png" href="../../backend/img/favicon.png"/>
-
-
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet" />
     <style>
         body { font-family: Arial, sans-serif; margin: 12px; background: #f8f9fa; }
@@ -130,7 +123,6 @@ if ($use_triages) {
     </style>
 </head>
 <body>
-
 <div class="wrapper">
     <div class="body-overlay"></div>
     <?php include_once '../layouts/nav.php'; include_once '../layouts/menu_data.php'; ?>
@@ -228,7 +220,6 @@ if ($use_triages) {
             <?php endforeach; ?>
         </select>
     </div>
-
     <div class="table-responsive">
         <table id="triageTable" class="table table-striped table-bordered" style="width:100%">
             <thead>
@@ -261,8 +252,12 @@ if ($use_triages) {
                         <a href="ver_triage_2.php?id=<?= (int)$row['id'] ?>" class="btn btn-info btn-sm" title="Ver triage">
                             <span class="material-icons">visibility</span>
                         </a>
-                        <a href="editar_inventario.php?id=<?= (int)$row['id'] ?>" class="btn btn-primary btn-sm" title="Editar inventario">
+                        <script></script>
+                        <a href="editar_inventario.php?id=<?= (int)$row['id'] ?>" class="btn btn-info btn-sm" style="background-color: #dc3545;" title="Editar inventario Triage_1">
                             <span class="material-icons">edit</span>
+                        </a>
+                        <a href="triage2.php?id=<?= (int)$row['id'] ?>" class="btn btn btn-sm" style=" background-color:#f39c12;" title="Editar Triage_2">
+                            <span class="material-icons" style="color:#f2f2f2">edit</span>
                         </a>
                     </td>
                 </tr>
@@ -271,13 +266,11 @@ if ($use_triages) {
         </table>
     </div>
 </div>
-
 <script src="../../backend/js/jquery-3.3.1.min.js"></script>
 <script src="../../backend/js/bootstrap.min.js"></script>
 <script src="../../backend/js/datatable.js"></script>
 <script src="../../backend/js/datatablebuttons.js"></script>
 <script type="text/javascript" src="../../backend/js/sidebarCollapse.js"></script>
-
 <script>
 $(document).ready(function() {
     var table = $('#triageTable').DataTable({
@@ -289,7 +282,6 @@ $(document).ready(function() {
             { targets: [5], type: 'datetime' } // fecha de triage
         ]
     });
-
     // Filtro por técnico (usa texto del TD de la columna 8)
     $('#filterTecnico').on('change', function(){
         var val = $(this).val();

@@ -1,5 +1,17 @@
 #### Mapa actual del proyecto ####
-C:\xampp\htdocs\pcmteam
+Uso liberia de bootstrap5
+Uso liberia de php composer
+Uso liberia de php guzzlehttp
+Uso liberia de php oauth2-client
+Uso liberia de php league
+Uso liberia de php maennchen
+Uso liberia de php markbaker
+Uso liberia de php phpspreadsheet
+Uso liberia de php psr
+Uso liberia de php ralouphie
+Uso liberia de php symfony
+
+RAIZ PRINCIPAL DE PROGRMA INTERNO
 ├─ backend\                      (carpeta)
 ├─ frontend\                     (carpeta)
 ├─ vendor\                       (carpeta)

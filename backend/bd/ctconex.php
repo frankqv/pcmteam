@@ -1,3 +1,4 @@
+<!-- UBICACION backend/bd/ctconex.php -->
 <?php
 if (!isset($_SESSION)) {
     session_start();

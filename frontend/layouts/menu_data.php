@@ -83,7 +83,7 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
                 'class' => 'style-mantenimiento',
                 'children' => [
                     ['label' => '◖LISTADO EQUIPOS', 'url' => '../laboratorio/mostrar.php'],
-                    ['label' => '◖INGRESAR', 'url' => '../lab/myl.php'],
+                    ['label' => '◖INGRESAR', 'url' => '../laboratorio/ingresar_myl.php'],
                 ]
             ],
             [

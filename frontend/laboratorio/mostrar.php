@@ -1,3 +1,4 @@
+<!-- frontend/laboratorio/mostrar.php -->
 <?php
 ob_start();
 session_start();
@@ -48,7 +49,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                         <div class="container-fluid">
                             <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                                 <span class="material-icons">arrow_back_ios</span>
-                            </button>
+                            </button> 
                             <?php
                             $titulo = "";
                             if ($_SESSION['rol'] == 1) {
@@ -73,9 +74,8 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                 $titulo = $user['nombre'];
                             }
                             ?>
-                            <a class="navbar-brand" href="#"> <?php echo htmlspecialchars($titulo); ?> </a>
-                            <a class="navbar-brand" href="#"> Inventario </a>
-                        </div>
+                            <a class="navbar-brand" href="#"> LISTADO DE MANTENIMIEMNTO Y LIMPIEZA </a>
+                            </div>
                         <ul class="nav navbar-nav ml-auto">
                             <li class="dropdown nav-item active">
                                 <a href="#" class="nav-link" data-toggle="dropdown">
@@ -273,13 +273,15 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                     echo "<td>" . htmlspecialchars($row['tecnico_nombre']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['fecha_modificacion']) . "</td>";
                                                     echo "<td class='text-center'>
-                                                        <a href='javascript:void(0)' class='btn btn-info btn-sm view-btn' data-id='" . $row['id'] . "'><i class='material-icons'>visibility</i></a>
-                                                        <a href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "'><i class='material-icons'>edit</i></a>
-                                                        <a href='javascript:void(0)' class='btn btn-danger btn-sm delete-btn' data-id='" . $row['id'] . "'><i class='material-icons'>delete</i></a>
+                                                        <a href='javascript:void(0)' class='btn btn-info btn-sm view-btn' data-id='" . $row['id'] . "' title='VER | Detalles del EQUIPO'><i class='material-icons'>visibility</i></a>
+                                                        <a href='javascript:void(0)' class='btn btn-success btn-sm mantenimiento-btn' data-id='" . $row['id'] . "' title='Editar Matenimiento y Limpieza'><i class='material-icons'>edit</i></a>
+                                                        <a href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "'><i class='material-icons' title='Editar Equipo'>edit</i></a>
+                                                       
                                                     </td>";
                                                     echo "</tr>";
                                                 }
                                                 ?>
+                                                <!-- <a href='javascript:void(0)' class='btn btn-danger btn-sm delete-btn' data-id='" . $row['id'] . "'><i class='material-icons'>delete</i></a> -->
                                             </tbody>
                                         </table>
                                     </div>
@@ -343,17 +345,31 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                     table.draw();
                 });
                 // Ver detalles
-                $('.view-btn').click(function () {
+                // Reemplaza el bloque actual ".view-btn" por esto
+$(document).on('click', '.view-btn', function () {
+    var id = $(this).data('id');
+
+    $.ajax({
+        url: '../../backend/php/get_myl_details.php',
+        type: 'GET',                  // puedes usar POST si prefieres
+        data: { inventario_id: id },  // <-- aquí estaba el error: antes enviabas { id: id }
+        success: function (response) {
+            $('#viewModalBody').html(response);
+            $('#viewModal').modal('show');
+        },
+        error: function (xhr) {
+            // Mostrar error útil dentro del modal para depuración
+            var msg = 'Error al cargar detalles. HTTP ' + xhr.status + ' — ' + xhr.statusText;
+            if (xhr.responseText) msg += '<br><pre style="white-space:pre-wrap;">' + xhr.responseText + '</pre>';
+            $('#viewModalBody').html(msg);
+            $('#viewModal').modal('show');
+        }
+    });
+});             
+                // Editar equipo
+                $('.mantenimiento-btn').click(function () {
                     var id = $(this).data('id');
-                    $.ajax({
-                        url: '../../backend/php/get_inventario_details.php',
-                        type: 'GET',
-                        data: { id: id },
-                        success: function (response) {
-                            $('#viewModalBody').html(response);
-                            $('#viewModal').modal('show');
-                        }
-                    });
+                    window.location.href = 'ingresar_myl.php?id=' + id;
                 });
                 // Editar equipo
                 $('.edit-btn').click(function () {

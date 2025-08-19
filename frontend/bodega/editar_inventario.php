@@ -58,11 +58,10 @@ try {
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
         <!-- Page Content -->
         <div id="content">
             <div class="top-navbar">
-                <nav class="navbar navbar-expand-lg">
+                <nav class="navbar navbar-expand-lg"  style="background-color: #fa6b6b;">
                     <div class="container-fluid">
                         <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                             <span class="material-icons">arrow_back_ios</span>
@@ -71,7 +70,6 @@ try {
                     </div>
                 </nav>
             </div>
-
             <div class="main-content">
                 <div class="row">
                     <div class="col-md-12">
@@ -157,6 +155,7 @@ try {
                                                 <label for="ram">Memoria RAM instalada</label>
                                                 <select class="form-control" name="ram" id="ram" required>
                                                     <option value="">Seleccione la memoria RAM</option>
+                                                    <option value="N/A" <?php echo ($equipo['ram'] == 'N/A') ? 'selected' : ''; ?>>N/A</option>
                                                     <option value="4GB" <?php echo ($equipo['ram'] == '4GB') ? 'selected' : ''; ?>>4GB</option>
                                                     <option value="8GB" <?php echo ($equipo['ram'] == '8GB') ? 'selected' : ''; ?>>8GB</option>
                                                     <option value="16GB" <?php echo ($equipo['ram'] == '16GB') ? 'selected' : ''; ?>>16GB</option>

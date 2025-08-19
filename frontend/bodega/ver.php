@@ -103,7 +103,6 @@ if (!$userInfo) {
                     <ul class="nav navbar-nav ml-auto">
                         <li class="dropdown nav-item active">
                             <a href="#" class="nav-link" data-toggle="dropdown">
-                                <img src="../../backend/img/reere.png">
                                 <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto']); ?>" alt="Foto de perfil" style="width: 30px; height: 30px; border-radius: 50%;">
                             </a>
                             <ul class="dropdown-menu">

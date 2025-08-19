@@ -85,7 +85,8 @@ INSERT INTO `bodega_entradas` (`id`, `inventario_id`, `fecha_entrada`, `proveedo
 (15, 15, '2025-08-12 10:18:42', 8, 1, 1, 'Requiere cambio de pasta térmica y cambio de pantalla'),
 (16, 16, '2025-08-12 10:48:02', 8, 1, 1, 'Cambio pantalla\r\nPixel muerto en la izq, superior'),
 (17, 17, '2025-08-12 12:01:37', 1, 33, 1, 'Importación masiva desde Excel - Fila 2'),
-(18, 18, '2025-08-12 12:01:37', 1, 33, 1, 'Importación masiva desde Excel - Fila 3');
+(18, 18, '2025-08-12 12:01:37', 1, 33, 1, 'Importación masiva desde Excel - Fila 3'),
+(19, 33, '2025-08-19 10:17:53', 9, 1, 1, 'rayones en tapas');
 
 CREATE TABLE `bodega_inventario` (
   `id` int(11) NOT NULL,
@@ -122,17 +123,18 @@ INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `ubicacion`, `posicion`, `fec
 (5, 'EQ004', 'Principal', 'ESTANTE-2-A', '2025-08-08 17:01:12', '2025-08-11 12:53:58', 'Desktop', 'HP', 'DL123456782', 'Latitude 55223', 'Intel i7-10700', '16GB', '512GB SSD', '16', 'tallado tapas ypantalla', 'B', 'En Laboratorio', 'activo', 33, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
 (6, 'EQ006', 'Principal', 'ESTANTE-1-A', '2025-08-08 17:45:33', '2025-08-08 17:45:33', 'Desktop', 'Dell', 'HP987654322', 'EliteDesk 800', 'Intel i5-1135G7', '8GB', '512GB SSD', '16', 'tallado', 'B', 'En revisión', 'activo', 34, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
 (7, 'EQ007', 'Principal', 'ESTANTE-2-A', '2025-08-09 09:29:28', '2025-08-14 17:12:25', 'Portatil', 'Lenovo', 'LN456789124', 'lenovo x280', 'Intel i7-10700', '16GB', '256GB SSD', '14', 'pantalla tallada', 'B', 'en_diagnostico', 'activo', 1, NULL, NULL, 'NO', 'sitecPc08-25', NULL),
-(8, 'EQ008', 'Principal', 'ESTANTE-1-B', '2025-08-09 10:50:25', '2025-08-09 10:50:25', 'Portatil', 'Dell', 'DL123456922', 'DELL LATITUDE 7340', 'Intel i9-10700', '8GB', '256GB SSD', '20', 'teclas dañas J y la T', 'B', 'En revisión', 'activo', NULL, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
-(9, 'LPDA-1432', 'Unilago', 'Estante 1 - B', '2025-08-09 10:57:09', '2025-08-09 10:57:09', 'Portatil', 'Lenovo', 'ATG1288', 'X280', 'i5 13th', '16GB', '256 SSD', '16', 'PANTALLA TALLADA', 'B', 'En revisión', 'activo', NULL, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
-(10, 'EQ009', 'Medellín', 'ESTANTE-1-B', '2025-08-09 11:13:30', '2025-08-09 11:13:30', 'Portatil', 'Dell', 'DL123456791', 'Latitude 5520', 'Intel i5-10700', '8GB', '512GB SSD', '14', 'tallado', 'B', 'En revisión', 'activo', NULL, NULL, NULL, 'NO', 'sitecPc08-25', NULL),
+(8, 'EQ008', 'Principal', 'ESTANTE-1-B', '2025-08-09 10:50:25', '2025-08-16 12:27:30', 'Portatil', 'Dell', 'DL123456922', 'DELL LATITUDE 7340', 'Intel i9-10700', '8GB', '256GB SSD', '20', 'teclas dañas J y la T', 'B', 'en_diagnostico', 'activo', 1, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
+(9, 'LPDA-1432', 'Unilago', 'Estante 1 - B', '2025-08-09 10:57:09', '2025-08-16 12:34:27', 'Portatil', 'Lenovo', 'ATG1288', 'X280', 'i5 13th', '16GB', '256 SSD', '16', 'PANTALLA TALLADA', 'B', 'en_diagnostico', 'activo', 1, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
+(10, 'EQ009', 'Medellín', 'ESTANTE-1-B', '2025-08-09 11:13:30', '2025-08-16 12:34:44', 'Portatil', 'Dell', 'DL123456791', 'Latitude 5520', 'Intel i5-10700', '8GB', '512GB SSD', '14', 'tallado', 'B', 'en_diagnostico', 'activo', 1, NULL, NULL, 'NO', 'sitecPc08-25', NULL),
 (11, 'EQ010', 'Unilago', 'Estante 1 - C Fila B', '2025-08-09 11:17:04', '2025-08-09 11:17:04', 'Desktop', 'Dell', 'ATG128387', 'HP Elite GEN 5 ', 'i5 10th', '8GB', '512 SSD', '12', '', 'A', 'Para Venta', 'activo', 32, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
 (12, 'EQ011', 'Unilago', 'ESTANTE-2-A', '2025-08-09 11:44:38', '2025-08-11 14:08:37', 'Portatil', 'Dell', 'DL123456989', 'Latitude 5520', 'Intel i5-10400T', '8GB', '256GB SSD', '15.6', 'rayones en tapas', 'C', 'en_diagnostico', 'activo', 1, NULL, NULL, 'SI', 'sitecPc08-25', NULL),
-(13, 'EQ012', 'Principal', 'Estante 2 - C Fila A', '2025-08-11 14:28:04', '2025-08-11 14:30:06', 'Portatil', 'Dell', 'ATG1292', 'Latitude 55223', 'i5 11th', '8GB', '256 SSD', '12', 'Pantalla talada', 'B', 'en_diagnostico', 'activo', 33, NULL, NULL, 'NO', 'LoteSitecJULIO25', NULL),
-(14, 'EQ013', 'Principal', 'ESTANTE-2-A', '2025-08-11 17:53:40', '2025-08-11 17:53:40', 'Portatil', 'Dell', 'DL123456799', 'Latitude 5520', 'Intel i7-10700', '8GB', '256GB SSD', '16', 'pantalla tallada', 'B', 'En revisión', 'activo', NULL, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
-(15, 'EQ014', 'Principal', 'ESTANTE-2-A', '2025-08-12 10:18:42', '2025-08-12 10:18:42', 'Portatil', 'HP', 'HP Pavilion G7', '6H8W2PA#ACJ', 'Intel i7-1135G7', '16GB', '512GB SSD', '16', 'Requiere cambio de pasta térmica y cambio de pantalla', 'B', 'En revisión', 'activo', NULL, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
-(16, 'EQ015', 'Principal', 'ESTANTE-5-B', '2025-08-12 10:48:02', '2025-08-12 10:48:02', 'Portatil', 'Dell', 'DL12345827', 'Latitude 5420', 'Intel i5-1135G7', '8GB', '512GB SSD', '14', 'Cambio pantalla\r\nPixel muerto en la izq, superior', 'B', 'En revisión', 'activo', NULL, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
-(17, 'EQ017', 'Principal', 'ESTANTE-1-A', '2025-08-12 12:01:37', '2025-08-14 17:35:19', 'Portatil', 'Dell', 'DL123453234', 'Latitude 5520', 'Intel i5-1135G7', '8GB', '256GB SSD', '15.6', 'Equipo en buen estado, cambio de pasta termica', 'B', 'en_diagnostico', 'activo', 1, NULL, NULL, 'SI', 'SITEC-2025-01', NULL),
-(18, 'EQ018', 'Unilago', 'ESTANTE-2-B', '2025-08-12 12:01:37', '2025-08-12 12:01:37', 'Desktop', 'HP', 'HP987654873', 'EliteDesk 800', 'Intel i7-10700', '16GB', '512GB SSD', 'N/A', 'EQUIPO casi su totoalidad', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'SITEC-2025-01', NULL);
+(13, 'EQ012', 'Principal', 'Estante 2 - C Fila A', '2025-08-11 14:28:04', '2025-08-16 12:27:34', 'Portatil', 'Dell', 'ATG1292', 'Latitude 55223', 'i5 11th', '8GB', '256 SSD', '12', 'Pantalla talada', 'B', 'en_proceso', 'activo', 1, NULL, NULL, 'NO', 'LoteSitecJULIO25', NULL),
+(14, 'EQ013', 'Principal', 'ESTANTE-2-A', '2025-08-11 17:53:40', '2025-08-16 12:35:51', 'Portatil', 'Dell', 'DL123456799', 'Latitude 5520', 'Intel i7-10700', '8GB', '256GB SSD', '16', 'pantalla tallada', 'B', 'en_proceso', 'activo', 1, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
+(15, 'EQ014', 'Principal', 'ESTANTE-2-A', '2025-08-12 10:18:42', '2025-08-16 12:27:20', 'Portatil', 'HP', 'HP Pavilion G7', '6H8W2PA#ACJ', 'Intel i7-1135G7', '16GB', '512GB SSD', '16', 'Requiere cambio de pasta térmica y cambio de pantalla', 'B', 'en_diagnostico', 'activo', 1, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
+(16, 'EQ015', 'Principal', 'ESTANTE-5-B', '2025-08-12 10:48:02', '2025-08-16 12:29:00', 'Portatil', 'Dell', 'DL12345827', 'Latitude 5420', 'Intel i5-1135G7', '8GB', '512GB SSD', '14', 'Cambio pantalla\r\nPixel muerto en la izq, superior', 'B', 'en_diagnostico', 'activo', 1, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
+(17, 'EQ017', 'Principal', 'ESTANTE-1-A', '2025-08-12 12:01:37', '2025-08-16 12:27:31', 'Portatil', 'Dell', 'DL123453234', 'Latitude 5520', 'Intel i5-1135G7', '8GB', '256GB SSD', '15.6', 'Equipo en buen estado, cambio de pasta termica', 'B', 'en_proceso', 'activo', 1, NULL, NULL, 'SI', 'SITEC-2025-01', NULL),
+(18, 'EQ018', 'Unilago', 'ESTANTE-2-B', '2025-08-12 12:01:37', '2025-08-16 12:40:03', 'Desktop', 'HP', 'HP987654873', 'EliteDesk 800', 'Intel i7-10700', '16GB', '512GB SSD', 'N/A', 'EQUIPO casi su totoalidad', 'B', 'en_proceso', 'activo', 14, NULL, NULL, 'NO', 'SITEC-2025-01', NULL),
+(33, 'EQ019', 'Principal', 'ESTANTE-1-B', '2025-08-19 10:17:53', '2025-08-19 10:22:58', 'Monitor', 'Dell', 'DL1234593739', ' U2515H', '', 'N/A', '', '', 'rayones en tapas', 'B', 'En revisión', 'activo', NULL, NULL, NULL, 'NO', 'pchekt542007-25', NULL);
 
 CREATE TABLE `bodega_mantenimiento` (
   `id` int(11) NOT NULL,
@@ -196,7 +198,56 @@ INSERT INTO `bodega_salidas` (`id`, `inventario_id`, `fecha_salida`, `tecnico_id
 (3, 12, '2025-08-11 14:08:38', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
 (4, 27, '2025-08-11 14:30:06', 33, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
 (5, 7, '2025-08-14 17:12:25', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
-(6, 17, '2025-08-14 17:35:19', 1, 4, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 4');
+(6, 17, '2025-08-14 17:35:19', 1, 4, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 4'),
+(7, 17, '2025-08-16 12:27:00', 1, 1, 1, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1'),
+(8, 15, '2025-08-16 12:27:11', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(9, 15, '2025-08-16 12:27:12', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(10, 15, '2025-08-16 12:27:12', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(11, 15, '2025-08-16 12:27:12', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(12, 15, '2025-08-16 12:27:14', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(13, 15, '2025-08-16 12:27:16', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(14, 15, '2025-08-16 12:27:16', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(15, 15, '2025-08-16 12:27:17', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(16, 15, '2025-08-16 12:27:20', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(17, 15, '2025-08-16 12:27:20', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(18, 15, '2025-08-16 12:27:20', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(19, 8, '2025-08-16 12:27:23', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(20, 8, '2025-08-16 12:27:24', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(21, 8, '2025-08-16 12:27:24', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(22, 8, '2025-08-16 12:27:29', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(23, 8, '2025-08-16 12:27:30', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(24, 8, '2025-08-16 12:27:30', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(25, 17, '2025-08-16 12:27:31', 1, 1, 1, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1'),
+(26, 17, '2025-08-16 12:27:31', 1, 1, 1, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1'),
+(27, 17, '2025-08-16 12:27:31', 1, 1, 1, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1'),
+(28, 13, '2025-08-16 12:27:33', 1, 1, 1, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1'),
+(29, 13, '2025-08-16 12:27:34', 1, 1, 1, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1'),
+(30, 13, '2025-08-16 12:27:34', 1, 1, 1, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1'),
+(31, 13, '2025-08-16 12:27:34', 1, 1, 1, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1'),
+(32, 16, '2025-08-16 12:28:59', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(33, 16, '2025-08-16 12:29:00', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(34, 16, '2025-08-16 12:29:00', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(35, 16, '2025-08-16 12:29:00', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(36, 16, '2025-08-16 12:29:00', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(37, 18, '2025-08-16 12:29:21', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(38, 18, '2025-08-16 12:29:23', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(39, 18, '2025-08-16 12:30:50', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(40, 18, '2025-08-16 12:30:50', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(41, 18, '2025-08-16 12:30:50', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(42, 18, '2025-08-16 12:31:31', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(43, 18, '2025-08-16 12:31:32', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(44, 18, '2025-08-16 12:31:32', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(45, 9, '2025-08-16 12:34:26', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(46, 9, '2025-08-16 12:34:27', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(47, 9, '2025-08-16 12:34:27', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(48, 14, '2025-08-16 12:34:31', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(49, 14, '2025-08-16 12:34:31', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(50, 14, '2025-08-16 12:34:32', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(51, 14, '2025-08-16 12:34:32', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(52, 14, '2025-08-16 12:34:32', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(53, 10, '2025-08-16 12:34:44', 1, 1, 1, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1'),
+(54, 14, '2025-08-16 12:35:51', 1, 1, 1, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1'),
+(55, 18, '2025-08-16 12:40:03', 14, 1, 1, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1');
 
 CREATE TABLE `cart` (
   `idv` int(11) NOT NULL,
@@ -628,10 +679,10 @@ ALTER TABLE `bodega_diagnosticos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 ALTER TABLE `bodega_entradas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 ALTER TABLE `bodega_inventario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 ALTER TABLE `bodega_mantenimiento`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
@@ -640,7 +691,7 @@ ALTER TABLE `bodega_partes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 ALTER TABLE `bodega_salidas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 ALTER TABLE `cart`
   MODIFY `idv` int(11) NOT NULL AUTO_INCREMENT;
