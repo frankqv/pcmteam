@@ -59,7 +59,7 @@ $mysqli = null;
 if (isset($conn) && $conn instanceof mysqli) {
     $mysqli = $conn;
 } elseif (defined('DB_HOST') && defined('DB_USER') && defined('DB_PASS') && defined('DB_NAME')) {
-    $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+    $mysqli = new mysqli('localhost','u171145084_pcmteam', 'PCcomercial2025*', 'u171145084_pcmteam');
     if ($mysqli->connect_error) {
         enviarRespuesta('error', 'Error de conexión a la base de datos');
     }

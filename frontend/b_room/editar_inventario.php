@@ -45,7 +45,6 @@ try {
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
 </head>
-
 <body>
     <div class="wrapper">
         <div class="body-overlay"></div>
@@ -58,7 +57,6 @@ try {
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
         <!-- Page Content -->
         <div id="content">
             <div class="top-navbar">
@@ -72,7 +70,6 @@ try {
                     </div>
                 </nav>
             </div>
-
             <div class="main-content">
                 <div class="row">
                     <div class="col-md-12">
@@ -147,7 +144,6 @@ try {
                                                     value="<?php echo htmlspecialchars($equipo['modelo']); ?>" required>
                                             </div>
                                         </div>
-
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="procesador">Especificaciones del procesador</label>
@@ -212,7 +208,6 @@ try {
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-3">
                                         <div class="col-md-12 text-center">
                                             <button type="submit" class="btn btn-primary">
@@ -231,20 +226,17 @@ try {
             </div>
         </div>
     </div>
-
     <!-- Scripts -->
     <script src="../../backend/js/jquery-3.3.1.min.js"></script>
     <script src="../../backend/js/popper.min.js"></script>
     <script src="../../backend/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../backend/js/sidebarCollapse.js"></script>
     <script src="../../backend/js/loader.js"></script>
-
     <script>
         $(document).ready(function () {
             // Manejar envío del formulario
             $('#editarForm').submit(function (e) {
                 e.preventDefault();
-
                 // Validar campos requeridos
                 let isValid = true;
                 $(this).find('[required]').each(function () {
@@ -255,12 +247,10 @@ try {
                         $(this).removeClass('is-invalid');
                     }
                 });
-
                 if (!isValid) {
                     alert('Por favor complete todos los campos requeridos');
                     return;
                 }
-
                 $.ajax({
                     url: $(this).attr('action'),
                     type: 'POST',
@@ -285,19 +275,16 @@ try {
                     }
                 });
             });
-
             // Remover clase de error cuando el usuario empiece a escribir
             $('[required]').on('input change', function () {
                 $(this).removeClass('is-invalid');
             });
         });
     </script>
-
     <style>
         .is-invalid {
             border-color: #dc3545 !important;
         }
-
         .btn i {
             vertical-align: middle;
             margin-right: 5px;
