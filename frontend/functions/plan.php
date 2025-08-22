@@ -1,5 +1,5 @@
  <?php 
- require '../../backend/bd/ctconex.php';
+ require '../../config/ctconex.php';
  echo '<option value="0">----------Seleccione------------</option>';
  $stmt = $connect->prepare("SELECT * FROM plan where estp='Activo' order by idplan desc");
 

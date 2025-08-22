@@ -1,6 +1,6 @@
 <?php
 require_once '../../backend/pdf/fpdf.php';
-require_once '../../backend/bd/ctconex.php';
+require_once '../../config/ctconex.php';
 
 // Obtener el ID del pedido
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;

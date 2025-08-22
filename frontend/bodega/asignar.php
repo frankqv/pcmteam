@@ -7,7 +7,7 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5, 6, 7])) {
     header('location: ../error404.php');
     exit();
 }
-require_once '../../backend/bd/ctconex.php';
+require_once '../../config/ctconex.php';
 // Procesar asignación AJAX
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     header('Content-Type: application/json; charset=utf-8');
@@ -135,7 +135,7 @@ if ($resultEquipos) {
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
         <!--google material icon-->
         <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-        <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+        <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
         <style>
             * {
                 margin: 0;
@@ -370,7 +370,7 @@ if ($resultEquipos) {
             include_once '../layouts/menu_data.php'; ?>
             <nav id="sidebar">
                 <div class="sidebar-header">
-                    <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM</span></h3>
+                    <h3><img src="../../backend/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
                 </div>
                 <?php renderMenu($menu); ?>
             </nav>

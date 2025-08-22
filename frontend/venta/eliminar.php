@@ -4,7 +4,7 @@
     }
 
     $id = $_GET['id'];
-    include '../../backend/bd/ctconex.php';
+    include '../../config/ctconex.php';
 
     $sentencia = $connect->prepare("DELETE FROM cart WHERE idv = ?;");
     $resultado = $sentencia->execute([$id]);

@@ -1,9 +1,7 @@
 <?php
-
- ?>
+?>
 <!DOCTYPE html>
 <html lang="es" class="h-100">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -36,7 +34,6 @@
         padding: 0;
         box-sizing: border-box;
     }
-
     body {
         font-family: 'Inter', sans-serif;
         background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
@@ -45,7 +42,6 @@
         display: flex;
         flex-direction: column;
     }
-
     /* Header Styles */
     .main-header {
         position: fixed;
@@ -58,7 +54,6 @@
         padding: 1rem 0;
         transition: all 0.3s ease;
     }
-
     .header-container {
         max-width: 1200px;
         margin: 0 auto;
@@ -67,27 +62,28 @@
         align-items: center;
         padding: 0 2rem;
     }
-
     .logo h1 {
         font-size: 1.8rem;
         font-weight: 700;
         letter-spacing: -0.5px;
     }
-
     .logo span {
         color: #2B6B5D;
         background: linear-gradient(45deg, #2B6B5D, #00dc92);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        background-clip: border-box;
+        background-clip: padding-box;
+        background-clip: content-box;
+        background-clip: text;
+        background-clip: border-area;
     }
-
     .nav-menu {
         display: flex;
         list-style: none;
         gap: 2rem;
         align-items: center;
     }
-
     .nav-menu a {
         color: white;
         text-decoration: none;
@@ -97,18 +93,15 @@
         transition: all 0.3s ease;
         text-transform: capitalize;
     }
-
     .nav-menu a:hover {
         background: rgba(73, 182, 159, 0.1);
         color: #2B6B5D;
         transform: translateY(-2px);
     }
-
     .social-links {
         display: flex;
         gap: 1rem;
     }
-
     .social-links a {
         color: white;
         font-size: 1.2rem;
@@ -117,13 +110,11 @@
         transition: all 0.3s ease;
         background: rgba(255, 255, 255, 0.1);
     }
-
     .social-links a:hover {
         background: #2B6B5D;
         transform: translateY(-3px);
         box-shadow: 0 5px 15px rgba(73, 182, 159, 0.4);
     }
-
     .menu-toggle {
         display: none;
         background: none;
@@ -132,7 +123,6 @@
         font-size: 1.5rem;
         cursor: pointer;
     }
-
     /* Hero Section */
     .hero-section {
         flex: 1;
@@ -144,7 +134,6 @@
         position: relative;
         overflow: hidden;
     }
-
     .hero-section::before {
         content: '';
         position: absolute;
@@ -155,12 +144,10 @@
         background: radial-gradient(circle at 50% 50%, rgba(73, 182, 159, 0.1) 0%, transparent 50%);
         z-index: -1;
     }
-
     .hero-content {
         max-width: 800px;
         animation: fadeInUp 1s ease-out;
     }
-
     .hero-title {
         font-size: 3.5rem;
         font-weight: 700;
@@ -169,8 +156,12 @@
         background: linear-gradient(45deg, #ffffff, #2B6B5D);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        background-clip: border-box;
+        background-clip: padding-box;
+        background-clip: content-box;
+        background-clip: text;
+        background-clip: border-area;
     }
-
     .hero-subtitle {
         font-size: 1.3rem;
         margin-bottom: 2rem;
@@ -178,7 +169,6 @@
         line-height: 1.6;
         font-weight: 300;
     }
-
     .cta-button {
         display: inline-block;
         background: linear-gradient(45deg, #2B6B5D, #00dc92);
@@ -191,13 +181,11 @@
         transition: all 0.3s ease;
         box-shadow: 0 10px 30px rgba(73, 182, 159, 0.3);
     }
-
     .cta-button:hover {
         transform: translateY(-3px);
         box-shadow: 0 15px 40px rgba(73, 182, 159, 0.4);
         color: white;
     }
-
     /* Contact Section */
     .contact-section {
         background: rgba(255, 255, 255, 0.05);
@@ -205,12 +193,10 @@
         padding: 4rem 2rem;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
-
     .contact-container {
         max-width: 1200px;
         margin: 0 auto;
     }
-
     .contact-title {
         text-align: center;
         font-size: 2.5rem;
@@ -218,14 +204,12 @@
         margin-bottom: 3rem;
         color: #2B6B5D;
     }
-
     .contact-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
         margin-bottom: 2rem;
     }
-
     .contact-item {
         background: rgba(255, 255, 255, 0.1);
         padding: 2rem;
@@ -234,31 +218,26 @@
         transition: all 0.3s ease;
         border: 1px solid rgba(73, 182, 159, 0.2);
     }
-
     .contact-item:hover {
         transform: translateY(-5px);
         background: rgba(73, 182, 159, 0.1);
         box-shadow: 0 10px 30px rgba(73, 182, 159, 0.2);
     }
-
     .contact-item i {
         font-size: 2.5rem;
         color: #00dc92;
         margin-bottom: 1rem;
         display: block;
     }
-
     .contact-item h3 {
         font-size: 1.2rem;
         margin-bottom: 0.5rem;
         color: #2B6B5D;
     }
-
     .contact-item p {
         opacity: 0.9;
         line-height: 1.6;
     }
-
     /* Footer */
     .main-footer {
         background: rgba(0, 0, 0, 0.3);
@@ -267,7 +246,6 @@
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         margin-top: auto;
     }
-
     .footer-content {
         max-width: 1200px;
         margin: 0 auto;
@@ -277,35 +255,29 @@
         flex-wrap: wrap;
         gap: 1rem;
     }
-
     .footer-text {
         opacity: 0.8;
     }
-
     .footer-text span {
         color: #2B6B5D;
         font-weight: 600;
     }
-
     /* Animations */
     @keyframes fadeInUp {
         from {
             opacity: 0;
             transform: translateY(30px);
         }
-
         to {
             opacity: 1;
             transform: translateY(0);
         }
     }
-
     /* Responsive Design */
     @media (max-width: 768px) {
         .header-container {
             padding: 0 1rem;
         }
-
         .nav-menu {
             position: fixed;
             top: 100%;
@@ -317,72 +289,57 @@
             transition: top 0.3s ease;
             backdrop-filter: blur(20px);
         }
-
         .nav-menu.active {
             top: 100%;
         }
-
         .menu-toggle {
             display: block;
         }
-
         .hero-title {
             font-size: 2.5rem;
         }
-
         .hero-subtitle {
             font-size: 1.1rem;
         }
-
         .contact-grid {
             grid-template-columns: 1fr;
         }
-
         .footer-content {
             flex-direction: column;
             text-align: center;
         }
     }
-
     @media (max-width: 480px) {
         .hero-section {
             padding: 6rem 1rem 3rem;
         }
-
         .hero-title {
             font-size: 2rem;
         }
-
         .contact-section {
             padding: 3rem 1rem;
         }
     }
-
     /* Scroll Behavior */
     html {
         scroll-behavior: smooth;
     }
-
     /* Custom Scrollbar */
     ::-webkit-scrollbar {
         width: 8px;
     }
-
     ::-webkit-scrollbar-track {
         background: #1a1a2e;
     }
-
     ::-webkit-scrollbar-thumb {
         background: #2B6B5D;
         border-radius: 4px;
     }
-
     ::-webkit-scrollbar-thumb:hover {
         background: #00dc92;
     }
     </style>
 </head>
-
 <body>
     <!-- Header -->
     <header class="main-header">
@@ -390,13 +347,11 @@
             <div class="logo">
                 <h1><span>PCMARKET</span>TEAM</h1>
             </div>
-
             <nav class="nav-menu" id="navMenu">
                 <a href="#inicio" onclick="closeMenu()">Inicio</a>
                 <a href="#contacto" onclick="closeMenu()">Contacto</a>
                 <a href="frontend/login.php" onclick="closeMenu()">Ingresar</a>
             </nav>
-
             <div class="social-links">
                 <a href="https://api.whatsapp.com/send/?phone=573222024365&text=%C2%A1Hola!%20%F0%9F%91%8B%20Bienvenido%2Fa%20%F0%9F%98%8E%0A%0ASoy%20FrankQV%2C%20el%20desarrollador%20detr%C3%A1s%20de%20este%20sistema.%20%F0%9F%9A%80%0A%0AAdem%C3%A1s%20de%20construir%20soluciones%20como%20esta%2C%20tambi%C3%A9n%20ofrezco%3A%0A%E2%9C%85%20Desarrollo%20de%20p%C3%A1ginas%20web%0A%E2%9C%85%20Sistemas%20a%20medida%0A%E2%9C%85%20Automatizaciones%20y%20m%C3%A1s%0A%0AJuntos%20podemos%20llevar%20la%20tecnolog%C3%ADa%20a%20otro%20nivel%20%F0%9F%9A%80%F0%9F%98%8E%0A%0A%C2%BFEn%20qu%C3%A9%20puedo%20ayudarte%20hoy%3F%20%F0%9F%92%AC"
                     target="_blank" rel="noopener noreferrer" title="WhatsApp">
@@ -412,15 +367,12 @@
                     <i class="fa-brans fa-github"></i>
                 </a>
 
-
             </div>
-
             <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()">
                 <i class="fa-solid fa-bars"></i>
             </button>
         </div>
     </header>
-
     <!-- Hero Section -->
     <main class="hero-section" style="background:#215247;" id="inicio">
         <div class="hero-content">
@@ -429,13 +381,12 @@
                 Tu destino tecnológico de confianza. Ofrecemos las mejores soluciones en hardware y software
                 con el respaldo de expertos en tecnología. Transformamos tus ideas en realidad digital.
             </p>
-            <a href="#contacto" class="cta-button">
+            <a href="frontend/login.php" class="cta-button" onclick="closeMenu()">
                 <i class="fas fa-rocket"></i> Comenzar Ahora
             </a>
         </div>
         <!-- Hero Image -->
     </main>
-
     <section id="inicio" class="contacto">
         <div class="fila">
             <!-- xml version="1.0" encoding="UTF-8" -->
@@ -446,213 +397,162 @@
                     .cls-1 {
                         fill: url(#linear-gradient-15);
                     }
-
                     .cls-2 {
                         fill: url(#linear-gradient-13);
                     }
-
                     .cls-3 {
                         fill: #e3aa00;
                     }
-
                     .cls-4 {
                         fill: url(#linear-gradient-2);
                     }
-
                     .cls-5 {
                         fill: url(#linear-gradient-10);
                     }
-
                     .cls-6 {
                         fill: url(#linear-gradient-12);
                     }
-
                     .cls-7 {
                         fill: #fff;
                     }
-
                     .cls-8 {
                         mask: url(#mask);
                     }
-
                     .cls-9 {
                         fill: #f59091;
                     }
-
                     .cls-10,
                     .cls-11,
                     .cls-12 {
                         fill: none;
                     }
-
                     .cls-13 {
                         fill: url(#linear-gradient-4);
                     }
-
                     .cls-14 {
                         fill: #aca7c4;
                     }
-
                     .cls-11 {
                         mix-blend-mode: overlay;
                         opacity: .22;
                         stroke: #fff;
                         stroke-width: 8.55px;
                     }
-
                     .cls-11,
                     .cls-12 {
                         stroke-miterlimit: 10;
                     }
-
                     .cls-15 {
                         fill: #00dc92;
                     }
-
                     .cls-16 {
                         fill: #ffa6a3;
                     }
-
                     .cls-17 {
                         fill: #190075;
                     }
-
                     .cls-18 {
                         fill: #e1eae8;
                     }
-
                     .cls-19 {
                         fill: #a86342;
                     }
-
                     .cls-20 {
                         fill: url(#linear-gradient-3);
                     }
-
                     .cls-21 {
                         clip-path: url(#clippath-1);
                     }
-
                     .cls-22 {
                         fill: url(#linear-gradient-5);
                     }
-
                     .cls-23 {
                         fill: url(#linear-gradient-22);
                     }
-
                     .cls-24 {
                         fill: #ab96ff;
                     }
-
                     .cls-25 {
                         isolation: isolate;
                     }
-
                     .cls-26 {
                         fill: #2a2e5e;
                     }
-
                     .cls-27 {
                         fill: #8f4928;
                     }
-
                     .cls-12 {
                         stroke: #002032;
                     }
-
                     .cls-28 {
                         fill: url(#linear-gradient-8);
                     }
-
                     .cls-29 {
                         fill: #eff4df;
                     }
-
                     .cls-30 {
                         fill: #ffbab8;
                     }
-
                     .cls-31 {
                         fill: #d1c7ff;
                     }
-
                     .cls-32 {
                         fill: #210099;
                     }
-
                     .cls-33 {
                         fill: url(#linear-gradient-14);
                     }
-
                     .cls-34 {
                         fill: url(#linear-gradient-20);
                     }
-
                     .cls-35 {
                         fill: url(#linear-gradient-17);
                     }
-
                     .cls-36 {
                         fill: url(#linear-gradient-7);
                     }
-
                     .cls-37 {
                         fill: url(#linear-gradient-9);
                     }
-
                     .cls-38 {
                         fill: url(#linear-gradient-11);
                     }
-
                     .cls-39 {
                         fill: url(#linear-gradient-19);
                     }
-
                     .cls-40 {
                         fill: url(#linear-gradient-6);
                     }
-
                     .cls-41 {
                         fill: url(#linear-gradient-21);
                     }
-
                     .cls-42 {
                         fill: #f06d42;
                     }
-
                     .cls-43 {
                         fill: #f6f6f7;
                     }
-
                     .cls-44 {
                         opacity: .19;
                     }
-
                     .cls-45 {
                         opacity: .28;
                     }
-
                     .cls-46 {
                         fill: url(#linear-gradient-16);
                     }
-
                     .cls-47 {
                         fill: #ffbf00;
                     }
-
                     .cls-48 {
                         fill: url(#linear-gradient);
                     }
-
                     .cls-49 {
                         clip-path: url(#clippath);
                     }
-
                     .cls-50 {
                         fill: #9a87e6;
                     }
-
                     .cls-51 {
                         fill: url(#linear-gradient-18);
                     }
@@ -1700,25 +1600,21 @@
             <!-- FIN DE LA IMAGEN SVG -->
         </div>
     </section>
-
     <!-- Contact Section -->
     <section class="contact-section" id="contacto">
         <div class="contact-container">
             <h2 class="contact-title">Contáctanos</h2>
-
             <div class="contact-grid">
                 <div class="contact-item">
                     <i class="fa-solid fa-location-dot"></i>
                     <h3>Ubicación</h3>
                     <p>Bogotá, Colombia<br>Servicio a nivel nacional</p>
                 </div>
-
                 <div class="contact-item">
                     <i class="fa-brands fa-whatsapp"></i>
                     <h3>WhatsApp</h3>
                     <p>+57 322 2024365<br>Atención personalizada con FrankQV</p>
                 </div>
-
                 <div class="contact-item">
                     <i class="fa-regular fa-clock"></i>
                     <h3>Horario de Atención</h3>
@@ -1728,15 +1624,12 @@
         </div>
     </section>
 
-
-
     <!-- Footer -->
     <footer class="main-footer">
         <div class="footer-content">
             <p class="footer-text">
                 2025 - <span>DEV FRANK</span> Todos los derechos reservados
             </p>
-
             <div class="social-links">
                 <a href="https://api.whatsapp.com/send/?phone=573222024365&text=%C2%A1Hola!%20%F0%9F%91%8B%20Bienvenido%2Fa%20%F0%9F%98%8E%0A%0ASoy%20FrankQV%2C%20el%20desarrollador%20detr%C3%A1s%20de%20este%20sistema.%20%F0%9F%9A%80%0A%0AAdem%C3%A1s%20de%20construir%20soluciones%20como%20esta%2C%20tambi%C3%A9n%20ofrezco%3A%0A%E2%9C%85%20Desarrollo%20de%20p%C3%A1ginas%20web%0A%E2%9C%85%20Sistemas%20a%20medida%0A%E2%9C%85%20Automatizaciones%20y%20m%C3%A1s%0A%0AJuntos%20podemos%20llevar%20la%20tecnolog%C3%ADa%20a%20otro%20nivel%20%F0%9F%9A%80%F0%9F%98%8E%0A%0A%C2%BFEn%20qu%C3%A9%20puedo%20ayudarte%20hoy%3F%20%F0%9F%92%AC"
                     target="_blank" rel="noopener noreferrer" title="WhatsApp">
@@ -1754,15 +1647,12 @@
             </div>
         </div>
     </footer>
-
     <script>
     // Menu Toggle Functionality
     function toggleMenu() {
         const navMenu = document.getElementById('navMenu');
         const menuToggle = document.getElementById('menuToggle');
-
         navMenu.classList.toggle('active');
-
         // Change icon
         const icon = menuToggle.querySelector('i');
         if (navMenu.classList.contains('active')) {
@@ -1773,19 +1663,15 @@
             icon.classList.add('fa-bars');
         }
     }
-
     function closeMenu() {
         const navMenu = document.getElementById('navMenu');
         const menuToggle = document.getElementById('menuToggle');
-
         navMenu.classList.remove('active');
-
         // Reset icon
         const icon = menuToggle.querySelector('i');
         icon.classList.remove('fa-times');
         icon.classList.add('fa-bars');
     }
-
     // Header scroll effect
     window.addEventListener('scroll', function() {
         const header = document.querySelector('.main-header');
@@ -1797,7 +1683,6 @@
             header.style.boxShadow = 'none';
         }
     });
-
     // Smooth scrolling for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
@@ -1811,17 +1696,14 @@
             }
         });
     });
-
     // Close menu when clicking outside
     document.addEventListener('click', function(event) {
         const navMenu = document.getElementById('navMenu');
         const menuToggle = document.getElementById('menuToggle');
-
         if (!navMenu.contains(event.target) && !menuToggle.contains(event.target)) {
             closeMenu();
         }
     });
     </script>
 </body>
-
 </html>

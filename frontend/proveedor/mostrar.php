@@ -5,7 +5,7 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])) {
     header('location: ../error404.php');
 }
 // Incluir conexión a la base de datos
-require_once '../../backend/bd/ctconex.php';
+require_once '../../config/ctconex.php';
 // Obtener información del usuario
 $userInfo = null;
 if (isset($_SESSION['id'])) {
@@ -19,7 +19,7 @@ if (isset($_SESSION['id'])) {
             'nombre' => 'PCUsuario',
             'usuario' => 'pc_usuario',
             'correo' => 'correo@pcmarkett.co',
-            'foto' => 'reere.png',
+            'foto' => 'reere.webp',
             'idsede' => 'Sede sin definir'
         ];
     }
@@ -51,7 +51,7 @@ if (isset($_SESSION['id'])) {
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <!-- TODOS los iconos de Google material icon -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" />
-    <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+    <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
 </head>
 <body>
     <div class="wrapper">
@@ -61,7 +61,7 @@ if (isset($_SESSION['id'])) {
         include_once '../layouts/menu_data.php'; ?>
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM</span></h3>
+                <h3><img src="../../backend/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
             </div>
             <?php renderMenu($menu); ?>
         </nav>
@@ -117,7 +117,7 @@ if (isset($_SESSION['id'])) {
         <ul class="nav navbar-nav ml-auto">
         <li class="dropdown nav-item active">
         <a href="#" class="nav-link" data-toggle="dropdown">
-        <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.png'); ?>"
+        <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
             alt="Foto de perfil"
             style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
         </a>

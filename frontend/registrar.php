@@ -2,7 +2,7 @@
 // Verificar si se han recibido los datos del formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Incluir el archivo de conexión a la base de datos
-    require_once "../backend/bd/ctconex.php";
+    require_once "../config/ctconex.php";
 
     // Obtener los datos del formulario
     $nombre = $_POST["nombre"];
@@ -63,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Registro de Usuario - PCMARKETTEAM</title>
 
     <link rel="stylesheet" href="../backend/css/style.css">
-    <link rel="icon" type="image/png" href="../backend/img/favicon.png" />
+    <link rel="icon" type="image/png" href="../backend/img/favicon.webp" />
 
 </head>
 

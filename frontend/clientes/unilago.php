@@ -34,7 +34,7 @@ ob_start();
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <!--google material icon-->
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-    <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+    <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
 </head>
 <body>
     <div class="wrapper">
@@ -43,7 +43,7 @@ ob_start();
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM</span></h3>
+                <h3><img src="../../backend/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
             </div>
             <?php renderMenu($menu); ?>
         </nav>
@@ -79,7 +79,7 @@ ob_start();
                                 <li class="dropdown nav-item active">
                                     <a href="#" class="nav-link" data-toggle="dropdown">
 
-                                        <img src="../../backend/img/reere.png">
+                                        <img src="../../backend/img/reere.webp">
 
                                     </a>
                                     <ul class="dropdown-menu">
@@ -112,7 +112,7 @@ ob_start();
                             <div class="card-content table-responsive">
                                 <?php
                                 // Llamar a la base de datos
-                                require '../../backend/bd/ctconex.php'; 
+                                require '../../config/ctconex.php'; 
                                 // Filtrar datos segun la sede
                                 $sentencia = $connect->prepare("SELECT * FROM clientes WHERE idsede = 'Unilago' OR idsede = 4 ORDER BY nomcli DESC;");
                                 $sentencia->execute();
@@ -128,7 +128,7 @@ ob_start();
 <!-- En informacion de los clietes de su SEDE segun donde este Loguedo como pareces en los registros   En la base de Datos 
 
 // Llamar a la base de datos
-require '../../backend/bd/ctconex.php'; 
+require '../../config/ctconex.php'; 
 
 // Obtener el idsede del usuario logueado desde la sesión
 if(isset($_SESSION['idsede'])) {

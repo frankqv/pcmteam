@@ -16,20 +16,12 @@ RAIZ PRINCIPAL DE PROGRMA INTERNO
 ├─ frontend\                     (carpeta)
 ├─ vendor\                       (carpeta)
 ├─ .htaccess
-├─ alista_orden.php
-├─ "Analisis PORQUE... (xlsx)"
-├─ app.js
 ├─ composer.json
 ├─ composer.lock
-├─ constructor.php
-├─ desktop.ini
-├─ estilo.css
 ├─ home.php
-├─ imegen.jpg
 ├─ index.php
 ├─ info.php
-├─ pivot.php
-└─ test_conexion.php
+└─ Mapa actual del proyecto.txt
 
 
 ### backend\ (contenido)

@@ -11,10 +11,8 @@ if (!isset($_SESSION['rol']) || !in_array((int)$_SESSION['rol'], [1,2,7])) {
 
 // Inclusión robusta de ctconex.php
 $possible_paths = [
-    __DIR__ . '/../../backend/bd/ctconex.php',
-    __DIR__ . '/../../bd/ctconex.php',
-    __DIR__ . '/../../../backend/bd/ctconex.php',
-    __DIR__ . '/../../../bd/ctconex.php'
+    __DIR__ . '/../../config/ctconex.php',
+    __DIR__ . '/../../../config/ctconex.php',
 ];
 $conn_included = false;
 foreach ($possible_paths as $p) {
@@ -178,7 +176,7 @@ function h($v) { return htmlspecialchars((string)($v ?? '')); }
     <link rel="stylesheet" href="../../backend/css/buttonsdataTables.css" />
     <link rel="stylesheet" href="../../backend/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../backend/css/custom.css">
-    <link rel="icon" type="image/png" href="../../backend/img/favicon.png"/>
+    <link rel="icon" type="image/png" href="../../backend/img/favicon.webp"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet" />
 </head>
 <body>
@@ -186,7 +184,7 @@ function h($v) { return htmlspecialchars((string)($v ?? '')); }
     <?php include_once '../layouts/nav.php'; include_once '../layouts/menu_data.php'; ?>
     <nav id="sidebar">
         <div class="sidebar-header">
-            <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM</span></h3>
+            <h3><img src="../../backend/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
         </div>
         <?php if (function_exists('renderMenu')) { renderMenu($menu); } ?>
     </nav>
@@ -239,7 +237,7 @@ function h($v) { return htmlspecialchars((string)($v ?? '')); }
         <ul class="nav navbar-nav ml-auto">
         <li class="dropdown nav-item active">
         <a href="#" class="nav-link" data-toggle="dropdown">
-        <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.png'); ?>"
+        <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
             alt="Foto de perfil"
             style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
         </a>

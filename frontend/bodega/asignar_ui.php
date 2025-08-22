@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../../backend/bd/ctconex.php';
+require_once '../../config/ctconex.php';
 
 // Verificar sesión y obtener datos del usuario
 if (!isset($_SESSION['user_id'])) {

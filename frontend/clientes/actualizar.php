@@ -31,7 +31,7 @@ ob_start();
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <!--google material icon-->
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-    <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+    <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
 
     <!-- Select2 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -46,7 +46,7 @@ ob_start();
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM</span></h3>
+                <h3><img src="../../backend/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
             </div>
             <?php renderMenu($menu); ?>
         </nav>
@@ -83,7 +83,7 @@ ob_start();
                                 <li class="dropdown nav-item active">
                                     <a href="#" class="nav-link" data-toggle="dropdown">
 
-                                        <img src="../../backend/img/reere.png">
+                                        <img src="../../backend/img/reere.webp">
 
                                     </a>
                                     <ul class="dropdown-menu">
@@ -129,7 +129,7 @@ ob_start();
                                         class="text-danger">*</span> son necesarios.
                                 </div>
                                 <?php
- require '../../backend/bd/ctconex.php'; 
+ require '../../config/ctconex.php'; 
  $id = $_GET['id'];
  $sentencia = $connect->prepare("SELECT * FROM clientes  WHERE clientes.idclie= '$id';");
  $sentencia->execute();

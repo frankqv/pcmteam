@@ -2,7 +2,7 @@
 // Evitar cualquier output antes del PDF
 ob_start();
 require_once '../../backend/pdf/fpdf.php';
-require_once '../../backend/bd/ctconex.php';
+require_once '../../config/ctconex.php';
 class PDF extends FPDF
 {
     function Header()

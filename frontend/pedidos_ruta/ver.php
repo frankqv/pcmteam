@@ -1,7 +1,7 @@
 <!-- pedidos_ruta/ver.php -->
 <?php
 session_start();
-include_once '../../backend/bd/ctconex.php';
+include_once '../../config/ctconex.php';
 
 if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5])){
     header('location: ../error404.php');
@@ -52,7 +52,7 @@ if(!$pedido) die('Pedido no encontrado');
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <!--google material icon-->
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-    <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+    <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
 </head>
 <body>
 <div class="container mt-4">
@@ -62,7 +62,7 @@ if(!$pedido) die('Pedido no encontrado');
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM</span></h3>
+                <h3><img src="../../backend/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
             </div>
             <?php renderMenu($menu); ?>
         </nav>

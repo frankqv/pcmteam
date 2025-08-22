@@ -11,12 +11,12 @@ ini_set('display_errors', 1);
 echo "<h1>Debug del Login</h1>";
 echo "<h2>1. Verificación de archivos</h2>";
 $files = [
-    '../backend/bd/ctconex.php',
+    '../config/ctconex.php',
     '../backend/css/style.css',
     '../backend/js/jquery-3.3.1.min.js',
     '../backend/js/reenvio.js',
-    '../backend/img/sideimage.jpg',
-    '../backend/img/favicon.png'
+    '../backend/img/sideimage.webp',
+    '../backend/img/favicon.webp'
 ];
 foreach ($files as $file) {
     if (file_exists($file)) {
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 echo "<h2>4. Prueba de conexión a BD</h2>";
 try {
-    require_once '../backend/bd/ctconex.php';
+    require_once '../config/ctconex.php';
     // Conexión PDO
     try {
         $connect = new PDO("mysql:host=" . dbhost . ";dbname=" . dbname, dbuser, dbpass);

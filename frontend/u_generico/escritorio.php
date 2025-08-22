@@ -35,7 +35,7 @@ ob_start();
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <!--google material icon-->
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-    <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+    <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
 </head>
 
 <body>
@@ -48,7 +48,7 @@ ob_start();
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM</span></h3>
+                <h3><img src="../../backend/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
             </div>
             <?php renderMenu($menu); ?>
         </nav>
@@ -113,7 +113,7 @@ ob_start();
                                 <li class="dropdown nav-item active">
                                     <a href="#" class="nav-link" data-toggle="dropdown">
 
-                                        <img src="../../backend/img/reere.png">
+                                        <img src="../../backend/img/reere.webp">
 
                                     </a>
                                     <ul class="dropdown-menu">
@@ -139,7 +139,7 @@ ob_start();
                 <div class="row">
                     <div class="card-content">
                         <?php 
-                                    require '../../backend/bd/ctconex.php'; 
+                                    require '../../config/ctconex.php'; 
         $sql = "SELECT COUNT(*) total FROM clientes";
         $result = $connect->query($sql); //$pdo sería el objeto conexión
         $total = $result->fetchColumn();
@@ -290,7 +290,7 @@ if ($a->stock <= 0) {
                             <h4 class="card-title">Aniversario con empresa</h4>
                         </div>
                         <div class="card-content">
-                            <img src="../../backend/img/pastel-de-cumple.png" width='150' height='150'
+                            <img src="../../backend/img/pastel-de-cumple.webp" width='150' height='150'
                                 class="tcentrado">
                             <br>
                             <?php

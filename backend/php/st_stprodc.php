@@ -1,5 +1,5 @@
 <?php  
-require_once('../../backend/bd/ctconex.php');
+require_once('../../config/ctconex.php');
  if(isset($_POST['staddprod']))
  {
   

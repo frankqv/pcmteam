@@ -16,10 +16,10 @@ if (!isset($_SESSION['rol']) || !in_array((int)$_SESSION['rol'], $ALLOWED_ROLES,
 /* -------------------- Cargar ctconex.php (ruta robusta) -------------------- */
 $projectRoot = dirname(__DIR__, 2); // desde frontend/laboratorio -> sube 2 niveles
 $ctconexCandidates = [
-    $projectRoot . '/backend/bd/ctconex.php',
-    dirname(__DIR__,1) . '/backend/bd/ctconex.php',
-    __DIR__ . '/../../backend/bd/ctconex.php',
-    __DIR__ . '/../../../backend/bd/ctconex.php'
+    $projectRoot . '/config/ctconex.php',
+    dirname(__DIR__,1) . '/config/ctconex.php',
+    __DIR__ . '/../../config/ctconex.php',
+    __DIR__ . '/../../../config/ctconex.php'
 ];
 
 $ctconexFound = false;
@@ -48,7 +48,7 @@ if (!isset($mysqli) || !($mysqli instanceof mysqli)) {
             }
             $mysqli->set_charset('utf8');
         } else {
-            die('Error: conexión $mysqli no encontrada. Ajusta backend/bd/ctconex.php para exponer $mysqli o define constantes dbhost/dbuser/dbpass/dbname.');
+            die('Error: conexión $mysqli no encontrada. Ajusta config/ctconex.php para exponer $mysqli o define constantes dbhost/dbuser/dbpass/dbname.');
         }
     }
 }

@@ -6,7 +6,7 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
     header('location: ../error404.php');
 }
 
-require_once '../../backend/bd/ctconex.php';
+require_once '../../config/ctconex.php';
 
 // Obtener el ID del equipo a editar
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -43,7 +43,7 @@ try {
     <link rel="stylesheet" href="../../backend/css/custom.css">
     <link rel="stylesheet" href="../../backend/css/loader.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-    <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+    <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
 </head>
 
 <body>
@@ -54,7 +54,7 @@ try {
         <!-- Sidebar -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3><img src="../../backend/img/favicon.png" class="img-fluid"/><span>PCMARKETTEAM</span></h3>
+                <h3><img src="../../backend/img/favicon.webp" class="img-fluid"/><span>PCMARKETTEAM</span></h3>
             </div>
             <?php renderMenu($menu); ?>
         </nav>

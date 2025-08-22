@@ -3,11 +3,10 @@
 // Versión extendida: devuelve TODOS los datos del equipo + triage + mantenimiento + control calidad + partes
 // --- Inclusión robusta del archivo de conexión (ctconex.php) ---
 $possible_paths = [
-    __DIR__ . '/../bd/ctconex.php',
+
     __DIR__ . '/bd/ctconex.php',
-    __DIR__ . '/../../backend/bd/ctconex.php',
-    __DIR__ . '/../../bd/ctconex.php',
-    __DIR__ . '/../../../backend/bd/ctconex.php'
+    __DIR__ . '/../../config/ctconex.php',
+    __DIR__ . '/../../../config/ctconex.php'
 ];
 $conn_included = false;
 foreach ($possible_paths as $p) {

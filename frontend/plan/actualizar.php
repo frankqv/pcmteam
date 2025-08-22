@@ -34,7 +34,7 @@ ob_start();
      <!--google material icon-->
         <link href="https://fonts.googleapis.com/css2?family=Material+Icons"
       rel="stylesheet">
-      <link rel="icon" type="image/png" href="../../backend/img/favicon.png"/>
+      <link rel="icon" type="image/png" href="../../backend/img/favicon.webp"/>
   </head>
   <body>
   
@@ -45,7 +45,7 @@ ob_start();
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM</span></h3>
+                <h3><img src="../../backend/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
             </div>
             <?php renderMenu($menu); ?>
         </nav>
@@ -81,7 +81,7 @@ ob_start();
                             <li class="dropdown nav-item active">
                                 <a href="#" class="nav-link" data-toggle="dropdown">
                                    
-                                   <img src="../../backend/img/reere.png" >
+                                   <img src="../../backend/img/reere.webp" >
                                            
                                </a>
                                 <ul class="dropdown-menu">
@@ -122,7 +122,7 @@ ob_start();
   <strong>Estimado usuario!</strong> Los campos remarcados con <span class="text-danger">*</span> son necesarios.
 </div> 
 <?php
- require '../../backend/bd/ctconex.php'; 
+ require '../../config/ctconex.php'; 
  $id = $_GET['id'];
  $sentencia = $connect->prepare("SELECT * FROM plan WHERE idplan= '$id';");
  $sentencia->execute();

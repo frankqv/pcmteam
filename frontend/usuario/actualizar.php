@@ -30,7 +30,7 @@ if (!isset($_SESSION['rol']) || ($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2 
     <!--google material icon-->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-    <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+    <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
 </head>
 
 <body>
@@ -39,7 +39,7 @@ if (!isset($_SESSION['rol']) || ($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2 
         <!-- Sidebar   -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3><img src="../../backend/img/favicon.png" class="img-fluid" /><span>PCMARKETTEAM</span></h3>
+                <h3><img src="../../backend/img/favicon.webp" class="img-fluid" /><span>PCMARKETTEAM</span></h3>
             </div>
             <!-- Listado de opciones del sidebar -->
         </nav>
@@ -70,7 +70,7 @@ if (!isset($_SESSION['rol']) || ($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2 
                             <div class="card-content table-responsive">
                                 <!-- Formulario para actualizar usuario -->
                                 <?php
-                                require '../../backend/bd/ctconex.php';
+                                require '../../config/ctconex.php';
                                 $id = $_GET['id'];
                                 $sentencia = $connect->prepare("SELECT * FROM usuarios WHERE usuarios.id= '$id';");
                                 $sentencia->execute();

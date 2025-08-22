@@ -15,7 +15,7 @@
     $pdf->SetFont('Arial','B',10);
     $pdf->SetTextColor(0,0,0);
     
-     require '../../backend/bd/ctconex.php';
+     require '../../config/ctconex.php';
 
     $stmt = $connect->prepare("SELECT * FROM setting");
 $stmt->setFetchMode(PDO::FETCH_ASSOC);

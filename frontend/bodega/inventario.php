@@ -4,7 +4,7 @@ session_start();
 if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])) {
     header('location: ../error404.php');
 }
-require_once '../../backend/bd/ctconex.php';
+require_once '../../config/ctconex.php';
 $tecnicos = [];
 $resultTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN ('5','6','7')");
 while ($rowTec = $resultTec->fetch_assoc()) {
@@ -27,7 +27,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
         <link rel="stylesheet" type="text/css" href="../../backend/css/buttonsdataTables.css">
         <link rel="stylesheet" type="text/css" href="../../backend/css/font.css">
         <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-        <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+        <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
     </head>
     <body>
         <div class="wrapper">
@@ -37,7 +37,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
             <!-- Sidebar -->
             <nav id="sidebar">
                 <div class="sidebar-header">
-                    <h3><img src="../../backend/img/favicon.png" class="img-fluid" /><span>PCMARKETTEAM</span></h3>
+                    <h3><img src="../../backend/img/favicon.webp" class="img-fluid" /><span>PCMARKETTEAM</span></h3>
                 </div>
                 <?php renderMenu($menu); ?>
             </nav>
@@ -90,7 +90,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
         <ul class="nav navbar-nav ml-auto">
         <li class="dropdown nav-item active">
         <a href="#" class="nav-link" data-toggle="dropdown">
-        <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.png'); ?>"
+        <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
             alt="Foto de perfil"
             style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
         </a>

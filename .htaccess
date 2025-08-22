@@ -8,26 +8,26 @@ RewriteEngine On
 # Configurar el directorio por defecto
 DirectoryIndex index.php login.php
 
-# Configurar tipos MIME
+# // Configurar tipos MIME //
 AddType application/x-httpd-php .php
 
-# Configurar codificación
+# // Configurar codificación //
 AddDefaultCharset UTF-8
 
-# Configurar zona horaria
+# // Configurar zona horaria //
 SetEnv TZ America/Bogota
 
 # Configurar límites de subida de archivos
-php_value upload_max_filesize 10M
-php_value post_max_size 10M
-php_value max_execution_time 300
-php_value max_input_time 300
+# php_value upload_max_filesize 10M
+# php_value post_max_size 10M
+# php_value max_execution_time 300
+# php_value max_input_time 300
 
-# Configurar manejo de errores
-php_flag display_errors On
-php_flag log_errors On
-php_value error_log logs/php_errors.log
+# // Configurar manejo de errores //
+#php_flag display_errors On
+#php_flag log_errors On
+#php_value error_log logs/php_errors.log
 
-# Configurar sesiones: 61.200 segundos = 17 horas, 3600 segundos = 1 hora
-php_value session.gc_maxlifetime 61200 
-php_value session.cookie_lifetime 61200 
+# // Configurar sesiones: 61.200 segundos = 17 horas, 3600 segundos = 1 hora //
+#php_value session.gc_maxlifetime 61200 
+#php_value session.cookie_lifetime 61200 

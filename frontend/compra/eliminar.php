@@ -15,7 +15,7 @@ if(!isset($_SESSION['id'])) {
 }
 
 // Incluir conexión a la base de datos
-require_once('../../backend/bd/ctconex.php');
+require_once('../../config/ctconex.php');
 
 // Verificar que se haya enviado un ID
 if(isset($_GET['id']) && !empty($_GET['id'])) {

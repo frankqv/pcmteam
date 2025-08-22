@@ -48,7 +48,7 @@
         <select class="form-control" required name="txtcli">
             <option value="">----------Seleccione------------</option>
             <?php
-                require '../../backend/bd/ctconex.php';
+                require '../../config/ctconex.php';
                 $stmt = $connect->prepare("SELECT * FROM clientes where estad='Activo' order by idclie desc");
                 $stmt->execute();
                 while($row=$stmt->fetch(PDO::FETCH_ASSOC))

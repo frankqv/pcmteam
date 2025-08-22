@@ -20,11 +20,11 @@ if (!isset($_SESSION['rol']) || !in_array((int)$_SESSION['rol'], [1, 2, 7, 6])) 
    
    // Rutas comunes donde puede estar ctconex.php (ajusta si hace falta)
    $ct_paths = [
-       __DIR__ . '/../../backend/bd/ctconex.php',
-       __DIR__ . '/../../../backend/bd/ctconex.php',
-       dirname(__DIR__, 2) . '/backend/bd/ctconex.php',
-       dirname(__DIR__, 3) . '/backend/bd/ctconex.php',
-       __DIR__ . '/../backend/bd/ctconex.php',
+       __DIR__ . '/../../config/ctconex.php',
+       __DIR__ . '/../../../config/ctconex.php',
+       dirname(__DIR__, 2) . '/config/ctconex.php',
+       dirname(__DIR__, 3) . '/config/ctconex.php',
+       __DIR__ . '/../config/ctconex.php',
        __DIR__ . '/../../bd/ctconex.php'
    ];
    foreach ($ct_paths as $p) {
@@ -76,7 +76,7 @@ if (!isset($_SESSION['rol']) || !in_array((int)$_SESSION['rol'], [1, 2, 7, 6])) 
        try {
            // Asegurar que host y dbname estén definidos (si no, avisar)
            if (empty($host) || empty($dbname) || empty($dbuser)) {
-               throw new Exception('Faltan credenciales de base de datos (host, dbname o usuario). Revisa backend/bd/ctconex.php o variables de entorno.');
+               throw new Exception('Faltan credenciales de base de datos (host, dbname o usuario). Revisa config/ctconex.php o variables de entorno.');
            }
            $dsn = "mysql:host={$host};dbname={$dbname};charset=utf8mb4";
            $pdo = new PDO($dsn, $dbuser, $dbpass, [
@@ -86,7 +86,7 @@ if (!isset($_SESSION['rol']) || !in_array((int)$_SESSION['rol'], [1, 2, 7, 6])) 
            $db_type = 'pdo';
        } catch (Throwable $e) {
            // Mensaje claro para el administrador (no imprimimos la contraseña)
-           die('No se pudo conectar a la base de datos. Revisa credenciales en backend/bd/ctconex.php o variables de entorno. Detalle: ' . htmlspecialchars($e->getMessage()));
+           die('No se pudo conectar a la base de datos. Revisa credenciales en config/ctconex.php o variables de entorno. Detalle: ' . htmlspecialchars($e->getMessage()));
        }
    }
    

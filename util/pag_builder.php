@@ -1,3 +1,4 @@
+<!-- Funcion recursiva de imagen SVG, de pagina en construccion -->
 <?php
 function construcionpage(): void {
         echo' 
@@ -24,9 +25,7 @@ function construcionpage(): void {
                                 </li>
                                 <li class="dropdown nav-item active">
                                     <a href="#" class="nav-link" data-toggle="dropdown">
-
-                                        <img src="../../backend/img/reere.png">
-
+                                        <img src="../../backend/img/reere.webp">
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
@@ -35,19 +34,13 @@ function construcionpage(): void {
                                         <li>
                                             <a href="../cuenta/salir.php">Salir</a>
                                         </li>
-
                                     </ul>
                                 </li>
-
                             </ul>
                         </div>
                     </div>
                 </nav>
             </div>
-
-
-
-    
             <section id="inicio" class="contacto">
         <div class="fila">
        <!-- xml version="1.0" encoding="UTF-8" -->
@@ -57,210 +50,159 @@ function construcionpage(): void {
             .cls-1 {
                 fill: url(#linear-gradient-15);
             }
-
             .cls-2 {
                 fill: url(#linear-gradient-13);
             }
-
             .cls-3 {
                 fill: #e3aa00;
             }
-
             .cls-4 {
                 fill: url(#linear-gradient-2);
             }
-
             .cls-5 {
                 fill: url(#linear-gradient-10);
             }
-
             .cls-6 {
                 fill: url(#linear-gradient-12);
             }
-
             .cls-7 {
                 fill: #fff;
             }
-
             .cls-8 {
                 mask: url(#mask);
             }
-
             .cls-9 {
                 fill: #f59091;
             }
-
             .cls-10, .cls-11, .cls-12 {
                 fill: none;
             }
-
             .cls-13 {
                 fill: url(#linear-gradient-4);
             }
-
             .cls-14 {
                 fill: #aca7c4;
             }
-
             .cls-11 {
                 mix-blend-mode: overlay;
                 opacity: .22;
                 stroke: #fff;
                 stroke-width: 8.55px;
             }
-
             .cls-11, .cls-12 {
                 stroke-miterlimit: 10;
             }
-
             .cls-15 {
                 fill: #00dc92;
             }
-
             .cls-16 {
                 fill: #ffa6a3;
             }
-
             .cls-17 {
                 fill: #190075;
             }
-
             .cls-18 {
                 fill: #101111;
             }
-
             .cls-19 {
                 fill: #a86342;
             }
-
             .cls-20 {
                 fill: url(#linear-gradient-3);
             }
-
             .cls-21 {
                 clip-path: url(#clippath-1);
             }
-
             .cls-22 {
                 fill: url(#linear-gradient-5);
             }
-
             .cls-23 {
                 fill: url(#linear-gradient-22);
             }
-
             .cls-24 {
                 fill: #ab96ff;
             }
-
             .cls-25 {
                 isolation: isolate;
             }
-
             .cls-26 {
                 fill: #2a2e5e;
             }
-
             .cls-27 {
                 fill: #8f4928;
             }
-
             .cls-12 {
                 stroke: #002032;
             }
-
             .cls-28 {
                 fill: url(#linear-gradient-8);
             }
-
             .cls-29 {
                 fill: #eff4df;
             }
-
             .cls-30 {
                 fill: #ffbab8;
             }
-
             .cls-31 {
                 fill: #d1c7ff;
             }
-
             .cls-32 {
                 fill: #210099;
             }
-
             .cls-33 {
                 fill: url(#linear-gradient-14);
             }
-
             .cls-34 {
                 fill: url(#linear-gradient-20);
             }
-
             .cls-35 {
                 fill: url(#linear-gradient-17);
             }
-
             .cls-36 {
                 fill: url(#linear-gradient-7);
             }
-
             .cls-37 {
                 fill: url(#linear-gradient-9);
             }
-
             .cls-38 {
                 fill: url(#linear-gradient-11);
             }
-
             .cls-39 {
                 fill: url(#linear-gradient-19);
             }
-
             .cls-40 {
                 fill: url(#linear-gradient-6);
             }
-
             .cls-41 {
                 fill: url(#linear-gradient-21);
             }
-
             .cls-42 {
                 fill: #f06d42;
             }
-
             .cls-43 {
                 fill: #f6f6f7;
             }
-
             .cls-44 {
                 opacity: .19;
             }
-
             .cls-45 {
                 opacity: .28;
             }
-
             .cls-46 {
                 fill: url(#linear-gradient-16);
             }
-
             .cls-47 {
                 fill: #ffbf00;
             }
-
             .cls-48 {
                 fill: url(#linear-gradient);
             }
-
             .cls-49 {
                 clip-path: url(#clippath);
             }
-
             .cls-50 {
                 fill: #9a87e6;
             }
-
             .cls-51 {
                 fill: url(#linear-gradient-18);
             }
@@ -881,6 +823,4 @@ function construcionpage(): void {
      <!-- FIN DE LA IMAGEN SVG -->
                     ';}
 ?>
-
-
 

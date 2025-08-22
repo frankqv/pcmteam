@@ -1,29 +1,5 @@
 <?php
-ob_start();
-session_start();
-
-if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5, 6, 7])) {
-    header('location: ../error404.php');
-}
-require_once '../../backend/bd/ctconex.php';
-
-$tecnicos = [];
-$resultTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN ('5','6','7')");
-while ($rowTec = $resultTec->fetch_assoc()) {
-    $tecnicos[] = $rowTec;
-}
-?>
-<?php if (isset($_SESSION['id'])) { 
-    
-    header('Location: ../laboratorio/mostrar.php');
-    exit;
-    
-    
-    ?>
-
-
-
-    
+/*
     <!DOCTYPE html>
     <html lang="es">
 
@@ -40,7 +16,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
         <link rel="stylesheet" type="text/css" href="../../backend/css/buttonsdataTables.css">
         <link rel="stylesheet" type="text/css" href="../../backend/css/font.css">
         <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-        <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+        <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
     </head>
 
     <body>
@@ -134,5 +110,33 @@ while ($rowTec = $resultTec->fetch_assoc()) {
     header('Location: ../error404.php');
 } ?>
 <?php ob_end_flush(); ?>
+
+
+*/
+?>
+
+
+<?php
+ob_start();
+session_start();
+
+if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5, 6, 7])) {
+    header('location: ../error404.php');
+}
+require_once '../../config/ctconex.php';
+
+$tecnicos = [];
+$resultTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN ('5','6','7')");
+while ($rowTec = $resultTec->fetch_assoc()) {
+    $tecnicos[] = $rowTec;
+}
+?>
+<?php if (isset($_SESSION['id'])) { 
+    
+    header('Location: ../laboratorio/mostrar.php');
+    exit;
+    
+}
+    ?>
 
 

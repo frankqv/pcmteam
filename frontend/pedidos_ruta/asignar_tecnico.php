@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once '../../backend/bd/ctconex.php';
+include_once '../../config/ctconex.php';
 
 if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5, 6, 7])){
     header('location: ../error404.php');

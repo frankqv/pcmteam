@@ -5,7 +5,7 @@ if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])){
     header('location: ../error404.php');
     exit;
 }
-require '../../backend/bd/ctconex.php';
+require '../../config/ctconex.php';
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header('location: ../error404.php');
     exit;
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../../backend/css/custom.css">
     <link rel="stylesheet" href="../../backend/css/loader.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-    <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+    <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
 </head>
 <body>
 <div class="wrapper">
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include_once '../layouts/nav.php'; include_once '../layouts/menu_data.php'; ?>
     <nav id="sidebar">
         <div class="sidebar-header">
-            <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM</span></h3>
+            <h3><img src="../../backend/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
         </div>
         <?php renderMenu($menu); ?>
     </nav>

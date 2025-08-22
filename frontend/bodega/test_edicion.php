@@ -10,7 +10,7 @@
 
 <?php
 session_start();
-require_once '../../backend/bd/ctconex.php';
+require_once '../../config/ctconex.php';
 
 // Listar posiciones disponibles para probar
 $sql = "SELECT DISTINCT posicion, COUNT(*) as total_equipos 
@@ -223,8 +223,8 @@ $stats = $stmt_stats->fetch();
             <h3 style="margin-top: 30px;">📊 Verificar Base de Datos</h3>
             <p>Ejecuta estos scripts SQL para verificar la estructura:</p>
             <ul>
-                <li><strong>Crear tabla de log:</strong> <code>backend/bd/crear_tabla_log.sql</code></li>
-                <li><strong>Verificar estructura:</strong> <code>backend/bd/EstructuraDB.sql</code></li>
+                <li><strong>Crear tabla de log:</strong> <code>config/ctconex.phpcrear_tabla_log.sql</code></li>
+                <li><strong>Verificar estructura:</strong> <code>config/ctconex.phpEstructuraDB.sql</code></li>
             </ul>
         </div>
 
@@ -244,7 +244,7 @@ $stats = $stmt_stats->fetch();
                 <div>
                     <h4>🔧 Configuración</h4>
                     <ul>
-                        <li><strong>Conexión BD:</strong> <code>backend/bd/ctconex.php</code></li>
+                        <li><strong>Conexión BD:</strong> <code>config/ctconex.php</code></li>
                         <li><strong>Tabla Principal:</strong> <code>bodega_inventario</code></li>
                         <li><strong>Tabla Log:</strong> <code>bodega_log_cambios</code> (opcional)</li>
                         <li><strong>Campos Editables:</strong> 8 campos configurables</li>

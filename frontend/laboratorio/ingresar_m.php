@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../../backend/bd/ctconex.php';
+require_once '../../config/ctconex.php';
 
 // Obtener ID del inventario desde la URL
 $inventario_id = $_GET['id'] ?? null;

@@ -16,7 +16,7 @@ if(!isset($_SESSION['id'])) {
 }
 
 // Incluir conexión a la base de datos
-require_once('../../backend/bd/ctconex.php');
+require_once('../../config/ctconex.php');
 
 try {
     // Preparar consulta para eliminar todos los productos del carrito del usuario actual

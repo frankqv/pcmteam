@@ -61,7 +61,7 @@ if (isset($_POST['importar']) && isset($_FILES['archivo_excel']['tmp_name'])) {
             $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($archivo);
             $sheet = $spreadsheet->getActiveSheet();
             $rows = $sheet->toArray();
-            require_once '../../backend/bd/ctconex.php';
+            require_once '../../config/ctconex.php';
             $con = $connect;
             $insertados = 0;
             $errores = [];
@@ -155,9 +155,10 @@ if (isset($_GET['descargar_plantilla_generica'])) {
     <link rel="stylesheet" href="../../backend/css/custom.css">
     <link rel="stylesheet" href="../../backend/css/loader.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/font.css">
-    <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+    <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
 </head>
-<body>
+<body>V
 <div class="container mt-5">
     <div class="card shadow">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -183,6 +184,7 @@ if (isset($_GET['descargar_plantilla_generica'])) {
             <p class="text-muted">La plantilla debe tener las siguientes columnas: <b>nombre, nit, direccion, telefono, email</b>.</p>
         </div>
     </div>
+</div>
 </div>
 <script src="../../backend/js/jquery-3.3.1.slim.min.js"></script>
 <script src="../../backend/js/popper.min.js"></script>

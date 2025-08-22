@@ -6,7 +6,7 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
     header('location: ../error404.php');
     exit();
 }
-require_once '../../backend/bd/ctconex.php';
+require_once '../../config/ctconex.php';
 ?>
 <?php if (isset($_SESSION['id'])) { ?>
     <!DOCTYPE html>
@@ -21,7 +21,7 @@ require_once '../../backend/bd/ctconex.php';
         <link rel="stylesheet" href="../../backend/css/custom.css">
         <link rel="stylesheet" href="../../backend/css/loader.css">
         <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-        <link rel="icon" type="image/png" href="../../backend/img/favicon.png" />
+        <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
     </head>
 
     <body>
@@ -32,7 +32,7 @@ require_once '../../backend/bd/ctconex.php';
             <!-- Sidebar -->
             <nav id="sidebar">
                 <div class="sidebar-header">
-                    <h3><img src="../../backend/img/favicon.png" class="img-fluid" /><span>PCMARKETTEAM</span></h3>
+                    <h3><img src="../../backend/img/favicon.webp" class="img-fluid" /><span>PCMARKETTEAM</span></h3>
                 </div>
                 <?php renderMenu($menu); ?>
             </nav>
@@ -85,7 +85,7 @@ require_once '../../backend/bd/ctconex.php';
                             <ul class="nav navbar-nav ml-auto">
                                 <li class="dropdown nav-item active">
                                     <a href="#" class="nav-link" data-toggle="dropdown">
-                                        <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.png'); ?>"
+                                        <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
                                             alt="Foto de perfil"
                                             style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
                                     </a>

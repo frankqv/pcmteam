@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../../backend/bd/ctconex.php';
+require_once '../../config/ctconex.php';
 
 // Listar equipos disponibles para probar
 $sql = "SELECT id, codigo_g, producto, marca, modelo, serial, disposicion 

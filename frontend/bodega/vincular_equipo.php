@@ -1,5 +1,5 @@
 <?php
-require_once '../../backend/bd/ctconex.php';
+require_once '../../config/ctconex.php';
 if (isset($_POST['pedido_id'], $_POST['equipo_id'])) {
     $pedido_id = intval($_POST['pedido_id']);
     $equipo_id = intval($_POST['equipo_id']);

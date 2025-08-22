@@ -1,6 +1,6 @@
 <?php 
 
-include('../../backend/bd/ctconex.php');
+include('../../config/ctconex.php');
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 if(isset($_POST['importar']))

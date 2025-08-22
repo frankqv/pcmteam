@@ -13,10 +13,10 @@ if (!isset($_SESSION['rol']) || !in_array((int)$_SESSION['rol'], $ALLOWED_ROLES,
 /* -------------------- Cargar conexión BD -------------------- */
 $conexionEncontrada = false;
 $rutasConexion = [
-    __DIR__ . '/../../backend/bd/ctconex.php',
-    __DIR__ . '/../backend/bd/ctconex.php',
-    __DIR__ . '/backend/bd/ctconex.php',
-    dirname(__DIR__, 2) . '/backend/bd/ctconex.php'
+    __DIR__ . '/../../config/ctconex.php',
+    __DIR__ . '/../config/ctconex.php',
+    __DIR__ . '/config/ctconex.php',
+    dirname(__DIR__, 2) . '/config/ctconex.php'
 ];
 
 foreach ($rutasConexion as $ruta) {
@@ -236,6 +236,8 @@ foreach ($areasPredefinidas as $area) {
     </style>
 </head>
 <body>
+
+
     <div class="container">
         <div class="header">
             <h1>TRIAGE 2 - LIMPIEZA Y MANTENIMIENTO</h1>

@@ -7,7 +7,7 @@ if (!isset($_SESSION['rol']) || !in_array((int)$_SESSION['rol'], [1, 2, 7])) {
     header('Location: ../error404.php');
     exit;
 }
-require_once '../../backend/bd/ctconex.php';
+require_once '../../config/ctconex.php';
 // Obtener técnicos para filtros o mostrar nombre
 $tecnicos = [];
 $resTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN (1,5,6,7) ORDER BY nombre");
@@ -114,7 +114,7 @@ if ($use_triages) {
     <link rel="stylesheet" href="../../backend/css/buttonsdataTables.css" />
     <link rel="stylesheet" href="../../backend/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../backend/css/custom.css">
-    <link rel="icon" type="image/png" href="../../backend/img/favicon.png"/>
+    <link rel="icon" type="image/png" href="../../backend/img/favicon.webp"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet" />
     <style>
         body { font-family: Arial, sans-serif; margin: 12px; background: #f8f9fa; }
@@ -128,7 +128,7 @@ if ($use_triages) {
     <?php include_once '../layouts/nav.php'; include_once '../layouts/menu_data.php'; ?>
     <nav id="sidebar">
         <div class="sidebar-header">
-            <h3><img src="../../backend/img/favicon.png" class="img-fluid"><span>PCMARKETTEAM</span></h3>
+            <h3><img src="../../backend/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
         </div>
         <?php if (function_exists('renderMenu')) { renderMenu($menu); } ?>
     </nav>
@@ -180,7 +180,7 @@ if ($use_triages) {
         <ul class="nav navbar-nav ml-auto">
         <li class="dropdown nav-item active">
         <a href="#" class="nav-link" data-toggle="dropdown">
-        <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.png'); ?>"
+        <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
             alt="Foto de perfil"
             style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
         </a>

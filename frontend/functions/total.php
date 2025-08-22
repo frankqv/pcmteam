@@ -1,6 +1,6 @@
   
   <?php 
-  require '../../backend/bd/ctconex.php'; 
+  require '../../config/ctconex.php'; 
   $el_continente = $_POST['continente'];
   $stmt = $connect->query("SELECT * FROM plan WHERE idplan = $el_continente");
 
