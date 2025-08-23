@@ -2,23 +2,20 @@
 // ingresar_myl.php - Versión corregida y simplificada
 ob_start();
 session_start();
-
 /* -------------------- Configuración de seguridad -------------------- */
 $ALLOWED_ROLES = [1,2,5,6,7];
 if (!isset($_SESSION['rol']) || !in_array((int)$_SESSION['rol'], $ALLOWED_ROLES, true)) {
     header('Location: ../error404.php');
     exit();
 }
-
 /* -------------------- Cargar conexión BD -------------------- */
 $conexionEncontrada = false;
 $rutasConexion = [
-    __DIR__ . '/../../config/ctconex.php',
+    __DIR__ . '../../config/ctconex.php',
     __DIR__ . '/../config/ctconex.php',
     __DIR__ . '/config/ctconex.php',
     dirname(__DIR__, 2) . '/config/ctconex.php'
 ];
-
 foreach ($rutasConexion as $ruta) {
     if (file_exists($ruta)) {
         require_once $ruta;
@@ -26,17 +23,15 @@ foreach ($rutasConexion as $ruta) {
         break;
     }
 }
-
 if (!$conexionEncontrada) {
     die('<div style="padding:20px;background:#fee;color:#900;border:1px solid #f99;">Error: No se encontró el archivo de conexión. Rutas probadas: ' . implode(', ', $rutasConexion) . '</div>');
 }
-
 /* -------------------- Establecer conexión mysqli -------------------- */
 if (!isset($mysqli)) {
     if (isset($conn) && $conn instanceof mysqli) {
         $mysqli = $conn;
     } elseif (defined('DB_HOST') && defined('DB_USER') && defined('DB_PASS') && defined('DB_NAME')) {
-        $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+        $mysqli = new mysqli('localhost', 'u171145084_pcmteam', 'PCcomercial2025*', 'u171145084_pcmteam');
         if ($mysqli->connect_error) {
             die('Error de conexión: ' . $mysqli->connect_error);
         }
@@ -45,23 +40,19 @@ if (!isset($mysqli)) {
         die('Error: No se pudo establecer la conexión a la base de datos.');
     }
 }
-
 /* -------------------- Funciones auxiliares -------------------- */
 function h($texto) {
     return htmlspecialchars((string)$texto, ENT_QUOTES, 'UTF-8');
 }
-
 function obtenerValor($array, $clave, $defecto = '') {
     return isset($array[$clave]) && $array[$clave] !== null ? $array[$clave] : $defecto;
 }
-
 /* -------------------- Obtener ID del inventario -------------------- */
 $inventario_id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 if ($inventario_id <= 0) {
     echo '<div style="padding:20px;background:#fee;color:#900;">Error: Falta el ID del inventario. Accede con ?id=NUMERO</div>';
     exit;
 }
-
 /* -------------------- Cargar datos del inventario -------------------- */
 $inventario = null;
 $stmt = $mysqli->prepare("SELECT * FROM bodega_inventario WHERE id = ? LIMIT 1");
@@ -71,15 +62,12 @@ if (!$stmt) {
 $stmt->bind_param('i', $inventario_id);
 $stmt->execute();
 $resultado = $stmt->get_result();
-
 if ($resultado->num_rows === 0) {
     echo '<div style="padding:20px;background:#fee;color:#900;">Error: Inventario no encontrado (ID: ' . $inventario_id . ')</div>';
     exit;
 }
-
 $inventario = $resultado->fetch_assoc();
 $stmt->close();
-
 /* -------------------- Cargar último mantenimiento -------------------- */
 $ultimoMantenimiento = [];
 $stmt = $mysqli->prepare("SELECT * FROM bodega_mantenimiento WHERE inventario_id = ? ORDER BY fecha_registro DESC LIMIT 1");
@@ -92,7 +80,6 @@ if ($stmt) {
     }
     $stmt->close();
 }
-
 /* -------------------- Cargar técnicos -------------------- */
 $tecnicos = [];
 $consulta = $mysqli->query("SELECT id, nombre FROM usuarios WHERE rol IN (5,6,7) ORDER BY nombre");
@@ -102,7 +89,6 @@ if ($consulta) {
     }
     $consulta->free();
 }
-
 /* -------------------- Cargar áreas -------------------- */
 $areas = [];
 $consulta = $mysqli->query("SELECT DISTINCT area_remite FROM bodega_mantenimiento WHERE area_remite IS NOT NULL AND area_remite != '' ORDER BY area_remite");
@@ -112,7 +98,6 @@ if ($consulta) {
     }
     $consulta->free();
 }
-
 // Agregar áreas predefinidas si no existen
 $areasPredefinidas = ['ELECTRICO', 'MECANICO', 'SOFTWARE', 'CALIBRACION'];
 foreach ($areasPredefinidas as $area) {
@@ -236,13 +221,10 @@ foreach ($areasPredefinidas as $area) {
     </style>
 </head>
 <body>
-
-
     <div class="container">
         <div class="header">
             <h1>TRIAGE 2 - LIMPIEZA Y MANTENIMIENTO</h1>
         </div>
-
         <div class="card">
             <div class="info-grid">
                 <div>
@@ -255,10 +237,8 @@ foreach ($areasPredefinidas as $area) {
                     <div><strong>UBICACIÓN:</strong> <?php echo h($inventario['ubicacion']); ?></div>
                 </div>
             </div>
-
             <form id="formularioTriage">
                 <input type="hidden" name="inventario_id" value="<?php echo $inventario_id; ?>">
-
                 <!-- Técnico Diagnóstico -->
                 <div class="section-title">Asignar Técnico Diagnóstico</div>
                 <div class="form-group">
@@ -272,7 +252,6 @@ foreach ($areasPredefinidas as $area) {
                         <?php endforeach; ?>
                     </select>
                 </div>
-
                 <!-- Limpieza y Mantenimiento -->
                 <div class="section-title">Limpieza y Mantenimiento</div>
                 <div class="form-grid">
@@ -289,7 +268,6 @@ foreach ($areasPredefinidas as $area) {
                             <textarea id="obs_limpieza" name="observaciones_limpieza_electronico" rows="2"><?php echo h(obtenerValor($ultimoMantenimiento, 'observaciones_limpieza_electronico')); ?></textarea>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label for="mantenimiento_crema">Mantenimiento (Crema Disciplinaria)</label>
                         <?php $valC = obtenerValor($ultimoMantenimiento, 'mantenimiento_crema_disciplinaria', 'pendiente'); ?>
@@ -304,7 +282,6 @@ foreach ($areasPredefinidas as $area) {
                         </div>
                     </div>
                 </div>
-
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="mantenimiento_partes">Mantenimiento Partes</label>
@@ -315,7 +292,6 @@ foreach ($areasPredefinidas as $area) {
                             <option value="no_aplica" <?php echo ($valP === 'no_aplica') ? 'selected' : ''; ?>>No Aplica</option>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label for="cambio_piezas">Cambio Piezas</label>
                         <?php $valCP = obtenerValor($ultimoMantenimiento, 'cambio_piezas', 'no'); ?>
@@ -329,7 +305,6 @@ foreach ($areasPredefinidas as $area) {
                         </div>
                     </div>
                 </div>
-
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="proceso_reconstruccion">Proceso Reconstrucción</label>
@@ -343,7 +318,6 @@ foreach ($areasPredefinidas as $area) {
                             <input type="text" id="parte_reconstruida" name="parte_reconstruida" value="<?php echo h(obtenerValor($ultimoMantenimiento, 'parte_reconstruida')); ?>">
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label for="limpieza_general">Limpieza General</label>
                         <?php $valLG = obtenerValor($ultimoMantenimiento, 'limpieza_general', 'pendiente'); ?>
@@ -354,7 +328,6 @@ foreach ($areasPredefinidas as $area) {
                         </select>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label for="remite_otra_area">Remite a Otra Área</label>
                     <?php $valRA = obtenerValor($ultimoMantenimiento, 'remite_otra_area', 'no'); ?>
@@ -363,7 +336,6 @@ foreach ($areasPredefinidas as $area) {
                         <option value="si" <?php echo ($valRA === 'si') ? 'selected' : ''; ?>>Sí</option>
                     </select>
                 </div>
-
                 <div id="area_block" class="form-group <?php echo ($valRA !== 'si') ? 'hidden' : ''; ?>">
                     <label for="area_remite">Área a la que Remite</label>
                     <select id="area_remite" name="area_remite">
@@ -377,26 +349,21 @@ foreach ($areasPredefinidas as $area) {
                         <?php endforeach; ?>
                     </select>
                 </div>
-
                 <div class="form-group full-width">
                     <label for="proceso_electronico">Proceso Electrónico (Detalle)</label>
                     <textarea id="proceso_electronico" name="proceso_electronico" rows="3"><?php echo h(obtenerValor($ultimoMantenimiento, 'proceso_electronico')); ?></textarea>
                 </div>
-
                 <div class="form-group full-width">
                     <label for="observaciones_globales">Observaciones Globales</label>
                     <textarea id="observaciones_globales" name="observaciones_globales" rows="3"><?php echo h(obtenerValor($ultimoMantenimiento, 'observaciones_globales')); ?></textarea>
                 </div>
-
                 <div id="alertas"></div>
-
                 <div style="text-align: center; margin-top: 25px;">
                     <button type="button" id="btnGuardar" class="btn">GUARDAR Mantenimiento Y Limpieza</button>
                 </div>
             </form>
         </div>
     </div>
-
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Elementos del formulario
@@ -407,7 +374,6 @@ foreach ($areasPredefinidas as $area) {
             limpieza_electronico: { select: '#limpieza_electronico', block: '#obs_limpieza_block', valor: 'realizada' },
             mantenimiento_crema: { select: '#mantenimiento_crema', block: '#obs_crema_block', valor: 'realizada' }
         };
-
         // Configurar eventos de cambio
         Object.keys(elementos).forEach(function(key) {
             const config = elementos[key];
@@ -426,7 +392,6 @@ foreach ($areasPredefinidas as $area) {
                 selectElement.dispatchEvent(new Event('change'));
             }
         });
-
         // Funciones de alerta
         function mostrarAlerta(tipo, mensaje) {
             const alertas = document.getElementById('alertas');
@@ -435,7 +400,6 @@ foreach ($areasPredefinidas as $area) {
                 alertas.innerHTML = '';
             }, 5000);
         }
-
         // Validación del formulario
         function validarFormulario() {
             const inventarioId = document.querySelector('input[name="inventario_id"]').value;
@@ -443,7 +407,6 @@ foreach ($areasPredefinidas as $area) {
                 mostrarAlerta('error', 'ID de inventario inválido');
                 return false;
             }
-
             const cambioPiezas = document.getElementById('cambio_piezas');
             if (cambioPiezas && cambioPiezas.value === 'si') {
                 const piezas = document.getElementById('piezas_cambiadas');
@@ -453,7 +416,6 @@ foreach ($areasPredefinidas as $area) {
                     return false;
                 }
             }
-
             const remiteArea = document.getElementById('remite_otra_area');
             if (remiteArea && remiteArea.value === 'si') {
                 const area = document.getElementById('area_remite');
@@ -463,22 +425,17 @@ foreach ($areasPredefinidas as $area) {
                     return false;
                 }
             }
-
             return true;
         }
-
         // Manejar envío del formulario
         document.getElementById('btnGuardar').addEventListener('click', function() {
             if (!validarFormulario()) return;
-
             const btn = this;
             const textoOriginal = btn.textContent;
             btn.disabled = true;
             btn.textContent = 'Guardando...';
-
             const formulario = document.getElementById('formularioTriage');
             const datosFormulario = new FormData(formulario);
-
             // Procesar con AJAX o enviar directamente
             procesarFormulario(datosFormulario)
                 .then(function(respuesta) {
@@ -497,7 +454,6 @@ foreach ($areasPredefinidas as $area) {
                     btn.textContent = textoOriginal;
                 });
         });
-
         // Función para procesar el formulario
         function procesarFormulario(datosFormulario) {
             // Rutas posibles para el backend
@@ -508,7 +464,6 @@ foreach ($areasPredefinidas as $area) {
                 '../php/st_ingresar_mantenimiento.php',
                 './backend/php/st_ingresar_mantenimiento.php'
             ];
-
             return new Promise((resolve, reject) => {
                 // Intentar cada ruta hasta encontrar una que funcione
                 async function probarRutas(rutas, indice = 0) {
@@ -516,10 +471,8 @@ foreach ($areasPredefinidas as $area) {
                         reject(new Error('No se encontró el archivo backend en ninguna ubicación'));
                         return;
                     }
-
                     const ruta = rutas[indice];
                     console.log('Probando ruta:', ruta);
-
                     try {
                         const response = await fetch(ruta, {
                             method: 'POST',
@@ -528,21 +481,17 @@ foreach ($areasPredefinidas as $area) {
                                 'Accept': 'application/json'
                             }
                         });
-
                         if (response.status === 404) {
                             console.log('Archivo no encontrado en:', ruta);
                             // Probar siguiente ruta
                             probarRutas(rutas, indice + 1);
                             return;
                         }
-
                         if (!response.ok) {
                             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                         }
-
                         const textoRespuesta = await response.text();
                         console.log('Respuesta recibida:', textoRespuesta);
-
                         try {
                             const datos = JSON.parse(textoRespuesta);
                             console.log('Datos JSON:', datos);
@@ -551,7 +500,6 @@ foreach ($areasPredefinidas as $area) {
                             console.error('Error parseando JSON:', error);
                             reject(new Error('La respuesta del servidor no es JSON válido: ' + textoRespuesta.substring(0, 100)));
                         }
-
                     } catch (error) {
                         console.error('Error en ruta', ruta, ':', error);
                         
@@ -563,7 +511,6 @@ foreach ($areasPredefinidas as $area) {
                         }
                     }
                 }
-
                 probarRutas(rutasBackend);
             });
         }

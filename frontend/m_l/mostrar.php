@@ -18,7 +18,7 @@ $projectRoot = dirname(__DIR__, 2); // desde frontend/laboratorio -> sube 2 nive
 $ctconexCandidates = [
     $projectRoot . '/config/ctconex.php',
     dirname(__DIR__,1) . '/config/ctconex.php',
-    __DIR__ . '/../../config/ctconex.php',
+    __DIR__ . '../../config/ctconex.php',
     __DIR__ . '/../../../config/ctconex.php'
 ];
 

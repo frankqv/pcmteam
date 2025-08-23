@@ -10,7 +10,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['rol']) || !in_array($_SESSION['
     exit();
 }
 
-require_once '../bd/ctconex.php';
+require_once     __DIR__ . '/../../../config/ctconex.php';
 require_once '../../vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\IOFactory;

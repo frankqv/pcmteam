@@ -1,31 +1,27 @@
 <?php
 ob_start();
 session_start();
-
 /* -------------------- Seguridad -------------------- */
 if (!isset($_SESSION['rol']) || !in_array((int)$_SESSION['rol'], [1, 2, 7, 6])) {
     header('location: ../error404.php');
     exit();
 }
-
-
 /* -------------------- Conexión (normaliza PDO / MySQLi / fallback) -------------------- */
 /* Nota: Reemplaza la sección antigua por esta. Busca ctconex.php en varias rutas,
    detecta conexiones ya creadas y, si no hay, intenta crear una PDO usando
    constantes/variables o variables de entorno. */
-
    $pdo = null;
    $mysqli = null;
    $db_type = null; // 'pdo' o 'mysqli'
    
    // Rutas comunes donde puede estar ctconex.php (ajusta si hace falta)
    $ct_paths = [
-       __DIR__ . '/../../config/ctconex.php',
+       __DIR__ . '../../config/ctconex.php',
        __DIR__ . '/../../../config/ctconex.php',
        dirname(__DIR__, 2) . '/config/ctconex.php',
        dirname(__DIR__, 3) . '/config/ctconex.php',
        __DIR__ . '/../config/ctconex.php',
-       __DIR__ . '/../../bd/ctconex.php'
+       __DIR__ . '/..//config/ctconex.php'
    ];
    foreach ($ct_paths as $p) {
        if (file_exists($p)) {
@@ -97,49 +93,56 @@ if (!isset($_SESSION['rol']) || !in_array((int)$_SESSION['rol'], [1, 2, 7, 6])) 
    
    /* Helper: fetchAll para PDO o MySQLi */
    function db_fetch_all($sql, $params = []) {
-       global $db_type, $pdo, $mysqli;
-       if ($db_type === 'pdo') {
-           $stmt = $pdo->prepare($sql);
-           $stmt->execute($params);
-           return $stmt->fetchAll();
-       } else {
-           // mysqli
-           $stmt = $mysqli->prepare($sql);
-           if ($stmt === false) throw new Exception('MySQLi prepare error: ' . $mysqli->error);
-           if (!empty($params)) {
-               // bind dinámico como strings
-               $types = str_repeat('s', count($params));
-               $stmt->bind_param($types, ...array_values($params));
-           }
-           $stmt->execute();
-           $res = $stmt->get_result();
-           $rows = $res->fetch_all(MYSQLI_ASSOC);
-           $stmt->close();
-           return $rows;
-       }
-   }
-   
+    global $db_type, $pdo, $mysqli;
+    if ($db_type === 'pdo' && $pdo instanceof PDO) { 
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    } elseif ($db_type === 'mysqli' && $mysqli instanceof mysqli) {
+        $stmt = $mysqli->prepare($sql);
+        if ($stmt === false) throw new Exception('MySQLi prepare error: ' . $mysqli->error);
+        if (!empty($params)) {
+            $types = str_repeat('s', count($params));
+            
+            // ✅ Pasar variables por referencia
+            $refs = [];
+            foreach ($params as $key => $value) {
+                $refs[$key] = &$params[$key];
+            }
+            $stmt->bind_param($types, ...$refs);
+        }
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $rows = $res->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+        return $rows;
+    }
+    return []; // Por defecto, si falla
+}
    /* Helper: execute (INSERT/UPDATE) con params */
-   function db_execute($sql, $params = []) {
-       global $db_type, $pdo, $mysqli;
-       if ($db_type === 'pdo') {
-           $stmt = $pdo->prepare($sql);
-           return $stmt->execute($params);
-       } else {
-           $stmt = $mysqli->prepare($sql);
-           if ($stmt === false) throw new Exception('MySQLi prepare error: ' . $mysqli->error);
-           if (!empty($params)) {
-               $types = str_repeat('s', count($params));
-               $stmt->bind_param($types, ...array_values($params));
-           }
-           $ok = $stmt->execute();
-           $stmt->close();
-           return $ok;
-       }
-   }
-   
-
-
+function db_execute($sql, $params = []) {
+    global $db_type, $pdo, $mysqli;
+    if ($db_type === 'pdo' && $pdo instanceof PDO) {
+        $stmt = $pdo->prepare($sql);
+        return $stmt->execute($params);
+    } elseif ($db_type === 'mysqli' && $mysqli instanceof mysqli) {
+        $stmt = $mysqli->prepare($sql);
+        if ($stmt === false) throw new Exception('MySQLi prepare error: ' . $mysqli->error);
+        if (!empty($params)) {
+            $types = str_repeat('s', count($params));
+            // ✅ Pasar por referencia
+            $refs = [];
+            foreach ($params as $key => $value) {
+                $refs[$key] = &$params[$key];
+            }
+            $stmt->bind_param($types, ...$refs);
+        }
+        $ok = $stmt->execute();
+        $stmt->close();
+        return $ok;
+    }
+    return false; // Por defecto
+}
 /* -------------------- Datos / Defaults -------------------- */
 $tecnico_id = isset($_SESSION['id']) ? (int)$_SESSION['id'] : 0;
 $mensaje = '';
@@ -166,7 +169,6 @@ $resultadoTriage = [
     'observaciones'   => '',
     'estado_reparacion' => 'aprobado',
 ];
-
 /* -------------------- Lista de equipos asignados al técnico -------------------- */
 $equiposAsignados = [];
 try {
@@ -293,7 +295,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar'])) {
         $mensaje .= "<div class='alert alert-danger'>❌ Error al guardar: " . htmlspecialchars($e->getMessage()) . "</div>";
     }
 }
-
 /* -------------------- Si hay inventario seleccionado, cargamos algunos datos del inventario para mostrar en encabezado -------------------- */
 $inventarioInfo = null;
 if ($id_equipo > 0) {
@@ -312,7 +313,6 @@ if (!empty($ids_equipo) && $inventarioInfo === null) {
         if (!empty($rows)) $inventarioInfo = $rows[0];
     } catch (Throwable $e) {}
 }
-
 /* -------------------- Render HTML -------------------- */
 ?>
 <!DOCTYPE html>
@@ -344,9 +344,6 @@ if (!empty($ids_equipo) && $inventarioInfo === null) {
         .disk-indicator.red { background: #dc3545; }
         .disk-indicator.gray { background: #6c757d; }
 
-
-
-
 /* Bordes coloreados para selects */
 .select-border-good {
   border: 2px solid rgba(115, 215, 139, 0.22) !important;
@@ -368,13 +365,11 @@ if (!empty($ids_equipo) && $inventarioInfo === null) {
   box-shadow: 0 0 0 0.10rem rgba(255,193,7,0.12);
   background-clip: padding-box;
 }
-
 /* Pequeña corrección para que el padding del select no se vea raro al aumentar borde */
 .form-section select.form-control {
   padding-top: .375rem;
   padding-bottom: .375rem;
 }
-
     </style>
     <!--google material icon-->
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
@@ -695,7 +690,6 @@ document.addEventListener('DOMContentLoaded', function () {
         </div> <!-- /main-content -->
     </div> <!-- /content -->
 </div> <!-- /wrapper -->
-
 <script src="../../backend/js/jquery-3.3.1.min.js"></script>
 <script src="../../backend/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="../../backend/js/sidebarCollapse.js"></script>
@@ -723,7 +717,6 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Ingresa un inventario id válido.');
         }
     }
-
     // Haz clic en fila para marcar checkbox
     document.querySelectorAll('#equipos-tbody tr').forEach(row => {
         row.addEventListener('click', function(e){
@@ -732,7 +725,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (cb) cb.checked = !cb.checked;
         });
     });
-
     // --- Disco auto-selección y semáforo ---
     function parsePercent(value) {
         if (!value) return NaN;
@@ -742,7 +734,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const n = parseInt(digits, 10);
         return isNaN(n) ? NaN : Math.max(0, Math.min(100, n));
     }
-
     function updateDiskStatus() {
         const input = document.querySelector('input[name="vida_util_disco"]');
         if (!input) return;
@@ -750,21 +741,17 @@ document.addEventListener('DOMContentLoaded', function () {
         const pct = parsePercent(val);
         const discoSelect = document.querySelector('select[name="selecionador_Disco[Disco]"]');
         const indicator = document.getElementById('diskIndicator');
-
         // reset
         if (indicator) { indicator.className = 'disk-indicator gray'; indicator.title = 'Valor no definido'; }
         if (discoSelect) { discoSelect.classList.remove('status-good','status-regular','status-bad'); }
-
         if (isNaN(pct)) {
             // nada
             return;
         }
-
         let status = 'N/D';
         if (pct >= 70) status = 'BUENO';
         else if (pct >= 50) status = 'REGULAR';
         else status = 'MALO';
-
         if (discoSelect) {
             // si la opción no existe, intenta agregar (seguro ya la añadimos en HTML)
             let exists = false;
@@ -778,14 +765,12 @@ document.addEventListener('DOMContentLoaded', function () {
             if (status === 'REGULAR') discoSelect.classList.add('status-regular');
             if (status === 'MALO') discoSelect.classList.add('status-bad');
         }
-
         if (indicator) {
             if (status === 'BUENO') { indicator.classList.remove('gray','yellow','red'); indicator.classList.add('green'); indicator.title = pct + '% — Bueno'; }
             else if (status === 'REGULAR') { indicator.classList.remove('gray','green','red'); indicator.classList.add('yellow'); indicator.title = pct + '% — Regular'; }
             else if (status === 'MALO') { indicator.classList.remove('gray','green','yellow'); indicator.classList.add('red'); indicator.title = pct + '% — Malo'; }
         }
     }
-
     // Inicializa al cargar
     document.addEventListener('DOMContentLoaded', function(){
         // actualizar indicador cuando cambie el input
@@ -796,7 +781,6 @@ document.addEventListener('DOMContentLoaded', function () {
             updateDiskStatus();
         }
     });
-
     // Quita la opción "REGULAR" de selects que no sean Disco
     function stripRegularFromNonDisco(){
         // selects de componentes portatil y computador (nombres como componentes_portatil[...] o componentes_computador[...])
@@ -806,7 +790,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-
     // Ejecutar después de la inicialización
     document.addEventListener('DOMContentLoaded', function(){
         // llamado previo para semáforo
@@ -818,18 +801,14 @@ document.addEventListener('DOMContentLoaded', function () {
         // eliminar opciones `REGULAR` de selects que no deben tenerla
         stripRegularFromNonDisco();
     });
-
 </script>
 </body>
 </html>
-
-
 <script>
 // Aplica la clase de borde según el valor del select
 function applySelectBorder(sel) {
   if (!sel) return;
   sel.classList.remove('select-border-good','select-border-bad','select-border-nd','select-border-regular');
-
   const v = (sel.value || '').toString().toUpperCase();
   if (v === 'BUENO') sel.classList.add('select-border-good');
   else if (v === 'MALO') sel.classList.add('select-border-bad');
@@ -839,32 +818,25 @@ function applySelectBorder(sel) {
     // valor inesperado: dejar sin borde especial
   }
 }
-
 document.addEventListener('DOMContentLoaded', function(){
-
   // 1) quitar REGULAR de selects que no sean Disco (mantén esto si ya lo usas)
   document.querySelectorAll('select[name^="componentes_portatil"], select[name^="componentes_computador"]').forEach(function(sel){
     for (let i = sel.options.length - 1; i >= 0; i--) {
       if (sel.options[i].value === 'REGULAR') sel.remove(i);
     }
   });
-
   // 2) elementos a observar (todos los selects de componentes + el select disco)
   const selectorList = [
     'select[name^="componentes_portatil"]',
     'select[name^="componentes_computador"]',
   ];
-
   const selects = document.querySelectorAll(selectorList.join(', '));
-
   selects.forEach(sel => {
     // aplicar borde inicial según valor actual
     applySelectBorder(sel);
-
     // añadir listener para cambios
     sel.addEventListener('change', function(){ applySelectBorder(this); });
   });
-
   // 3) Si tu lógica actual actualiza disco automáticamente desde el input de vida útil,
   //    asegúrate de mantener esa lógica y forzar el borde cuando disco cambie:
   const discoSelect = document.querySelector('select[name="selecionador_Disco[Disco]"]');
@@ -872,7 +844,6 @@ document.addEventListener('DOMContentLoaded', function(){
     // Si ya existe un listener que ajusta clase (status-good/status-bad...) no importa,
     // este listener se asegura de aplicar nuestra clase de borde negra/amarilla/verde/roja.
     discoSelect.addEventListener('change', function(){ applySelectBorder(this); });
-
     // Si en tu código actual cambias el valor del select vía JS, forzar una aplicación:
     // (ej. si updateDiskStatus() hace discoSelect.value = 'BUENO'; entonces llama: applySelectBorder(discoSelect);)
     // Para mayor robustez, observa mutaciones del atributo value:
@@ -885,6 +856,5 @@ document.addEventListener('DOMContentLoaded', function(){
     });
     observer.observe(discoSelect, { attributes: true });
   }
-
 });
 </script>

@@ -3,7 +3,7 @@ session_start();
 error_reporting(0);
 
 // Corregir la ruta del archivo de conexión
-require_once __DIR__ . '/../bd/ctconex.php';
+require_once __DIR__ . '../../../config/ctconex.php';
 
 // Comentado temporalmente para evitar redirecciones no deseadas
 /*

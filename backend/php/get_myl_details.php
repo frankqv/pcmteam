@@ -4,8 +4,8 @@
 // --- Inclusión robusta del archivo de conexión (ctconex.php) ---
 $possible_paths = [
 
-    __DIR__ . '/bd/ctconex.php',
-    __DIR__ . '/../../config/ctconex.php',
+    __DIR__ . '/config/ctconex.php',
+    __DIR__ . '../../../config/ctconex.php',
     __DIR__ . '/../../../config/ctconex.php'
 ];
 $conn_included = false;

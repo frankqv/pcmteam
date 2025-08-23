@@ -1,29 +1,35 @@
 <?php
 session_start();
-require_once '../bd/ctconex.php';
-
+require_once __DIR__ . '../../../config/ctconex.php';
+//
 header('Content-Type: application/json');
-
 // Validar autenticación
 if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
     http_response_code(403);
     echo json_encode(['error' => 'Acceso no autorizado']);
     exit;
 }
-
 // Validar que sea POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'Método no permitido']);
     exit;
 }
-
 // Validar campos requeridos
 $required = [
-    'id', 'codigo_g', 'ubicacion', 'posicion', 'producto', 'marca', 'serial', 'modelo',
-    'ram', 'grado', 'disposicion', 'estado'
+    'id',
+    'codigo_g',
+    'ubicacion',
+    'posicion',
+    'producto',
+    'marca',
+    'serial',
+    'modelo',
+    'ram',
+    'grado',
+    'disposicion',
+    'estado'
 ];
-
 foreach ($required as $field) {
     if (!isset($_POST[$field]) || $_POST[$field] === '') {
         http_response_code(400);
@@ -31,7 +37,6 @@ foreach ($required as $field) {
         exit;
     }
 }
-
 try {
     // Actualizar el equipo en bodega_inventario
     $sql = "UPDATE bodega_inventario SET 
@@ -52,7 +57,6 @@ try {
             estado = :estado,
             fecha_modificacion = NOW()
             WHERE id = :id";
-    
     $stmt = $connect->prepare($sql);
     $stmt->execute([
         ':id' => $_POST['id'],
@@ -72,10 +76,9 @@ try {
         ':disposicion' => $_POST['disposicion'],
         ':estado' => $_POST['estado']
     ]);
-
     if ($stmt->rowCount() > 0) {
         echo json_encode([
-            'success' => true, 
+            'success' => true,
             'message' => 'Equipo actualizado exitosamente'
         ]);
     } else {
@@ -83,13 +86,12 @@ try {
             'error' => 'No se realizaron cambios en el equipo'
         ]);
     }
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([
-        'error' => 'Error al actualizar el equipo en la base de datos', 
+        'error' => 'Error al actualizar el equipo en la base de datos',
         'detalle' => $e->getMessage()
     ]);
     error_log("Error en update_inventario.php: " . $e->getMessage());
 }
-?> 
+?>

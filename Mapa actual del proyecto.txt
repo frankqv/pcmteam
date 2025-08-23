@@ -11,10 +11,34 @@ Uso liberia de php psr
 Uso liberia de php ralouphie
 Uso liberia de php symfony
 
+pcmteam/
+├── config/
+│   └── ctconex.php          ← Archivo objetivo
+├── backend/
+│   └── php/
+│       └── get_inventario_details.php  ← Archivo actual
+└── frontend/
+    └── bodega/
+
+
+
+
 RAIZ PRINCIPAL DE PROGRMA INTERNO
 ├─ backend\                      (carpeta)
 ├─ frontend\                     (carpeta)
 ├─ vendor\                       (carpeta)
+vendor\
+├─ composer\
+│   │  ├─ autoload_classmap.php
+│   │  ├─ autoload_files.php
+│   │  ├─ autoload_namespaces.php
+│   │  ├─ autoload_psr4.php
+│   │  ├─ autoload_real.php
+│   │  ├─ autoload_static.php
+│   │  ├─ ClassLoader.php
+│   │  ├─ installed.json
+│   │  ├─ installed.php
+│   └  └─ InstalledVersions.php
 ├─ .htaccess
 ├─ composer.json
 ├─ composer.lock

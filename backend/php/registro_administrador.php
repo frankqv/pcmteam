@@ -8,7 +8,7 @@ if (isset($_SESSION['id'])) {
 }
 
 // Incluir el archivo de conexión a la base de datos
-include_once '../backend/php/ctconex.php';
+require_once __DIR__ . '../../../config/ctconex.php';
 
 // Mensaje de error por defecto
 $errMsg = '';

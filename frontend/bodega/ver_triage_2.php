@@ -11,7 +11,7 @@ if (!isset($_SESSION['rol']) || !in_array((int)$_SESSION['rol'], [1,2,7])) {
 
 // Inclusión robusta de ctconex.php
 $possible_paths = [
-    __DIR__ . '/../../config/ctconex.php',
+    __DIR__ . '../../config/ctconex.php',
     __DIR__ . '/../../../config/ctconex.php',
 ];
 $conn_included = false;

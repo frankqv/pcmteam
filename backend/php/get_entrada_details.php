@@ -8,7 +8,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['rol']) || !in_array($_SESSION['
     echo json_encode(['success' => false, 'error' => 'Acceso no autorizado']);
     exit();
 }
-require_once '../bd/ctconex.php';
+require_once __DIR__ . '../../../config/ctconex.php';
 try {
     // Verificar que sea una petición GET
     if ($_SERVER['REQUEST_METHOD'] !== 'GET') {

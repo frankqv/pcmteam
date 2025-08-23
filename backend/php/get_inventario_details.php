@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-// Ruta al archivo de conexión - ajústala si es necesario
-require_once __DIR__ . '/../bd/ctconex.php';
+// ✅ RUTA CORREGIDA - Usando __DIR__ de manera segura
+require_once __DIR__ . '../../../config/ctconex.php';
 
 // Verificar que la conexión exista (esperamos $conn como mysqli)
 if (!isset($conn) || !($conn instanceof mysqli)) {

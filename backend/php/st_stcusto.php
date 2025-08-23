@@ -1,8 +1,7 @@
-<?php  
-require_once('../../config/ctconex.php');
+<?php
+require_once __DIR__ . '../../../config/ctconex.php';
 
-if(isset($_POST['staddcust']))
-{
+if (isset($_POST['staddcust'])) {
     $numid = $_POST['txtnum'];
     $nomcli = $_POST['txtnaame'];
     $apecli = $_POST['txtape'];
@@ -10,8 +9,7 @@ if(isset($_POST['staddcust']))
     $correo = $_POST['txtema'];
     $celu = $_POST['txtcel'];
     $estad = $_POST['txtesta'];
-    
-    if(empty($numid)){
+    if (empty($numid)) {
         $errMSG = "Por favor ingresa el número de identificación.";
     } else {
         // Validamos primero que el documento no exista
@@ -19,7 +17,6 @@ if(isset($_POST['staddcust']))
         $stmt = $connect->prepare($sql);
         $stmt->bindParam(':numid', $numid);
         $stmt->execute();
-
         if ($stmt->rowCount() > 0) {
             echo '<script type="text/javascript">
                     swal("Error!", "El número de identificación ya está registrado!", "error").then(function() {
@@ -32,7 +29,6 @@ if(isset($_POST['staddcust']))
             $stmt_correo = $connect->prepare($sql_correo);
             $stmt_correo->bindParam(':correo', $correo);
             $stmt_correo->execute();
-
             if ($stmt_correo->rowCount() > 0) {
                 echo '<script type="text/javascript">
                         swal("Error!", "El correo electrónico ya está registrado!", "error").then(function() {
@@ -50,8 +46,7 @@ if(isset($_POST['staddcust']))
                 $stmt->bindParam(':correo', $correo);
                 $stmt->bindParam(':celu', $celu);
                 $stmt->bindParam(':estad', $estad);
-
-                if($stmt->execute()) {
+                if ($stmt->execute()) {
                     echo '<script type="text/javascript">
                             swal("¡Registrado!", "Cliente agregado correctamente", "success").then(function() {
                                 window.location = "../clientes/mostrar.php";

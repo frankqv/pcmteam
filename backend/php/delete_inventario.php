@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../bd/ctconex.php';
+require_once __DIR__ . '../../../config/ctconex.php';
 
 header('Content-Type: application/json');
 

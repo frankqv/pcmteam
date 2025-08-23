@@ -3,90 +3,66 @@
 session_start();
 header('Content-Type: application/json');
 
-// Verificar sesión y permisos
-if (!isset($_SESSION['id']) || !isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado']);
-    exit();
+// Verificar sesión
+if (!isset($_SESSION['id'])) {
+    echo json_encode(['success' => false, 'error' => 'Sesión no válida']);
+    exit;
 }
-
-require_once '../bd/ctconex.php';
-
 try {
-    // Verificar que sea una petición POST
+    // Probar la conexión
+    require_once __DIR__ . '../../../config/ctconex.php';
+   if (!$connect) {
+        throw new Exception('No se pudo establecer conexión a la base de datos');
+    }
+   // Verificar que sea una petición POST
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception('Método no permitido');
     }
-
-    // Validar y limpiar datos de entrada
+   // Validar campos requeridos
     $required_fields = ['codigo_g', 'ubse', 'posicion', 'producto', 'marca', 'serial', 'modelo', 'ram', 'grado', 'disposicion', 'proveedor', 'tactil'];
-    $data = [];
-    
-    foreach ($required_fields as $field) {
-        if (!isset($_POST[$field]) || trim($_POST[$field]) === '') {
-            throw new Exception("El campo '$field' es requerido");
+   foreach ($required_fields as $field) {
+        if (empty($_POST[$field])) {
+            throw new Exception("Campo requerido faltante: $field");
         }
-        $data[$field] = trim($_POST[$field]);
     }
-
-    // Validaciones específicas
-    if (strpos($data['codigo_g'], ' ') !== false) {
-        throw new Exception('El código general no puede contener espacios');
-    }
-    if (strlen($data['codigo_g']) < 3) {
-        throw new Exception('El código general debe tener al menos 3 caracteres');
-    }
-
-    // Campos opcionales
-    $optional_fields = ['procesador', 'disco', 'pulgadas', 'observaciones'];
-    foreach ($optional_fields as $field) {
-        $data[$field] = isset($_POST[$field]) ? trim($_POST[$field]) : null;
-    }
-    
-    // Campo lote (opcional)
-    $data['lote'] = isset($_POST['lote']) ? trim($_POST['lote']) : null;
-    
-    // El estado siempre es 'activo' para nuevas entradas
-    $data['estado'] = 'activo';
-    
-    // Usuario actual
+   // Preparar datos
+    $data = [
+        'codigo_g' => trim($_POST['codigo_g']),
+        'ubse' => trim($_POST['ubse']),
+        'posicion' => trim($_POST['posicion']),
+        'producto' => trim($_POST['producto']),
+        'marca' => trim($_POST['marca']),
+        'serial' => trim($_POST['serial']),
+        'modelo' => trim($_POST['modelo']),
+        'procesador' => trim($_POST['procesador'] ?? ''),
+        'ram' => trim($_POST['ram']),
+        'disco' => trim($_POST['disco'] ?? ''),
+        'pulgadas' => trim($_POST['pulgadas'] ?? ''),
+        'observaciones' => trim($_POST['observaciones'] ?? ''),
+        'grado' => trim($_POST['grado']),
+        'disposicion' => trim($_POST['disposicion']),
+        'estado' => 'activo',
+        'tactil' => trim($_POST['tactil']),
+        'lote' => trim($_POST['lote'] ?? ''),
+        'proveedor_id' => intval($_POST['proveedor'])
+    ];
+   // Usuario actual
     $usuario_id = $_SESSION['id'];
-
-    // Iniciar transacción
+   // Iniciar transacción
     $connect->beginTransaction();
-
-    // Verificar que el código no exista
-    $stmt_check = $connect->prepare("SELECT id FROM bodega_inventario WHERE codigo_g = ?");
-    $stmt_check->execute([$data['codigo_g']]);
-    if ($stmt_check->rowCount() > 0) {
-        throw new Exception('Ya existe un equipo con este código general');
-    }
-
-    // Verificar que el serial no exista
-    $stmt_check_serial = $connect->prepare("SELECT id FROM bodega_inventario WHERE serial = ?");
-    $stmt_check_serial->execute([$data['serial']]);
-    if ($stmt_check_serial->rowCount() > 0) {
-        throw new Exception('Ya existe un equipo con este número de serie');
-    }
-
-    // Verificar que el proveedor existe
-    $stmt_prov = $connect->prepare("SELECT id FROM proveedores WHERE id = ?");
-    $stmt_prov->execute([$data['proveedor']]);
-    if ($stmt_prov->rowCount() === 0) {
-        throw new Exception('Proveedor no válido');
-    }
-
-    // Insertar en bodega_inventario (CORRIGIENDO LA CONSULTA - eliminando activo_fijo que no existe en $data)
+   // Insertar en bodega_inventario
     $sql_inventario = "INSERT INTO bodega_inventario (
         codigo_g, ubicacion, posicion, producto, marca, serial, modelo, 
         procesador, ram, disco, pulgadas, observaciones, grado, disposicion, 
         estado, tactil, lote, fecha_ingreso, fecha_modificacion
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
-    
-    $stmt_inventario = $connect->prepare($sql_inventario);
-    $stmt_inventario->execute([
+   $stmt_inventario = $connect->prepare($sql_inventario);
+    if (!$stmt_inventario) {
+        throw new Exception("Error en la preparación de la consulta de inventario");
+    }
+   $stmt_inventario->execute([
         $data['codigo_g'],
-        $data['ubse'],
+        $data['ubse'],           // Se mapea a 'ubicacion' en la BD
         $data['posicion'],
         $data['producto'],
         $data['marca'],
@@ -103,65 +79,38 @@ try {
         $data['tactil'],
         $data['lote']
     ]);
-
-    // Obtener el ID del inventario insertado
-    $inventario_id = $connect->lastInsertId();
-
-    // Insertar en bodega_entradas
+   $inventario_id = $connect->lastInsertId();
+   // Insertar en bodega_entradas
     $sql_entrada = "INSERT INTO bodega_entradas (
-        inventario_id, proveedor_id, usuario_id, cantidad, observaciones, fecha_entrada
-    ) VALUES (?, ?, ?, 1, ?, NOW())";
-    
-    $stmt_entrada = $connect->prepare($sql_entrada);
-    $stmt_entrada->execute([
+        inventario_id, proveedor_id, usuario_id, cantidad, observaciones
+    ) VALUES (?, ?, ?, 1, ?)";
+   $stmt_entrada = $connect->prepare($sql_entrada);
+    if (!$stmt_entrada) {
+        throw new Exception("Error en la preparación de la consulta de entrada");
+    }
+   $stmt_entrada->execute([
         $inventario_id,
-        $data['proveedor'],
+        $data['proveedor_id'],
         $usuario_id,
         $data['observaciones']
     ]);
-
-    // Confirmar transacción
+   // Confirmar transacción
     $connect->commit();
-
-    // Respuesta exitosa
-    echo json_encode([
+   echo json_encode([
         'success' => true,
-        'message' => 'Entrada registrada exitosamente',
-        'inventario_id' => $inventario_id,
-        'codigo_g' => $data['codigo_g']
+        'message' => 'Equipo registrado exitosamente',
+        'inventario_id' => $inventario_id
     ]);
-
-} catch (PDOException $e) {
-    // Rollback en caso de error de base de datos
-    if ($connect->inTransaction()) {
-        $connect->rollBack();
-    }
-    
-    http_response_code(500);
-    error_log("Error PDO en st_add_entrada: " . $e->getMessage());
-    
-    // Mensajes de error más específicos para problemas comunes
-    $error_message = 'Error de base de datos';
-    if (strpos($e->getMessage(), 'codigo_g') !== false) {
-        $error_message = 'El código general ya existe';
-    } elseif (strpos($e->getMessage(), 'serial') !== false) {
-        $error_message = 'El número de serie ya existe';
-    } elseif (strpos($e->getMessage(), 'Duplicate entry') !== false) {
-        $error_message = 'Ya existe un registro con estos datos';
-    } elseif (strpos($e->getMessage(), 'SQLSTATE[23000]') !== false) {
-        $error_message = 'Error de restricción de base de datos';
-    }
-    
-    echo json_encode(['success' => false, 'error' => $error_message]);
     
 } catch (Exception $e) {
-    // Rollback en caso de error general
-    if ($connect->inTransaction()) {
-        $connect->rollBack();
+    // Rollback en caso de error
+    if (isset($connect) && $connect->inTransaction()) {
+        $connect->rollback();
     }
-    
-    http_response_code(400);
-    error_log("Error en st_add_entrada: " . $e->getMessage());
-    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    error_log("Error en st_add_entrada.php: " . $e->getMessage());
+    echo json_encode([
+        'success' => false,
+        'error' => 'Error al registrar el equipo: ' . $e->getMessage()
+    ]);
 }
 ?>
