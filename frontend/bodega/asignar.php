@@ -7,67 +7,126 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5, 6, 7])) {
     header('location: ../error404.php');
     exit();
 }
-require_once '../../config/ctconex.php';
+require_once __DIR__ . '../../../config/ctconex.php';
 // Procesar asignación AJAX
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     header('Content-Type: application/json; charset=utf-8');
-
+    // Solo para AJAX: podemos verificar header X-Requested-With si lo deseas
     if ($_POST['action'] == 'assign_equipment') {
-        // datos
-        $equipoId  = intval($_POST['equipo_id'] ?? 0);
+        // Evitar que cualquier salida previa rompa JSON
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+        $equipoId = intval($_POST['equipo_id'] ?? 0);
         $tecnicoId = intval($_POST['tecnico_id'] ?? 0);
-        $tipo      = trim($_POST['tipo'] ?? 'triage');
-        $usuarioId = isset($_SESSION['id']) ? (int)$_SESSION['id'] : 0;
-
-        // validaciones basicas
+        $tipo = trim($_POST['tipo'] ?? 'triage');
+        $usuarioId = isset($_SESSION['id']) ? (int) $_SESSION['id'] : 0;
         if ($equipoId <= 0 || $tecnicoId <= 0 || $usuarioId <= 0) {
+            http_response_code(400);
             echo json_encode(['success' => false, 'message' => 'Parámetros inválidos (equipo/tecnico/sesión).']);
             exit();
         }
-
-        // Forzar que mysqli lance excepciones y poder catch
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
         try {
             $conn->begin_transaction();
-
-            $disposicion = ($tipo === 'triage') ? 'en_diagnostico' : 'en_proceso';
-
+            $disposicion = ($tipo === 'triage' || $tipo === 'triage') ? 'en_diagnostico' : 'en_proceso';
             // UPDATE inventario
             $stmt = $conn->prepare("UPDATE bodega_inventario SET tecnico_id = ?, disposicion = ?, fecha_modificacion = NOW() WHERE id = ?");
-            // tipos: i (tecnicoId), s (disposicion), i (equipoId)
             $stmt->bind_param("isi", $tecnicoId, $disposicion, $equipoId);
             $stmt->execute();
             $affected = $stmt->affected_rows;
             $stmt->close();
-
-            if ($affected < 0) {
-                throw new Exception('No se pudo actualizar el inventario.');
+            if ($affected <= 0) {
+                throw new Exception('No se pudo actualizar el inventario. Verifique que el equipo existe.');
             }
-
             // INSERT en bodega_salidas (log)
             $stmt2 = $conn->prepare("INSERT INTO bodega_salidas (inventario_id, tecnico_id, usuario_id, razon_salida, observaciones) VALUES (?, ?, ?, ?, ?)");
             $razon = "Asignación para " . $tipo;
             $observaciones = "Asignado desde dashboard por usuario ID: " . $usuarioId;
-            // tipos: i (inventario_id), i (tecnico_id), i (usuario_id), s (razon), s (observaciones)
             $stmt2->bind_param("iiiss", $equipoId, $tecnicoId, $usuarioId, $razon, $observaciones);
             $stmt2->execute();
             $stmt2->close();
-
             $conn->commit();
-
-            echo json_encode(['success' => true, 'message' => 'Equipo asignado exitosamente']);
+            // Responder JSON limpio y código 200
+            http_response_code(200);
+            echo json_encode(['success' => true, 'message' => 'DATOS REGISTRADOS CORRECTAMENTE']);
             exit();
         } catch (Throwable $e) {
-            // rollback si la transacción sigue abierta
-            if ($conn->errno) {
-                // intentar rollback silencioso si se puede
-                try { $conn->rollback(); } catch (Throwable $_ex) {}
+            // Intentar rollback si es posible
+            try {
+                if ($conn && $conn->connect_errno === 0)
+                    $conn->rollback();
+            } catch (Throwable $_e) {
+                error_log('Rollback falló: ' . $_e->getMessage());
             }
-            // Log detallado para revisar en servidor (no exponer al cliente información sensible)
+            // Registrar error en log del servidor
             error_log("Asignar equipo error: " . $e->getMessage() . " | equipoId={$equipoId}, tecnicoId={$tecnicoId}, usuarioId={$usuarioId}");
-            // Respuesta JSON simple al cliente
-            echo json_encode(['success' => false, 'message' => 'Error al asignar equipo. Revisa logs o intenta nuevamente.']);
+            // Preparar mensaje para el cliente
+            $errorMessage = 'Error al asignar equipo. Intente nuevamente.';
+            if (stripos($e->getMessage(), 'Duplicate entry') !== false) {
+                $errorMessage = 'El equipo ya está asignado a este técnico.';
+            } elseif (stripos($e->getMessage(), 'foreign key') !== false) {
+                $errorMessage = 'Error de referencia. Verifique que el técnico y equipo existan.';
+            }
+            // Responder JSON aun si ocurre error (evita salida HTML/stacktrace en la respuesta)
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => $errorMessage]);
+            exit();
+        }
+    }
+    // NUEVO: Endpoint para obtener estadísticas actualizadas
+    if ($_POST['action'] == 'get_stats') {
+        try {
+            $techStats = [];
+            $sqlStats = "SELECT u.nombre, COUNT(bi.id) as total_equipos 
+                        FROM usuarios u 
+                        LEFT JOIN bodega_inventario bi ON u.id = bi.tecnico_id 
+                        WHERE u.rol IN ('1','5','6','7') AND u.estado = '1'
+                        GROUP BY u.id, u.nombre 
+                        ORDER BY total_equipos DESC";
+            $resultStats = $conn->query($sqlStats);
+            if ($resultStats) {
+                while ($rowStats = $resultStats->fetch_assoc()) {
+                    $techStats[] = $rowStats;
+                }
+            }
+            echo json_encode($techStats);
+            exit();
+        } catch (Exception $e) {
+            error_log("Error obteniendo estadísticas: " . $e->getMessage());
+            echo json_encode([]);
+            exit();
+        }
+    }
+    // NUEVO: Endpoint para obtener equipos actualizados
+    if ($_POST['action'] == 'get_equipos') {
+        try {
+            $tipo = $_POST['tipo'] ?? 'disponibles';
+            $equipos = [];
+            if ($tipo === 'disponibles') {
+                $sqlEquipos = "SELECT id, codigo_g, producto, marca, modelo 
+                    FROM bodega_inventario 
+                    WHERE (tecnico_id IS NULL OR tecnico_id = 0) AND estado = 'activo'
+                    ORDER BY fecha_ingreso DESC 
+                    LIMIT 20";
+            } else {
+                $sqlEquipos = "SELECT id, codigo_g, producto, marca, modelo 
+                    FROM bodega_inventario 
+                    WHERE disposicion IN ('en_diagnostico', 'Business Room') 
+                    ORDER BY fecha_modificacion DESC 
+                    LIMIT 20";
+            }
+            $resultEquipos = $conn->query($sqlEquipos);
+            if ($resultEquipos) {
+                while ($rowEquipo = $resultEquipos->fetch_assoc()) {
+                    $equipos[] = $rowEquipo;
+                }
+            }
+            echo json_encode($equipos);
+            exit();
+        } catch (Exception $e) {
+            error_log("Error obteniendo equipos: " . $e->getMessage());
+            echo json_encode([]);
             exit();
         }
     }
@@ -232,6 +291,12 @@ if ($resultEquipos) {
                 transform: translateY(-2px);
                 box-shadow: 0 8px 25px rgba(255, 165, 0, 0.3);
             }
+            .assign-btn:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
             .assign-btn-process {
                 background: linear-gradient(135deg, #00FF00, #00CC00);
             }
@@ -335,16 +400,20 @@ if ($resultEquipos) {
                 border-radius: 5px;
                 color: white;
                 font-weight: bold;
+                animation: slideIn 0.3s ease-out;
             }
             .alert-success {
                 background: #28a745;
+                border-left: 4px solid #20692a;
             }
             .alert-danger {
                 background: #dc3545;
+                border-left: 4px solid #b52d3a;
             }
             .alert-warning {
                 background: #ffc107;
                 color: #000;
+                border-left: 4px solid #d39e00;
             }
             .close {
                 float: right;
@@ -353,12 +422,28 @@ if ($resultEquipos) {
                 background: none;
                 border: none;
                 color: inherit;
+                opacity: 0.8;
+            }
+            .close:hover {
+                opacity: 1;
+            }
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                }
+                to {
+                    transform: translateX(0);
+                }
             }
             @media (max-width: 1200px) {
                 .dashboard-grid {
                     grid-template-columns: 1fr;
                     gap: 15px;
                 }
+            }
+            .loading {
+                opacity: 0.6;
+                pointer-events: none;
             }
         </style>
     </head>
@@ -406,7 +491,7 @@ if ($resultEquipos) {
             $titulo = $titulos[$userInfo['rol']] ?? $userInfo['nombre'];
             ?>
             <!-- Navbar -->
-            <div class="top-navbar" ">
+            <div class="top-navbar">
                 <nav class="navbar navbar-expand-lg" style="background:rgb(250, 107, 107);">
                     <div class="container-fluid">
                         <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-none d-none">
@@ -415,8 +500,8 @@ if ($resultEquipos) {
                     </div>
                     <a class="navbar-brand" href="#" style="color: var(--text-primary); font-weight: 600;">
                         <i class="fas fa-tools" style="margin-right: 8px; color: var(--accent-orange);"></i>
-                        ASINGNACION  TECNICO | EQUIPOS </a>
-                        <?php echo htmlspecialchars($titulo); ?>
+                        ASIGNACION TECNICO | EQUIPOS | <?php echo htmlspecialchars($titulo); ?>
+                    </a>
                     <ul class="nav navbar-nav ml-auto">
                         <li class="dropdown nav-item active">
                             <a href="#" class="nav-link" data-toggle="dropdown">
@@ -427,18 +512,19 @@ if ($resultEquipos) {
                                 <li><strong><?php echo htmlspecialchars($userInfo['nombre']); ?></strong></li>
                                 <li><?php echo htmlspecialchars($userInfo['usuario']); ?></li>
                                 <li><?php echo htmlspecialchars($userInfo['correo']); ?></li>
-                                <li><?php echo htmlspecialchars(string: trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?></li>
+                                <li><?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?>
+                                </li>
                                 <li class="mt-2">
                                     <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary">Mi perfil</a>
                                 </li>
                             </ul>
                         </li>
                     </ul>
-                    <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
-    data-toggle="collapse" data-target="#navbarSupportedContent"
-    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="material-icons">more_vert</span>
-</button>
+                    <button class="d-inline-block d-lg-none ml-auto more-button" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span class="material-icons">more_vert</span>
+                    </button>
                 </nav>
             </div>
             <!-- Page Content  -->
@@ -470,7 +556,7 @@ if ($resultEquipos) {
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
-                                    <button type="submit" class="assign-btn">
+                                    <button type="submit" class="assign-btn" id="triageBtn">
                                         <div class="robot-icon"></div>
                                         ASIGNAR
                                     </button>
@@ -511,10 +597,10 @@ if ($resultEquipos) {
                                             <?php
                                             // Equipos en diagnóstico para proceso
                                             $sqlProceso = "SELECT id, codigo_g, producto, marca, modelo 
-                                    FROM bodega_inventario 
-                                    WHERE disposicion IN ('en_diagnostico', 'Business Room') 
-                                    ORDER BY fecha_modificacion DESC 
-                                    LIMIT 20";
+                                                FROM bodega_inventario 
+                                                WHERE disposicion IN ('en_diagnostico', 'Business Room') 
+                                                ORDER BY fecha_modificacion DESC 
+                                                LIMIT 20";
                                             $resultProceso = $conn->query($sqlProceso);
                                             if ($resultProceso) {
                                                 while ($equipoProceso = $resultProceso->fetch_assoc()): ?>
@@ -550,7 +636,7 @@ if ($resultEquipos) {
                                         <span class="na-text">#N/A</span>
                                         <span class="na-text">#N/A</span>
                                     </div>
-                                    <button type="submit" class="assign-btn assign-btn-process">
+                                    <button type="submit" class="assign-btn assign-btn-process" id="processBtn">
                                         <div class="robot-icon"></div>
                                         ASIGNAR
                                     </button>
@@ -561,6 +647,7 @@ if ($resultEquipos) {
                 </div>
                 <!-- Alert Container -->
                 <div id="alertContainer"></div>
+                <!-- Scripts -->
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
                 <script>
@@ -569,17 +656,21 @@ if ($resultEquipos) {
                     <?php foreach ($techStats as $stat): ?>
                         technicianData['<?php echo addslashes($stat['nombre']); ?>'] = <?php echo $stat['total_equipos']; ?>;
                     <?php endforeach; ?>
-                    // Función para mostrar alertas
+                    // Función mejorada para mostrar alertas
                     function showAlert(message, type = 'success') {
                         const alertContainer = document.getElementById('alertContainer');
+                        // Remover alertas existentes
+                        const existingAlerts = alertContainer.querySelectorAll('.alert');
+                        existingAlerts.forEach(alert => alert.remove());
                         const alert = document.createElement('div');
                         alert.className = `alert alert-${type}`;
                         alert.innerHTML = `
-                ${message}
-                <button type="button" class="close" onclick="this.parentElement.remove()">
-                    <span>&times;</span>
-                </button>`;
+                            ${message}
+                            <button type="button" class="close" onclick="this.parentElement.remove()">
+                                <span>&times;</span>
+                            </button>`;
                         alertContainer.appendChild(alert);
+                        // Auto-remover después de 5 segundos
                         setTimeout(() => {
                             if (alert.parentElement) {
                                 alert.remove();
@@ -621,7 +712,78 @@ if ($resultEquipos) {
                             }
                         }
                     });
+                    // Función para deshabilitar/habilitar botones
+                    function toggleButton(buttonId, loading = false) {
+                        const btn = document.getElementById(buttonId);
+                        if (loading) {
+                            btn.disabled = true;
+                            btn.innerHTML = '<div class="robot-icon"></div>PROCESANDO...';
+                        } else {
+                            btn.disabled = false;
+                            btn.innerHTML = '<div class="robot-icon"></div>ASIGNAR';
+                        }
+                    }
+                    // Función para actualizar lista de equipos
+                    function updateEquipmentList(selectId, tipo = 'disponibles') {
+                        $.ajax({
+                            url: window.location.href,
+                            method: 'POST',
+                            data: {
+                                action: 'get_equipos',
+                                tipo: tipo
+                            },
+                            dataType: 'json',
+                            success: function (equipos) {
+                                const select = document.getElementById(selectId);
+                                const currentValue = select.value;
+                                // Limpiar opciones actuales excepto la primera
+                                select.innerHTML = '<option value="">Seleccionar Equipo</option>';
+                                // Agregar nuevos equipos
+                                equipos.forEach(function (equipo) {
+                                    const option = document.createElement('option');
+                                    option.value = equipo.id;
+                                    option.textContent = equipo.codigo_g + ' - ' + equipo.producto + ' ' + equipo.marca;
+                                    select.appendChild(option);
+                                });
+                            },
+                            error: function () {
+                                console.warn('No se pudo actualizar la lista de equipos');
+                            }
+                        });
+                    }
                     // Manejo del formulario de Triage
+                    // Util: intenta parsear JSON limpio desde responseText (tolerante)
+                    function safeParseJSON(text) {
+                        if (!text) return null;
+                        // Intento directo
+                        try { return JSON.parse(text); } catch (e) { }
+                        // Si hay contenido antes, buscar primer { ... } válido
+                        const first = text.indexOf('{');
+                        const last = text.lastIndexOf('}');
+                        if (first !== -1 && last !== -1 && last > first) {
+                            try { return JSON.parse(text.slice(first, last + 1)); } catch (e) { }
+                        }
+                        return null;
+                    }
+                    // Reutilizable: procesa respuesta (sea desde success o desde error)
+                    function handleAssignResponse(xhrOrData, formId, successButtonId, onSuccessCallback) {
+                        let data = xhrOrData;
+                        // si viene de error handler: intentar parsear xhr.responseText
+                        if (xhrOrData && xhrOrData.responseText !== undefined) {
+                            const parsed = safeParseJSON(xhrOrData.responseText);
+                            if (parsed) data = parsed;
+                        }
+                        if (data && data.success) {
+                            showAlert('✅ DATOS REGISTRADOS CORRECTAMENTE', 'success');
+                            document.getElementById(formId).reset();
+                            if (typeof onSuccessCallback === 'function') onSuccessCallback();
+                        } else {
+                            const msg = (data && data.message) ? data.message : 'Error de conexión. Intente nuevamente.';
+                            showAlert('❌ ' + msg, 'danger');
+                        }
+                        toggleButton(successButtonId, false);
+                    }
+                    // TRIAGE form
                     document.getElementById('triageForm').addEventListener('submit', function (e) {
                         e.preventDefault();
                         const equipoId = document.getElementById('equipmentSelect').value;
@@ -630,7 +792,7 @@ if ($resultEquipos) {
                             showAlert('Por favor seleccione un equipo y un técnico', 'warning');
                             return;
                         }
-                        // Enviar datos via AJAX
+                        toggleButton('triageBtn', true);
                         $.ajax({
                             url: window.location.href,
                             method: 'POST',
@@ -641,24 +803,29 @@ if ($resultEquipos) {
                                 tipo: 'triage'
                             },
                             dataType: 'json',
+                            timeout: 10000,
+                            cache: false,
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' },
                             success: function (response) {
-                                if (response.success) {
-                                    showAlert(response.message, 'success');
-                                    document.getElementById('triageForm').reset();
+                                console.log('Respuesta triage (success):', response);
+                                handleAssignResponse(response, 'triageForm', 'triageBtn', function () {
                                     updateStats();
-                                    // Remover el equipo del select
-                                    $('#equipmentSelect option[value="' + equipoId + '"]').remove();
-                                } else {
-                                    showAlert(response.message, 'danger');
-                                }
+                                    updateEquipmentList('equipmentSelect', 'disponibles');
+                                    updateEquipmentList('processEquipmentSelect', 'proceso');
+                                });
                             },
                             error: function (xhr, status, error) {
-                                console.error('Error:', error);
-                                showAlert('Error de conexión. Intente nuevamente.', 'success');
+                                console.error('Error AJAX triage:', status, error, xhr.status);
+                                // Intentar leer JSON dentro de responseText por si hubo warnings antes del JSON
+                                handleAssignResponse(xhr, 'triageForm', 'triageBtn', function () {
+                                    updateStats();
+                                    updateEquipmentList('equipmentSelect', 'disponibles');
+                                    updateEquipmentList('processEquipmentSelect', 'proceso');
+                                });
                             }
                         });
                     });
-                    // Manejo del formulario de Proceso
+                    // PROCESS form (similar)
                     document.getElementById('processForm').addEventListener('submit', function (e) {
                         e.preventDefault();
                         const equipoId = document.getElementById('processEquipmentSelect').value;
@@ -667,7 +834,7 @@ if ($resultEquipos) {
                             showAlert('Por favor seleccione un equipo y un técnico', 'warning');
                             return;
                         }
-                        // Enviar datos via AJAX
+                        toggleButton('processBtn', true);
                         $.ajax({
                             url: window.location.href,
                             method: 'POST',
@@ -678,20 +845,24 @@ if ($resultEquipos) {
                                 tipo: 'process'
                             },
                             dataType: 'json',
+                            timeout: 10000,
+                            cache: false,
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' },
                             success: function (response) {
-                                if (response.success) {
-                                    showAlert(response.message, 'success');
-                                    document.getElementById('processForm').reset();
+                                console.log('Respuesta proceso (success):', response);
+                                handleAssignResponse(response, 'processForm', 'processBtn', function () {
                                     updateStats();
-                                    // Remover el equipo del select
-                                    $('#processEquipmentSelect option[value="' + equipoId + '"]').remove();
-                                } else {
-                                    showAlert(response.message, 'success');
-                                }
+                                    updateEquipmentList('processEquipmentSelect', 'proceso');
+                                    updateEquipmentList('equipmentSelect', 'disponibles');
+                                });
                             },
                             error: function (xhr, status, error) {
-                                console.error('Error:', error);
-                                showAlert('Revision Conexion.', 'success');
+                                console.error('Error AJAX proceso:', status, error, xhr.status);
+                                handleAssignResponse(xhr, 'processForm', 'processBtn', function () {
+                                    updateStats();
+                                    updateEquipmentList('processEquipmentSelect', 'proceso');
+                                    updateEquipmentList('equipmentSelect', 'disponibles');
+                                });
                             }
                         });
                     });
@@ -705,6 +876,7 @@ if ($resultEquipos) {
                             },
                             dataType: 'json',
                             success: function (stats) {
+                                console.log('Estadísticas actualizadas:', stats);
                                 // Actualizar datos del gráfico
                                 technicianData = {};
                                 stats.forEach(function (stat) {
@@ -721,13 +893,13 @@ if ($resultEquipos) {
                                     const row = document.createElement('div');
                                     row.className = 'tech-row';
                                     row.innerHTML = `
-                            <span class="tech-name">${stat.nombre.toUpperCase()}</span>
-                            <span class="tech-count">${stat.total_equipos}</span>`;
+                                        <span class="tech-name">${stat.nombre.toUpperCase()}</span>
+                                        <span class="tech-count">${stat.total_equipos}</span>`;
                                     statsContainer.appendChild(row);
                                 });
                             },
                             error: function () {
-                                console.error('Error actualizando estadísticas');
+                                console.warn('Error actualizando estadísticas');
                             }
                         });
                     }
@@ -736,6 +908,7 @@ if ($resultEquipos) {
                     // Inicialización
                     $(document).ready(function () {
                         console.log('Dashboard cargado correctamente');
+                        console.log('Datos iniciales de técnicos:', technicianData);
                     });
                 </script>
             </div>

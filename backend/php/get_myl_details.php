@@ -79,7 +79,7 @@ $inv_sql = "SELECT i.*, u.nombre AS tecnico_nombre
 $inventario = fetch_one_ps($conn, $inv_sql, 'i', [$inventario_id]);
 if (is_array($inventario) && isset($inventario['error']) && $inventario['error']) {
     header('HTTP/1.1 500 Internal Server Error');
-    echo "Error en consulta INVENTARIO: " . htmlspecialchars($inventario['msg']);
+    echo "Error en consulta INVENTARIO: " . htmlspecialchars($inventario['msg'] ?? '');
     exit;
 }
 if (!$inventario) {
@@ -89,35 +89,35 @@ if (!$inventario) {
 }
 // --- 1) TRIAGE (bodega_diagnosticos) ---
 $triage_sql = "SELECT id, fecha_diagnostico, tecnico_id, estado_reparacion, observaciones
-               FROM bodega_diagnosticos
-               WHERE inventario_id = ?
-               ORDER BY fecha_diagnostico DESC";
+    FROM bodega_diagnosticos
+    WHERE inventario_id = ?
+    ORDER BY fecha_diagnostico DESC";
 $triage = fetch_all_ps($conn, $triage_sql, 'i', [$inventario_id]);
 if (is_array($triage) && isset($triage['error']) && $triage['error']) {
     header('HTTP/1.1 500 Internal Server Error');
-    echo "Error en consulta TRIAGE: " . htmlspecialchars($triage['msg']);
+    echo "Error en consulta TRIAGE: " . htmlspecialchars($triage['msg'] ?? '');
     exit;
 }
 // --- 2) MANTENIMIENTO (bodega_mantenimiento) ---
 $m_sql = "SELECT id, fecha_registro, tecnico_id, usuario_registro, estado, tipo_proceso, observaciones, partes_solicitadas, referencia_externa
-          FROM bodega_mantenimiento
-          WHERE inventario_id = ?
-          ORDER BY fecha_registro DESC";
+            FROM bodega_mantenimiento
+            WHERE inventario_id = ?
+            ORDER BY fecha_registro DESC";
 $mantenimiento = fetch_all_ps($conn, $m_sql, 'i', [$inventario_id]);
 if (is_array($mantenimiento) && isset($mantenimiento['error']) && $mantenimiento['error']) {
     header('HTTP/1.1 500 Internal Server Error');
-    echo "Error en consulta MANTENIMIENTO: " . htmlspecialchars($mantenimiento['msg']);
+    echo "Error en consulta MANTENIMIENTO: " . htmlspecialchars($mantenimiento['msg'] ?? '');
     exit;
 }
 // --- 3) CONTROL DE CALIDAD (bodega_control_calidad) ---
 $cc_sql = "SELECT id, fecha_control, tecnico_id, burning_test, sentinel_test, estado_final, categoria_rec, observaciones
-           FROM bodega_control_calidad
-           WHERE inventario_id = ?
-           ORDER BY fecha_control DESC";
+            FROM bodega_control_calidad
+            WHERE inventario_id = ?
+            ORDER BY fecha_control DESC";
 $control_calidad = fetch_all_ps($conn, $cc_sql, 'i', [$inventario_id]);
 if (is_array($control_calidad) && isset($control_calidad['error']) && $control_calidad['error']) {
     header('HTTP/1.1 500 Internal Server Error');
-    echo "Error en consulta CONTROL DE CALIDAD: " . htmlspecialchars($control_calidad['msg']);
+    echo "Error en consulta CONTROL DE CALIDAD: " . htmlspecialchars($control_calidad['msg'] ?? '');
     exit;
 }
 // --- 4) PARTES SOLICITADAS -> buscar en bodega_partes (por referencia, numero_parte, producto) ---
@@ -132,9 +132,9 @@ if (!empty($mantenimiento) && is_array($mantenimiento)) {
             if ($token === '') continue;
             $like = '%' . $token . '%';
             $stmt = $conn->prepare("SELECT id, caja, cantidad, marca, referencia, numero_parte, condicion, precio, detalles, codigo, serial, producto
-                                    FROM bodega_partes
-                                    WHERE referencia LIKE ? OR numero_parte LIKE ? OR producto LIKE ?
-                                    LIMIT 50");
+                                            FROM bodega_partes
+                                            WHERE referencia LIKE ? OR numero_parte LIKE ? OR producto LIKE ?
+                                            LIMIT 50");
             if ($stmt === false) continue;
             $stmt->bind_param('sss', $like, $like, $like);
             $stmt->execute();
@@ -175,9 +175,9 @@ if (!empty($mantenimiento) && is_array($mantenimiento)) {
             <h5 style="margin:0 0 6px 0;">Especificaciones</h5>
             <div><strong>Procesador:</strong> <?= htmlspecialchars($inventario['procesador'] ?? '') ?></div>
             <div><strong>RAM:</strong> <?= htmlspecialchars($inventario['ram'] ?? '') ?> |
-                 <strong>Disco:</strong> <?= htmlspecialchars($inventario['disco'] ?? '') ?></div>
+                <strong>Disco:</strong> <?= htmlspecialchars($inventario['disco'] ?? '') ?></div>
             <div><strong>Pulgadas:</strong> <?= htmlspecialchars($inventario['pulgadas'] ?? '') ?> |
-                 <strong>Táctil:</strong> <?= htmlspecialchars($inventario['tactil'] ?? '') ?></div>
+                <strong>Táctil:</strong> <?= htmlspecialchars($inventario['tactil'] ?? '') ?></div>
             <div><strong>Activo fijo:</strong> <?= htmlspecialchars($inventario['activo_fijo'] ?? '') ?></div>
         </div>
     </div>
@@ -185,7 +185,7 @@ if (!empty($mantenimiento) && is_array($mantenimiento)) {
     <?php if (!empty($inventario['observaciones'])): ?>
         <div style="margin-bottom:12px;">
             <strong>Observaciones generales:</strong>
-            <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($inventario['observaciones']) ?></pre>
+            <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($inventario['observaciones'] ?? '') ?></pre>
         </div>
     <?php endif; ?>
     <!-- TRIAGE -->
@@ -195,11 +195,11 @@ if (!empty($mantenimiento) && is_array($mantenimiento)) {
     <?php else: ?>
         <?php foreach ($triage as $t): ?>
             <div style="padding:8px; border-bottom:1px solid #f0f0f0; margin-bottom:6px;">
-                <div><strong>Fecha:</strong> <?= htmlspecialchars($t['fecha_diagnostico']) ?></div>
-                <div><strong>Técnico ID:</strong> <?= htmlspecialchars($t['tecnico_id']) ?> |
-                    <strong>Estado:</strong> <?= htmlspecialchars($t['estado_reparacion']) ?></div>
+                <div><strong>Fecha:</strong> <?= htmlspecialchars($t['fecha_diagnostico'] ?? '') ?></div>
+                <div><strong>Técnico ID:</strong> <?= htmlspecialchars($t['tecnico_id'] ?? '') ?> |
+                    <strong>Estado:</strong> <?= htmlspecialchars($t['estado_reparacion'] ?? '') ?></div>
                 <div style="margin-top:6px;"><strong>Observaciones:</strong>
-                    <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($t['observaciones']) ?></pre>
+                    <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($t['observaciones'] ?? '') ?></pre>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -211,17 +211,17 @@ if (!empty($mantenimiento) && is_array($mantenimiento)) {
     <?php else: ?>
         <?php foreach ($mantenimiento as $m): ?>
             <div style="padding:8px; border-bottom:1px solid #f7f7f7; margin-bottom:6px;">
-                <div><strong>Fecha registro:</strong> <?= htmlspecialchars($m['fecha_registro']) ?> |
-                     <strong>Estado:</strong> <?= htmlspecialchars($m['estado']) ?> |
-                     <strong>Tipo proceso:</strong> <?= htmlspecialchars($m['tipo_proceso']) ?></div>
+                <div><strong>Fecha registro:</strong> <?= htmlspecialchars($m['fecha_registro'] ?? '') ?> |
+                     <strong>Estado:</strong> <?= htmlspecialchars($m['estado'] ?? '') ?> |
+                     <strong>Tipo proceso:</strong> <?= htmlspecialchars($m['tipo_proceso'] ?? '') ?></div>
                 <div style="margin-top:6px;"><strong>Observaciones:</strong>
-                    <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($m['observaciones']) ?></pre>
+                    <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($m['observaciones'] ?? '') ?></pre>
                 </div>
                 <?php if (!empty($m['partes_solicitadas'])): ?>
-                    <div style="margin-top:6px;"><strong>Partes solicitadas (texto):</strong> <?= htmlspecialchars($m['partes_solicitadas']) ?></div>
+                    <div style="margin-top:6px;"><strong>Partes solicitadas (texto):</strong> <?= htmlspecialchars($m['partes_solicitadas'] ?? '') ?></div>
                 <?php endif; ?>
                 <?php if (!empty($m['referencia_externa'])): ?>
-                    <div><strong>Referencia externa:</strong> <?= htmlspecialchars($m['referencia_externa']) ?></div>
+                    <div><strong>Referencia externa:</strong> <?= htmlspecialchars($m['referencia_externa'] ?? '') ?></div>
                 <?php endif; ?>
             </div>
         <?php endforeach; ?>
@@ -233,18 +233,18 @@ if (!empty($mantenimiento) && is_array($mantenimiento)) {
     <?php else: ?>
         <?php foreach ($control_calidad as $c): ?>
             <div style="padding:8px; border-bottom:1px solid #f7f7f7; margin-bottom:6px;">
-                <div><strong>Fecha control:</strong> <?= htmlspecialchars($c['fecha_control']) ?> |
-                     <strong>Técnico ID:</strong> <?= htmlspecialchars($c['tecnico_id']) ?></div>
-                <div><strong>Estado final:</strong> <?= htmlspecialchars($c['estado_final']) ?> |
-                     <strong>Categoria REC:</strong> <?= htmlspecialchars($c['categoria_rec']) ?></div>
+                <div><strong>Fecha control:</strong> <?= htmlspecialchars($c['fecha_control'] ?? '') ?> |
+                     <strong>Técnico ID:</strong> <?= htmlspecialchars($c['tecnico_id'] ?? '') ?></div>
+                <div><strong>Estado final:</strong> <?= htmlspecialchars($c['estado_final'] ?? '') ?> |
+                     <strong>Categoria REC:</strong> <?= htmlspecialchars($c['categoria_rec'] ?? '') ?></div>
                 <div style="margin-top:6px;"><strong>Burning Test:</strong>
-                    <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($c['burning_test']) ?></pre>
+                    <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($c['burning_test'] ?? '') ?></pre>
                 </div>
                 <div style="margin-top:6px;"><strong>Sentinel Test:</strong>
-                    <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($c['sentinel_test']) ?></pre>
+                    <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($c['sentinel_test'] ?? '') ?></pre>
                 </div>
                 <div style="margin-top:6px;"><strong>Observaciones:</strong>
-                    <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($c['observaciones']) ?></pre>
+                    <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($c['observaciones'] ?? '') ?></pre>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -257,21 +257,21 @@ if (!empty($mantenimiento) && is_array($mantenimiento)) {
         <?php foreach ($partes as $p): ?>
             <div style="padding:8px; border-bottom:1px dashed #ddd; margin-bottom:6px;">
                 <div>
-                    <strong>ID:</strong> <?= htmlspecialchars($p['id']) ?> |
-                    <strong>Caja:</strong> <?= htmlspecialchars($p['caja']) ?> |
-                    <strong>Cantidad:</strong> <?= htmlspecialchars($p['cantidad']) ?> |
-                    <strong>Marca:</strong> <?= htmlspecialchars($p['marca']) ?>
+                    <strong>ID:</strong> <?= htmlspecialchars($p['id'] ?? '') ?> |
+                    <strong>Caja:</strong> <?= htmlspecialchars($p['caja'] ?? '') ?> |
+                    <strong>Cantidad:</strong> <?= htmlspecialchars($p['cantidad'] ?? '') ?> |
+                    <strong>Marca:</strong> <?= htmlspecialchars($p['marca'] ?? '') ?>
                 </div>
                 <div style="margin-top:4px;">
-                    <strong>Referencia:</strong> <?= htmlspecialchars($p['referencia']) ?> |
-                    <strong>Nº Parte:</strong> <?= htmlspecialchars($p['numero_parte']) ?> |
-                    <strong>Condición:</strong> <?= htmlspecialchars($p['condicion']) ?> |
-                    <strong>Precio:</strong> <?= htmlspecialchars($p['precio']) ?>
+                    <strong>Referencia:</strong> <?= htmlspecialchars($p['referencia'] ?? '') ?> |
+                    <strong>Nº Parte:</strong> <?= htmlspecialchars($p['numero_parte'] ?? '') ?> |
+                    <strong>Condición:</strong> <?= htmlspecialchars($p['condicion'] ?? '') ?> |
+                    <strong>Precio:</strong> <?= htmlspecialchars($p['precio'] ?? '') ?>
                 </div>
                 <div style="margin-top:4px;">
-                    <strong>Detalles:</strong> <?= htmlspecialchars($p['detalles']) ?> |
-                    <strong>Código:</strong> <?= htmlspecialchars($p['codigo']) ?> |
-                    <strong>Serial:</strong> <?= htmlspecialchars($p['serial']) ?>
+                    <strong>Detalles:</strong> <?= htmlspecialchars($p['detalles'] ?? '') ?> |
+                    <strong>Código:</strong> <?= htmlspecialchars($p['codigo'] ?? '') ?> |
+                    <strong>Serial:</strong> <?= htmlspecialchars($p['serial'] ?? '') ?>
                 </div>
             </div>
         <?php endforeach; ?>

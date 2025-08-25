@@ -15,7 +15,7 @@
     <meta name="description" content="Author: FrankQV,
     DEVELOPER: FRANKQV MAYO 2025, Tecnologia, Category: sistema, Price: $900.99 Dollar,">
     <title>PCMARKETTEAM</title>
-    <link rel="icon" type="image/png" href="backend/img/favicon.png">
+    <link rel="icon" type="image/png" href="backend/img/favicon.webp">
     <!-- Hotjar Tracking Code for PcMarketTEAM -->
     <script>
         (function(h,o,t,j,a,r){

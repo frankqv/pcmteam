@@ -273,10 +273,9 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                     echo "<td>" . htmlspecialchars($row['tecnico_nombre']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['fecha_modificacion']) . "</td>";
                                                     echo "<td class='text-center'>
-                                                        <a href='javascript:void(0)' class='btn btn-info btn-sm view-btn' data-id='" . $row['id'] . "' title='VER | Detalles del EQUIPO'><i class='material-icons'>visibility</i></a>
-                                                        <a href='javascript:void(0)' class='btn btn-success btn-sm mantenimiento-btn' data-id='" . $row['id'] . "' title='Editar Matenimiento y Limpieza'><i class='material-icons'>edit</i></a>
-                                                        <a href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "'><i class='material-icons' title='Editar Equipo'>edit</i></a>
-                                                       
+                                                        <a href='javascript:void(0)' class='btn btn-secondary btn-sm view-btn' data-id='" . $row['id'] . "' title='VER | Detalles del EQUIPO'><i class='material-icons'>visibility</i></a>
+                                                        <a style='background: #1abc9c;' href='javascript:void(0)' class='btn btn-success btn-sm mantenimiento-btn' data-id='" . $row['id'] . "' title='Editar Matenimiento y Limpieza'><i class='material-icons'>edit</i></a>
+                                                        <a style='background: #dc3545'; href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "'><i class='material-icons' title='Editar Equipo en Inventario'>edit</i></a>
                                                     </td>";
                                                     echo "</tr>";
                                                 }
@@ -369,7 +368,7 @@ $(document).on('click', '.view-btn', function () {
                 // Editar equipo
                 $('.mantenimiento-btn').click(function () {
                     var id = $(this).data('id');
-                    window.location.href = 'ingresar_myl.php?id=' + id;
+                    window.location.href = 'ingresar_m.php?id=' + id;
                 });
                 // Editar equipo
                 $('.edit-btn').click(function () {
