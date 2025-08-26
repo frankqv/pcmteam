@@ -1,0 +1,285 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    color: #2c3e50;
+    line-height: 1.6;
+    min-height: 100vh;
+}  .container {
+    min-height: 100vh; /* O height: 100vh; según tu necesidad */
+    width: 100%;       /* para que abarque todo el ancho */
+    margin: 0 auto;
+    padding: 20px;
+
+}  /* Header Section */
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}  .header h1 {
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    font-weight: 700;
+}  .header p {
+    font-size: 1.1em;
+    opacity: 0.9;
+}  /* Main Layout */
+.main-grid {
+    min-width: 100vh;
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 30px;
+    align-items: start;
+}  /* Card Styles */
+.card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e8ecf3;
+}  .card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f1f3f5;
+}  .card-header h3 {
+    color: #495057;
+    font-size: 1.3em;
+    font-weight: 600;
+    margin-left: 10px;
+}  .card-icon {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+}  /* Diagnosis Results Panel */
+.diagnosis-panel {
+    position: sticky;
+    top: 20px;
+}  .diagnosis-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    background: #f8f9fb;
+    border-radius: 8px;
+    border-left: 4px solid #e9ecef;
+}  .diagnosis-label {
+    font-weight: 500;
+    color: #495057;
+    font-size: 0.9em;
+}  .status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+}  .status-bueno {
+    background: #d4edda;
+    color: #155724;
+}  .status-malo {
+    background: #f8d7da;
+    color: #721c24;
+}  .status-nd {
+    background: #fff3cd;
+    color: #856404;
+}  /* Equipment Info Section */
+.equipment-info {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+    padding: 25px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+}  .equipment-main {
+    display: flex;
+    flex-direction: column;
+}  .equipment-code {
+    font-size: 2.5em;
+    font-weight: 800;
+    color: #495057;
+    margin-bottom: 5px;
+    letter-spacing: -1px;
+}  .equipment-description {
+    color: #6c757d;
+    font-size: 1.1em;
+    margin-bottom: 15px;
+}  .equipment-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}  .detail-item {
+    display: flex;
+    flex-direction: column;
+}  .detail-label {
+    font-size: 0.8em;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 3px;
+}  .detail-value {
+    font-weight: 500;
+    color: #495057;
+}  /* Form Sections */
+.form-section {
+    margin-bottom: 35px;
+}  .section-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+}  .section-title h4 {
+    color: #495057;
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-left: 10px;
+}  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}  .form-group {
+    display: flex;
+    flex-direction: column;
+}  .form-group.full-width {
+    grid-column: 1 / -1;
+}  label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}  input,
+select,
+textarea {
+    padding: 12px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 0.95em;
+    transition: all 0.3s ease;
+    background: white;
+}  input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}  textarea {
+    resize: vertical;
+    min-height: 80px;
+}  /* Conditional Fields */
+.conditional-field {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f8f9fb;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}  .hidden {
+    display: none;
+}  /* Buttons */
+.btn-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 2px solid #e9ecef;
+}  .btn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 180px;
+}  .btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}  .btn-secondary {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: white;
+}  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}  .btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+}  /* Alert Messages */
+.alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-weight: 500;
+}  .alert-success {
+    background: #d4edda;
+    color: #155724;
+    border-left: 4px solid #28a745;
+}  .alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}  .alert-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border-left: 4px solid #17a2b8;
+}  /* Responsive Design */
+@media (max-width: 1200px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }      .diagnosis-panel {
+        position: static;
+    }
+}  @media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }      .header {
+        padding: 20px;
+    }      .header h1 {
+        font-size: 1.8em;
+    }      .equipment-info {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }      .equipment-code {
+        font-size: 2em;
+    }      .form-grid {
+        grid-template-columns: 1fr;
+    }      .btn-container {
+        flex-direction: column;
+        align-items: center;
+    }      .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+}  /* Animation for smooth transitions */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }      to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}  .card {
+    animation: slideIn 0.5s ease-out;
+}

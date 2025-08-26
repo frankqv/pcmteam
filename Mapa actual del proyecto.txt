@@ -11,9 +11,8 @@ Uso liberia de php psr
 Uso liberia de php ralouphie
 Uso liberia de php symfony
 
-pcmteam/
-├── config/
-│   └── ctconex.php          ← Archivo objetivo
+
+
 ├── backend/
 │   └── php/
 │       └── get_inventario_details.php  ← Archivo actual
@@ -24,10 +23,169 @@ pcmteam/
 
 
 RAIZ PRINCIPAL DE PROGRMA INTERNO
-├─ backend\                      (carpeta)
-├─ frontend\                     (carpeta)
+pcmteam/
+├── config/
+│   └── ctconex.php          ← Archivo objetivo                      (carpeta)
+├── backend/
+│   └── php/
+│       └── get_inventario_details.php  ← Archivo actual
+backend\
+│   ├─ css\                    (carpeta)
+│   │  ├─ bootstrap.min.css
+│   │  ├─ buttonsdataTables.css
+│   │  ├─ custom.css
+│   │  ├─ custom2.css
+│   │  ├─ datatable.css
+│   │  ├─ font.css
+│   │  ├─ loader.css
+│   │  └─ style.css
+│   ├─ img\                    (carpeta)
+│   ├─ js\                     (carpeta)
+│   │  ├─ bootstrap.min.js
+│   │  ├─ buttonshtml5.js
+│   │  ├─ buttonsprint.js
+│   │  ├─ Chart-prod.js
+│   │  ├─ datatable.js
+│   │  ├─ datatablebuttons.js
+│   │  ├─ example.js
+│   │  ├─ jquery-3.3.1.min.js
+│   │  ├─ jquery-3.3.1.slim.min.js
+│   │  ├─ jszip.js
+│   │  ├─ loader.js
+│   │   ├─ package-lock.json
+│   │   ├─ package.json
+│   │   ├─ pdfmake.js
+│   │   ├─ piechart.js
+│   │   ├─ plan.js
+│   │   ├─ popper.min.js
+│   │   ├─ reenvio.js
+│   │   ├─ sidebarCollapse.js
+│   │   ├─ sweetalert.js
+│   │   └─ vfs_fonts.js
+│   │   ├─  pdf\                    (carpeta)
+│   │  ├─ font\                 (carpeta)
+│   │  ├─ code128.php
+│   │  ├─ download_fpdf.php
+│   │  └─ fpdf.php
+│   ├─ php\                    (carpeta)
+│   │  ├─ backend\              (carpeta)
+│   │  ├─ PHPMailer\            (carpeta)
+│   │  ├─ ctlogx.php
+│   │  ├─ delete_inventario.php
+│   │  ├─ download_excel_template.php
+│   │  ├─ errores.log
+│   │  ├─ get_entrada_details.php
+│   │  ├─ get_inventario_details.php
+│   │  ├─ import_excel_equipos.php
+│   │  ├─ registro_administrador.php
+│   │  ├─ st_addcheck.php
+│   │  ├─ st_addcheck_compra.php
+│   │  ├─ st_add_cart.php
+│   │  ├─ st_add_cart_compra.php
+│   │  ├─ st_add_entrada.php
+│   │  ├─ st_add_gastos.php
+│   │  ├─ st_add_salida.php
+│   │  ├─ st_dltcate.php
+│   │  ├─ st_dltcompr.php
+│   │  ├─ st_dltcusto.php
+│   │  ├─ st_dltpln.php
+│   │  ├─ st_dltprodc.php
+│   │  ├─ st_dltservic.php
+│   │  ├─ st_dltvent.php
+│   │  ├─ st_notiservic.php
+│   │  ├─ st_stcate.php
+│   │  ├─ st_stcusto.php
+│   │  ├─ st_stpln.php
+│   │  ├─ st_stprodc.php
+│   │  ├─ st_stservic.php
+│   │  ├─ st_updcart.php
+│   │  ├─ st_updcart_compra.php
+│   │  ├─ st_updcate.php
+│   │  ├─ st_updconfcf.php
+│   │  ├─ st_updconfi.php
+│   │  ├─ st_updcusto.php
+│   │  ├─ st_updpln.php
+│   │  ├─ st_updplnft.php
+│   │  ├─ st_updpro.php
+│   │  ├─ st_updpro2.php
+│   │  ├─ st_updprodc.php
+│   │  ├─ st_updprodcf.php
+│   │  ├─ st_updpropsd.php
+│   │  ├─ st_updpropsd2.php
+│   │  ├─ st_updservic.php
+│   │  ├─ st_upduser.php
+│   │  ├─ update_inventario.php
+│   │  └─ ... (otros scripts PHP)
+│   ├─ fix_autoincrement.php
+│   └─ repair_table.php
+│
+└── frontend/
+│   │─ administrador/
+│   │    └── escritorio.php   
+│   │─ b_room/                   (carpeta)
+│   │─ bodega/                   (carpeta)
+│   │─ categoria/                (carpeta)       
+│   │─ clientes/                 (carpeta)    
+│   │─ comercial/                (carpeta)   
+│   │─ compra/                   (carpeta)  
+│   │─ contable/                 (carpeta)      
+│   │─ cuenta/                   (carpeta)    
+│   │─ docs/                     (carpeta)      
+│   │─ functions/                (carpeta)  
+│   │─ gastos/                   (carpeta)  
+│   │─ graficos/                 (carpeta)  
+│   │─ jtecnico/                 (carpeta)  
+│   │─ laboratoriO/              (carpeta)  
+│   │─ layouts/                  (carpeta)  
+│   │─ marketing/                (carpeta)  
+│   │─ mis_servicios             (carpeta)
+│   │─ pedidos_ruta/             (carpeta)  
+│   │─ plan/                     (carpeta)  
+│   │─ producto/                 (carpeta)  
+│   │─ proveedor/                (carpeta)  
+│   │─ reporte/                  (carpeta)  
+│   │─ reporte/                  (carpeta)  
+│   │─ servicio/                 (carpeta)  
+│   │─ tecnico/                  (carpeta)  
+│   │─ u_generico/               (carpeta)  
+│   │─ usuario/                  (carpeta)  
+│   │─  venta/                   (carpeta)  
+│   ├─ debug_login.php
+│   ├─ error404.php
+│   ├─ error500.php
+│   ├─ login.php
+│   ├─ registrar.php
+│   └─ salir.php
+│
+│
+│
+│   
+├─ util\                         (carpeta)
+│   │─ busquedas selecion simpe.php   
+│   │─ pag_builder.php  
+│   └── tanto.php   
+│
 ├─ vendor\                       (carpeta)
-vendor\
+│   ├─ composer\
+│   │  ├─ autoload_classmap.php
+│   │  ├─ autoload_files.php
+│   │  ├─ autoload_namespaces.php
+│   │  ├─ autoload_psr4.php
+│   │  ├─ autoload_real.php
+│   │  ├─ autoload_static.php
+│   │  ├─ ClassLoader.php
+│   │  ├─ installed.json
+│   │  ├─ installed.php
+│   └─ InstalledVersions.php
+├─ guzzlehttp\
+├─ league\
+├─ maennchen\
+├─ markbaker\
+├─ phpoffice\
+│  └─ phpspreadsheet\
+├─ psr\
+├─ ralouphie\
+└─ symfony\
 ├─ composer\
 │   │  ├─ autoload_classmap.php
 │   │  ├─ autoload_files.php
@@ -38,170 +196,17 @@ vendor\
 │   │  ├─ ClassLoader.php
 │   │  ├─ installed.json
 │   │  ├─ installed.php
-│   └  └─ InstalledVersions.php
-├─ .htaccess
-├─ composer.json
-├─ composer.lock
-├─ home.php
-├─ index.php
-├─ info.php
+│   └──└─ InstalledVersions.php
+│   ├─ .htaccess
+│   ├─ composer.json
+│   ├─ composer.lock
+│   ├─ home.php
+│   ├─ index.php
+│   ├─ info.php
 └─ Mapa actual del proyecto.txt
 
 
 ### backend\ (contenido)
-backend\
-├─ bd\                     (carpeta)
-│  ├─ ctconex.php
-│  └─ EstructuraDB.sql
-├─ css\                    (carpeta)
-│  ├─ bootstrap.min.css
-│  ├─ buttonsdataTables.css
-│  ├─ custom.css
-│  ├─ custom2.css
-│  ├─ datatable.css
-│  ├─ font.css
-│  ├─ loader.css
-│  └─ style.css
-├─ img\                    (carpeta)
-├─ js\                     (carpeta)
-│  ├─ bootstrap.min.js
-│  ├─ buttonshtml5.js
-│  ├─ buttonsprint.js
-│  ├─ Chart-prod.js
-│  ├─ datatable.js
-│  ├─ datatablebuttons.js
-│  ├─ example.js
-│  ├─ jquery-3.3.1.min.js
-│  ├─ jquery-3.3.1.slim.min.js
-│  ├─ jszip.js
-│  ├─ loader.js
-│  ├─ package-lock.json
-│  ├─ package.json
-│  ├─ pdfmake.js
-│  ├─ piechart.js
-│  ├─ plan.js
-│  ├─ popper.min.js
-│  ├─ reenvio.js
-│  ├─ sidebarCollapse.js
-│  ├─ sweetalert.js
-│  └─ vfs_fonts.js
-├─ pdf\                    (carpeta)
-│  ├─ font\                 (carpeta)
-│  ├─ code128.php
-│  ├─ download_fpdf.php
-│  └─ fpdf.php
-├─ php\                    (carpeta)
-│  ├─ backend\              (carpeta)
-│  ├─ PHPMailer\            (carpeta)
-│  ├─ ctlogx.php
-│  ├─ delete_inventario.php
-│  ├─ download_excel_template.php
-│  ├─ errores.log
-│  ├─ get_entrada_details.php
-│  ├─ get_inventario_details.php
-│  ├─ import_excel_equipos.php
-│  ├─ registro_administrador.php
-│  ├─ st_addcheck.php
-│  ├─ st_addcheck_compra.php
-│  ├─ st_add_cart.php
-│  ├─ st_add_cart_compra.php
-│  ├─ st_add_entrada.php
-│  ├─ st_add_gastos.php
-│  ├─ st_add_salida.php
-│  ├─ st_dltcate.php
-│  ├─ st_dltcompr.php
-│  ├─ st_dltcusto.php
-│  ├─ st_dltpln.php
-│  ├─ st_dltprodc.php
-│  ├─ st_dltservic.php
-│  ├─ st_dltvent.php
-│  ├─ st_notiservic.php
-│  ├─ st_stcate.php
-│  ├─ st_stcusto.php
-│  ├─ st_stpln.php
-│  ├─ st_stprodc.php
-│  ├─ st_stservic.php
-│  ├─ st_updcart.php
-│  ├─ st_updcart_compra.php
-│  ├─ st_updcate.php
-│  ├─ st_updconfcf.php
-│  ├─ st_updconfi.php
-│  ├─ st_updcusto.php
-│  ├─ st_updpln.php
-│  ├─ st_updplnft.php
-│  ├─ st_updpro.php
-│  ├─ st_updpro2.php
-│  ├─ st_updprodc.php
-│  ├─ st_updprodcf.php
-│  ├─ st_updpropsd.php
-│  ├─ st_updpropsd2.php
-│  ├─ st_updservic.php
-│  ├─ st_upduser.php
-│  ├─ update_inventario.php
-│  └─ ... (otros scripts PHP)
-├─ fix_autoincrement.php
-└─ repair_table.php
-
-### frontend\ (contenido)
-frontend\
-├─ administrador\        (carpeta)
-├─ asset\                (carpeta)
-├─ bodega\               (carpeta)
-├─ b_room\               (carpeta)
-├─ categoria\            (carpeta)
-├─ clientes\             (carpeta)
-├─ comercial\            (carpeta)
-├─ compra\               (carpeta)
-├─ contable\             (carpeta)
-├─ cuenta\               (carpeta)
-├─ docs\                 (carpeta)
-├─ functions\            (carpeta)
-├─ gastos\               (carpeta)
-├─ graficos\             (carpeta)
-├─ jtecnico\             (carpeta)
-├─ laboratorio\          (carpeta)
-├─ layouts\              (carpeta)
-├─ marketing\            (carpeta)
-├─ mis_servicios\        (carpeta)
-├─ m_l\                  (carpeta)
-├─ pedidos_ruta\         (carpeta)
-├─ plan\                 (carpeta)
-├─ producto\             (carpeta)
-├─ proveedor\            (carpeta)
-├─ reporte\              (carpeta)
-├─ servicio\             (carpeta)
-├─ tecnico\              (carpeta)
-├─ usuario\              (carpeta)
-├─ util\                 (carpeta)
-├─ u_generico\           (carpeta)
-├─ venta\                (carpeta)
-├─ debug_login.php
-├─ error404.php
-├─ error500.php
-├─ login.php
-├─ registrar.php
-└─ salir.php
 
 
 ### vendor\ (contenido principal)
-vendor\
-├─ composer\
-│  ├─ autoload_classmap.php
-│  ├─ autoload_files.php
-│  ├─ autoload_namespaces.php
-│  ├─ autoload_psr4.php
-│  ├─ autoload_real.php
-│  ├─ autoload_static.php
-│  ├─ ClassLoader.php
-│  ├─ installed.json
-│  ├─ installed.php
-│  └─ InstalledVersions.php
-├─ guzzlehttp\
-├─ league\
-├─ maennchen\
-├─ markbaker\
-├─ phpoffice\
-│  └─ phpspreadsheet\
-├─ psr\
-├─ ralouphie\
-└─ symfony\

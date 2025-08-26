@@ -19,33 +19,27 @@ require '../../config/ctconex.php';
 function getStatistics($connect)
 {
     $stats = [];
-
     try {
         // Total de clientes
         $stmt = $connect->prepare("SELECT COUNT(*) as total FROM clientes");
         $stmt->execute();
         $stats['clientes'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-
         // Total de productos
         $stmt = $connect->prepare("SELECT COUNT(*) as total FROM producto");
         $stmt->execute();
         $stats['productos'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-
         // Ventas de hoy
         $stmt = $connect->prepare("SELECT COALESCE(SUM(total_price), 0) as total FROM orders WHERE DATE(placed_on) = CURDATE()");
         $stmt->execute();
         $stats['ventas_hoy'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-
         // Total de usuarios
         $stmt = $connect->prepare("SELECT COUNT(*) as total FROM usuarios");
         $stmt->execute();
         $stats['usuarios'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-
         // Productos con stock bajo
         $stmt = $connect->prepare("SELECT COUNT(*) as total FROM producto WHERE stock <= 5");
         $stmt->execute();
         $stats['stock_bajo'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-
     } catch (Exception $e) {
         error_log("Error en getStatistics: " . $e->getMessage());
         $stats = [
@@ -56,7 +50,6 @@ function getStatistics($connect)
             'stock_bajo' => 0
         ];
     }
-
     return $stats;
 }
 
@@ -161,8 +154,9 @@ function getBirthdayEmployees($connect)
 // Función para calcular edad
 function calculateAge($birthdate)
 {
-    if (!$birthdate) return null;
-    
+    if (!$birthdate)
+        return null;
+
     $today = new DateTime();
     $birth = new DateTime($birthdate);
     return $today->diff($birth)->y;
@@ -185,7 +179,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>PCMARKETTEAM - Dashboard</title>
-
     <!-- CSS -->
     <link rel="stylesheet" href="../../backend/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../backend/css/custom.css">
@@ -193,14 +186,12 @@ $birthdayEmployees = getBirthdayEmployees($connect);
     <link rel="stylesheet" type="text/css" href="../../backend/css/datatable.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/buttonsdataTables.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/font.css">
-
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
-
     <style>
         .dashboard-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -265,11 +256,10 @@ $birthdayEmployees = getBirthdayEmployees($connect);
 <body>
     <div class="wrapper">
         <div class="body-overlay"></div>
-
         <!-- Sidebar -->
-        <?php 
+        <?php
         include_once '../layouts/nav.php';
-        include_once '../layouts/menu_data.php'; 
+        include_once '../layouts/menu_data.php';
         ?>
         <nav id="sidebar">
             <div class="sidebar-header">
@@ -277,14 +267,12 @@ $birthdayEmployees = getBirthdayEmployees($connect);
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
         <!-- Page Content -->
         <div id="content">
             <!-- Preloader -->
             <div class='pre-loader'>
                 <img class='loading-gif' alt='loading' src="https://i.imgflip.com/9vd6wr.gif" />
             </div>
-
             <!-- Top Navigation -->
             <div class="top-navbar">
                 <nav class="navbar navbar-expand-lg">
@@ -292,14 +280,11 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                         <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-none d-none">
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
-
                         <a class="navbar-brand" href="#">Panel Administrativo</a>
-
                         <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
                             data-toggle="collapse" data-target="#navbarSupportedContent">
                             <span class="material-icons">more_vert</span>
                         </button>
-
                         <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
                             id="navbarSupportedContent">
                             <ul class="nav navbar-nav ml-auto">
@@ -322,7 +307,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                     </div>
                 </nav>
             </div>
-
             <!-- Main Content -->
             <div class="main-content">
                 <!-- Statistics Cards -->
@@ -345,7 +329,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                             </div>
                         </div>
                     </div>
-
                     <div class="col-lg-3 col-md-6 col-sm-6 mb-3">
                         <div class="card card-stats dashboard-card">
                             <div class="card-header">
@@ -364,7 +347,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                             </div>
                         </div>
                     </div>
-
                     <div class="col-lg-3 col-md-6 col-sm-6 mb-3">
                         <div class="card card-stats dashboard-card">
                             <div class="card-header">
@@ -383,7 +365,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                             </div>
                         </div>
                     </div>
-
                     <div class="col-lg-3 col-md-6 col-sm-6 mb-3">
                         <div class="card card-stats dashboard-card">
                             <div class="card-header">
@@ -403,7 +384,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                         </div>
                     </div>
                 </div>
-
                 <!-- Alert for low stock -->
                 <?php if ($stats['stock_bajo'] > 0): ?>
                     <div class="row mb-4">
@@ -417,7 +397,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                         </div>
                     </div>
                 <?php endif; ?>
-
                 <!-- Recent Clients and Products -->
                 <div class="row mb-4">
                     <!-- Recent Clients -->
@@ -442,7 +421,8 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                                             <?php foreach ($recentClients as $client): ?>
                                                 <tr>
                                                     <td><?php echo htmlspecialchars($client['idclie']); ?></td>
-                                                    <td><?php echo htmlspecialchars($client['nomcli'] . ' ' . $client['apecli']); ?></td>
+                                                    <td><?php echo htmlspecialchars($client['nomcli'] . ' ' . $client['apecli']); ?>
+                                                    </td>
                                                     <td><?php echo htmlspecialchars($client['celu']); ?></td>
                                                     <td><?php echo htmlspecialchars($client['correo']); ?></td>
                                                 </tr>
@@ -458,7 +438,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                             </div>
                         </div>
                     </div>
-
                     <!-- Recent Products -->
                     <div class="col-lg-6 col-md-12 mb-4">
                         <div class="card dashboard-card" style="min-height: 485px">
@@ -511,7 +490,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                         </div>
                     </div>
                 </div>
-
                 <!-- Charts and Birthday Section -->
                 <div class="row mb-8">
                     <!-- Product Statistics Chart -->
@@ -527,7 +505,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                         </div>
                     </div>
 
-
                     <!-- Birthday Employees -->
                     <div class="col-lg-4 col-md-12 mb-4">
                         <div class="card dashboard-card birthday-card" style="min-height: 485px">
@@ -536,7 +513,8 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                                 <p class="category text-white-50">Empleados que cumplen años hoy</p>
                             </div>
                             <div class="card-content text-center">
-                                <img src="../../backend/img/pastel-de-cumple.webp" width='120' height='120' class="mb-3" alt="Cumpleaños">
+                                <img src="../../backend/img/pastel-de-cumple.webp" width='120' height='120' class="mb-3"
+                                    alt="Cumpleaños">
                                 <?php if (count($birthdayEmployees) > 0): ?>
                                     <div class="birthday-list">
                                         <?php foreach ($birthdayEmployees as $birthday): ?>
@@ -565,7 +543,8 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                                         <?php endforeach; ?>
                                     </div>
                                 <?php else: ?>
-                                    <div class="alert alert-info bg-black bg-opacity-20 border-black text-black" role="alert">
+                                    <div class="alert alert-info bg-black bg-opacity-20 border-black text-black"
+                                        role="alert">
                                         <i class="material-icons">info</i>
                                         No hay cumpleaños de empleados hoy.
                                     </div>
@@ -574,7 +553,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                         </div>
                     </div>
                 </div>
-
                 <!-- Sales Chart -->
                 <div class="row mb-4">
                     <div class="col-12">
@@ -589,7 +567,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                         </div>
                     </div>
                 </div>
-
                 <!-- Gastos e Ingresos -->
                 <div class="row">
                     <div class="col-lg-4 col-md-4">
@@ -602,7 +579,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                             </div>
                         </div>
                     </div>
-
                     <div class="col-lg-8 col-md-8">
                         <div class="card dashboard-card" style="min-height: 485px">
                             <div class="card-header card-header-text">
@@ -617,7 +593,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
             </div>
         </div>
     </div>
-
     <!-- JavaScript -->
     <script src="../../backend/js/jquery-3.3.1.slim.min.js"></script>
     <script src="../../backend/js/popper.min.js"></script>
@@ -625,7 +600,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
     <script src="../../backend/js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../../backend/js/sidebarCollapse.js"></script>
     <script src="../../backend/js/loader.js"></script>
-
     <!-- Data Tables -->
     <script type="text/javascript" src="../../backend/js/datatable.js"></script>
     <script type="text/javascript" src="../../backend/js/datatablebuttons.js"></script>
@@ -635,10 +609,8 @@ $birthdayEmployees = getBirthdayEmployees($connect);
     <script type="text/javascript" src="../../backend/js/buttonshtml5.js"></script>
     <script type="text/javascript" src="../../backend/js/buttonsprint.js"></script>
     <script type="text/javascript" src="../../backend/js/example.js"></script>
-
     <!-- Google Charts -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
     <script>
         // Initialize DataTables
         $(document).ready(function () {
@@ -649,7 +621,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                 "lengthChange": false,
                 "info": false
             });
-
             $('#productsTable').DataTable({
                 "pageLength": 5,
                 "ordering": false,
@@ -658,13 +629,11 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                 "info": false
             });
         });
-
         // Products Pie Chart
         google.charts.load('current', {
             'packages': ['corechart']
         });
         google.charts.setOnLoadCallback(drawPieChart);
-
         function drawPieChart() {
             var data = google.visualization.arrayToDataTable([
                 ['Producto', 'Stock'],
@@ -674,7 +643,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                 }
                 ?>
             ]);
-
             var options = {
                 pieHole: 0.4,
                 colors: ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#0099C6', '#DD4477', '#66AA00',
@@ -694,14 +662,11 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                     fontSize: 11
                 }
             };
-
             var chart = new google.visualization.PieChart(document.getElementById('piechart'));
             chart.draw(data, options);
         }
-
         // Sales Line Chart
         google.charts.setOnLoadCallback(drawSalesChart);
-
         function drawSalesChart() {
             var data = google.visualization.arrayToDataTable([
                 ['Fecha', 'Ventas'],
@@ -711,7 +676,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                 }
                 ?>
             ]);
-
             var options = {
                 curveType: 'function',
                 legend: {
@@ -730,47 +694,37 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                 },
                 colors: ['#109618']
             };
-
             var chart = new google.visualization.LineChart(document.getElementById('salesChart'));
             chart.draw(data, options);
         }
-
         // Responsive charts
         window.addEventListener('resize', function () {
             drawPieChart();
             drawSalesChart();
         });
     </script>
-
     <!-- old-file.php -->
     <script>
         google.charts.load('current', {
             'packages': ['corechart']
         });
         google.charts.setOnLoadCallback(drawChart);
-
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
                 ['Articulo', 'Stock'],
 
 
 
-
                 <?php
-
                 $stmt = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere, producto.serial, producto.marca, producto.ram, producto.disco, producto.prcpro, producto.pntpro, producto.tarpro, producto.grado FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate");
-
                 $stmt->setFetchMode(PDO::FETCH_ASSOC);
                 $stmt->execute();
-
                 while ($row = $stmt->fetch()) {
                     echo "['" . $row['nomprd'] . "', " . $row['stock'] . "],";
                 }
-
                 ?>
             ]);
             var options = {
-
                 //is3D:true,  
                 pieHole: 0.4
             };
@@ -783,27 +737,20 @@ $birthdayEmployees = getBirthdayEmployees($connect);
             'packages': ['corechart']
         });
         google.charts.setOnLoadCallback(drawChart);
-
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
                 ['Articulo', 'Stock'],
 
-
                 <?php
-
                 $stmt = $connect->prepare("SELECT * FROM clientes");
-
                 $stmt->setFetchMode(PDO::FETCH_ASSOC);
                 $stmt->execute();
-
                 while ($row = $stmt->fetch()) {
                     echo "['" . $row['apecli'] . "', " . $row['idclie'] . "],";
                 }
-
                 ?>
             ]);
             var options = {
-
                 //is3D:true,  
                 pieHole: 0.4
             };
@@ -811,32 +758,24 @@ $birthdayEmployees = getBirthdayEmployees($connect);
             chart.draw(data, options);
         }
     </script>
-
     <script type="text/javascript">
         google.charts.load('current', {
             'packages': ['bar']
         });
         google.charts.setOnLoadCallback(drawStuff);
-
         function drawStuff() {
             var data = new google.visualization.arrayToDataTable([
                 ['Fecha', 'Monto'],
-
                 <?php
                 $id = $_SESSION['id'];
                 $stmt = $connect->prepare("SELECT SUM(total_price) total_price,placed_on FROM orders where placed_on = CURDATE()");
-
                 $stmt->setFetchMode(PDO::FETCH_ASSOC);
                 $stmt->execute();
-
                 while ($row = $stmt->fetch()) {
                     echo "['" . $row['placed_on'] . "', " . $row['total_price'] . "],";
                 }
-
                 ?>
-
             ]);
-
             var options = {
                 width: 900,
                 legend: {
@@ -859,7 +798,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                     groupWidth: "90%"
                 }
             };
-
             var chart = new google.charts.Bar(document.getElementById('sale_values'));
             chart.draw(data, options);
         };
@@ -869,26 +807,19 @@ $birthdayEmployees = getBirthdayEmployees($connect);
             'packages': ['bar']
         });
         google.charts.setOnLoadCallback(drawStuff);
-
         function drawStuff() {
             var data = new google.visualization.arrayToDataTable([
                 ['Fecha', 'Monto'],
-
                 <?php
                 $id = $_SESSION['id'];
                 $stmt = $connect->prepare("SELECT servicio.idservc, plan.idplan, plan.prec,plan.foto, plan.nompla, servicio.ini, servicio.fin, clientes.idclie, clientes.numid, clientes.nomcli, clientes.apecli, clientes.naci, clientes.celu, clientes.correo, servicio.estod, servicio.fere, SUM(prec) as prec FROM servicio INNER JOIN plan ON servicio.idplan = plan.idplan INNER JOIN clientes ON servicio.idclie = clientes.idclie where servicio.ini = CURDATE()");
-
                 $stmt->setFetchMode(PDO::FETCH_ASSOC);
                 $stmt->execute();
-
                 while ($row = $stmt->fetch()) {
                     echo "['" . $row['ini'] . "', " . $row['prec'] . "],";
                 }
-
                 ?>
-
             ]);
-
             var options = {
                 width: 900,
                 legend: {
@@ -911,37 +842,28 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                     groupWidth: "90%"
                 }
             };
-
             var chart = new google.charts.Bar(document.getElementById('services_values'));
             chart.draw(data, options);
         };
     </script>
-
     <script type="text/javascript">
         google.charts.load('current', {
             'packages': ['bar']
         });
         google.charts.setOnLoadCallback(drawStuff);
-
         function drawStuff() {
             var data = new google.visualization.arrayToDataTable([
                 ['Fecha', 'Monto'],
-
                 <?php
                 $id = $_SESSION['id'];
                 $stmt = $connect->prepare("SELECT ingresos.iding, ingresos.detalle, ingresos.total, ingresos.fec, SUM(total) as total FROM ingresos");
-
                 $stmt->setFetchMode(PDO::FETCH_ASSOC);
                 $stmt->execute();
-
                 while ($row = $stmt->fetch()) {
                     echo "['" . $row['fec'] . "', " . $row['total'] . "],";
                 }
-
                 ?>
-
             ]);
-
             var options = {
                 width: "90%",
                 legend: {
@@ -964,7 +886,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                     groupWidth: "90%"
                 }
             };
-
             var chart = new google.charts.Bar(document.getElementById('chart_div'));
             chart.draw(data, options);
         };
@@ -974,26 +895,19 @@ $birthdayEmployees = getBirthdayEmployees($connect);
             'packages': ['bar']
         });
         google.charts.setOnLoadCallback(drawStuff);
-
         function drawStuff() {
             var data = new google.visualization.arrayToDataTable([
                 ['Fecha', 'Monto'],
-
                 <?php
                 $id = $_SESSION['id'];
                 $stmt = $connect->prepare("SELECT gastos.idga, gastos.detall, gastos.total, gastos.fec, SUM(total) as total FROM gastos ");
-
                 $stmt->setFetchMode(PDO::FETCH_ASSOC);
                 $stmt->execute();
-
                 while ($row = $stmt->fetch()) {
                     echo "['" . $row['fec'] . "', " . $row['total'] . "],";
                 }
-
                 ?>
-
             ]);
-
             var options = {
                 width: "90%",
                 legend: {
@@ -1016,7 +930,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                     groupWidth: "90%"
                 }
             };
-
             var chart = new google.charts.Bar(document.getElementById('gast_div'));
             chart.draw(data, options);
         };
