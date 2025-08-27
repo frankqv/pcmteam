@@ -13,7 +13,6 @@ if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], [1, 2, 7, 6]))
 $pdo = null;
 $mysqli = null;
 $db_type = null; // 'pdo' o 'mysqli'
-
 // Rutas comunes donde puede estar ctconex.php (ajusta si hace falta)
 $ct_paths = [
     __DIR__ . '../../config/ctconex.php',
@@ -29,7 +28,6 @@ foreach ($ct_paths as $p) {
         break;
     }
 }
-
 // Helper para leer credenciales desde varias fuentes (constantes, env, variables globales)
 function pick_cred($names, $default = null)
 {
@@ -48,7 +46,6 @@ function pick_cred($names, $default = null)
     }
     return $default;
 }
-
 // Intentar detectar una conexión ya creada por ctconex.php con nombres frecuentes
 $possible_conns = ['connect', 'conn', 'conexion', 'con', 'db', 'pdo', 'mysqli'];
 foreach ($possible_conns as $name) {
@@ -66,7 +63,6 @@ foreach ($possible_conns as $name) {
         }
     }
 }
-
 // Intentar detectar $connect (PDO) y $conn (mysqli) específicamente
 if (!$db_type) {
     if (isset($connect) && $connect instanceof PDO) {
@@ -78,13 +74,11 @@ if (!$db_type) {
         $db_type = 'mysqli';
     }
 }
-
 // Si aún no hay conexión, leer credenciales (soportamos varios nombres)
 $host = pick_cred(['dbhost', 'DB_HOST', 'DBHOST', 'db_host', 'DBHOSTNAME'], 'localhost');
 $dbname = pick_cred(['dbname', 'DB_NAME', 'DBNAME', 'db_name'], 'u171145084_pcmteam');
 $dbuser = pick_cred(['dbuser', 'DB_USER', 'DBUSER', 'db_user'], 'root');
 $dbpass = pick_cred(['dbpass', 'DB_PASS', 'DBPASS', 'db_pass'], '');
-
 // Intentar crear PDO si no hay conexión
 if (!$db_type) {
     try {
@@ -103,12 +97,10 @@ if (!$db_type) {
         die('No se pudo conectar a la base de datos. Revisa credenciales en config/ctconex.php o variables de entorno. Detalle: ' . htmlspecialchars($e->getMessage()));
     }
 }
-
 // Si detectamos mysqli, aseguramos charset
 if ($db_type === 'mysqli' && $mysqli instanceof mysqli) {
     $mysqli->set_charset('utf8mb4');
 }
-
 /* Helper: fetchAll para PDO o MySQLi */
 function db_fetch_all($sql, $params = [])
 {
@@ -356,7 +348,6 @@ if (!empty($ids_equipo) && $inventarioInfo === null) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -369,32 +360,26 @@ if (!empty($ids_equipo) && $inventarioInfo === null) {
             font-size: 1.05rem;
             margin-top: 1rem
         }
-
         .form-section ul {
             list-style: none;
             padding-left: 0
         }
-
         .form-section li {
             margin-bottom: .5rem
         }
-
         .small-muted {
             font-size: .85rem;
             color: #6c757d
         }
-
         .table-fixed {
             max-height: 340px;
             overflow: auto;
             display: block;
         }
-
         .select-checkbox {
             width: 18px;
             height: 18px;
         }
-
         /* Semáforo */
         .disk-indicator {
             width: 18px;
@@ -405,73 +390,58 @@ if (!empty($ids_equipo) && $inventarioInfo === null) {
             margin-left: 8px;
             border: 1px solid #ccc
         }
-
         .status-good {
             border-color: #28a745 !important;
         }
-
         .status-regular {
             border-color: #ffc107 !important;
         }
-
         .status-bad {
             border-color: #dc3545 !important;
         }
-
         select.status-good {
             box-shadow: 0 0 0 0.15rem rgba(40, 167, 69, 0.15);
         }
-
         select.status-regular {
             box-shadow: 0 0 0 0.15rem rgba(255, 193, 7, 0.15);
         }
-
         select.status-bad {
             box-shadow: 0 0 0 0.15rem rgba(220, 53, 69, 0.15);
         }
-
         .disk-indicator.green {
             background: #28a745;
         }
-
         .disk-indicator.yellow {
             background: #ffc107;
         }
-
         .disk-indicator.red {
             background: #dc3545;
         }
-
         .disk-indicator.gray {
             background: #6c757d;
         }
-
         /* Bordes coloreados para selects */
         .select-border-good {
             border: 2px solid rgba(115, 215, 139, 0.22) !important;
             box-shadow: 0 0 0 0.10rem rgba(40, 167, 69, 0.12);
             background-clip: padding-box;
         }
-
         .select-border-bad {
             border: 2px solid #dc3545 !important;
             box-shadow: 0 0 0 0.10rem rgba(220, 53, 69, 0.12);
             background-clip: padding-box;
         }
-
         .select-border-nd {
             border: 2px solid #000 !important;
             /* negro */
             box-shadow: none;
             background-clip: padding-box;
         }
-
         .select-border-regular {
             border: 2px solid #ffc107 !important;
             box-shadow: 0 0 0 0.10rem rgba(255, 193, 7, 0.12);
             background-clip: padding-box;
         }
-
         /* Pequeña corrección para que el padding del select no se vea raro al aumentar borde */
         .form-section select.form-control {
             padding-top: .375rem;
@@ -481,7 +451,6 @@ if (!empty($ids_equipo) && $inventarioInfo === null) {
     <!--google material icon-->
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
 </head>
-
 <body>
     <div class="wrapper">
         <div class="body-overlay"></div>
@@ -940,7 +909,6 @@ if (!empty($ids_equipo) && $inventarioInfo === null) {
         });
     </script>
 </body>
-
 </html>
 <script>
     // Aplica la clase de borde según el valor del select
