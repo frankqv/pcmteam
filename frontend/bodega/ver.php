@@ -1,20 +1,17 @@
 <?php
 ob_start();
 session_start();
-
 if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5, 6, 7])) {
     header('location: ../error404.php');
     exit();
 }
 require_once '../../config/ctconex.php';
-
 // Obtener técnicos para filtros
 $tecnicos = [];
 $resultTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN ('5','6','7')");
 while ($rowTec = $resultTec->fetch_assoc()) {
     $tecnicos[] = $rowTec;
 }
-
 // Verificar que el usuario existe y obtener su información
 $userInfo = null;
 if (isset($_SESSION['id'])) {
@@ -25,7 +22,6 @@ if (isset($_SESSION['id'])) {
     $result = $stmt->get_result();
     $userInfo = $result->fetch_assoc();
 }
-
 if (!$userInfo) {
     header('Location: ../error404.php');
     exit();
@@ -55,12 +51,36 @@ if (!$userInfo) {
             font-size: 0.875rem;
             font-weight: 500;
         }
-        .status-disponible { background-color: #d4edda; color: #155724; }
-        .status-en_diagnostico { background-color: #fff3cd; color: #856404; }
-        .status-en_reparacion { background-color: #f8d7da; color: #721c24; }
-        .status-en_control { background-color: #d1ecf1; color: #0c5460; }
-        .status-pendiente { background-color: #f5c6cb; color: #721c24; }
-        .status-business_room { background-color: #d4edda; color: #155724; }
+
+        .status-disponible {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-en_diagnostico {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-en_reparacion {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-en_control {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-pendiente {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .status-business_room {
+            background-color: #d4edda;
+            color: #155724;
+        }
     </style>
 </head>
 
@@ -86,28 +106,47 @@ if (!$userInfo) {
                         </button>
                         <?php
                         $titulo = "";
-                        switch($_SESSION['rol']) {
-                            case 1: $titulo = "ADMINISTRADOR"; break;
-                            case 2: $titulo = "DEFAULT"; break;
-                            case 3: $titulo = "CONTABLE"; break;
-                            case 4: $titulo = "COMERCIAL"; break;
-                            case 5: $titulo = "JEFE TÉCNICO"; break;
-                            case 6: $titulo = "TÉCNICO"; break;
-                            case 7: $titulo = "BODEGA"; break;
-                            default: $titulo = $userInfo['nombre']; break;
+                        switch ($_SESSION['rol']) {
+                            case 1:
+                                $titulo = "ADMINISTRADOR";
+                                break;
+                            case 2:
+                                $titulo = "DEFAULT";
+                                break;
+                            case 3:
+                                $titulo = "CONTABLE";
+                                break;
+                            case 4:
+                                $titulo = "COMERCIAL";
+                                break;
+                            case 5:
+                                $titulo = "JEFE TÉCNICO";
+                                break;
+                            case 6:
+                                $titulo = "TÉCNICO";
+                                break;
+                            case 7:
+                                $titulo = "BODEGA";
+                                break;
+                            default:
+                                $titulo = $userInfo['nombre'];
+                                break;
                         }
                         ?>
-                        <a class="navbar-brand" href="#"> <B>INVENTARIO</B> <?php echo htmlspecialchars($titulo); ?> </a>
+                        <a class="navbar-brand" href="#"> <B>INVENTARIO</B> <?php echo htmlspecialchars($titulo); ?>
+                        </a>
                         <a class="navbar-brand" href="#"> Inventario </a>
                     </div>
                     <ul class="nav navbar-nav ml-auto">
                         <li class="dropdown nav-item active">
                             <a href="#" class="nav-link" data-toggle="dropdown">
-                                <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto']); ?>" alt="Foto de perfil" style="width: 30px; height: 30px; border-radius: 50%;">
+                                <img src="../../backend/img/<?php echo htmlspecialchars($userInfo['foto']); ?>"
+                                    alt="Foto de perfil" style="width: 30px; height: 30px; border-radius: 50%;">
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <strong><a href="#"><?php echo htmlspecialchars($userInfo['nombre']); ?></a></strong>
+                                    <strong><a
+                                            href="#"><?php echo htmlspecialchars($userInfo['nombre']); ?></a></strong>
                                     <a href="#"><?php echo htmlspecialchars($userInfo['usuario']); ?></a>
                                     <a href="#"><?php echo htmlspecialchars($userInfo['correo']); ?></a>
                                     <a href="#"><?php echo htmlspecialchars($userInfo['idsede']); ?></a>
@@ -132,7 +171,6 @@ if (!$userInfo) {
                                 if (in_array($_SESSION['rol'], [5, 6, 7])) {
                                     $whereClause .= " AND tecnico_id = " . $_SESSION['id'];
                                 }
-                                
                                 $sql = "SELECT COUNT(*) as total FROM bodega_inventario WHERE " . $whereClause;
                                 $result = $conn->query($sql);
                                 $row = $result->fetch_assoc();
@@ -182,7 +220,6 @@ if (!$userInfo) {
                         </div>
                     </div>
                 </div>
-                
                 <!-- Filtros -->
                 <div class="row mb-4">
                     <div class="col-md-12">
@@ -243,7 +280,6 @@ if (!$userInfo) {
                         </div>
                     </div>
                 </div>
-                
                 <!-- Tabla de Inventario -->
                 <div class="row">
                     <div class="col-md-12">
@@ -286,20 +322,16 @@ if (!$userInfo) {
                                                     AND cc.id = (SELECT MAX(id) FROM bodega_control_calidad WHERE inventario_id = i.id)
                                                 LEFT JOIN usuarios u ON i.tecnico_id = u.id
                                                 WHERE i.estado = 'activo'";
-                                            
                                             // Filtrar por técnico si no es administrador
                                             if (in_array($_SESSION['rol'], [5, 6, 7])) {
                                                 $sql .= " AND i.tecnico_id = " . $_SESSION['id'];
                                             }
-                                            
                                             $sql .= " ORDER BY i.fecha_modificacion DESC";
-                                            
                                             $result = $conn->query($sql);
                                             if ($result && $result->num_rows > 0) {
                                                 while ($row = $result->fetch_assoc()) {
                                                     // Determinar clase CSS para el estado
                                                     $statusClass = 'status-' . strtolower(str_replace(' ', '_', $row['estado_actual']));
-                                                    
                                                     echo "<tr>";
                                                     echo "<td>" . htmlspecialchars($row['codigo_g']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['producto']) . "</td>";
@@ -314,12 +346,10 @@ if (!$userInfo) {
                                                     echo "<td class='text-center'>
                                                         <a href='javascript:void(0)' class='btn btn-info btn-sm view-btn' data-id='" . $row['id'] . "' title='Ver detalles'><i class='material-icons'>visibility</i></a>
                                                         <a href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "' title='Editar'><i class='material-icons'>edit</i></a>";
-                                                    
                                                     // Solo mostrar botón eliminar para administradores
                                                     if ($_SESSION['rol'] == 1) {
                                                         echo "<a href='javascript:void(0)' class='btn btn-danger btn-sm delete-btn' data-id='" . $row['id'] . "' title='Eliminar'><i class='material-icons'>delete</i></a>";
                                                     }
-                                                    
                                                     echo "</td>";
                                                     echo "</tr>";
                                                 }
@@ -337,7 +367,6 @@ if (!$userInfo) {
             </div>
         </div>
     </div>
-    
     <!-- Modal para ver detalles -->
     <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -358,7 +387,6 @@ if (!$userInfo) {
             </div>
         </div>
     </div>
-    
     <!-- Scripts -->
     <script src="../../backend/js/jquery-3.3.1.min.js"></script>
     <script src="../../backend/js/popper.min.js"></script>
@@ -373,7 +401,6 @@ if (!$userInfo) {
     <script type="text/javascript" src="../../backend/js/vfs_fonts.js"></script>
     <script type="text/javascript" src="../../backend/js/buttonshtml5.js"></script>
     <script type="text/javascript" src="../../backend/js/buttonsprint.js"></script>
-    
     <script>
         $(document).ready(function () {
             // Inicializar DataTable
@@ -389,33 +416,27 @@ if (!$userInfo) {
                 responsive: true,
                 order: [[9, 'desc']] // Ordenar por fecha de modificación
             });
-            
             // Aplicar filtros
             $('#applyFilters').click(function () {
                 var estado = $('#filterEstado').val();
                 var ubicacion = $('#filterUbicacion').val();
                 var grado = $('#filterGrado').val();
-
                 table.columns(7).search(estado); // Estado
                 table.columns(5).search(ubicacion); // Ubicación
                 table.columns(6).search(grado); // Grado
                 table.draw();
             });
-            
             // Limpiar filtros
             $('#filterForm').append('<div class="col-md-12 mt-2"><button type="button" class="btn btn-secondary" id="clearFilters">Limpiar Filtros</button></div>');
-            
-            $('#clearFilters').click(function() {
+            $('#clearFilters').click(function () {
                 $('#filterEstado, #filterUbicacion, #filterGrado').val('');
                 table.search('').columns().search('').draw();
             });
-            
             // Ver detalles
             $(document).on('click', '.view-btn', function () {
                 var id = $(this).data('id');
                 $('#viewModalBody').html('<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Cargando...</span></div></div>');
                 $('#viewModal').modal('show');
-                
                 $.ajax({
                     url: '../../backend/php/get_inventario_details.php',
                     type: 'GET',
@@ -423,26 +444,22 @@ if (!$userInfo) {
                     success: function (response) {
                         $('#viewModalBody').html(response);
                     },
-                    error: function() {
+                    error: function () {
                         $('#viewModalBody').html('<div class="alert alert-danger">Error al cargar los detalles del equipo.</div>');
                     }
                 });
             });
-            
             // Editar equipo
             $(document).on('click', '.edit-btn', function () {
                 var id = $(this).data('id');
                 window.location.href = 'editar_inventario.php?id=' + id;
             });
-            
             // Eliminar equipo (solo para administradores)
             $(document).on('click', '.delete-btn', function () {
                 if (confirm('¿Está seguro de que desea eliminar este equipo del inventario?')) {
                     var id = $(this).data('id');
                     var button = $(this);
-                    
                     button.prop('disabled', true);
-                    
                     $.ajax({
                         url: '../../backend/php/delete_inventario.php',
                         type: 'POST',
@@ -472,5 +489,6 @@ if (!$userInfo) {
         });
     </script>
 </body>
+
 </html>
 <?php ob_end_flush(); ?>

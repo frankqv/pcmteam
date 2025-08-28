@@ -1,18 +1,14 @@
 <!-- Comercial 4 -->
-
 <?php
 ob_start();
     session_start();
-
 if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])){
 header('location: ../error404.php');
 }
 ?>
 <?php if(isset($_SESSION['id'])) { ?>
-
 <!doctype html>
 <html lang="es">
-
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -24,13 +20,11 @@ header('location: ../error404.php');
     <!----css3---->
     <link rel="stylesheet" href="../../backend/css/custom.css">
     <link rel="stylesheet" href="../../backend/css/loader.css">
-
     <!-- Data Tables -->
     <link rel="stylesheet" type="text/css" href="../../backend/css/datatable.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/buttonsdataTables.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/font.css">
     <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -38,10 +32,8 @@ header('location: ../error404.php');
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
 </head>
-
 <body>
     <div class="wrapper">
-
         <!-- layouts nav.php  |  Sidebar -->
         <div class="body-overlay"></div>s
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
@@ -51,14 +43,10 @@ header('location: ../error404.php');
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
         <!-- Page Content  -->
         <div id="content">
-
             <!-- Contenido de top-navbar-->
-
             <!-- Contenido de MAin-->
-
             <!-- layouts nav.php  |  Sidebar -->
             <?php    include_once '../../util/pag_builder.php';    ?>
             <div>
@@ -66,7 +54,6 @@ header('location: ../error404.php');
             </div>
         </div>
         <!---  Contenido de MAIN -->
-
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
         <script src="../../backend/js/jquery-3.3.1.slim.min.js"></script>
@@ -74,7 +61,6 @@ header('location: ../error404.php');
         <script src="../../backend/js/bootstrap.min.js"></script>
         <script src="../../backend/js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="../../backend/js/sidebarCollapse.js"></script>
-
         <script src="../../backend/js/loader.js"></script>
         <!-- Data Tables -->
         <script type="text/javascript" src="../../backend/js/datatable.js"></script>
@@ -84,7 +70,6 @@ header('location: ../error404.php');
         <script type="text/javascript" src="../../backend/js/vfs_fonts.js"></script>
         <script type="text/javascript" src="../../backend/js/buttonshtml5.js"></script>
         <script type="text/javascript" src="../../backend/js/buttonsprint.js"></script>
-
         <script type="text/javascript" src="../../backend/js/example.js"></script>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="../../backend/js/chart/Chart.js"></script>
@@ -94,12 +79,8 @@ header('location: ../error404.php');
         });
         google.charts.setOnLoadCallback(drawChart);
         </script>
-
 </body>
-
 </html>
-
-
 <?php }else{ 
 header('Location: ../error404.php');
 } ?>

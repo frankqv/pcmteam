@@ -40,7 +40,6 @@
             padding: 15px;
             margin-bottom: 15px;
         }
-
         .scan-icon {
             width: 100px;
             height: 100px;
@@ -53,7 +52,6 @@
             color: white;
             margin: 0 auto 15px auto;
         }
-
         .form-control,
         .form-select {
             background-color: #212529;
@@ -61,7 +59,6 @@
             color: #fff;
             font-family: 'Courier New', monospace;
         }
-
         .form-control:focus,
         .form-select:focus {
             background-color: #212529;
@@ -69,14 +66,12 @@
             color: #fff;
             box-shadow: 0 0 5px rgba(23, 162, 184, 0.5);
         }
-
         .btn-custom {
             font-family: 'Courier New', monospace;
             font-weight: bold;
             margin: 5px;
             min-width: 120px;
         }
-
         .component-row {
             background-color: #1a1a1a;
             margin-bottom: 8px;
@@ -84,7 +79,6 @@
             border-radius: 5px;
             border-left: 3px solid #17a2b8;
         }
-
         .equipment-counter {
             background: linear-gradient(135deg, #17a2b8, #20c997);
             color: white;
@@ -94,17 +88,14 @@
             font-size: 1.5rem;
             font-weight: bold;
         }
-
         .loading-spinner {
             display: none;
             color: #17a2b8;
         }
-
         @media print {
             .no-print {
                 display: none !important;
             }
-
             body {
                 color: #000 !important;
                 background: #fff !important;
@@ -112,7 +103,6 @@
         }
     </style>
 </head>
-
 <body class="bg-dark text-light">
     <div class="container-fluid">
         <!-- Header Section -->
@@ -735,5 +725,4 @@
         <!-- Font Awesome para iconos (opcional) -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </body>
-
 </html>

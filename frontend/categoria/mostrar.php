@@ -7,10 +7,8 @@ ob_start();
   }
 ?>
 <?php if(isset($_SESSION['id'])) { ?>
-
 <!doctype html>
 <html lang="es">
-
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -22,13 +20,11 @@ ob_start();
     <!----css3---->
     <link rel="stylesheet" href="../../backend/css/custom.css">
     <link rel="stylesheet" href="../../backend/css/loader.css">
-
     <!-- Data Tables -->
     <link rel="stylesheet" type="text/css" href="../../backend/css/datatable.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/buttonsdataTables.css">
     <link rel="stylesheet" type="text/css" href="../../backend/css/font.css">
     <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -36,11 +32,8 @@ ob_start();
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
 </head>
-
 <body>
-
     <div class="wrapper">
-
         <div class="body-overlay"></div>
         <!-- layouts nav.php  |  Sidebar -->
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
@@ -50,8 +43,6 @@ ob_start();
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
-
         <!-- Page Content  -->
         <div id="content">
             <div class='pre-loader'>
@@ -60,19 +51,15 @@ ob_start();
             <div class="top-navbar">
                 <nav class="navbar navbar-expand-lg">
                     <div class="container-fluid">
-
                         <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
-
                         <a class="navbar-brand" href="#"> Categorias </a>
-
                         <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
                             data-toggle="collapse" data-target="#navbarSupportedContent"
                             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="material-icons">more_vert</span>
                         </button>
-
                         <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
                             id="navbarSupportedContent">
                             <ul class="nav navbar-nav ml-auto">
@@ -83,9 +70,7 @@ ob_start();
                                 </li>
                                 <li class="dropdown nav-item active">
                                     <a href="#" class="nav-link" data-toggle="dropdown">
-
                                         <img src="../../backend/img/reere.webp">
-
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
@@ -94,19 +79,14 @@ ob_start();
                                         <li>
                                             <a href="../cuenta/salir.php">Salir</a>
                                         </li>
-
                                     </ul>
                                 </li>
-
                             </ul>
                         </div>
                     </div>
                 </nav>
             </div>
-
-
             <div class="main-content">
-
                 <div class="row ">
                     <div class="col-lg-12 col-md-12">
                         <div class="card" style="min-height: 485px">
@@ -122,7 +102,6 @@ ob_start();
                                require '../../config/ctconex.php'; 
  $sentencia = $connect->prepare("SELECT * FROM categoria order BY idcate DESC;");
  $sentencia->execute();
-
 $data =  array();
 if($sentencia){
   while($r = $sentencia->fetchObject()){
@@ -142,10 +121,8 @@ if($sentencia){
                                     <tbody>
                                         <?php foreach($data as $g):?>
                                         <tr>
-
                                             <td><?php echo  $g->nomca; ?></td>
                                             <td><?php    if($g->estado =='Activo')  { ?>
-
                                                 <span class="badge badge-success">Activo</span>
                                                 <?php  }   else {?>
                                                 <span class="badge badge-danger">Inactivo</span>
@@ -177,39 +154,29 @@ if($sentencia){
                                 <div class="alert alert-warning" role="alert">
                                     No se encontró ningún dato!
                                 </div>
-
                                 <?php endif; ?>
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
     </div>
-
-
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="../../backend/js/jquery-3.3.1.slim.min.js"></script>
     <script src="../../backend/js/popper.min.js"></script>
     <script src="../../backend/js/bootstrap.min.js"></script>
     <script src="../../backend/js/jquery-3.3.1.min.js"></script>
-
-
     <script type="text/javascript">
     $(document).ready(function() {
         $('#sidebarCollapse').on('click', function() {
             $('#sidebar').toggleClass('active');
             $('#content').toggleClass('active');
         });
-
         $('.more-button,.body-overlay').on('click', function() {
             $('#sidebar,.body-overlay').toggleClass('show-nav');
         });
-
     });
     </script>
     <script src="../../backend/js/loader.js"></script>
@@ -234,18 +201,8 @@ if($sentencia){
         });
     });
     </script>
-
-
-
-
 </body>
-
 </html>
-
-
-
-
-
 <?php }else{ 
     header('Location: ../error404.php');
  } ?>

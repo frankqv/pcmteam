@@ -1,8 +1,6 @@
 <!-- bodega/asignar_tecnico.php -->
-
 <?php
 require_once '../../config/ctconex.php';
-
 if (isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
     $equipo_id = intval($_POST['equipo_id']);
     $tecnico_id = intval($_POST['tecnico_id']);

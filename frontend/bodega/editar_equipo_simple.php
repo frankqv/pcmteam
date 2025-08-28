@@ -2,7 +2,6 @@
 session_start();
 require_once '../../config/ctconex.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -135,7 +134,6 @@ require_once '../../config/ctconex.php';
         <div class="header">
             <h1>📦 Editar Equipo por Posición</h1>
         </div>
-
         <!-- Búsqueda -->
         <div class="search-box">
             <h3>🔍 Buscar Equipo</h3>
@@ -144,7 +142,6 @@ require_once '../../config/ctconex.php';
                 <button type="button" id="btnBuscar" class="btn">Buscar</button>
             </div>
         </div>
-
         <!-- Información del Equipo -->
         <div id="equipoInfo" class="equipo-info">
             <h3>📋 Datos del Equipo</h3>
@@ -153,7 +150,6 @@ require_once '../../config/ctconex.php';
                 <button type="button" id="btnEditar" class="btn btn-success">✏️ Editar</button>
             </div>
         </div>
-
         <!-- Formulario de Edición -->
         <div id="editForm" class="edit-form">
             <h3>✏️ Editar Datos</h3>
@@ -224,7 +220,6 @@ require_once '../../config/ctconex.php';
             </form>
         </div>
     </div>
-
     <script>
         let equipoActual = null;
         

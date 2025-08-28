@@ -7,7 +7,6 @@ ob_start();
   }
 ?>
 <?php if(isset($_SESSION['id'])) { ?>
-
 <!doctype html>
 <html lang="es">
   <head>
@@ -21,8 +20,6 @@ ob_start();
          <!----css3---->
         <link rel="stylesheet" href="../../backend/css/custom.css">
         <link rel="stylesheet" href="../../backend/css/loader.css">
-
-
           <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
      
      <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,7 +43,6 @@ ob_start();
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
         <!-- Page Content  -->
         <div id="content">
           <div class='pre-loader'>
@@ -55,7 +51,6 @@ ob_start();
           <div class="top-navbar">
             <nav class="navbar navbar-expand-lg">
                 <div class="container-fluid">
-
                     <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                         <span class="material-icons">arrow_back_ios</span>
                     </button>
@@ -66,7 +61,6 @@ ob_start();
                          data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="material-icons">more_vert</span>
                     </button>
-
                     <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none" id="navbarSupportedContent">
                         <ul class="nav navbar-nav ml-auto">  
                          <li class="nav-item">
@@ -102,7 +96,6 @@ ob_start();
                
                          <div class="row ">
                         <div class="col-lg-12 col-md-12">
-
                             <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="../administrador/escritorio.php">Panel administrativo</a></li>
@@ -123,7 +116,6 @@ ob_start();
  $id = $_GET['id'];
  $sentencia = $connect->prepare("SELECT * FROM clientes  WHERE clientes.idclie= '$id';");
  $sentencia->execute();
-
 $data =  array();
 if($sentencia){
   while($r = $sentencia->fetchObject()){
@@ -142,7 +134,6 @@ if($sentencia){
    <input type="hidden" value="<?php echo  $f->idclie  ; ?>" name="txtidc">
 </div>
   </div>
-
   <div class="col-md-6 col-lg-6">
       <div class="form-group">
     <label for="email">Nombres del cliente<span class="text-danger">*</span></label>
@@ -151,7 +142,6 @@ if($sentencia){
 </div>
   </div>
     </div>
-
     <div class="row">
         <div class="col-md-6 col-lg-6">
    <div class="form-group">
@@ -160,7 +150,6 @@ if($sentencia){
    
 </div>
   </div>
-
   <div class="col-md-6 col-lg-6">
       <div class="form-group">
     <label for="email">Celular del cliente<span class="text-danger">*</span></label>
@@ -169,9 +158,6 @@ if($sentencia){
 </div>
   </div>
     </div>
-
-
-
     <hr>
 <div class="form-group">
         <div class="col-sm-12">
@@ -185,19 +171,15 @@ if($sentencia){
     <div class="alert alert-warning" role="alert">
   No se encontró ningún dato!
 </div>
-
     <?php endif; ?>  
                                 </div>
                             </div>
                         </div>
                       
                     </div>
-
                          </div>
-
         </div>
     </div>
-
   
      <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -222,18 +204,11 @@ if($sentencia){
             });
                
         });
-
 </script>
 <script src="../../backend/js/loader.js"></script>
-
         
   </body>
   </html>
-
-
-
-
-
 <?php }else{ 
     header('Location: ../error404.php');
  } ?>

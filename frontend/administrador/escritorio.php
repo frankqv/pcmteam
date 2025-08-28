@@ -155,9 +155,7 @@ function getBirthdayEmployees($connect)
 function calculateAge($birthdate)
 {
     if (!$birthdate)
-        return null;
-
-    $today = new DateTime();
+        return null;    $today = new DateTime();
     $birth = new DateTime($birthdate);
     return $today->diff($birth)->y;
 }
@@ -195,64 +193,41 @@ $birthdayEmployees = getBirthdayEmployees($connect);
     <style>
         .dashboard-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-
-        .dashboard-card:hover {
+        } .dashboard-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-icon {
+        } .stat-icon {
             font-size: 2.5rem;
             opacity: 0.8;
-        }
-
-        .chart-container {
+        } .chart-container {
             min-height: 400px;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .birthday-card {
+        } .birthday-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-        }
-
-        .birthday-item {
+        } .birthday-item {
             transition: transform 0.3s ease;
-        }
-
-        .birthday-item:hover {
+        } .birthday-item:hover {
             transform: translateY(-2px);
             background-color: rgba(255, 255, 255, 0.2) !important;
-        }
-
-        .stock-badge {
+        } .stock-badge {
             font-size: 0.85rem;
-        }
-
-        .table-responsive {
+        } .table-responsive {
             border-radius: 8px;
             overflow: hidden;
-        }
-
-        .alert-custom {
+        } .alert-custom {
             border-radius: 8px;
             border: none;
-        }
-
-        .text-white-75 {
+        } .text-white-75 {
             color: rgba(0, 0, 0, 0.75) !important;
-        }
-
-        .text-white-50 {
+        } .text-white-50 {
             color: rgba(255, 255, 255, 0.5) !important;
         }
     </style>
 </head>
-
 <body>
     <div class="wrapper">
         <div class="body-overlay"></div>
@@ -503,9 +478,7 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                                 <div id="piechart" class="chart-container"></div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Birthday Employees -->
+                    </div>                    <!-- Birthday Employees -->
                     <div class="col-lg-4 col-md-12 mb-4">
                         <div class="card dashboard-card birthday-card" style="min-height: 485px">
                             <div class="card-header card-header-text">
@@ -713,8 +686,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
             var data = google.visualization.arrayToDataTable([
                 ['Articulo', 'Stock'],
 
-
-
                 <?php
                 $stmt = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere, producto.serial, producto.marca, producto.ram, producto.disco, producto.prcpro, producto.pntpro, producto.tarpro, producto.grado FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate");
                 $stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -739,9 +710,7 @@ $birthdayEmployees = getBirthdayEmployees($connect);
         google.charts.setOnLoadCallback(drawChart);
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
-                ['Articulo', 'Stock'],
-
-                <?php
+                ['Articulo', 'Stock'],                <?php
                 $stmt = $connect->prepare("SELECT * FROM clientes");
                 $stmt->setFetchMode(PDO::FETCH_ASSOC);
                 $stmt->execute();

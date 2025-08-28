@@ -207,6 +207,7 @@ foreach ($areasPredefinidas as $area) {
             border: 1px solid #f5c6cb;
         }
         .section-title {
+            background: aliceblue;
             color: #2980b9;
             margin-bottom: 15px;
             font-size: 16px;

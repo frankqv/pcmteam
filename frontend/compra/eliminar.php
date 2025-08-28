@@ -1,22 +1,18 @@
 <?php
 ob_start();
 session_start();
-
 // Verificar que el usuario esté autenticado y tenga permisos
 if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7])){
     header('location: ../error404.php');
     exit();
 }
-
 // Verificar que el usuario tenga una sesión válida
 if(!isset($_SESSION['id'])) {
     header('Location: ../error404.php');
     exit();
 }
-
 // Incluir conexión a la base de datos
 require_once('../../config/ctconex.php');
-
 // Verificar que se haya enviado un ID
 if(isset($_GET['id']) && !empty($_GET['id'])) {
     $id_carrito = $_GET['id'];
@@ -47,10 +43,8 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
     $_SESSION['mensaje'] = "ID de producto no válido.";
     $_SESSION['tipo_mensaje'] = "error";
 }
-
 // Redireccionar de vuelta a la página de compras
 header('Location: nuevo.php');
 exit();
-
 ob_end_flush();
 ?>

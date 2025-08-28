@@ -1,7 +1,6 @@
 <?php
 ob_start();
 session_start();
-
 if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])) {
     header('location: ../error404.php');
     exit;
@@ -419,7 +418,6 @@ require_once '../../config/ctconex.php';
         <!-- JsBarcode Library -->
         <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     </body>
-
     </html>
 <?php } else {
     header('Location: ../error404.php');

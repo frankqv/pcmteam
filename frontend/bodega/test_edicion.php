@@ -235,7 +235,7 @@ $stats = $stmt_stats->fetch();
                 <div>
                     <h4>📁 Archivos del Sistema</h4>
                     <ul>
-                        <li><strong>Frontend:</strong> <code>frontend/bodega/editar_equipo.php</code></li>
+                        <li><strong>frontend:</strong> <code>frontend/bodega/editar_equipo.php</code></li>
                         <li><strong>Backend Edición:</strong> <code>backend/php/editar_equipo.php</code></li>
                         <li><strong>Backend Búsqueda:</strong> <code>backend/php/buscar_equipo_posicion.php</code></li>
                         <li><strong>Documentación:</strong> <code>README_EDICION_EQUIPOS.md</code></li>
@@ -262,7 +262,7 @@ $stats = $stmt_stats->fetch();
                     <ul style="color: #27ae60;">
                         <li>Sistema de edición completo</li>
                         <li>Backend funcional</li>
-                        <li>Frontend responsivo</li>
+                        <li>frontend responsivo</li>
                         <li>Documentación completa</li>
                         <li>Scripts SQL preparados</li>
                     </ul>

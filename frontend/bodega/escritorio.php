@@ -1,12 +1,10 @@
 <?php
 ob_start();
 session_start();
-
 if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5, 6, 7])) {
     header('location: ../error404.php');
 }
 require_once '../../config/ctconex.php';
-
 $tecnicos = [];
 $resultTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN ('5','6','7')");
 while ($rowTec = $resultTec->fetch_assoc()) {
@@ -16,7 +14,6 @@ while ($rowTec = $resultTec->fetch_assoc()) {
 <?php if (isset($_SESSION['id'])) { ?>
     <!DOCTYPE html>
     <html lang="es">
-
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -32,7 +29,6 @@ while ($rowTec = $resultTec->fetch_assoc()) {
         <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
         <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
     </head>
-
     <body>
         <div class="wrapper">
             <div class="body-overlay"></div>
@@ -84,7 +80,8 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                             <li class="dropdown nav-item active">
                                 <a href="#" class="nav-link" data-toggle="dropdown">
                                     <img src="../../backend/img/reere.webp">
-                                    <img src="../../backend/img/<?php echo htmlspecialchars($user['foto']); ?>" alt="Foto de perfil" style="width: 30px; height: 30px; border-radius: 50%;">
+                                    <img src="../../backend/img/<?php echo htmlspecialchars($user['foto']); ?>"
+                                        alt="Foto de perfil" style="width: 30px; height: 30px; border-radius: 50%;">
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
@@ -97,26 +94,15 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                         <strong><a href="#"><?php echo htmlspecialchars($user['nombre']); ?></a></strong>
                                         <a href="#"><?php echo htmlspecialchars($user['usuario']); ?></a>
                                         <a href="#"><?php echo htmlspecialchars($user['correo']); ?></a>
-                                        <a href="#"><?php echo htmlspecialchars( $user['idsede'])?> </a>
+                                        <a href="#"><?php echo htmlspecialchars($user['idsede']) ?> </a>
                                     </li>
                                     <li>
                                         <a href="../cuenta/perfil.php">Mi perfil</a>
-                                        
                                     </li>
                                     <!-- <li> <a href="../cuenta/salir.php">Salir</a> </li> -->
                                 </ul>
                             </li>
                         </ul>
-
-                        
-
-
-                        
-
-
-
-
-
                     </nav>
                 </div>
                 <div class="main-content">
@@ -355,7 +341,6 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                     var estado = $('#filterEstado').val();
                     var ubicacion = $('#filterUbicacion').val();
                     var grado = $('#filterGrado').val();
-
                     table.columns(7).search(estado); // Estado
                     table.columns(5).search(ubicacion); // Ubicación
                     table.columns(6).search(grado); // Grado
@@ -400,7 +385,6 @@ while ($rowTec = $resultTec->fetch_assoc()) {
             });
         </script>
     </body>
-
     </html>
 <?php } else {
     header('Location: ../error404.php');

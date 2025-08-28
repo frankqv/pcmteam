@@ -10,6 +10,38 @@ Uso liberia de php phpspreadsheet
 Uso liberia de php psr
 Uso liberia de php ralouphie
 Uso liberia de php symfony
+#############
+IDEAL
+#############
+📁 Estructura recomendada en Hostinger
+Imagina que tu dominio es pcmteam.com. Así quedaría:
+--------------------------------------------------------
+/home/usuario/               # Carpeta raíz de tu cuenta en Hostinger
+│
+├── pcmteam/                 # Carpeta principal de tu proyecto (fuera del público)
+│   ├── app/                 # MVC (Controllers, Models, Services, Helpers)
+│   ├── config/              # Configuración del sistema
+│   ├── resources/           # Vistas y plantillas
+│   ├── routes/              # Rutas (si usas mini framework)
+│   ├── storage/             # Logs, PDFs, Excel, caché
+│   ├── tests/               # Opcional, tests unitarios
+│   ├── util/                # Scripts útiles internos
+│   ├── vendor/              # Composer
+│   ├── .env                 # Variables sensibles (BD, API keys)
+│   ├── composer.json
+│   ├── composer.lock
+│   └── Mapa actual del proyecto.txt
+│
+└── frontend/             # Carpeta pública de Hostinger
+    ├── css/                 # Estilos
+    ├── js/                  # Scripts
+    ├── img/                 # Imágenes
+    ├── uploads/             # Archivos que los usuarios suben
+    ├── index.php            # Punto de entrada → redirige a /pcmteam/app
+    └── assets/              # Librerías externas (Bootstrap, DataTables, etc.)
+--------------------------------------------------------
+
+
 
 
 

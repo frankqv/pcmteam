@@ -1,8 +1,6 @@
 <?php 
-
 include('../../config/ctconex.php');
 require_once __DIR__ . '/../../vendor/autoload.php';
-
 if(isset($_POST['importar']))
 {
   
@@ -12,7 +10,6 @@ if(isset($_POST['importar']))
         'text/xlsx',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ];
-
     if (in_array($_FILES["exceldata"]["type"], $allowedFileType)) {
   
   $tempname = $_FILES['exceldata']['tmp_name'];
@@ -23,18 +20,15 @@ if(isset($_POST['importar']))
   $excelSheet = $spreadSheet->getActiveSheet();
   $spreadSheetAry = $excelSheet->toArray();
   $sheetCount = count($spreadSheetAry);
-
   $insertedCount = 0;
   $skippedCount = 0;
   $errorCount = 0;
-
   for($i=1;$i<$sheetCount;$i++)
   {
     // Verificar que la fila no esté vacía
     if (empty($spreadSheetAry[$i][0]) || empty($spreadSheetAry[$i][1])) {
       continue; // Saltar filas vacías
     }
-
     // Verificar si el numid ya existe
     $check = $connect->prepare("SELECT COUNT(*) FROM clientes WHERE numid = ?");
     $check->execute([$spreadSheetAry[$i][0]]);
@@ -43,7 +37,6 @@ if(isset($_POST['importar']))
         $skippedCount++;
         continue;
     }
-
     // Validar que los datos no estén vacíos
     $numid = trim($spreadSheetAry[$i][0]);
     $nomcli = trim($spreadSheetAry[$i][1]);
@@ -55,18 +48,15 @@ if(isset($_POST['importar']))
     $dircli = trim($spreadSheetAry[$i][7]);
     $ciucli = trim($spreadSheetAry[$i][8]);
     $idsede = trim($spreadSheetAry[$i][9]);
-
     // Validar datos requeridos
     if (empty($numid) || empty($nomcli) || empty($apecli)) {
       $errorCount++;
       continue;
     }
-
     // Validar formato de fecha
     if (!empty($naci) && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $naci)) {
       $naci = '1900-01-01'; // Fecha por defecto si no es válida
     }
-
     try {
       $d4 = $connect->prepare("INSERT INTO clientes (numid, nomcli, apecli, naci, correo, celu, estad, dircli, ciucli, idsede) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
       $inserted = $d4->execute([
@@ -81,7 +71,6 @@ if(isset($_POST['importar']))
           $ciucli,
           $idsede
       ]);
-
       if ($inserted) {
         $insertedCount++;
       } else {
@@ -106,7 +95,6 @@ if(isset($_POST['importar']))
   }
 }
 ?>
-
 <!-- Formulario de importación y enlace a plantilla -->
 <form action="" method="post" enctype="multipart/form-data">
     <label for="exceldata">Selecciona archivo Excel (.xlsx):</label>

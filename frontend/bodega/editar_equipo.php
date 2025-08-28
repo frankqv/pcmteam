@@ -2,7 +2,6 @@
 session_start();
 require_once '../../config/ctconex.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -244,7 +243,6 @@ require_once '../../config/ctconex.php';
             <h1>📦 EDITAR EQUIPO POR POSICIÓN</h1>
             <p>Sistema de edición de datos de equipos en inventario</p>
         </div>
-
         <!-- Instrucciones -->
         <div class="instructions">
             <h3>📋 Instrucciones de Uso</h3>
@@ -256,7 +254,6 @@ require_once '../../config/ctconex.php';
                 <li><strong>5.</strong> Revisa el historial de cambios realizados</li>
             </ul>
         </div>
-
         <!-- Búsqueda por Posición -->
         <div class="search-section">
             <h2>🔍 Buscar Equipo por Posición</h2>
@@ -268,7 +265,6 @@ require_once '../../config/ctconex.php';
                 <button type="button" id="btnBuscar" class="btn">🔍 Buscar</button>
             </div>
         </div>
-
         <!-- Información del Equipo -->
         <div id="equipoInfo" class="equipo-info">
             <div class="equipo-header">
@@ -284,7 +280,6 @@ require_once '../../config/ctconex.php';
                 <button type="button" id="btnEditar" class="btn btn-success">✏️ Editar Equipo</button>
             </div>
         </div>
-
         <!-- Formulario de Edición -->
         <div id="editForm" class="edit-form">
             <h2>✏️ Editar Datos del Equipo</h2>
@@ -354,7 +349,6 @@ require_once '../../config/ctconex.php';
                 </div>
             </form>
         </div>
-
         <!-- Historial de Cambios -->
         <div id="historial" class="historial">
             <h2>📜 Historial de Cambios</h2>
@@ -363,7 +357,6 @@ require_once '../../config/ctconex.php';
             </div>
         </div>
     </div>
-
     <script>
         let equipoActual = null;
         

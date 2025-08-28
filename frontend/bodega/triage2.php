@@ -113,16 +113,15 @@ function db_fetch_all($sql, $params = [])
         $stmt = $mysqli->prepare($sql);
         if ($stmt === false)
             throw new Exception('MySQLi prepare error: ' . $mysqli->error);
-                    if (!empty($params)) {
-                $types = str_repeat('s', count($params));
-                
-                // ✅ Pasar variables por referencia correctamente
-                $refs = [];
-                foreach ($params as $key => $value) {
-                    $refs[$key] = &$params[$key];
-                }
-                $stmt->bind_param($types, ...$refs);
+        if (!empty($params)) {
+            $types = str_repeat('s', count($params));
+            // ✅ Pasar variables por referencia correctamente
+            $refs = [];
+            foreach ($params as $key => $value) {
+                $refs[$key] = &$params[$key];
             }
+            $stmt->bind_param($types, ...$refs);
+        }
         $stmt->execute();
         $res = $stmt->get_result();
         $rows = $res->fetch_all(MYSQLI_ASSOC);
@@ -144,7 +143,6 @@ function db_execute($sql, $params = [])
             throw new Exception('MySQLi prepare error: ' . $mysqli->error);
         if (!empty($params)) {
             $types = str_repeat('s', count($params));
-            
             // ✅ Pasar variables por referencia correctamente
             $refs = [];
             foreach ($params as $key => $value) {
@@ -623,7 +621,8 @@ if (!empty($ids_equipo) && $inventarioInfo === null) {
                             <?php if ($id_equipo <= 0 && empty($ids_equipo)): ?>
                                 <div class="alert alert-info mt-2">Selecciona uno o varios equipos en la columna izquierda
                                     para cargar el formulario. Si no aparece nada, proporciona
-                                    <code>?inventario_id=ID</code> en la URL.</div>
+                                    <code>?inventario_id=ID</code> en la URL.
+                                </div>
                             <?php endif; ?>
                             <?php if ($inventarioInfo): ?>
                                 <div class="border rounded p-2 mb-2 small-muted">
@@ -773,8 +772,7 @@ if (!empty($ids_equipo) && $inventarioInfo === null) {
                                         $enums = ['aprobado', 'falla_mecanica', 'falla_electrica', 'reparacion_cosmetica', 'otro_tipo_falla'];
                                         foreach ($enums as $opt):
                                             ?>
-                                            <option value="<?= $opt ?>"
-                                                <?= $resultadoTriage['estado_reparacion'] === $opt ? 'selected' : ''; ?>>
+                                            <option value="<?= $opt ?>" <?= $resultadoTriage['estado_reparacion'] === $opt ? 'selected' : ''; ?>>
                                                 <?= strtoupper(str_replace('_', ' ', $opt)) ?>
                                             </option>
                                         <?php endforeach; ?>

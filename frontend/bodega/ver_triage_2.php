@@ -1,5 +1,9 @@
 <?php
 // frontend/bodega/ver_triage_2.php
+// Activar reporte de errores para debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 ob_start();
 session_start();
 // Permisos (mismos que lista_triage_2.php)
@@ -7,11 +11,13 @@ if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], [1, 2, 7])) {
     header('Location: ../error404.php');
     exit;
 }
-require_once __DIR__ . '../../../config/ctconex.php';
-// Inclusión robusta de ctconex.php
+
+// Incluir archivo de conexión
 $possible_paths = [
-    __DIR__ . '../../../config/ctconex.php',
+    __DIR__ . '/../../config/ctconex.php',
+    dirname(__DIR__, 2) . '/config/ctconex.php'
 ];
+
 $conn_included = false;
 foreach ($possible_paths as $p) {
     if (file_exists($p)) {
@@ -20,15 +26,27 @@ foreach ($possible_paths as $p) {
         break;
     }
 }
+
 if (!$conn_included) {
     echo "<h3>Error: no se encontró ctconex.php. Buscado en:</h3><pre>" . implode("\n", $possible_paths) . "</pre>";
     exit;
 }
+
 if (!isset($conn) || !($conn instanceof mysqli)) {
     echo "<h3>Error: la conexión (\$conn) no está definida o no es mysqli. Revisa ctconex.php</h3>";
     exit;
 }
+
 $conn->set_charset('utf8mb4');
+
+// Debug: Verificar conexión de base de datos
+echo "<div style='background:#e8f5e8; padding:10px; margin:10px 0;'>";
+echo "<strong>Debug Info:</strong><br>";
+echo "✓ Conexión exitosa a: " . $conn->server_info . "<br>";
+echo "✓ Base de datos conectada<br>";
+echo "✓ Charset configurado: utf8mb4<br>";
+echo "</div>";
+
 // Helpers
 function fetch_one_ps($conn, $sql, $types = '', $params = [])
 {
@@ -46,6 +64,7 @@ function fetch_one_ps($conn, $sql, $types = '', $params = [])
     $stmt->close();
     return $row;
 }
+
 function fetch_all_ps($conn, $sql, $types = '', $params = [])
 {
     $stmt = $conn->prepare($sql);
@@ -62,12 +81,14 @@ function fetch_all_ps($conn, $sql, $types = '', $params = [])
     $stmt->close();
     return $rows;
 }
+
 function table_exists($conn, $table)
 {
     $safe = $conn->real_escape_string($table);
     $res = $conn->query("SHOW TABLES LIKE '{$safe}'");
     return ($res && $res->num_rows > 0);
 }
+
 // Obtener id (compatibilidad)
 $inventario_id = 0;
 if (isset($_GET['id']))
@@ -78,32 +99,34 @@ elseif (isset($_POST['id']))
     $inventario_id = intval($_POST['id']);
 elseif (isset($_POST['inventario_id']))
     $inventario_id = intval($_POST['inventario_id']);
+
+echo "<div style='background:#fff3cd; padding:10px; margin:10px 0;'>";
+echo "<strong>Parámetros recibidos:</strong><br>";
+echo "inventario_id: " . $inventario_id . "<br>";
+echo "GET: " . print_r($_GET, true) . "<br>";
+echo "POST: " . print_r($_POST, true) . "<br>";
+echo "</div>";
+
 if (!$inventario_id) {
     echo "<h3>Error: falta el parámetro id / inventario_id</h3>";
+    echo "<p>URL actual: " . htmlspecialchars($_SERVER['REQUEST_URI']) . "</p>";
+    echo "<p>Parámetros GET: " . print_r($_GET, true) . "</p>";
     exit;
 }
+
 // 0) Datos del inventario
 $inv_sql = "SELECT i.*, u.nombre AS tecnico_nombre
 FROM bodega_inventario i
 LEFT JOIN usuarios u ON i.tecnico_id = u.id
 WHERE i.id = ?";
 $inventario = fetch_one_ps($conn, $inv_sql, 'i', [$inventario_id]);
+
 if (!$inventario) {
     echo "<h3>No se encontró el inventario con id=" . htmlspecialchars($inventario_id) . "</h3>";
     exit;
 }
-// 1) Último triage: preferimos bodega_triages si existe, si no usamos bodega_diagnosticos
-$triage = null;
-if (table_exists($conn, 'bodega_triages')) {
-    $sql = "SELECT bt.*, u.nombre AS tecnico_nombre, usr.nombre AS usuario_nombre
-FROM bodega_triages bt
-LEFT JOIN usuarios u ON bt.tecnico_id = u.id
-LEFT JOIN usuarios usr ON bt.usuario_registro = usr.id
-WHERE bt.inventario_id = ?
-ORDER BY bt.fecha_registro DESC
-LIMIT 1";
-    $triage = fetch_one_ps($conn, $sql, 'i', [$inventario_id]);
-} elseif (table_exists($conn, 'bodega_diagnosticos')) {
+
+elseif (table_exists($conn, 'bodega_diagnosticos')) {
     // Mapear campos de diagnósticos como triage
     $sql = "SELECT bd.id, bd.fecha_diagnostico AS fecha_registro, bd.tecnico_id, bd.estado_reparacion AS estado, bd.observaciones, u.nombre AS tecnico_nombre
 FROM bodega_diagnosticos bd
@@ -113,18 +136,21 @@ ORDER BY bd.fecha_diagnostico DESC
 LIMIT 1";
     $triage = fetch_one_ps($conn, $sql, 'i', [$inventario_id]);
 }
+
 // 2) Mantenimientos
 $m_sql = "SELECT id, fecha_registro, tecnico_id, usuario_registro, estado, tipo_proceso, observaciones, partes_solicitadas, referencia_externa
 FROM bodega_mantenimiento
 WHERE inventario_id = ?
 ORDER BY fecha_registro DESC";
 $mantenimientos = fetch_all_ps($conn, $m_sql, 'i', [$inventario_id]);
+
 // 3) Control de calidad
 $cc_sql = "SELECT id, fecha_control, tecnico_id, burning_test, sentinel_test, estado_final, categoria_rec, observaciones
 FROM bodega_control_calidad
 WHERE inventario_id = ?
 ORDER BY fecha_control DESC";
 $controles = fetch_all_ps($conn, $cc_sql, 'i', [$inventario_id]);
+
 // 4) Buscar partes solicitadas (agregamos resultados para todo el mantenimiento)
 $partes = [];
 $partes_ids = [];
@@ -159,6 +185,7 @@ if (!empty($mantenimientos)) {
         }
     }
 }
+
 // Función simple para mostrar campo con fallback
 function h($v)
 {
@@ -166,7 +193,6 @@ function h($v)
 }
 ?><!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -178,11 +204,9 @@ function h($v)
             background: #f7f7f7;
             font-family: Arial, Helvetica, sans-serif
         }
-
         .card {
             margin-bottom: 12px
         }
-
         pre {
             background: #fafafa;
             padding: 8px;
@@ -197,11 +221,29 @@ function h($v)
     <link rel="icon" type="image/png" href="../../backend/img/favicon.webp" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet" />
 </head>
-
 <body>
     <div class="body-overlay">
-        <?php include_once '../layouts/nav.php';
-        include_once '../layouts/menu_data.php'; ?>
+        <?php 
+        // Debug para los includes
+        echo "<!-- Debug: Intentando incluir layouts -->";
+        
+        $nav_file = '../layouts/nav.php';
+        $menu_file = '../layouts/menu_data.php';
+        
+        if (file_exists($nav_file)) {
+            include_once $nav_file;
+            echo "<!-- ✓ nav.php incluido -->";
+        } else {
+            echo "<!-- ✗ nav.php NO encontrado en: $nav_file -->";
+        }
+        
+        if (file_exists($menu_file)) {
+            include_once $menu_file;
+            echo "<!-- ✓ menu_data.php incluido -->";
+        } else {
+            echo "<!-- ✗ menu_data.php NO encontrado en: $menu_file -->";
+        }
+        ?>
         <nav id="sidebar">
             <div class="sidebar-header">
                 <h3><img src="../../backend/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
@@ -455,6 +497,5 @@ function h($v)
     <script src="../../backend/js/jquery-3.3.1.min.js"></script>
     <script src="../../backend/js/bootstrap.min.js"></script>
 </body>
-
 </html>
 <?php ob_end_flush(); ?>
