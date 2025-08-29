@@ -1,7 +1,7 @@
 <?php
 // backend/php/get_inventario_details.php
 header('Content-Type: application/json; charset=utf-8');
-// Opcional: permitir peticiones desde frontend si hace falta (ajustar origen)
+// Opcional: permitir peticiones desde public_html si hace falta (ajustar origen)
 // header('Access-Control-Allow-Origin: http://192.168.2.10');
 // header('Access-Control-Allow-Credentials: true');
 if (!isset($_GET['id'])) {

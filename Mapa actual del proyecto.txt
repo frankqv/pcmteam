@@ -32,7 +32,7 @@ Imagina que tu dominio es pcmteam.com. Así quedaría:
 │   ├── composer.lock
 │   └── Mapa actual del proyecto.txt
 │
-└── frontend/             # Carpeta pública de Hostinger
+└── public_html/             # Carpeta pública de Hostinger
     ├── css/                 # Estilos
     ├── js/                  # Scripts
     ├── img/                 # Imágenes
@@ -48,7 +48,7 @@ Imagina que tu dominio es pcmteam.com. Así quedaría:
 ├── backend/
 │   └── php/
 │       └── get_inventario_details.php  ← Archivo actual
-└── frontend/
+└── public_html/
     └── bodega/
 
 
@@ -151,7 +151,7 @@ backend\
 │   ├─ fix_autoincrement.php
 │   └─ repair_table.php
 │
-└── frontend/
+└── public_html/
 │   │─ administrador/
 │   │    └── escritorio.php   
 │   │─ b_room/                   (carpeta)

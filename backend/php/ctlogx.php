@@ -43,25 +43,25 @@ if (isset($_POST['ctglog'])) {
 
           switch ($_SESSION['rol']) {
             case 1:
-              header('Location: ../frontend/administrador/escritorio.php'); //ADMINISTRADOR
+              header('Location: ../public_html/administrador/escritorio.php'); //ADMINISTRADOR
               exit;
             case 2:
-              header('Location: ../frontend/u_generico/escritorio.php'); //CLIENTE
+              header('Location: ../public_html/u_generico/escritorio.php'); //CLIENTE
               exit;
             case 3:
-              header('Location: ../frontend/contable/escritorio.php'); //Contable
+              header('Location: ../public_html/contable/escritorio.php'); //Contable
               exit;
             case 4:
-              header('Location: ../frontend/comercial/escritorio.php'); //COMERCIAL
+              header('Location: ../public_html/comercial/escritorio.php'); //COMERCIAL
               exit;
             case 5:
-              header('Location: ../frontend/jtecnico/escritorio.php'); //JEFE TECNICO
+              header('Location: ../public_html/jtecnico/escritorio.php'); //JEFE TECNICO
               exit;
             case 6:
-              header('Location: ../frontend/tecnico/escritorio.php'); //TECNICO
+              header('Location: ../public_html/tecnico/escritorio.php'); //TECNICO
               exit;
             case 7:
-              header('Location: ../frontend/bodega/escritorio.php'); //BODEGA
+              header('Location: ../public_html/bodega/escritorio.php'); //BODEGA
               exit;
             default:
               $errMsg = 'Rol no definido. Contacte con el administrador.'; //DEFAULT

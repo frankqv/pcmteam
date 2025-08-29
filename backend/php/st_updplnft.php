@@ -6,7 +6,7 @@ if (isset($_POST['stupdplanft'])) {
     $imgFile = $_FILES['foto']['name'];
     $tmp_dir = $_FILES['foto']['tmp_name'];
     $imgSize = $_FILES['foto']['size'];
-    $upload_dir = '../../backend/img/subidas/'; // upload directory
+    $upload_dir = '../../../public_html/img/subidas/'; // upload directory
    $imgExt = strtolower(pathinfo($imgFile, PATHINFO_EXTENSION)); // get image extension
    // valid image extensions
     $valid_extensions = array('jpeg', 'jpg', 'png', 'gif', 'webp', 'avif'); // valid extensions

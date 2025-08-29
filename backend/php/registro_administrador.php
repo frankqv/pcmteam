@@ -1,25 +1,20 @@
 <?php
 session_start();
-
 // Verificar si el usuario ya ha iniciado sesión, redirigirlo si es así
 if (isset($_SESSION['id'])) {
     header('Location: administrador/escritorio.php');
     exit();
 }
-
 // Incluir el archivo de conexión a la base de datos
 require_once __DIR__ . '../../../config/ctconex.php';
-
 // Mensaje de error por defecto
 $errMsg = '';
-
 // Procesar el formulario de registro
 if (isset($_POST['registro_administrador'])) {
     // Obtener datos del formulario
     $nombre_usuario = $_POST['nombre_usuario'];
     $contraseña = $_POST['contraseña'];
-
-    // Validar los datos del formulario
+   // Validar los datos del formulario
     if (!empty($nombre_usuario) && !empty($contraseña)) {
         try {
             // Preparar la consulta para insertar un nuevo administrador en la base de datos
@@ -27,11 +22,9 @@ if (isset($_POST['registro_administrador'])) {
             $stmt = $connect->prepare($sql);
             $stmt->bindParam(':nombre_usuario', $nombre_usuario);
             $stmt->bindParam(':contraseña', $contraseña);
-
-            // Ejecutar la consulta
+           // Ejecutar la consulta
             $stmt->execute();
-
-            // Redirigir al administrador a la página de inicio de sesión
+           // Redirigir al administrador a la página de inicio de sesión
             header('Location: login.php');
             exit();
         } catch (PDOException $e) {
@@ -43,7 +36,6 @@ if (isset($_POST['registro_administrador'])) {
     }
 }
 ?>
-
 <!-- Estructura HTML del formulario de registro -->
 <html lang="es">
 <head>

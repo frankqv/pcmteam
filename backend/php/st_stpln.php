@@ -12,7 +12,7 @@ $imgFile = $_FILES['foto']['name'];
 if (empty($nompla)) {
     $errMSG = "Please enter number.";
   } else {
-    $upload_dir = '../../backend/img/subidas/'; // upload directory
+    $upload_dir = '../../../public_html/img/subidas/'; // upload directory
    $imgExt = strtolower(pathinfo($imgFile, PATHINFO_EXTENSION)); // get image extension
    // valid image extensions
     $valid_extensions = array('jpeg', 'jpg', 'png', 'gif', 'webp', 'avif'); // valid extensions

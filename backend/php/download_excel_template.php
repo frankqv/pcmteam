@@ -4,7 +4,7 @@ session_start();
 
 // Verificar sesión y permisos
 if (!isset($_SESSION['id']) || !isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
-    header('Location: ../../frontend/error404.php');
+    header('Location: ../../public_html/error404.php');
     exit();
 }
 
