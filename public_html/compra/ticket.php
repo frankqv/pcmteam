@@ -8,6 +8,9 @@ $pdf->AddPage();
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetTextColor(0, 0, 0);
 require '../../config/ctconex.php';
+function convertUtf8($text) {
+    return iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $text);
+}
 $stmt = $connect->prepare("SELECT * FROM setting");
 $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $stmt->execute();

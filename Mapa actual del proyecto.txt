@@ -1,15 +1,218 @@
-#### Mapa actual del proyecto ####
-Uso liberia de bootstrap5
-Uso liberia de php composer
-Uso liberia de php guzzlehttp
-Uso liberia de php oauth2-client
-Uso liberia de php league
-Uso liberia de php maennchen
-Uso liberia de php markbaker
-Uso liberia de php phpspreadsheet
-Uso liberia de php psr
-Uso liberia de php ralouphie
-Uso liberia de php symfony
+#📁 Mapa Actualizado del Proyecto PCM Team Security
+## Librerías Utilizadas
+- Bootstrap 5
+- PHP Composer
+- PHP Guzzlehttp
+- PHP OAuth2-client
+- PHP League
+- PHP Maennchen
+- PHP Markbaker
+- PHP PHPSpreadsheet
+- PHP PSR
+- PHP Ralouphie
+- PHP Symfony
+
+## Estructura Actual del Proyecto
+
+```
+pcmteam_security/                    # Raíz del proyecto
+├── backend/                         # Lógica de negocio y procesamiento
+│   ├── pdf/                        # Generación de PDFs
+│   │   ├── font/                   # Fuentes para PDFs
+│   │   │   ├── courier.php
+│   │   │   ├── courierb.php
+│   │   │   ├── courierbi.php
+│   │   │   ├── courieri.php
+│   │   │   ├── create_z_file.php
+│   │   │   ├── download_montserrat.php
+│   │   │   ├── helvetica.php
+│   │   │   ├── helveticab.php
+│   │   │   ├── helveticabi.php
+│   │   │   ├── helveticai.php
+│   │   │   ├── Montserrat-Bold.php
+│   │   │   ├── Montserrat-Bold.ttf
+│   │   │   ├── symbol.php
+│   │   │   ├── times.php
+│   │   │   ├── timesb.php
+│   │   │   ├── timesbi.php
+│   │   │   ├── timesi.php
+│   │   │   └── zapfdingbats.php
+│   │   ├── code128.php             # Generación códigos de barras
+│   │   ├── download_fpdf.php       # Descarga de FPDF
+│   │   └── fpdf.php               # Librería FPDF
+│   ├── php/                        # Scripts PHP de backend
+│   │   ├── buscar_equipo_posicion.php
+│   │   ├── ctlogx.php
+│   │   ├── delete_inventario.php
+│   │   ├── download_excel_template.php
+│   │   ├── editar_equipo.php
+│   │   ├── get_entrada_details.php
+│   │   ├── get_ingresar_m.php
+│   │   ├── get_inventario_details.php
+│   │   ├── get_myl_details.php
+│   │   ├── import_excel_equipos.php
+│   │   ├── obtener_diagnostico.php
+│   │   ├── procesar_cambios_equipo.php
+│   │   ├── procesar_mantenimiento.php
+│   │   ├── registro_administrador.php
+│   │   ├── st_addcheck.php
+│   │   ├── st_addcheck_compra.php
+│   │   ├── st_add_cart.php
+│   │   ├── st_add_cart_compra.php
+│   │   ├── st_add_entrada.php
+│   │   ├── st_add_gastos.php
+│   │   ├── st_add_salida.php
+│   │   ├── st_dltcate.php
+│   │   ├── st_dltcompr.php
+│   │   ├── st_dltcusto.php
+│   │   ├── st_dltpln.php
+│   │   ├── st_dltprodc.php
+│   │   ├── st_dltservic.php
+│   │   ├── st_dltvent.php
+│   │   ├── st_ingresar_mantenimiento.php
+│   │   ├── st_mantenimiento.php
+│   │   ├── st_notiservic.php
+│   │   ├── st_stcate.php
+│   │   ├── st_stcusto.php
+│   │   ├── st_stpln.php
+│   │   ├── st_stprodc.php
+│   │   ├── st_stservic.php
+│   │   ├── st_updcart.php
+│   │   ├── st_updcart_compra.php
+│   │   ├── st_updcate.php
+│   │   ├── st_updconfcf.php
+│   │   ├── st_updconfi.php
+│   │   ├── st_updcusto.php
+│   │   ├── st_updpln.php
+│   │   ├── st_updplnft.php
+│   │   ├── st_updpro.php
+│   │   ├── st_updpro2.php
+│   │   ├── st_updprodc.php
+│   │   ├── st_updprodcf.php
+│   │   ├── st_updpropsd.php
+│   │   ├── st_updpropsd2.php
+│   │   ├── st_updservic.php
+│   │   ├── st_upduser.php
+│   │   ├── test_connection.php
+│   │   ├── test_insert.php
+│   │   └── update_inventario.php
+│   ├── fix_autoincrement.php       # Reparación de autoincrement
+│   └── repair_table.php           # Reparación de tablas
+│
+├── config/                         # Configuración del sistema
+│   ├── ctconex.php                # Configuración de conexión BD
+│   ├── db_sin_data.sql            # Estructura BD sin datos
+│   └── EstructuraDB.sql           # Estructura completa BD
+│
+├── public_html/                    # Carpeta pública (interfaz de usuario)
+│   ├── administrador/             # Panel administrador
+│   ├── assets/                    # Recursos estáticos
+│   ├── bodega/                    # Módulo de bodega
+│   ├── b_room/                    # Sala de juntas
+│   ├── categoria/                 # Gestión de categorías
+│   ├── clientes/                  # Gestión de clientes
+│   ├── comercial/                 # Área comercial
+│   ├── compra/                    # Módulo de compras
+│   ├── contable/                  # Área contable
+│   ├── cuenta/                    # Gestión de cuentas
+│   ├── docs/                      # Documentación
+│   ├── functions/                 # Funciones auxiliares
+│   ├── gastos/                    # Control de gastos
+│   ├── graficos/                  # Reportes gráficos
+│   ├── jtecnico/                  # Jefe técnico
+│   ├── laboratorio/               # Área de laboratorio
+│   ├── layouts/                   # Plantillas de diseño
+│   ├── marketing/                 # Área de marketing
+│   ├── mis_servicios/             # Servicios personales
+│   ├── pedidos_ruta/              # Gestión de rutas y pedidos
+│   ├── plan/                      # Gestión de planes
+│   ├── producto/                  # Gestión de productos
+│   ├── proveedor/                 # Gestión de proveedores
+│   ├── reporte/                   # Generación de reportes
+│   ├── servicio/                  # Gestión de servicios
+│   ├── tecnico/                   # Área técnica
+│   ├── usuario/                   # Gestión de usuarios
+│   ├── util/                      # Utilidades
+│   ├── u_generico/                # Usuario genérico
+│   ├── venta/                     # Módulo de ventas
+│   ├── .htaccess                  # Configuración Apache
+│   ├── debug_login.php            # Debug de login
+│   ├── error404.php               # Página error 404
+│   ├── error500.php               # Página error 500
+│   ├── home.php                   # Página principal
+│   ├── index.php                  # Punto de entrada
+│   ├── info.php                   # Información del sistema
+│   ├── login.php                  # Página de login
+│   ├── registrar.php              # Registro de usuarios
+│   └── salir.php                  # Logout
+│
+├── vendor/                         # Dependencias de Composer
+│   ├── composer/                  # Autoloader de Composer
+│   ├── guzzlehttp/               # Cliente HTTP
+│   ├── league/                   # OAuth2 Client
+│   ├── maennchen/                # ZipStream
+│   ├── markbaker/                # Complex numbers
+│   ├── phpoffice/                # PhpSpreadsheet
+│   ├── psr/                      # PSR standards
+│   ├── ralouphie/               # GetAllHeaders
+│   ├── symfony/                  # Symfony components
+│   └── autoload.php             # Autoloader principal
+│
+├── composer.json                   # Dependencias del proyecto
+├── composer.lock                   # Versiones bloqueadas
+└── Mapa actual del proyecto.txt    # Este archivo
+```
+
+## Estructura Recomendada para Hostinger
+
+```
+/home/usuario/                      # Raíz de tu cuenta en Hostinger
+│
+├── pcmteam/                       # Carpeta principal (fuera del público)
+│   ├── app/                       # MVC (Controllers, Models, Services)
+│   ├── backend/                   # Tu carpeta actual backend
+│   ├── config/                    # Tu carpeta actual config
+│   ├── resources/                 # Vistas y plantillas
+│   ├── routes/                    # Definición de rutas
+│   ├── storage/                   # Logs, PDFs, Excel, caché
+│   ├── tests/                     # Tests unitarios
+│   ├── vendor/                    # Composer (tu carpeta actual)
+│   ├── .env                       # Variables de entorno
+│   ├── composer.json
+│   ├── composer.lock
+│   └── Mapa actual del proyecto.txt
+│
+└── public_html/                   # Carpeta pública de Hostinger
+    ├── assets/                    # CSS, JS, imágenes
+    ├── uploads/                   # Archivos subidos por usuarios
+    ├── index.php                  # Punto de entrada → redirige a /pcmteam/app
+    └── [resto de carpetas públicas actuales]
+```
+
+## Notas de Migración
+
+1. **Archivos sensibles**: Los archivos de `config/` y `backend/` deberían estar fuera de `public_html`
+2. **Punto de entrada único**: `index.php` debería ser el único punto de entrada
+3. **Variables de entorno**: Crear archivo `.env` para datos sensibles
+4. **Estructura MVC**: Considerar reorganizar en controladores, modelos y vistas
+5. **Seguridad**: Los archivos PHP de procesamiento no deberían ser accesibles directamente
+
+## Funcionalidades Identificadas
+
+- **Gestión de inventarios** (equipos, entradas, salidas)
+- **Sistema de mantenimientos**
+- **Gestión comercial** (ventas, compras, clientes, proveedores)
+- **Control financiero** (gastos, contabilidad)
+- **Generación de reportes** (PDF, Excel)
+- **Sistema de usuarios** multi-rol
+- **Gestión de servicios técnicos**
+- **Control de rutas y pedidos**
+
+
+
+
+
+
 #############
 IDEAL
 #############
@@ -40,205 +243,3 @@ Imagina que tu dominio es pcmteam.com. Así quedaría:
     ├── index.php            # Punto de entrada → redirige a /pcmteam/app
     └── assets/              # Librerías externas (Bootstrap, DataTables, etc.)
 --------------------------------------------------------
-
-
-
-
-
-├── backend/
-│   └── php/
-│       └── get_inventario_details.php  ← Archivo actual
-└── public_html/
-    └── bodega/
-
-
-
-
-RAIZ PRINCIPAL DE PROGRMA INTERNO
-pcmteam/
-├── config/
-│   └── ctconex.php          ← Archivo objetivo                      (carpeta)
-├── backend/
-│   └── php/
-│       └── get_inventario_details.php  ← Archivo actual
-backend\
-│   ├─ css\                    (carpeta)
-│   │  ├─ bootstrap.min.css
-│   │  ├─ buttonsdataTables.css
-│   │  ├─ custom.css
-│   │  ├─ custom2.css
-│   │  ├─ datatable.css
-│   │  ├─ font.css
-│   │  ├─ loader.css
-│   │  └─ style.css
-│   ├─ img\                    (carpeta)
-│   ├─ js\                     (carpeta)
-│   │  ├─ bootstrap.min.js
-│   │  ├─ buttonshtml5.js
-│   │  ├─ buttonsprint.js
-│   │  ├─ Chart-prod.js
-│   │  ├─ datatable.js
-│   │  ├─ datatablebuttons.js
-│   │  ├─ example.js
-│   │  ├─ jquery-3.3.1.min.js
-│   │  ├─ jquery-3.3.1.slim.min.js
-│   │  ├─ jszip.js
-│   │  ├─ loader.js
-│   │   ├─ package-lock.json
-│   │   ├─ package.json
-│   │   ├─ pdfmake.js
-│   │   ├─ piechart.js
-│   │   ├─ plan.js
-│   │   ├─ popper.min.js
-│   │   ├─ reenvio.js
-│   │   ├─ sidebarCollapse.js
-│   │   ├─ sweetalert.js
-│   │   └─ vfs_fonts.js
-│   │   ├─  pdf\                    (carpeta)
-│   │  ├─ font\                 (carpeta)
-│   │  ├─ code128.php
-│   │  ├─ download_fpdf.php
-│   │  └─ fpdf.php
-│   ├─ php\                    (carpeta)
-│   │  ├─ backend\              (carpeta)
-│   │  ├─ PHPMailer\            (carpeta)
-│   │  ├─ ctlogx.php
-│   │  ├─ delete_inventario.php
-│   │  ├─ download_excel_template.php
-│   │  ├─ errores.log
-│   │  ├─ get_entrada_details.php
-│   │  ├─ get_inventario_details.php
-│   │  ├─ import_excel_equipos.php
-│   │  ├─ registro_administrador.php
-│   │  ├─ st_addcheck.php
-│   │  ├─ st_addcheck_compra.php
-│   │  ├─ st_add_cart.php
-│   │  ├─ st_add_cart_compra.php
-│   │  ├─ st_add_entrada.php
-│   │  ├─ st_add_gastos.php
-│   │  ├─ st_add_salida.php
-│   │  ├─ st_dltcate.php
-│   │  ├─ st_dltcompr.php
-│   │  ├─ st_dltcusto.php
-│   │  ├─ st_dltpln.php
-│   │  ├─ st_dltprodc.php
-│   │  ├─ st_dltservic.php
-│   │  ├─ st_dltvent.php
-│   │  ├─ st_notiservic.php
-│   │  ├─ st_stcate.php
-│   │  ├─ st_stcusto.php
-│   │  ├─ st_stpln.php
-│   │  ├─ st_stprodc.php
-│   │  ├─ st_stservic.php
-│   │  ├─ st_updcart.php
-│   │  ├─ st_updcart_compra.php
-│   │  ├─ st_updcate.php
-│   │  ├─ st_updconfcf.php
-│   │  ├─ st_updconfi.php
-│   │  ├─ st_updcusto.php
-│   │  ├─ st_updpln.php
-│   │  ├─ st_updplnft.php
-│   │  ├─ st_updpro.php
-│   │  ├─ st_updpro2.php
-│   │  ├─ st_updprodc.php
-│   │  ├─ st_updprodcf.php
-│   │  ├─ st_updpropsd.php
-│   │  ├─ st_updpropsd2.php
-│   │  ├─ st_updservic.php
-│   │  ├─ st_upduser.php
-│   │  ├─ update_inventario.php
-│   │  └─ ... (otros scripts PHP)
-│   ├─ fix_autoincrement.php
-│   └─ repair_table.php
-│
-└── public_html/
-│   │─ administrador/
-│   │    └── escritorio.php   
-│   │─ b_room/                   (carpeta)
-│   │─ bodega/                   (carpeta)
-│   │─ categoria/                (carpeta)       
-│   │─ clientes/                 (carpeta)    
-│   │─ comercial/                (carpeta)   
-│   │─ compra/                   (carpeta)  
-│   │─ contable/                 (carpeta)      
-│   │─ cuenta/                   (carpeta)    
-│   │─ docs/                     (carpeta)      
-│   │─ functions/                (carpeta)  
-│   │─ gastos/                   (carpeta)  
-│   │─ graficos/                 (carpeta)  
-│   │─ jtecnico/                 (carpeta)  
-│   │─ laboratoriO/              (carpeta)  
-│   │─ layouts/                  (carpeta)  
-│   │─ marketing/                (carpeta)  
-│   │─ mis_servicios             (carpeta)
-│   │─ pedidos_ruta/             (carpeta)  
-│   │─ plan/                     (carpeta)  
-│   │─ producto/                 (carpeta)  
-│   │─ proveedor/                (carpeta)  
-│   │─ reporte/                  (carpeta)  
-│   │─ reporte/                  (carpeta)  
-│   │─ servicio/                 (carpeta)  
-│   │─ tecnico/                  (carpeta)  
-│   │─ u_generico/               (carpeta)  
-│   │─ usuario/                  (carpeta)  
-│   │─  venta/                   (carpeta)  
-│   ├─ debug_login.php
-│   ├─ error404.php
-│   ├─ error500.php
-│   ├─ login.php
-│   ├─ registrar.php
-│   └─ salir.php
-│
-│
-│
-│   
-├─ util\                         (carpeta)
-│   │─ busquedas selecion simpe.php   
-│   │─ pag_builder.php  
-│   └── tanto.php   
-│
-├─ vendor\                       (carpeta)
-│   ├─ composer\
-│   │  ├─ autoload_classmap.php
-│   │  ├─ autoload_files.php
-│   │  ├─ autoload_namespaces.php
-│   │  ├─ autoload_psr4.php
-│   │  ├─ autoload_real.php
-│   │  ├─ autoload_static.php
-│   │  ├─ ClassLoader.php
-│   │  ├─ installed.json
-│   │  ├─ installed.php
-│   └─ InstalledVersions.php
-├─ guzzlehttp\
-├─ league\
-├─ maennchen\
-├─ markbaker\
-├─ phpoffice\
-│  └─ phpspreadsheet\
-├─ psr\
-├─ ralouphie\
-└─ symfony\
-├─ composer\
-│   │  ├─ autoload_classmap.php
-│   │  ├─ autoload_files.php
-│   │  ├─ autoload_namespaces.php
-│   │  ├─ autoload_psr4.php
-│   │  ├─ autoload_real.php
-│   │  ├─ autoload_static.php
-│   │  ├─ ClassLoader.php
-│   │  ├─ installed.json
-│   │  ├─ installed.php
-│   └──└─ InstalledVersions.php
-│   ├─ .htaccess
-│   ├─ composer.json
-│   ├─ composer.lock
-│   ├─ home.php
-│   ├─ index.php
-│   ├─ info.php
-└─ Mapa actual del proyecto.txt
-
-
-### backend\ (contenido)
-
-
-### vendor\ (contenido principal)

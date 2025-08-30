@@ -7,8 +7,6 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
-CREATE DATABASE IF NOT EXISTS `u171145084_pcmteam` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `u171145084_pcmteam`;
 
 CREATE TABLE `bodega_areas` (
   `id` int UNSIGNED NOT NULL,
@@ -78,7 +76,17 @@ INSERT INTO `bodega_diagnosticos` (`id`, `inventario_id`, `fecha_diagnostico`, `
 (15, 17, '2025-08-15 12:57:09', 1, 'MALO', 'BUENO', 'N/D', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: BUENO; Vida útil: 100', 'no', NULL, 'no', NULL, 'aprobado', 'camara rayada'),
 (16, 7, '2025-08-27 19:12:01', 0, 'N/D', 'BUENO', 'BUENO', 'MALO', 'MALO', 'BUENO', NULL, NULL, 'no', '', 'no', '', 'aprobado', 'puertos VGA , dañados'),
 (17, 7, '2025-08-27 19:13:43', 12, 'N/D', 'BUENO', 'BUENO', 'MALO', 'MALO', 'BUENO', NULL, NULL, 'no', '', 'no', '', 'aprobado', 'puertos VGA , dañados'),
-(18, 7, '2025-08-27 19:16:00', 32, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', NULL, NULL, 'si', 'okay', 'si', 'tallado', 'falla_mecanica', 'puertos VGA , dañados');
+(18, 7, '2025-08-27 19:16:00', 32, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', NULL, NULL, 'si', 'okay', 'si', 'tallado', 'falla_mecanica', 'puertos VGA , dañados'),
+(19, 7, '2025-08-28 15:20:21', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 100%', 'no', NULL, 'no', NULL, 'aprobado', 'okay'),
+(20, 7, '2025-08-28 15:21:20', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 100%', 'no', NULL, 'no', NULL, 'aprobado', 'okay'),
+(21, 9, '2025-08-28 16:11:56', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 85%', 'no', NULL, 'no', NULL, 'aprobado', 'Aprovado'),
+(22, 11, '2025-08-28 17:50:34', 1, 'BUENO', 'MALO', 'BUENO', 'MALO', 'BUENO', 'MALO', '{\"VGA\":\"MALO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 3%', 'no', NULL, 'no', NULL, 'aprobado', 'maLA'),
+(23, 11, '2025-08-28 17:51:43', 15, 'MALO', 'BUENO', 'MALO', 'MALO', 'BUENO', 'MALO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 7%', 'no', NULL, 'no', NULL, 'aprobado', 'PUERTO DOBLADO'),
+(24, 11, '2025-08-28 17:51:47', 1, 'BUENO', 'MALO', 'BUENO', 'MALO', 'BUENO', 'MALO', '{\"VGA\":\"MALO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 3%', 'no', NULL, 'no', NULL, 'aprobado', 'maLA'),
+(25, 11, '2025-08-28 17:51:52', 1, 'BUENO', 'MALO', 'BUENO', 'MALO', 'BUENO', 'MALO', '{\"VGA\":\"MALO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 3%', 'no', NULL, 'no', NULL, 'aprobado', 'maLA'),
+(26, 11, '2025-08-28 17:52:00', 1, 'BUENO', 'MALO', 'BUENO', 'MALO', 'BUENO', 'MALO', '{\"VGA\":\"MALO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 3%', 'no', NULL, 'no', NULL, 'aprobado', 'maLA'),
+(27, 11, '2025-08-28 17:52:19', 15, 'MALO', 'BUENO', 'MALO', 'MALO', 'BUENO', 'MALO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 7%', 'no', NULL, 'no', NULL, 'aprobado', 'PUERTO DOBLADO'),
+(28, 11, '2025-08-28 17:56:08', 1, 'BUENO', 'BUENO', 'N/D', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 55%', 'no', NULL, 'no', NULL, 'aprobado', 'N/D');
 
 CREATE TABLE `bodega_entradas` (
   `id` int NOT NULL,
@@ -112,7 +120,8 @@ INSERT INTO `bodega_entradas` (`id`, `inventario_id`, `fecha_entrada`, `proveedo
 (19, 33, '2025-08-19 10:17:53', 9, 1, 1, 'rayones en tapas'),
 (20, 34, '2025-08-20 21:48:01', 20, 1, 1, ''),
 (21, 35, '2025-08-20 22:22:47', 20, 1, 1, 'sobrecalentamiento'),
-(22, 36, '2025-08-21 22:01:32', 20, 1, 1, 'aa');
+(22, 36, '2025-08-21 22:01:32', 20, 1, 1, 'aa'),
+(23, 51, '2025-08-28 10:07:16', 9, 15, 1, 'pantalla tallada');
 
 CREATE TABLE `bodega_inventario` (
   `id` int NOT NULL,
@@ -148,11 +157,11 @@ INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `ubicacion`, `posicion`, `fec
 (4, 'LPDA 1432', 'Principal', 'DWQDEW', '2025-07-02 17:19:56', '2025-08-06 15:32:59', 'Periferico', 'HP', 'ds', '132', 'i5 14th', '8GB', '125 gb', '', 'tESTEO', 'A', 'Para Venta', 'inactivo', 13, NULL, NULL, 'SI', 'pchekt542007-25', NULL),
 (5, 'EQ004', 'Principal', 'ESTANTE-2-A', '2025-08-08 17:01:12', '2025-08-11 12:53:58', 'Desktop', 'HP', 'DL123456782', 'Latitude 55223', 'Intel i7-10700', '16GB', '512GB SSD', '16', 'tallado tapas ypantalla', 'B', 'En Laboratorio', 'activo', 33, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
 (6, 'EQ006', 'Principal', 'ESTANTE-1-A', '2025-08-08 17:45:33', '2025-08-08 17:45:33', 'Desktop', 'Dell', 'HP987654322', 'EliteDesk 800', 'Intel i5-1135G7', '8GB', '512GB SSD', '16', 'tallado', 'B', 'En revisión', 'activo', 34, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
-(7, 'EQ007', 'Principals', 'ESTANTE-2-A', '2025-08-09 09:29:28', '2025-08-27 14:13:02', 'Portatil', 'Lenovo', 'LN456789124', 'lenovo x280', 'Intel i7-10700', '16GB', '256GB SSD', '17', 'pantalla tallada', 'B', 'en_mantenimiento', 'activo', 1, NULL, NULL, 'NO', 'sitecPc08-25', NULL),
+(7, 'EQ007', 'Principals', 'ESTANTE-2-A', '2025-08-09 09:29:28', '2025-08-29 09:14:13', 'Portatil', 'Lenovo', 'LN456789124', 'lenovo x280', 'Intel i7-10700', '16GB', '256GB SSD', '15', 'pantalla tallada', 'A', 'en_mantenimiento', 'activo', 1, NULL, NULL, 'NO', 'sitecPc08-25', NULL),
 (8, 'EQ008', 'Principal', 'ESTANTE-1-B', '2025-08-09 10:50:25', '2025-08-21 22:03:28', 'Portatil', 'Dell', 'DL123456922', 'DELL LATITUDE 7340', 'Intel i9-10700', '8GB', '256GB SSD', '20', 'teclas dañas J y la T', 'B', 'en_proceso', 'activo', 3, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
 (9, 'LPDA-1432', 'Unilago', 'Estante 1 - B', '2025-08-09 10:57:09', '2025-08-16 12:34:27', 'Portatil', 'Lenovo', 'ATG1288', 'X280', 'i5 13th', '16GB', '256 SSD', '16', 'PANTALLA TALLADA', 'B', 'en_diagnostico', 'activo', 1, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
 (10, 'EQ009', 'Medellín', 'ESTANTE-1-B', '2025-08-09 11:13:30', '2025-08-22 17:47:57', 'Portatil', 'Dell', 'DL123456791', 'Latitude 5520', 'Intel i5-10700', '8GB', '512GB SSD', '14', 'tallado', 'B', 'en_proceso', 'activo', 2, NULL, NULL, 'NO', 'sitecPc08-25', NULL),
-(11, 'EQ010', 'Unilago', 'Estante 1 - C Fila B', '2025-08-09 11:17:04', '2025-08-09 11:17:04', 'Desktop', 'Dell', 'ATG128387', 'HP Elite GEN 5 ', 'i5 10th', '8GB', '512 SSD', '12', '', 'A', 'Para Venta', 'activo', 32, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
+(11, 'EQ010', 'Unilago', 'Estante 1 - C Fila B', '2025-08-09 11:17:04', '2025-08-28 18:04:28', 'Desktop', 'Dell', 'ATG128387', 'HP Elitebook 840 GEN 5 ', 'i5 10th', '16GB', '512 SSD', '12', '', 'A', 'Para Venta', 'activo', 32, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
 (12, 'EQ011', 'Unilago', 'ESTANTE-2-A', '2025-08-09 11:44:38', '2025-08-11 14:08:37', 'Portatil', 'Dell', 'DL123456989', 'Latitude 5520', 'Intel i5-10400T', '8GB', '256GB SSD', '15.6', 'rayones en tapas', 'C', 'en_diagnostico', 'activo', 1, NULL, NULL, 'SI', 'sitecPc08-25', NULL),
 (13, 'EQ012', 'Principal', 'Estante 2 - C Fila A', '2025-08-11 14:28:04', '2025-08-16 12:27:34', 'Portatil', 'Dell', 'ATG1292', 'Latitude 55223', 'i5 11th', '8GB', '256 SSD', '12', 'Pantalla talada', 'B', 'en_proceso', 'activo', 1, NULL, NULL, 'NO', 'LoteSitecJULIO25', NULL),
 (14, 'EQ013', 'Principal', 'ESTANTE-2-A', '2025-08-11 17:53:40', '2025-08-16 12:35:51', 'Portatil', 'Dell', 'DL123456799', 'Latitude 5520', 'Intel i7-10700', '8GB', '256GB SSD', '16', 'pantalla tallada', 'B', 'en_proceso', 'activo', 1, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
@@ -163,7 +172,8 @@ INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `ubicacion`, `posicion`, `fec
 (33, 'EQ019', 'Principal', 'ESTANTE-1-B', '2025-08-19 10:17:53', '2025-08-22 17:47:35', 'Monitor', 'Dell', 'DL1234593739', ' U2515H', '', 'N/A', '', '', 'rayones en tapas', 'B', 'en_diagnostico', 'activo', 8, NULL, NULL, 'NO', 'pchekt542007-25', NULL),
 (34, 'SIPIS00325', 'Principal', 'ESTANTE 1B', '2025-08-20 21:48:01', '2025-08-22 17:47:32', 'Portatil', 'Otro', '124565451', 'MAC 123', 'INTEL CORE I5 DE 7MA', '32GB', '256', '14', '', 'B', 'en_proceso', 'activo', 6, NULL, NULL, 'SI', 'SIPIS00325 SIPI MAC', NULL),
 (35, 'EQ032414', 'Unilago', 'ESTANTE-1-B', '2025-08-20 22:22:47', '2025-08-21 22:03:18', 'Desktop', 'Lenovo', 'ad3241234', 'Latitude 5520', 'Intel i7-10700', '8GB', '512GB SSD', '23.8', 'sobrecalentamiento', 'B', 'en_diagnostico', 'activo', 7, NULL, NULL, 'NO', 'pchekt542007-23', NULL),
-(36, 'EQ0293', 'Unilago', 'ESTANTE-1-C', '2025-08-21 22:01:32', '2025-08-21 22:01:32', 'Desktop', 'HP', '21312432DD123', 'EliteDesk 800', 'Intel i5-1135G7', '16GB', '125 gb', '15.6', 'aa', 'B', 'En revisión', 'activo', 8, NULL, NULL, 'NO', 'pchekt5420032-25', NULL);
+(36, 'EQ0293', 'Unilago', 'ESTANTE-1-C', '2025-08-21 22:01:32', '2025-08-21 22:01:32', 'Desktop', 'HP', '21312432DD123', 'EliteDesk 800', 'Intel i5-1135G7', '16GB', '125 gb', '15.6', 'aa', 'B', 'En revisión', 'activo', 8, NULL, NULL, 'NO', 'pchekt5420032-25', NULL),
+(51, 'EQ0201', 'Principal', 'ESTANTE-1-B', '2025-08-28 10:07:16', '2025-08-28 10:08:27', 'Monitor', 'HP', 'HP987654323', 'EliteDesk 800', 'Intel i5-1135G7', '8GB', '256GB SSD', '20', 'pantalla tallada', 'B', 'En revisión', 'activo', NULL, NULL, NULL, 'NO', 'pchekt542007-25', NULL);
 
 CREATE TABLE `bodega_log_cambios` (
   `id` int NOT NULL,
@@ -228,7 +238,9 @@ INSERT INTO `bodega_mantenimiento` (`id`, `inventario_id`, `fecha_registro`, `te
 (13, 7, '2025-08-20 15:25:03', NULL, 1, 'pendiente', NULL, NULL, 'no', NULL, 'no', NULL, NULL, NULL, 12, 'realizada', 'Todo bien', 'realizada', 'OOKAY', 'realizada', 'si', 'listo', 'no', '', 'realizada', 'si', 'control_calidad', 'TODO OKAAAY', 'bien'),
 (14, 7, '2025-08-27 19:10:27', 1, 1, 'pendiente', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', NULL, 'pendiente', NULL, NULL, 'no', NULL, 'no', NULL, 'pendiente', 'no', NULL, 'TODO OKAAAY', 'bien'),
 (15, 7, '2025-08-27 19:12:10', 1, 1, 'pendiente', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', NULL, 'pendiente', NULL, NULL, 'no', NULL, 'no', NULL, 'pendiente', 'no', NULL, 'TODO OKAAAY', 'bien'),
-(17, 7, '2025-08-27 19:16:04', 1, 1, 'pendiente', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', NULL, 'pendiente', NULL, NULL, 'no', NULL, 'no', NULL, 'pendiente', 'no', NULL, 'TODO OKAAAY', 'bien');
+(17, 7, '2025-08-27 19:16:04', 1, 1, 'pendiente', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', NULL, 'pendiente', NULL, NULL, 'no', NULL, 'no', NULL, 'pendiente', 'no', NULL, 'TODO OKAAAY', 'bien'),
+(19, 7, '2025-08-28 15:16:43', 1, 1, 'realizado', NULL, NULL, 'si', 'puerto lateral doblado', 'si', 'Se cae la pintura', NULL, NULL, NULL, 'realizada', 'okay', 'realizada', 'okay', 'pendiente', 'si', '{\"detalle\":\"bateria lenovo \",\"cantidad\":\"\",\"codigo_equipo\":\"EQ007\",\"serial_parte\":\"L15L3A03\",\"marca_parte\":\"LENOVO\",\"nivel_urgencia\":\"Baja\",\"referencia_parte\":\"L15L3A03\",\"ubicacion_pieza\":\"ubicacion bodega principal\"}', 'si', 'Rejilla de aire', 'pendiente', 'si', 'bodega', 'okay  pedi una pieza para 7 dias en mi proceso de mantenimiento y pintura', 'TODO okay en oObservaciones Globales\r\no\r\n'),
+(20, 11, '2025-08-28 18:08:25', 1, 1, 'realizado', NULL, NULL, 'si', 'puerto lateral usb derecho', 'si', 'pantalla tallad', NULL, NULL, NULL, 'realizada', 'ok', 'realizada', 'ok', 'pendiente', 'si', '{\"detalle\":\"bateria hp\",\"cantidad\":\"\",\"codigo_equipo\":\"EQ010\",\"serial_parte\":\"PPP009L-E21\",\"marca_parte\":\"HP\",\"nivel_urgencia\":\"Baja\",\"referencia_parte\":\"PPP009L-E\",\"ubicacion_pieza\":\"ubicacion bodega principal\"}', 'no', '', 'pendiente', 'si', 'laboratorio', '', 'el equipo fue reparado, pero la pantalla se encuantra tallada');
 
 CREATE TABLE `bodega_partes` (
   `id` int NOT NULL,
@@ -355,9 +367,12 @@ CREATE TABLE `bodega_solicitud_parte` (
   `referencia_parte` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
   `ubicacion_pieza` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
   `id_tecnico` int NOT NULL,
-  `inventario_id` int DEFAULT NULL,
-  `fecha_solicitud DATETIME` datetime NOT NULL
+  `inventario_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `bodega_solicitud_parte` (`id`, `detalle_solicitud`, `cantidad_solicitada`, `codigo_equipo`, `serial_parte`, `marca_parte`, `cantidad`, `usuario_solicitante`, `estado`, `fecha_solicitud`, `nivel_urgencia`, `referencia_parte`, `ubicacion_pieza`, `id_tecnico`, `inventario_id`) VALUES
+(1, 'bateria lenovo ', '', 'EQ007', 'L15L3A03', 'LENOVO', 1, 1, 'pendiente', '2025-08-28 15:16:43', 'Baja', 'L15L3A03', 'ubicacion bodega principal', 1, 7),
+(2, 'bateria hp', '', 'EQ010', 'PPP009L-E21', 'HP', 1, 1, 'pendiente', '2025-08-28 18:08:25', 'Baja', 'PPP009L-E', 'ubicacion bodega principal', 1, 11);
 
 CREATE TABLE `cart` (
   `idv` int NOT NULL,
@@ -614,7 +629,8 @@ INSERT INTO `proveedores` (`id`, `privado`, `nombre`, `celu`, `correo`, `dire`, 
 (8, 1, 'Ejemplo S.A.S.', '2147483647', 'ejemplo@email.com', 'Calle 123 #45-67', 'Bogota', 'EJEMSAS', 901234567, '2025-07-14 22:20:31', '2025-07-14 22:20:31'),
 (9, 1, 'PcShek Tecnologia Y Servicios ', '2147483647', 'comercial@pcshek.com', 'TV 66 # 35 - 11 MD 3 BG 9', 'Bogota', 'PCSH', 900413420, '2025-07-14 22:20:31', '2025-07-14 22:20:31'),
 (20, 1, 'sipi', '2147483647', 'sipi@carga.com', 'calla 58l #80i-35', '9002221546', 'PRV020', NULL, '2025-08-21 02:41:57', '2025-08-21 02:41:57'),
-(21, 1, 'Mega Computer Sas', '3224442212', 'info@megacomputer.com.co', '-AV 5 AN  23 DN 68 LC 145/146', '901610239', 'PRV021', NULL, '2025-08-22 17:50:45', '2025-08-22 17:50:45');
+(21, 1, 'Mega Computer Sas', '3224442212', 'info@megacomputer.com.co', '-AV 5 AN  23 DN 68 LC 145/146', '901610239', 'PRV021', NULL, '2025-08-22 17:50:45', '2025-08-22 17:50:45'),
+(22, 1, 'IBM', '323 2242 555', 'info@ibm.com', 'Cr. 53 No. 100-25, Ed. IBM B2', '860.002.120-5', 'PRV022', NULL, '2025-08-29 17:40:39', '2025-08-29 17:40:39');
 
 CREATE TABLE `servicio` (
   `idservc` int NOT NULL,
@@ -671,13 +687,13 @@ CREATE TABLE `usuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `usuarios` (`id`, `nombre`, `usuario`, `correo`, `clave`, `rol`, `foto`, `estado`, `fere`, `idsede`) VALUES
-(1, 'FrankQV', 'frank', 'frank@admin.com', '202cb962ac59075b964b07152d234b70', '1', 'reere.png', '1', '2025-05-28 19:48:15', 'Cucuta'),
+(1, 'Frank Quiñonez Vidal', 'frank', 'frank@admin.com', '202cb962ac59075b964b07152d234b70', '1', 'reere.png', '1', '2025-05-28 19:48:15', 'Cucuta'),
 (2, 'Cristhian Romero', 'CristhianRomeropc', 'cr123@data.com', '53c9051e332d17250009640d364414c4', '1', 'reere.png', '1', '2025-05-29 03:37:54', 'Principal'),
 (3, 'Jasson Robles', 'Jassonroblespc', 'jr123@data.com', '75dbf8a92d4276fb51528da4e4a9d2c3', '1', 'reere.png', '1', '2025-05-29 03:38:35', 'Principal'),
 (4, 'Andrés Buitrago', 'AndresBuitragopc', 'ab123@data.com', '4b812d068c142583012bfb70131a61ab', '1', 'reere.png', '1', '2025-05-29 03:38:57', 'Principal'),
 (5, 'Nohelia Jaraba', 'Noheliajarabapc', 'nj123@data.com', '58b906fa888b10ebd49aa571bcef5149', '1', 'reere.png', '1', '2025-05-29 03:39:16', 'Principal'),
 (6, 'Anyi González', 'AnyiGonzalezpc', 'anyig123@data.com', '45deac01a8028dd922151f30e78e54ae', '1', 'reere.png', '1', '2025-05-29 03:39:49', 'Principal'),
-(7, 'Francisco Quiñonez', 'FranciscoQV', 'fqv123@data.com', 'e555b59d75e072eb5f18124db1cf1e22', '1', 'reere.png', '1', '2025-05-29 03:40:11', 'Principal'),
+(7, 'FranciscoQV', 'Francisco QV', 'fqv123@data.com', 'e555b59d75e072eb5f18124db1cf1e22', '1', 'reere.png', '1', '2025-05-29 03:40:11', 'Principal'),
 (8, 'Sergio Lara', 'Sergiolarapc', 'sl123@data.com', '16170c99b0432f43d245347aa04aceaf', '6', 'reere.png', '1', '2025-05-29 03:40:48', 'Principal'),
 (9, 'Juan González', 'Juangonzalezpc', 'jg123@data.com', '210a23d675fe23128f532944f408089c', '5', 'reere.png', '1', '2025-05-29 03:41:07', 'Principal'),
 (10, 'Luis González', 'Luisgonzalezpc', 'lg123@data.com', '2f04e635bab80099208ccdd506acad69', '6', 'reere.png', '1', '2025-05-29 03:41:31', 'Principal'),
@@ -808,25 +824,28 @@ ALTER TABLE `bodega_control_calidad`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 ALTER TABLE `bodega_diagnosticos`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 ALTER TABLE `bodega_entradas`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 ALTER TABLE `bodega_inventario`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 ALTER TABLE `bodega_log_cambios`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 ALTER TABLE `bodega_mantenimiento`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 ALTER TABLE `bodega_partes`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 ALTER TABLE `bodega_salidas`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+
+ALTER TABLE `bodega_solicitud_parte`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 ALTER TABLE `cart`
   MODIFY `idv` int NOT NULL AUTO_INCREMENT;
@@ -862,7 +881,7 @@ ALTER TABLE `producto`
   MODIFY `idprod` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 ALTER TABLE `proveedores`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 ALTER TABLE `servicio`
   MODIFY `idservc` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;

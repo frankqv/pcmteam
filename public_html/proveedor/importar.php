@@ -5,12 +5,9 @@ if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 5])){
     header('location: ../error404.php');
     exit();
 }
-
-
 // Mensajes de resultado
 $mensaje = '';
 $tipo_mensaje = '';
-
 // Procesar descarga de plantilla
 if (isset($_GET['descargar_plantilla'])) {
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -47,7 +44,6 @@ if (isset($_GET['descargar_plantilla'])) {
     $writer->save('php://output');
     exit();
 }
-
 // Procesar importación
 if (isset($_POST['importar']) && isset($_FILES['archivo_excel']['tmp_name'])) {
     require_once '../../vendor/autoload.php';
@@ -78,7 +74,6 @@ if (isset($_POST['importar']) && isset($_FILES['archivo_excel']['tmp_name'])) {
                 $correo = trim($row[8] ?? '');
                 $fecha_creacion = trim($row[9] ?? '');
                 $fecha_actualizacion = trim($row[10] ?? '');
-
                 
                 if ($nombre == '' || $nit == '') {
                     $errores[] = "Fila ".($i+1).": Nombre y NIT son obligatorios.";
@@ -114,14 +109,12 @@ privado=VALUES(privado), nombre=VALUES(nombre), celu=VALUES(celu), dire=VALUES(d
         }
     }
 }
-
 if (isset($_GET['descargar_plantilla_generica'])) {
     require_once '../../vendor/autoload.php';
     $headers = ['columna1', 'columna2', 'columna3', 'columna4', 'columna5']; // Cambia los nombres si quieres
     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     $sheet->fromArray($headers, NULL, 'A1');
-
     // Formato visual para encabezados
     $headerStyle = [
         'font' => ['bold' => true],
@@ -137,7 +130,6 @@ if (isset($_GET['descargar_plantilla_generica'])) {
     foreach (range('A', 'E') as $col) {
         $sheet->getColumnDimension($col)->setAutoSize(true);
     }
-
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment; filename="plantilla_generica.xlsx"');
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
@@ -158,7 +150,7 @@ if (isset($_GET['descargar_plantilla_generica'])) {
     <link rel="icon" type="image/png" href="../assets/img/favicon.webp" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
 </head>
-<body>V
+<body>
 <div class="container mt-5">
     <div class="card shadow">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -192,5 +184,3 @@ if (isset($_GET['descargar_plantilla_generica'])) {
 </body>
 </html>
 <?php ob_end_flush(); ?>
-
-

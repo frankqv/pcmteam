@@ -4,9 +4,8 @@ ob_start();
 require_once '../../backend/pdf/fpdf.php';
 require_once '../../config/ctconex.php';
 class PDF extends FPDF
-{
-    function Header()
-    {
+{   
+    function Header() {
         // Título con Arial Bold (más compatible que Helvetica)
         $this->SetFont('Arial', 'B', 54);
         $this->Cell(0, 15, 'DELICADO', 0, 1, 'C');
@@ -14,8 +13,7 @@ class PDF extends FPDF
     }
 }
 // Función para convertir texto UTF-8 de forma segura
-function convertUtf8($text)
-{
+function convertUtf8($text) {
     // Verificar si el texto ya está en la codificación correcta
     if (mb_check_encoding($text, 'UTF-8')) {
         return iconv('UTF-8', 'ISO-8859-1//IGNORE', $text);
