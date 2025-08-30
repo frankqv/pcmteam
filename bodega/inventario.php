@@ -211,7 +211,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-group">
-                                                <label>Ubicación</label>
+                                                <label>Sede</label>
                                                 <select class="form-control" id="filterUbicacion">
                                                     <option value="">Todas</option>
                                                     <option value="Principal">Principal</option>

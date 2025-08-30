@@ -203,7 +203,7 @@ if (isset($_SESSION['id'])) {
                                                             <i class='material-icons' data-toggle='tooltip'
                                                                 title='Ver detalles'>visibility</i>
                                                         </a>
-                                                        <a class="btn btn-warning btn-sm"
+                                                        <a class="btn btn-danger btn-sm"
                                                             href="../proveedor/editar.php?id=<?php echo $d->id; ?>">
                                                             <i class='material-icons' data-toggle='tooltip'
                                                                 title='Editar'>edit</i>
