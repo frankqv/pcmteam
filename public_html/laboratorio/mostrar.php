@@ -347,9 +347,8 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                 // Reemplaza el bloque actual ".view-btn" por esto
 $(document).on('click', '.view-btn', function () {
     var id = $(this).data('id');
-
     $.ajax({
-        url: '../../backend/php/get_myl_details.php',
+        url: '../controllers/get_myl_details.php',
         type: 'GET',                  // puedes usar POST si prefieres
         data: { inventario_id: id },  // <-- aquí estaba el error: antes enviabas { id: id }
         success: function (response) {

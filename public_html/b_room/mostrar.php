@@ -434,7 +434,7 @@ if (!$userInfo) {
                 $('#viewModalBody').html('<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Cargando...</span></div></div>');
                 $('#viewModal').modal('show');
                 $.ajax({
-                    url: '../../backend/php/get_inventario_details.php',
+                    url: '../controllers/get_inventario_details.php',
                     type: 'GET',
                     data: { id: id },
                     success: function (response) {

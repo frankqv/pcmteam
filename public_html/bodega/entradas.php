@@ -754,7 +754,7 @@ require_once '../../config/ctconex.php';
             $('#detallesModal').modal('show');
             // Cargar detalles vía AJAX
             $.ajax({
-                url: '../../backend/php/get_entrada_details.php',
+                url: '../controllers/get_entrada_details.php',
                 type: 'GET',
                 data: { id: entradaId },
                 dataType: 'json',

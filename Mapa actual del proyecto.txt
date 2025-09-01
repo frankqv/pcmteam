@@ -46,10 +46,6 @@ pcmteam_security/                    # Raíz del proyecto
 │   │   ├── delete_inventario.php
 │   │   ├── download_excel_template.php
 │   │   ├── editar_equipo.php
-│   │   ├── get_entrada_details.php
-│   │   ├── get_ingresar_m.php
-│   │   ├── get_inventario_details.php
-│   │   ├── get_myl_details.php
 │   │   ├── import_excel_equipos.php
 │   │   ├── obtener_diagnostico.php
 │   │   ├── procesar_cambios_equipo.php
@@ -114,6 +110,11 @@ pcmteam_security/                    # Raíz del proyecto
 │   ├── comercial/                 # Área comercial
 │   ├── compra/                    # Módulo de compras
 │   ├── contable/                  # Área contable
+│   ├── Controllers/              # Controladores/       # Scripts PHP de backend
+│   │   ├── get_myl_details.php
+│   │   ├── get_entrada_details.php
+│   │   ├── get_ingresar_m.php
+│   │   └── get_inventario_details.php
 │   ├── cuenta/                    # Gestión de cuentas
 │   ├── docs/                      # Documentación
 │   ├── functions/                 # Funciones auxiliares

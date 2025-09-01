@@ -1,5 +1,5 @@
 <?php
-// backend/php/get_inventario_details.php
+// ../controllers/get_inventario_details.php
 header('Content-Type: application/json; charset=utf-8');
 // Opcional: permitir peticiones desde public_html si hace falta (ajustar origen)
 // header('Access-Control-Allow-Origin: http://192.168.2.10');
@@ -16,7 +16,7 @@ if ($id <= 0) {
     exit;
 }
 // Incluir conexión (ajusta ruta según tu estructura)
-require_once dirname(__DIR__, 2) . '/config/ctconex.php';
+require_once dirname(__DIR__, 2) . '../../config/ctconex.php';
 // Asumimos $connect es PDO o mysqli
 if (!isset($connect)) {
     http_response_code(500);

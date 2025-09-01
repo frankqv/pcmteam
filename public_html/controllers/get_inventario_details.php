@@ -1,7 +1,7 @@
 <?php
 session_start();
 // ✅ RUTA CORREGIDA - Usando __DIR__ de manera segura
-require_once __DIR__ . '../../../config/ctconex.php';
+require_once __DIR__ . '../../config/ctconex.php';
 // Verificar que la conexión exista (esperamos $conn como mysqli)
 if (!isset($conn) || !($conn instanceof mysqli)) {
     http_response_code(500);
