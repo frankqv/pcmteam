@@ -433,7 +433,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                 $(document).on('click', '.view-btn', function () {
                     var id = $(this).data('id');
                     $.ajax({
-                        url: '../../backend/php/get_inventario_details.php',
+                        url: '../controllers/get_inventario_details.php',
                         type: 'GET',
                         data: { id: id },
                         success: function (response) {
