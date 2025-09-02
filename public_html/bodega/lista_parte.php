@@ -50,14 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Actualizar stock
                 $stmt = $connect->prepare("
           UPDATE bodega_partes 
-          SET cantidad = ?, fecha_modificacion = NOW()
+          SET cantidad = ?, fecha_registro = NOW()
           WHERE id = ?
         ");
                 $stmt->execute([$nueva_cantidad, $parte_id]);
                 // Registrar cambio en log
                 $stmt = $connect->prepare("
           INSERT INTO bodega_log_cambios 
-          (inventario_id, usuario_id, cambio_realizado, valor_anterior, valor_nuevo, fecha_cambio)
+          (inventario_id, usuario_id, campo_modificado, valor_anterior, valor_nuevo, fecha_cambio)
           VALUES (?, ?, ?, ?, ?, NOW())
         ");
                 $stmt->execute([
@@ -91,7 +91,7 @@ try {
     $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
     // Partes disponibles
     $stmt = $connect->prepare("
-    SELECT id, caja, cantidad, marca, referencia, producto, condicion, precio, detalles, codigo, serial, fecha_modificacion
+    SELECT id, caja, cantidad, marca, referencia, producto, condicion, precio, detalles, codigo, serial, fecha_registro
     FROM bodega_partes 
     WHERE cantidad > 0 
     ORDER BY marca, referencia
@@ -473,7 +473,7 @@ function condicionBadgeClass(string $condicion): string
                                     </td>
                                     <td>$<?php echo number_format($parte['precio'], 0, ',', '.'); ?></td>
                                     <td>
-                                        <?php echo htmlspecialchars((new DateTime($parte['fecha_modificacion']))->format('d/m/Y H:i')); ?>
+                                        <?php echo htmlspecialchars((new DateTime($parte['fecha_registro']))->format('d/m/Y H:i')); ?>
                                     </td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-outline-primary"

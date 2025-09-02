@@ -269,7 +269,7 @@ if ($use_triages) {
                                     <td><?= htmlspecialchars($row['tecnico_triage'] ?? '-') ?></td>
                                     <td>
                                         <a href="ver_triage_2.php?id=<?= (int) $row['id'] ?>" class="btn btn-secondary btn-sm"
-                                            title="Ver triage">
+                                            title="Ver Historial Total Triage 2">
                                             <span class="material-icons">visibility</span>
                                         </a>
                                         <script></script>

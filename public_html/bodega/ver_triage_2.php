@@ -1,501 +1,1022 @@
 <?php
-// public_html/bodega/ver_triage_2.php
-// Activar reporte de errores para debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
+// ver_triage_2.php - Visualización de Diagnósticos del Segundo Triage
 ob_start();
-session_start();
-// Permisos (mismos que lista_triage_2.php)
-if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], [1, 2, 7])) {
-    header('Location: ../error404.php');
-    exit;
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
 }
 
-// Incluir archivo de conexión
-$possible_paths = [
-    __DIR__ . '/../../config/ctconex.php',
-    dirname(__DIR__, 2) . '/config/ctconex.php'
-];
+require_once dirname(__DIR__, 2) . '/config/ctconex.php';
 
-$conn_included = false;
-foreach ($possible_paths as $p) {
-    if (file_exists($p)) {
-        include_once $p;
-        $conn_included = true;
-        break;
+// Validación de roles
+$allowedRoles = [1, 2, 5, 6, 7];
+if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], $allowedRoles, true)) {
+  header('Location: ../error404.php');
+  exit;
+}
+
+// Variables globales
+$mensaje = '';
+$equipos_diagnosticados = [];
+$equipo_seleccionado = null;
+$diagnostico_detalle = null;
+$entrada_info = null;
+
+// Obtener información del usuario para navbar
+$userInfo = null;
+try {
+  if (isset($_SESSION['id'])) {
+    $stmt = $connect->prepare("SELECT id, nombre, usuario, correo, foto, idsede FROM usuarios WHERE id = ? LIMIT 1");
+    $stmt->execute([$_SESSION['id']]);
+    $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+} catch (Exception $e) {
+  error_log("Error usuario: " . $e->getMessage());
+  $userInfo = [
+    'nombre' => 'Usuario',
+    'usuario' => 'usuario',
+    'correo' => 'correo@ejemplo.com',
+    'foto' => 'reere.webp',
+    'idsede' => 'Sede sin definir'
+  ];
+}
+
+// Cargar equipos con diagnósticos de triage 2 realizados
+try {
+  $stmt = $connect->prepare("
+    SELECT i.*, 
+           d.fecha_diagnostico,
+           d.tecnico_id as diagnostico_tecnico_id,
+           d.camara, d.teclado, d.parlantes, d.bateria, d.microfono, 
+           d.pantalla, d.puertos, d.disco,
+           d.falla_electrica, d.detalle_falla_electrica,
+           d.falla_estetica, d.detalle_falla_estetica,
+           d.estado_reparacion, d.observaciones as observaciones_diagnostico,
+           e.observaciones as observaciones_entrada,
+           e.fecha_entrada, e.proveedor_id,
+           p.nombre as nombre_proveedor,
+           u.nombre as nombre_tecnico
+    FROM bodega_inventario i
+    INNER JOIN bodega_diagnosticos d ON i.id = d.inventario_id
+    LEFT JOIN bodega_entradas e ON i.id = e.inventario_id
+    LEFT JOIN proveedores p ON e.proveedor_id = p.id
+    LEFT JOIN usuarios u ON d.tecnico_id = u.id
+    WHERE i.estado = 'activo'
+    ORDER BY d.fecha_diagnostico DESC
+  ");
+  $stmt->execute();
+  $equipos_diagnosticados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+  error_log("Error carga equipos: " . $e->getMessage());
+  $mensaje .= "<div class='alert alert-warning'>Error al cargar equipos: " . htmlspecialchars($e->getMessage()) . "</div>";
+}
+
+// Cargar datos detallados del equipo seleccionado
+if (isset($_GET['id']) && (int) $_GET['id'] > 0) {
+  $equipo_id = (int) $_GET['id'];
+  try {
+    // Obtener datos del equipo con diagnóstico
+    $stmt = $connect->prepare("
+      SELECT i.*, 
+             d.fecha_diagnostico, d.tecnico_id as diagnostico_tecnico_id,
+             d.camara, d.teclado, d.parlantes, d.bateria, d.microfono, 
+             d.pantalla, d.puertos, d.disco,
+             d.falla_electrica, d.detalle_falla_electrica,
+             d.falla_estetica, d.detalle_falla_estetica,
+             d.estado_reparacion, d.observaciones as observaciones_diagnostico,
+             u.nombre as nombre_tecnico
+      FROM bodega_inventario i
+      LEFT JOIN bodega_diagnosticos d ON i.id = d.inventario_id
+      LEFT JOIN usuarios u ON d.tecnico_id = u.id
+      WHERE i.id = ?
+      ORDER BY d.fecha_diagnostico DESC
+      LIMIT 1
+    ");
+    $stmt->execute([$equipo_id]);
+    $equipo_seleccionado = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($equipo_seleccionado) {
+      // Obtener información de entrada
+      $stmt = $connect->prepare("
+        SELECT e.*, p.nombre as nombre_proveedor, u.nombre as usuario_registro
+        FROM bodega_entradas e
+        LEFT JOIN proveedores p ON e.proveedor_id = p.id
+        LEFT JOIN usuarios u ON e.usuario_id = u.id
+        WHERE e.inventario_id = ?
+        ORDER BY e.fecha_entrada DESC
+        LIMIT 1
+      ");
+      $stmt->execute([$equipo_id]);
+      $entrada_info = $stmt->fetch(PDO::FETCH_ASSOC);
     }
+  } catch (Exception $e) {
+    error_log("Error carga equipo: " . $e->getMessage());
+    $mensaje .= "<div class='alert alert-warning'>Error al cargar equipo: " . htmlspecialchars($e->getMessage()) . "</div>";
+  }
 }
 
-if (!$conn_included) {
-    echo "<h3>Error: no se encontró ctconex.php. Buscado en:</h3><pre>" . implode("\n", $possible_paths) . "</pre>";
-    exit;
+// Helper functions para badges de estado
+function getBadgeClass(string $estado): string {
+  $estado = strtoupper(trim($estado ?? ''));
+  switch ($estado) {
+    case 'BUENO': return 'bg-success text-white';
+    case 'MALO': return 'bg-danger text-white';
+    case 'REGULAR': return 'bg-warning text-dark';
+    case 'N/D': return 'bg-secondary text-white';
+    default: return 'bg-light text-dark';
+  }
 }
 
-if (!isset($conn) || !($conn instanceof mysqli)) {
-    echo "<h3>Error: la conexión (\$conn) no está definida o no es mysqli. Revisa ctconex.php</h3>";
-    exit;
+function getDispositionBadge(string $disposicion): string {
+  $disposicion = strtolower(trim($disposicion ?? ''));
+  switch ($disposicion) {
+    case 'pendiente_estetico': return 'bg-info text-white';
+    case 'en_mantenimiento': return 'bg-warning text-dark';
+    case 'en_proceso': return 'bg-primary text-white';
+    case 'aprobado': return 'bg-success text-white';
+    case 'rechazado': return 'bg-danger text-white';
+    default: return 'bg-secondary text-white';
+  }
 }
 
-$conn->set_charset('utf8mb4');
-
-// Debug: Verificar conexión de base de datos
-echo "<div style='background:#e8f5e8; padding:10px; margin:10px 0;'>";
-echo "<strong>Debug Info:</strong><br>";
-echo "✓ Conexión exitosa a: " . $conn->server_info . "<br>";
-echo "✓ Base de datos conectada<br>";
-echo "✓ Charset configurado: utf8mb4<br>";
-echo "</div>";
-
-// Helpers
-function fetch_one_ps($conn, $sql, $types = '', $params = [])
-{
-    $stmt = $conn->prepare($sql);
-    if ($stmt === false)
-        return null;
-    if ($types !== '')
-        $stmt->bind_param($types, ...$params);
-    if (!$stmt->execute()) {
-        $stmt->close();
-        return null;
-    }
-    $res = $stmt->get_result();
-    $row = $res ? $res->fetch_assoc() : null;
-    $stmt->close();
-    return $row;
+function getFaultBadge(string $falla): string {
+  $falla = strtolower(trim($falla ?? ''));
+  if ($falla === 'si') return 'bg-danger text-white';
+  if ($falla === 'no') return 'bg-success text-white';
+  return 'bg-secondary text-white';
 }
+?>
 
-function fetch_all_ps($conn, $sql, $types = '', $params = [])
-{
-    $stmt = $conn->prepare($sql);
-    if ($stmt === false)
-        return [];
-    if ($types !== '')
-        $stmt->bind_param($types, ...$params);
-    if (!$stmt->execute()) {
-        $stmt->close();
-        return [];
-    }
-    $res = $stmt->get_result();
-    $rows = $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
-    $stmt->close();
-    return $rows;
-}
-
-function table_exists($conn, $table)
-{
-    $safe = $conn->real_escape_string($table);
-    $res = $conn->query("SHOW TABLES LIKE '{$safe}'");
-    return ($res && $res->num_rows > 0);
-}
-
-// Obtener id (compatibilidad)
-$inventario_id = 0;
-if (isset($_GET['id']))
-    $inventario_id = intval($_GET['id']);
-elseif (isset($_GET['inventario_id']))
-    $inventario_id = intval($_GET['inventario_id']);
-elseif (isset($_POST['id']))
-    $inventario_id = intval($_POST['id']);
-elseif (isset($_POST['inventario_id']))
-    $inventario_id = intval($_POST['inventario_id']);
-
-echo "<div style='background:#fff3cd; padding:10px; margin:10px 0;'>";
-echo "<strong>Parámetros recibidos:</strong><br>";
-echo "inventario_id: " . $inventario_id . "<br>";
-echo "GET: " . print_r($_GET, true) . "<br>";
-echo "POST: " . print_r($_POST, true) . "<br>";
-echo "</div>";
-
-if (!$inventario_id) {
-    echo "<h3>Error: falta el parámetro id / inventario_id</h3>";
-    echo "<p>URL actual: " . htmlspecialchars($_SERVER['REQUEST_URI']) . "</p>";
-    echo "<p>Parámetros GET: " . print_r($_GET, true) . "</p>";
-    exit;
-}
-
-// 0) Datos del inventario
-$inv_sql = "SELECT i.*, u.nombre AS tecnico_nombre
-FROM bodega_inventario i
-LEFT JOIN usuarios u ON i.tecnico_id = u.id
-WHERE i.id = ?";
-$inventario = fetch_one_ps($conn, $inv_sql, 'i', [$inventario_id]);
-
-if (!$inventario) {
-    echo "<h3>No se encontró el inventario con id=" . htmlspecialchars($inventario_id) . "</h3>";
-    exit;
-}
-
-elseif (table_exists($conn, 'bodega_diagnosticos')) {
-    // Mapear campos de diagnósticos como triage
-    $sql = "SELECT bd.id, bd.fecha_diagnostico AS fecha_registro, bd.tecnico_id, bd.estado_reparacion AS estado, bd.observaciones, u.nombre AS tecnico_nombre
-FROM bodega_diagnosticos bd
-LEFT JOIN usuarios u ON bd.tecnico_id = u.id
-WHERE bd.inventario_id = ?
-ORDER BY bd.fecha_diagnostico DESC
-LIMIT 1";
-    $triage = fetch_one_ps($conn, $sql, 'i', [$inventario_id]);
-}
-
-// 2) Mantenimientos
-$m_sql = "SELECT id, fecha_registro, tecnico_id, usuario_registro, estado, tipo_proceso, observaciones, partes_solicitadas, referencia_externa
-FROM bodega_mantenimiento
-WHERE inventario_id = ?
-ORDER BY fecha_registro DESC";
-$mantenimientos = fetch_all_ps($conn, $m_sql, 'i', [$inventario_id]);
-
-// 3) Control de calidad
-$cc_sql = "SELECT id, fecha_control, tecnico_id, burning_test, sentinel_test, estado_final, categoria_rec, observaciones
-FROM bodega_control_calidad
-WHERE inventario_id = ?
-ORDER BY fecha_control DESC";
-$controles = fetch_all_ps($conn, $cc_sql, 'i', [$inventario_id]);
-
-// 4) Buscar partes solicitadas (agregamos resultados para todo el mantenimiento)
-$partes = [];
-$partes_ids = [];
-if (!empty($mantenimientos)) {
-    foreach ($mantenimientos as $m) {
-        $ps = trim($m['partes_solicitadas'] ?? '');
-        if ($ps === '')
-            continue;
-        $tokens = array_filter(array_map('trim', explode(',', $ps)));
-        foreach ($tokens as $token) {
-            if ($token === '')
-                continue;
-            $like = '%' . $token . '%';
-            $stmt = $conn->prepare("SELECT id, caja, cantidad, marca, referencia, numero_parte, condicion, precio, detalles, codigo, serial, producto
-                        FROM bodega_partes
-                        WHERE referencia LIKE ? OR numero_parte LIKE ? OR producto LIKE ?
-                        LIMIT 50");
-            if ($stmt === false)
-                continue;
-            $stmt->bind_param('sss', $like, $like, $like);
-            $stmt->execute();
-            $res = $stmt->get_result();
-            if ($res) {
-                while ($row = $res->fetch_assoc()) {
-                    if (!in_array($row['id'], $partes_ids, true)) {
-                        $partes[] = $row;
-                        $partes_ids[] = $row['id'];
-                    }
-                }
-            }
-            $stmt->close();
-        }
-    }
-}
-
-// Función simple para mostrar campo con fallback
-function h($v)
-{
-    return htmlspecialchars((string) ($v ?? ''));
-}
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Ver Triage 2 — <?= h($inventario['codigo_g'] ?? $inventario['producto']) ?></title>
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/custom.css">
-    <style>
-        body {
-            background: #f7f7f7;
-            font-family: Arial, Helvetica, sans-serif
-        }
-        .card {
-            margin-bottom: 12px
-        }
-        pre {
-            background: #fafafa;
-            padding: 8px;
-            border-radius: 4px
-        }
-    </style>
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="../assets/css/datatable.css" />
-    <link rel="stylesheet" href="../assets/css/buttonsdataTables.css" />
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/custom.css">
-    <link rel="icon" type="image/png" href="../assets/img/favicon.webp" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ver Diagnósticos Triage 2 - PCMarket SAS</title>
+  <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/custom.css">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.webp" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet" />
+  <style>
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .top-navbar {
+      background: linear-gradient(135deg, #6c63ff 0%, #4834d4 100%);
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      color: white;
+    }
+    .navbar-brand {
+      color: white !important;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .equipment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .equipment-card {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .equipment-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    .equipment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f8f9fa;
+    }
+    .equipment-code {
+      font-size: 20px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    .equipment-status {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+    .equipment-info {
+      margin-bottom: 15px;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .info-label {
+      font-weight: 500;
+      color: #495057;
+    }
+    .info-value {
+      color: #6c757d;
+      text-align: right;
+      max-width: 60%;
+      word-wrap: break-word;
+    }
+    .diagnostic-section {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .diagnostic-title {
+      font-weight: bold;
+      color: #495057;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+    .diagnostic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 8px;
+    }
+    .diagnostic-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .diagnostic-label {
+      font-size: 11px;
+      color: #6c757d;
+      margin-bottom: 4px;
+    }
+    .diagnostic-value {
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .observations-section {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+    .observations-title {
+      font-weight: bold;
+      color: #856404;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .observations-text {
+      color: #856404;
+      font-size: 13px;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .fault-indicators {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .fault-badge {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .detail-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      margin: 5% auto;
+      padding: 20px;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 12px;
+      max-height: 80%;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f8f9fa;
+    }
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #6c757d;
+    }
+    .detail-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .detail-item {
+      background: white;
+      padding: 12px;
+      border-radius: 6px;
+      border-left: 4px solid #007bff;
+    }
+    .filter-section {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      align-items: end;
+    }
+    .stats-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 32px;
+      font-weight: bold;
+      display: block;
+    }
+    .stat-label {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+  </style>
 </head>
 <body>
-    <div class="body-overlay">
-        <?php 
-        // Debug para los includes
-        echo "<!-- Debug: Intentando incluir layouts -->";
-        
-        $nav_file = '../layouts/nav.php';
-        $menu_file = '../layouts/menu_data.php';
-        
-        if (file_exists($nav_file)) {
-            include_once $nav_file;
-            echo "<!-- ✓ nav.php incluido -->";
-        } else {
-            echo "<!-- ✗ nav.php NO encontrado en: $nav_file -->";
-        }
-        
-        if (file_exists($menu_file)) {
-            include_once $menu_file;
-            echo "<!-- ✓ menu_data.php incluido -->";
-        } else {
-            echo "<!-- ✗ menu_data.php NO encontrado en: $menu_file -->";
-        }
-        ?>
-        <nav id="sidebar">
-            <div class="sidebar-header">
-                <h3><img src="../assets/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
-            </div>
-            <?php if (function_exists('renderMenu')) {
-                renderMenu($menu);
-            } ?>
-        </nav>
-        <div id="content">
-            <!-- begin:: top-navbar -->
-            <div class="top-navbar">
-                <nav class="navbar navbar-expand-lg" style="background: #f39c12;">
-                    <div class="container-fluid">
-                        <!-- Botón Sidebar -->
-                        <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-none d-none">
-                            <span class="material-icons">arrow_back_ios</span>
-                        </button>
-                        <!-- Título dinámico -->
-                        <?php
-                        $titulo = "";
-                        switch ($_SESSION['rol']) {
-                            case 1:
-                                $titulo = "ADMINISTRADOR";
-                                break;
-                            case 2:
-                                $titulo = "DEFAULT";
-                                break;
-                            case 3:
-                                $titulo = "CONTABLE";
-                                break;
-                            case 4:
-                                $titulo = "COMERCIAL";
-                                break;
-                            case 5:
-                                $titulo = "JEFE TÉCNICO";
-                                break;
-                            case 6:
-                                $titulo = "TÉCNICO";
-                                break;
-                            case 7:
-                                $titulo = "BODEGA";
-                                break;
-                            default:
-                                $titulo = $userInfo['nombre'] ?? 'USUARIO';
-                                break;
-                        }
-                        ?>
-                        <!-- Branding -->
-                        <a class="navbar-brand" href="#" style="color: #fff; font-weight: bold;">
-                            <i class="fas fa-tools" style="margin-right: 8px; color: #f39c12;"></i>
-                            <b>
-                                <h4 class="card-title mb-2"><?= h($inventario['producto'] ?? 'Equipo') ?>
-                                    <small><?= h($inventario['codigo_g'] ?? '') ?></small>
-                                </h4>
-                        </a>
-                        <!-- Menú derecho (usuario) -->
-                        <ul class="nav navbar-nav ml-auto">
-                            <li class="dropdown nav-item active">
-                                <a href="#" class="nav-link" data-toggle="dropdown">
-                                    <img src="../assets/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
-                                        alt="Foto de perfil"
-                                        style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
-                                </a>
-                                <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
-                                    <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong>
-                                    </li>
-                                    <li><?php echo htmlspecialchars($userInfo['usuario'] ?? 'usuario'); ?></li>
-                                    <li><?php echo htmlspecialchars($userInfo['correo'] ?? 'correo@ejemplo.com'); ?>
-                                    </li>
-                                    <li>
-                                        <?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?>
-                                    </li>
-                                    <li class="mt-2">
-                                        <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi
-                                            perfil</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    <button class="d-inline-block d-lg-none ml-auto more-button" type="button" data-toggle="collapse"
-                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="material-icons">more_vert</span>
-                    </button>
-                </nav>
-            </div>
-            <!--- end:: top_navbar -->
-            <div class="container-fluid mt-3">
-                <a href="lista_triage_2.php" class="btn btn-sm btn-secondary mb-3">← Volver al listado</a>
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title mb-2"><?= h($inventario['producto'] ?? 'Equipo') ?> <small
-                                class="text-muted"><?= h($inventario['codigo_g'] ?? '') ?></small></h4>
-                        <div class="row">
-                            <div class="col-md-8">
-                                <p><strong>Marca:</strong> <?= h($inventario['marca']) ?> |
-                                    <strong>Modelo:</strong> <?= h($inventario['modelo']) ?> |
-                                    <strong>Serial:</strong> <?= h($inventario['serial']) ?>
-                                </p>
-                                <p><strong>Ubicación:</strong> <?= h($inventario['ubicacion']) ?> |
-                                    <strong>Posición:</strong> <?= h($inventario['posicion']) ?> |
-                                    <strong>Lote:</strong> <?= h($inventario['lote']) ?>
-                                </p>
-                                <p><strong>Grado:</strong> <?= h($inventario['grado']) ?> |
-                                    <strong>Disposición:</strong> <?= h($inventario['disposicion']) ?> |
-                                    <strong>Estado:</strong> <?= h($inventario['estado']) ?>
-                                </p>
-                                <p> <strong>Técnico asignado:</strong>
-                                    <?= h($inventario['tecnico_nombre'] ?? $inventario['tecnico_id']) ?> |
-                                    <strong>Fecha ingreso:</strong> <?= h($inventario['fecha_ingreso']) ?> |
-                                    <strong>Última modif.:</strong> <?= h($inventario['fecha_modificacion']) ?>
-                                </p>
-                            </div>
-                            <div class="col-md-4">
-                                <h6>Especificaciones</h6>
-                                <p><strong>CPU:</strong> <?= h($inventario['procesador']) ?></p>
-                                <p><strong>RAM:</strong> <?= h($inventario['ram']) ?></p>
-                                <p><strong>Disco:</strong> <?= h($inventario['disco']) ?></p>
-                                <p><strong>Pulgadas:</strong> <?= h($inventario['pulgadas']) ?> |
-                                    <strong>Táctil:</strong> <?= h($inventario['tactil']) ?>
-                                </p>
-                            </div>
-                        </div>
-                        <?php if (!empty($inventario['observaciones'])): ?>
-                            <div class="mt-2"><strong>Observaciones generales:</strong>
-                                <pre><?= h($inventario['observaciones']) ?></pre>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <!-- Triage -->
-                <div class="card">
-                    <div class="card-header"><strong>Observaciones TRIAGE 2 (PRIORITIZADO)</strong></div>
-                    <div class="card-body">
-                        <?php if (!$triage): ?>
-                            <p class="text-muted">No hay registro de triage para este equipo.</p>
-                        <?php else: ?>
-                            <p><strong>Fecha:</strong>
-                                <?= h($triage['fecha_registro'] ?? $triage['fecha_diagnostico'] ?? '') ?>
-                            </p>
-                            <p><strong>Técnico:</strong> <?= h($triage['tecnico_nombre'] ?? $triage['tecnico_id']) ?></p>
-                            <p><strong>Estado:</strong> <?= h($triage['estado'] ?? $triage['estado_reparacion'] ?? '') ?>
-                            </p>
-                            <?php if (!empty($triage['categoria'])): ?>
-                                <p><strong>Categoría:</strong> <?= h($triage['categoria']) ?></p>
-                            <?php endif; ?>
-                            <?php if (!empty($triage['observaciones'])): ?>
-                                <div><strong>Observaciones:</strong>
-                                    <pre><?= h($triage['observaciones']) ?></pre>
-                                </div>
-                            <?php endif; ?>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <!-- Mantenimientos -->
-                <div class="card">
-                    <div class="card-header"><strong>MANTENIMIENTO Y LIMPIEZA</strong></div>
-                    <div class="card-body">
-                        <?php if (empty($mantenimientos)): ?>
-                            <p class="text-muted">No hay registros de mantenimiento para este equipo.</p>
-                        <?php else: ?>
-                            <?php foreach ($mantenimientos as $m): ?>
-                                <div style="border-bottom:1px solid #eee; padding:8px 0;">
-                                    <div><strong>Fecha:</strong> <?= h($m['fecha_registro']) ?> |
-                                        <strong>Estado:</strong> <?= h($m['estado']) ?> |
-                                        <strong>Tipo:</strong> <?= h($m['tipo_proceso']) ?>
-                                    </div>
-                                    <?php if (!empty($m['observaciones'])): ?>
-                                        <div style="margin-top:6px;"><strong>Observaciones:</strong>
-                                            <pre><?= h($m['observaciones']) ?></pre>
-                                        </div>
-                                    <?php endif; ?>
-                                    <?php if (!empty($m['partes_solicitadas'])): ?>
-                                        <div><strong>Partes solicitadas:</strong> <?= h($m['partes_solicitadas']) ?></div>
-                                    <?php endif; ?>
-                                    <?php if (!empty($m['referencia_externa'])): ?>
-                                        <div><strong>Referencia externa:</strong> <?= h($m['referencia_externa']) ?></div>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <!-- Control de calidad -->
-                <div class="card">
-                    <div class="card-header"><strong>CONTROL DE CALIDAD</strong></div>
-                    <div class="card-body">
-                        <?php if (empty($controles)): ?>
-                            <p class="text-muted">No hay registros de control de calidad para este equipo.</p>
-                        <?php else: ?>
-                            <?php foreach ($controles as $c): ?>
-                                <div style="border-bottom:1px solid #eee; padding:8px 0;">
-                                    <div><strong>Fecha control:</strong> <?= h($c['fecha_control']) ?> |
-                                        <strong>Técnico ID:</strong> <?= h($c['tecnico_id']) ?> |
-                                        <strong>Estado final:</strong> <?= h($c['estado_final']) ?> |
-                                        <strong>Categoría REC:</strong> <?= h($c['categoria_rec']) ?>
-                                    </div>
-                                    <?php if (!empty($c['burning_test'])): ?>
-                                        <div style="margin-top:6px;"><strong>Burning Test:</strong>
-                                            <pre><?= h($c['burning_test']) ?></pre>
-                                        </div>
-                                    <?php endif; ?>
-                                    <?php if (!empty($c['sentinel_test'])): ?>
-                                        <div style="margin-top:6px;"><strong>Sentinel Test:</strong>
-                                            <pre><?= h($c['sentinel_test']) ?></pre>
-                                        </div>
-                                    <?php endif; ?>
-                                    <?php if (!empty($c['observaciones'])): ?>
-                                        <div style="margin-top:6px;"><strong>Observaciones:</strong>
-                                            <pre><?= h($c['observaciones']) ?></pre>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <!-- Partes -->
-                <div class="card">
-                    <div class="card-header"><strong>PARTES SOLICITADAS</strong></div>
-                    <div class="card-body">
-                        <?php if (empty($partes)): ?>
-                            <p class="text-muted">No se encontraron partes relacionadas en <code>bodega_partes</code>.</p>
-                        <?php else: ?>
-                            <?php foreach ($partes as $p): ?>
-                                <div style="border-bottom:1px dashed #ddd; padding:8px 0;">
-                                    <div><strong>ID:</strong> <?= h($p['id']) ?> |
-                                        <strong>Caja:</strong> <?= h($p['caja']) ?> |
-                                        <strong>Cantidad:</strong> <?= h($p['cantidad']) ?> |
-                                        <strong>Marca:</strong> <?= h($p['marca']) ?>
-                                    </div>
-                                    <div style="margin-top:6px;">
-                                        <strong>Referencia:</strong> <?= h($p['referencia']) ?> |
-                                        <strong>Nº Parte:</strong> <?= h($p['numero_parte']) ?> |
-                                        <strong>Condición:</strong> <?= h($p['condicion']) ?> |
-                                        <strong>Precio:</strong> <?= h($p['precio']) ?>
-                                    </div>
-                                    <div style="margin-top:6px;"><strong>Detalles:</strong> <?= h($p['detalles']) ?> |
-                                        <strong>Código:</strong> <?= h($p['codigo']) ?> |
-                                        <strong>Serial:</strong> <?= h($p['serial']) ?>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- Sidebar y navegación -->
+  <?php
+    include_once '../layouts/nav.php';
+    include_once '../layouts/menu_data.php';
+  ?>
+  
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <h3><img src="../assets/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
     </div>
-    <script src="../assets/js/jquery-3.3.1.min.js"></script>
-    <script src="../assets/js/bootstrap.min.js"></script>
+    <?php renderMenu($menu); ?>
+  </nav>
+  
+  <div class="main-container">
+    <!-- Top Navbar -->
+    <div class="top-navbar">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <i class="material-icons" style="margin-right: 8px;">search</i>
+          📊 VISUALIZAR TRIAGE 2 | <?php echo htmlspecialchars($_SESSION['nombre'] ?? 'USUARIO'); ?>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Mensajes de alerta -->
+    <?php if (!empty($mensaje)): ?>
+      <?php echo $mensaje; ?>
+    <?php endif; ?>
+    
+    <!-- Estadísticas rápidas -->
+    <div class="stats-section">
+      <div class="stat-card">
+        <span class="stat-number"><?php echo count($equipos_diagnosticados); ?></span>
+        <span class="stat-label">Total Diagnosticados</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">
+          <?php echo count(array_filter($equipos_diagnosticados, fn($e) => $e['falla_electrica'] === 'si')); ?>
+        </span>
+        <span class="stat-label">Con Falla Eléctrica</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">
+          <?php echo count(array_filter($equipos_diagnosticados, fn($e) => $e['falla_estetica'] === 'si')); ?>
+        </span>
+        <span class="stat-label">Con Falla Estética</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">
+          <?php echo count(array_filter($equipos_diagnosticados, fn($e) => $e['estado_reparacion'] === 'aprobado')); ?>
+        </span>
+        <span class="stat-label">Aprobados</span>
+      </div>
+    </div>
+    
+    <!-- Filtros -->
+    <div class="filter-section">
+      <div class="section-title">
+        <div class="card-icon">🔍</div>
+        <h4>Filtros de Búsqueda</h4>
+      </div>
+      <div class="filter-grid">
+        <div class="form-group">
+          <label for="filter_codigo">Código del Equipo</label>
+          <input type="text" id="filter_codigo" class="form-control" placeholder="Buscar por código...">
+        </div>
+        <div class="form-group">
+          <label for="filter_marca">Marca</label>
+          <select id="filter_marca" class="form-control">
+            <option value="">Todas las marcas</option>
+            <?php 
+            $marcas = array_unique(array_column($equipos_diagnosticados, 'marca'));
+            foreach ($marcas as $marca): ?>
+              <option value="<?php echo htmlspecialchars($marca); ?>"><?php echo htmlspecialchars($marca); ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filter_falla_electrica">Falla Eléctrica</label>
+          <select id="filter_falla_electrica" class="form-control">
+            <option value="">Todos</option>
+            <option value="si">Con Falla</option>
+            <option value="no">Sin Falla</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filter_estado">Estado de Reparación</label>
+          <select id="filter_estado" class="form-control">
+            <option value="">Todos los estados</option>
+            <option value="aprobado">Aprobado</option>
+            <option value="falla_electrica">Falla Eléctrica</option>
+            <option value="falla_mecanica">Falla Mecánica</option>
+            <option value="reparacion_cosmetica">Reparación Cosmética</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <button type="button" class="btn btn-primary" onclick="aplicarFiltros()">
+            <i class="material-icons" style="margin-right: 5px;">filter_list</i>
+            Aplicar Filtros
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lista de Equipos Diagnosticados -->
+    <div class="form-section">
+      <div class="section-title">
+        <div class="card-icon">📋</div>
+        <h4>Equipos con Diagnósticos de Triage 2</h4>
+      </div>
+      
+      <?php if (empty($equipos_diagnosticados)): ?>
+        <div class="alert alert-info">
+          📝 No se encontraron equipos con diagnósticos de triage 2.
+        </div>
+      <?php else: ?>
+        <div class="equipment-grid" id="equipos-grid">
+          <?php foreach ($equipos_diagnosticados as $equipo): ?>
+            <div class="equipment-card" 
+                 data-codigo="<?php echo htmlspecialchars($equipo['codigo_g']); ?>"
+                 data-marca="<?php echo htmlspecialchars($equipo['marca']); ?>"
+                 data-falla-electrica="<?php echo htmlspecialchars($equipo['falla_electrica']); ?>"
+                 data-estado="<?php echo htmlspecialchars($equipo['estado_reparacion']); ?>"
+                 onclick="verDetalle(<?php echo $equipo['id']; ?>)">
+              
+              <div class="equipment-header">
+                <div class="equipment-code"><?php echo htmlspecialchars($equipo['codigo_g'] ?? 'N/A'); ?></div>
+                <span class="equipment-status <?php echo getDispositionBadge($equipo['disposicion']); ?>">
+                  <?php echo htmlspecialchars(ucfirst($equipo['disposicion'] ?? 'N/A')); ?>
+                </span>
+              </div>
+              
+              <div class="equipment-info">
+                <div class="info-row">
+                  <span class="info-label">Marca/Modelo:</span>
+                  <span class="info-value"><?php echo htmlspecialchars(($equipo['marca'] ?? '') . ' ' . ($equipo['modelo'] ?? '')); ?></span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Serial:</span>
+                  <span class="info-value"><?php echo htmlspecialchars($equipo['serial'] ?? 'N/A'); ?></span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Técnico:</span>
+                  <span class="info-value"><?php echo htmlspecialchars($equipo['nombre_tecnico'] ?? 'N/A'); ?></span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Fecha Diagnóstico:</span>
+                  <span class="info-value">
+                    <?php 
+                    if ($equipo['fecha_diagnostico']) {
+                      echo htmlspecialchars((new DateTime($equipo['fecha_diagnostico']))->format('d/m/Y H:i'));
+                    } else {
+                      echo 'N/A';
+                    }
+                    ?>
+                  </span>
+                </div>
+              </div>
+              
+              <!-- Indicadores de fallas -->
+              <div class="fault-indicators">
+                <span class="fault-badge <?php echo getFaultBadge($equipo['falla_electrica']); ?>">
+                  Falla Eléctrica: <?php echo htmlspecialchars(strtoupper($equipo['falla_electrica'] ?? 'N/D')); ?>
+                </span>
+                <span class="fault-badge <?php echo getFaultBadge($equipo['falla_estetica']); ?>">
+                  Falla Estética: <?php echo htmlspecialchars(strtoupper($equipo['falla_estetica'] ?? 'N/D')); ?>
+                </span>
+              </div>
+              
+              <!-- Observaciones -->
+              <?php if (!empty($equipo['observaciones_entrada']) || !empty($equipo['observaciones_diagnostico'])): ?>
+                <div class="observations-section">
+                  <?php if (!empty($equipo['observaciones_entrada'])): ?>
+                    <div class="observations-title">📝 Observaciones de Entrada:</div>
+                    <div class="observations-text"><?php echo htmlspecialchars($equipo['observaciones_entrada']); ?></div>
+                  <?php endif; ?>
+                  
+                  <?php if (!empty($equipo['observaciones_diagnostico'])): ?>
+                    <div class="observations-title">🔧 Observaciones del Diagnóstico:</div>
+                    <div class="observations-text"><?php echo htmlspecialchars($equipo['observaciones_diagnostico']); ?></div>
+                  <?php endif; ?>
+                </div>
+              <?php endif; ?>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
+    </div>
+    
+    <!-- Botones de navegación -->
+    <div class="btn-container">
+      <a href="../bodega/mostrar.php" class="btn btn-primary">
+        <i class="material-icons" style="margin-right: 8px;">dashboard</i>
+        Volver al Dashboard
+      </a>
+      <a href="triage2.php" class="btn btn-success">
+        <i class="material-icons" style="margin-right: 8px;">add_task</i>
+        Realizar Nuevo Triage 2
+      </a>
+    </div>
+  </div>
+  
+  <!-- Modal de Detalle -->
+  <div id="detailModal" class="detail-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Detalle del Diagnóstico</h3>
+        <button class="close-modal" onclick="cerrarModal()">&times;</button>
+      </div>
+      <div id="modal-body">
+        <!-- El contenido se carga dinámicamente -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="../assets/js/jquery-3.3.1.min.js"></script>
+  <script src="../assets/js/bootstrap.min.js"></script>
+  <script>
+    function verDetalle(equipoId) {
+      window.location.href = '?id=' + equipoId + '#detalle';
+    }
+    
+    function aplicarFiltros() {
+      const codigo = document.getElementById('filter_codigo').value.toLowerCase();
+      const marca = document.getElementById('filter_marca').value.toLowerCase();
+      const fallaElectrica = document.getElementById('filter_falla_electrica').value;
+      const estado = document.getElementById('filter_estado').value;
+      
+      const cards = document.querySelectorAll('.equipment-card');
+      
+      cards.forEach(card => {
+        const cardCodigo = card.dataset.codigo.toLowerCase();
+        const cardMarca = card.dataset.marca.toLowerCase();
+        const cardFallaElectrica = card.dataset.fallaElectrica;
+        const cardEstado = card.dataset.estado;
+        
+        let mostrar = true;
+        
+        if (codigo && !cardCodigo.includes(codigo)) mostrar = false;
+        if (marca && !cardMarca.includes(marca)) mostrar = false;
+        if (fallaElectrica && cardFallaElectrica !== fallaElectrica) mostrar = false;
+        if (estado && cardEstado !== estado) mostrar = false;
+        
+        card.style.display = mostrar ? 'block' : 'none';
+      });
+    }
+    
+    function limpiarFiltros() {
+      document.getElementById('filter_codigo').value = '';
+      document.getElementById('filter_marca').value = '';
+      document.getElementById('filter_falla_electrica').value = '';
+      document.getElementById('filter_estado').value = '';
+      aplicarFiltros();
+    }
+    
+    // Si hay un equipo seleccionado, mostrar su detalle
+    <?php if ($equipo_seleccionado): ?>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Scroll hasta el detalle si viene de un enlace
+      if (window.location.hash === '#detalle') {
+        document.querySelector('.main-container').scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+    <?php endif; ?>
+  </script>
+  
+  <!-- Detalle del equipo seleccionado -->
+  <?php if ($equipo_seleccionado): ?>
+    <div class="form-section" id="detalle">
+      <div class="section-title">
+        <div class="card-icon">🔍</div>
+        <h4>Detalle Completo - <?php echo htmlspecialchars($equipo_seleccionado['codigo_g']); ?></h4>
+      </div>
+      
+      <!-- Información básica del equipo -->
+      <div class="detail-section">
+        <h5>📦 Información del Equipo</h5>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <strong>Código:</strong><br>
+            <?php echo htmlspecialchars($equipo_seleccionado['codigo_g']); ?>
+          </div>
+          <div class="detail-item">
+            <strong>Marca/Modelo:</strong><br>
+            <?php echo htmlspecialchars(($equipo_seleccionado['marca'] ?? '') . ' ' . ($equipo_seleccionado['modelo'] ?? '')); ?>
+          </div>
+          <div class="detail-item">
+            <strong>Serial:</strong><br>
+            <?php echo htmlspecialchars($equipo_seleccionado['serial'] ?? 'N/A'); ?>
+          </div>
+          <div class="detail-item">
+            <strong>Procesador:</strong><br>
+            <?php echo htmlspecialchars($equipo_seleccionado['procesador'] ?? 'N/A'); ?>
+          </div>
+          <div class="detail-item">
+            <strong>RAM:</strong><br>
+            <?php echo htmlspecialchars($equipo_seleccionado['ram'] ?? 'N/A'); ?>
+          </div>
+          <div class="detail-item">
+            <strong>Disco:</strong><br>
+            <?php echo htmlspecialchars($equipo_seleccionado['disco'] ?? 'N/A'); ?>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Información de entrada -->
+      <?php if ($entrada_info): ?>
+        <div class="detail-section">
+          <h5>📥 Información de Entrada</h5>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <strong>Fecha de Entrada:</strong><br>
+              <?php echo htmlspecialchars((new DateTime($entrada_info['fecha_entrada']))->format('d/m/Y H:i')); ?>
+            </div>
+            <div class="detail-item">
+              <strong>Proveedor:</strong><br>
+              <?php echo htmlspecialchars($entrada_info['nombre_proveedor'] ?? 'N/A'); ?>
+            </div>
+            <div class="detail-item">
+              <strong>Usuario Registro:</strong><br>
+              <?php echo htmlspecialchars($entrada_info['usuario_registro'] ?? 'N/A'); ?>
+            </div>
+            <div class="detail-item">
+              <strong>Cantidad:</strong><br>
+              <?php echo htmlspecialchars($entrada_info['cantidad'] ?? '1'); ?>
+            </div>
+          </div>
+          
+          <?php if (!empty($entrada_info['observaciones'])): ?>
+            <div class="observations-section">
+              <div class="observations-title">📝 Observaciones de Entrada:</div>
+              <div class="observations-text"><?php echo htmlspecialchars($entrada_info['observaciones']); ?></div>
+            </div>
+          <?php endif; ?>
+        </div>
+      <?php endif; ?>
+      
+      <!-- Diagnóstico del Triage 2 -->
+      <div class="detail-section">
+        <h5>🔧 Resultados del Diagnóstico Triage 2</h5>
+        
+        <div class="diagnostic-section">
+          <div class="diagnostic-title">
+            <i class="material-icons" style="margin-right: 8px;">assessment</i>
+            Pruebas de Componentes
+          </div>
+          <div class="diagnostic-grid">
+            <div class="diagnostic-item">
+              <div class="diagnostic-label">Cámara</div>
+              <span class="diagnostic-value <?php echo getBadgeClass($equipo_seleccionado['camara']); ?>">
+                <?php echo htmlspecialchars($equipo_seleccionado['camara'] ?? 'N/D'); ?>
+              </span>
+            </div>
+            <div class="diagnostic-item">
+              <div class="diagnostic-label">Teclado</div>
+              <span class="diagnostic-value <?php echo getBadgeClass($equipo_seleccionado['teclado']); ?>">
+                <?php echo htmlspecialchars($equipo_seleccionado['teclado'] ?? 'N/D'); ?>
+              </span>
+            </div>
+            <div class="diagnostic-item">
+              <div class="diagnostic-label">Parlantes</div>
+              <span class="diagnostic-value <?php echo getBadgeClass($equipo_seleccionado['parlantes']); ?>">
+                <?php echo htmlspecialchars($equipo_seleccionado['parlantes'] ?? 'N/D'); ?>
+              </span>
+            </div>
+            <div class="diagnostic-item">
+              <div class="diagnostic-label">Batería</div>
+              <span class="diagnostic-value <?php echo getBadgeClass($equipo_seleccionado['bateria']); ?>">
+                <?php echo htmlspecialchars($equipo_seleccionado['bateria'] ?? 'N/D'); ?>
+              </span>
+            </div>
+            <div class="diagnostic-item">
+              <div class="diagnostic-label">Micrófono</div>
+              <span class="diagnostic-value <?php echo getBadgeClass($equipo_seleccionado['microfono']); ?>">
+                <?php echo htmlspecialchars($equipo_seleccionado['microfono'] ?? 'N/D'); ?>
+              </span>
+            </div>
+            <div class="diagnostic-item">
+              <div class="diagnostic-label">Pantalla</div>
+              <span class="diagnostic-value <?php echo getBadgeClass($equipo_seleccionado['pantalla']); ?>">
+                <?php echo htmlspecialchars($equipo_seleccionado['pantalla'] ?? 'N/D'); ?>
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Prueba de Puertos -->
+        <?php if (!empty($equipo_seleccionado['puertos'])): ?>
+          <div class="diagnostic-section">
+            <div class="diagnostic-title">
+              <i class="material-icons" style="margin-right: 8px;">usb</i>
+              Estado de Puertos
+            </div>
+            <div class="diagnostic-grid">
+              <?php 
+              $puertos = json_decode($equipo_seleccionado['puertos'], true);
+              if ($puertos && is_array($puertos)) {
+                foreach ($puertos as $puerto => $estado) {
+                  echo '<div class="diagnostic-item">';
+                  echo '<div class="diagnostic-label">' . htmlspecialchars($puerto) . '</div>';
+                  echo '<span class="diagnostic-value ' . getBadgeClass($estado) . '">';
+                  echo htmlspecialchars($estado);
+                  echo '</span></div>';
+                }
+              }
+              ?>
+            </div>
+          </div>
+        <?php endif; ?>
+        
+        <!-- Estado del Disco -->
+        <?php if (!empty($equipo_seleccionado['disco'])): ?>
+          <div class="diagnostic-section">
+            <div class="diagnostic-title">
+              <i class="material-icons" style="margin-right: 8px;">storage</i>
+              Estado del Disco
+            </div>
+            <div class="observations-text">
+              <?php echo htmlspecialchars($equipo_seleccionado['disco']); ?>
+            </div>
+          </div>
+        <?php endif; ?>
+        
+        <!-- Detalles de Fallas -->
+        <div class="detail-grid">
+          <div class="detail-item">
+            <strong>Falla Eléctrica:</strong><br>
+            <span class="fault-badge <?php echo getFaultBadge($equipo_seleccionado['falla_electrica']); ?>">
+              <?php echo htmlspecialchars(strtoupper($equipo_seleccionado['falla_electrica'] ?? 'N/D')); ?>
+            </span>
+            <?php if (!empty($equipo_seleccionado['detalle_falla_electrica'])): ?>
+              <div class="observations-text">
+                <strong>Detalle:</strong> <?php echo htmlspecialchars($equipo_seleccionado['detalle_falla_electrica']); ?>
+              </div>
+            <?php endif; ?>
+          </div>
+          
+          <div class="detail-item">
+            <strong>Falla Estética:</strong><br>
+            <span class="fault-badge <?php echo getFaultBadge($equipo_seleccionado['falla_estetica']); ?>">
+              <?php echo htmlspecialchars(strtoupper($equipo_seleccionado['falla_estetica'] ?? 'N/D')); ?>
+            </span>
+            <?php if (!empty($equipo_seleccionado['detalle_falla_estetica'])): ?>
+              <div class="observations-text">
+                <strong>Detalle:</strong> <?php echo htmlspecialchars($equipo_seleccionado['detalle_falla_estetica']); ?>
+              </div>
+            <?php endif; ?>
+          </div>
+          
+          <div class="detail-item">
+            <strong>Estado de Reparación:</strong><br>
+            <span class="equipment-status <?php echo getDispositionBadge($equipo_seleccionado['estado_reparacion']); ?>">
+              <?php echo htmlspecialchars(ucwords(str_replace('_', ' ', $equipo_seleccionado['estado_reparacion'] ?? 'N/A'))); ?>
+            </span>
+          </div>
+          
+          <div class="detail-item">
+            <strong>Técnico Responsable:</strong><br>
+            <?php echo htmlspecialchars($equipo_seleccionado['nombre_tecnico'] ?? 'N/A'); ?>
+          </div>
+          
+          <div class="detail-item">
+            <strong>Fecha Diagnóstico:</strong><br>
+            <?php 
+            if ($equipo_seleccionado['fecha_diagnostico']) {
+              echo htmlspecialchars((new DateTime($equipo_seleccionado['fecha_diagnostico']))->format('d/m/Y H:i'));
+            } else {
+              echo 'N/A';
+            }
+            ?>
+          </div>
+          
+          <div class="detail-item">
+            <strong>Disposición Actual:</strong><br>
+            <span class="equipment-status <?php echo getDispositionBadge($equipo_seleccionado['disposicion']); ?>">
+              <?php echo htmlspecialchars(ucwords(str_replace('_', ' ', $equipo_seleccionado['disposicion'] ?? 'N/A'))); ?>
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Observaciones Importantes -->
+      <?php if (!empty($entrada_info['observaciones']) || !empty($equipo_seleccionado['observaciones_diagnostico'])): ?>
+        <div class="detail-section">
+          <h5>📝 Observaciones Importantes</h5>
+          
+          <?php if (!empty($entrada_info['observaciones'])): ?>
+            <div class="observations-section">
+              <div class="observations-title">📦 Observaciones de Entrada (bodega_entradas):</div>
+              <div class="observations-text"><?php echo htmlspecialchars($entrada_info['observaciones']); ?></div>
+              <small class="text-muted">
+                Registrado el <?php echo htmlspecialchars((new DateTime($entrada_info['fecha_entrada']))->format('d/m/Y H:i')); ?>
+                por <?php echo htmlspecialchars($entrada_info['usuario_registro'] ?? 'Usuario desconocido'); ?>
+              </small>
+            </div>
+          <?php endif; ?>
+          
+          <?php if (!empty($equipo_seleccionado['observaciones_diagnostico'])): ?>
+            <div class="observations-section">
+              <div class="observations-title">🔧 Observaciones del Diagnóstico Triage 2 (bodega_diagnosticos):</div>
+              <div class="observations-text"><?php echo htmlspecialchars($equipo_seleccionado['observaciones_diagnostico']); ?></div>
+              <small class="text-muted">
+                Diagnóstico realizado el <?php echo htmlspecialchars((new DateTime($equipo_seleccionado['fecha_diagnostico']))->format('d/m/Y H:i')); ?>
+                por <?php echo htmlspecialchars($equipo_seleccionado['nombre_tecnico'] ?? 'Técnico desconocido'); ?>
+              </small>
+            </div>
+          <?php endif; ?>
+        </div>
+      <?php endif; ?>
+      
+      <!-- Resumen del Estado -->
+      <div class="detail-section">
+        <h5>📊 Resumen del Estado</h5>
+        <div class="alert alert-info">
+          <strong>Próximo Paso:</strong>
+          <?php
+          switch ($equipo_seleccionado['disposicion']) {
+            case 'pendiente_estetico':
+              echo 'El equipo está listo para revisión estética.';
+              break;
+            case 'en_mantenimiento':
+              echo 'El equipo requiere más trabajo de mantenimiento.';
+              break;
+            case 'en_proceso':
+              echo 'El equipo está siendo procesado actualmente.';
+              break;
+            default:
+              echo 'Estado: ' . htmlspecialchars(ucwords(str_replace('_', ' ', $equipo_seleccionado['disposicion'] ?? 'Indefinido')));
+          }
+          ?>
+        </div>
+        
+        <?php if ($equipo_seleccionado['falla_electrica'] === 'si' || $equipo_seleccionado['falla_estetica'] === 'si'): ?>
+          <div class="alert alert-warning">
+            <strong>⚠️ Atención:</strong> Este equipo requiere atención especial debido a fallas detectadas.
+          </div>
+        <?php endif; ?>
+      </div>
+      
+      <!-- Botones de acción -->
+      <div class="btn-container">
+        <a href="?" class="btn btn-secondary">
+          <i class="material-icons" style="margin-right: 8px;">arrow_back</i>
+          Volver a la Lista
+        </a>
+        <a href="triage2.php?id=<?php echo $equipo_seleccionado['id']; ?>" class="btn btn-primary">
+          <i class="material-icons" style="margin-right: 8px;">edit</i>
+          Editar Diagnóstico
+        </a>
+        <?php if ($equipo_seleccionado['falla_electrica'] === 'si'): ?>
+          <a href="electrico.php?id=<?php echo $equipo_seleccionado['id']; ?>" class="btn btn-warning">
+            <i class="material-icons" style="margin-right: 8px;">electrical_services</i>
+            Ir a Diagnóstico Eléctrico
+          </a>
+        <?php endif; ?>
+        <?php if ($equipo_seleccionado['disposicion'] === 'pendiente_estetico'): ?>
+          <a href="estetico.php?id=<?php echo $equipo_seleccionado['id']; ?>" class="btn btn-success">
+            <i class="material-icons" style="margin-right: 8px;">palette</i>
+            Ir a Revisión Estética
+          </a>
+        <?php endif; ?>
+      </div>
+    </div>
+  <?php endif; ?>
+  
+  <script>
+    // Funciones adicionales para interacción
+    function exportarDatos() {
+      // Función para exportar datos de diagnósticos
+      const equipos = <?php echo json_encode($equipos_diagnosticados); ?>;
+      const csv = convertirACSV(equipos);
+      descargarCSV(csv, 'diagnosticos_triage2.csv');
+    }
+    
+    function convertirACSV(datos) {
+      const headers = ['Código', 'Marca', 'Modelo', 'Serial', 'Fecha Diagnóstico', 'Técnico', 'Falla Eléctrica', 'Falla Estética', 'Estado', 'Observaciones'];
+      let csv = headers.join(',') + '\n';
+      
+      datos.forEach(equipo => {
+        const fila = [
+          equipo.codigo_g || '',
+          equipo.marca || '',
+          equipo.modelo || '',
+          equipo.serial || '',
+          equipo.fecha_diagnostico || '',
+          equipo.nombre_tecnico || '',
+          equipo.falla_electrica || '',
+          equipo.falla_estetica || '',
+          equipo.estado_reparacion || '',
+          (equipo.observaciones_diagnostico || '').replace(/,/g, ';')
+        ];
+        csv += fila.map(campo => `"${campo}"`).join(',') + '\n';
+      });
+      
+      return csv;
+    }
+    
+    function descargarCSV(contenido, nombreArchivo) {
+      const blob = new Blob([contenido], { type: 'text/csv;charset=utf-8;' });
+      const enlace = document.createElement('a');
+      if (enlace.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        enlace.setAttribute('href', url);
+        enlace.setAttribute('download', nombreArchivo);
+        enlace.style.visibility = 'hidden';
+        document.body.appendChild(enlace);
+        enlace.click();
+        document.body.removeChild(enlace);
+      }
+    }
+    
+    // Función de búsqueda en tiempo real
+    document.getElementById('filter_codigo').addEventListener('input', function() {
+      aplicarFiltros();
+    });
+    
+    // Auto-aplicar filtros cuando cambien los selectores
+    ['filter_marca', 'filter_falla_electrica', 'filter_estado'].forEach(id => {
+      document.getElementById(id).addEventListener('change', aplicarFiltros);
+    });
+  </script>
+  
+  <!-- Botón flotante para exportar -->
+  <div style="position: fixed; bottom: 20px; right: 20px; z-index: 100;">
+    <button class="btn btn-info" onclick="exportarDatos()" title="Exportar a CSV">
+      <i class="material-icons">download</i>
+    </button>
+  </div>
+  
 </body>
 </html>
-<?php ob_end_flush(); ?>

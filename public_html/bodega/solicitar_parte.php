@@ -517,7 +517,6 @@ function estadoBadgeClass(string $estado): string {
       </a>
     </div>
   </div>
-  
   <!-- Scripts -->
   <script src="../assets/js/jquery-3.3.1.min.js"></script>
   <script src="../assets/js/bootstrap.min.js"></script>
@@ -536,7 +535,6 @@ function estadoBadgeClass(string $estado): string {
         }
       }
     });
-    
     // Validar formulario antes de enviar
     document.querySelector('form').addEventListener('submit', function(e) {
       const inventarioId = document.getElementById('inventario_id').value;
@@ -549,7 +547,6 @@ function estadoBadgeClass(string $estado): string {
         alert('Por favor, complete todos los campos obligatorios marcados con *.');
         return false;
       }
-      
       if (cantidadSolicitada < 1) {
         e.preventDefault();
         alert('La cantidad solicitada debe ser mayor a 0.');
