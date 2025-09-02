@@ -303,7 +303,7 @@ if (!$userInfo) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            // Consulta mejorada sin filtro fijo de Business Room
+                                            // Consulta para mostrar solo equipos listos para venta
                                             $sql = "SELECT i.*, 
                                                 CASE 
                                                     WHEN d.estado_reparacion IS NOT NULL THEN d.estado_reparacion
@@ -317,7 +317,8 @@ if (!$userInfo) {
                                                 LEFT JOIN bodega_control_calidad cc ON i.id = cc.inventario_id 
                                                     AND cc.id = (SELECT MAX(id) FROM bodega_control_calidad WHERE inventario_id = i.id)
                                                 LEFT JOIN usuarios u ON i.tecnico_id = u.id
-                                                WHERE i.estado = 'Business '";
+                                                WHERE i.estado = 'activo' 
+                                                AND i.disposicion IN ('Para Venta', 'Business', 'para_venta')";
                                             // Filtrar por técnico si no es administrador
                                             if (in_array($_SESSION['rol'], [5, 6, 7])) {
                                                 $sql .= " AND i.tecnico_id = " . $_SESSION['id'];
