@@ -1,23 +1,40 @@
 <?php
 require_once __DIR__ . '../../../config/ctconex.php';
-//
+// st_updpro.php
 if (isset($_POST['stupdprof'])) {
     $id = $_POST['txtidadm'];
     $nombre = $_POST['txtnaame'];
     $usuario = $_POST['txtusr'];
     $correo = $_POST['txtcorr'];
-    $rol = $_POST['txtcarr'];
+    
+    // Solo actualizar rol si está presente en el POST
+    $incluir_rol = isset($_POST['txtcarr']) && !empty($_POST['txtcarr']);
+    
     try {
-        $query = "UPDATE usuarios SET nombre=:nombre, usuario=:usuario,correo=:correo,rol=:rol WHERE id=:id LIMIT 1";
+        if ($incluir_rol) {
+            $rol = $_POST['txtcarr'];
+            $query = "UPDATE usuarios SET nombre=:nombre, usuario=:usuario, correo=:correo, rol=:rol WHERE id=:id LIMIT 1";
+            $data = [
+                ':nombre' => $nombre,
+                ':usuario' => $usuario,
+                ':correo' => $correo,
+                ':rol' => $rol,
+                ':id' => $id
+            ];
+        } else {
+            // No actualizar el campo rol si no está presente
+            $query = "UPDATE usuarios SET nombre=:nombre, usuario=:usuario, correo=:correo WHERE id=:id LIMIT 1";
+            $data = [
+                ':nombre' => $nombre,
+                ':usuario' => $usuario,
+                ':correo' => $correo,
+                ':id' => $id
+            ];
+        }
+        
         $statement = $connect->prepare($query);
-        $data = [
-            ':nombre' => $nombre,
-            ':usuario' => $usuario,
-            ':correo' => $correo,
-            ':rol' => $rol,
-            ':id' => $id
-        ];
         $query_execute = $statement->execute($data);
+        
         if ($query_execute) {
             echo '<script type="text/javascript">
 swal("¡Actualizado!", "Actualizado correctamente", "success").then(function() {
