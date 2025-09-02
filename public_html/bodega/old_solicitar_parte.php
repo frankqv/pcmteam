@@ -3,24 +3,16 @@
 ob_start();
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
-}
-
-require_once dirname(__DIR__, 2) . '/config/ctconex.php';
-
-// Validación de roles
+}require_once dirname(__DIR__, 2) . '/config/ctconex.php';// Validación de roles
 $allowedRoles = [1, 2, 5, 6, 7];
 if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], $allowedRoles, true)) {
   header('Location: ../error404.php');
   exit;
-}
-
-// Variables globales
+}// Variables globales
 $mensaje = '';
 $solicitudes = [];
 $equipos_disponibles = [];
-$partes_disponibles = [];
-
-// Obtener información del usuario para navbar
+$partes_disponibles = [];// Obtener información del usuario para navbar
 $userInfo = null;
 try {
   if (isset($_SESSION['id'])) {
@@ -37,9 +29,7 @@ try {
     'foto' => 'reere.webp',
     'idsede' => 'Sede sin definir'
   ];
-}
-
-// Cargar datos iniciales
+}// Cargar datos iniciales
 try {
   // Equipos disponibles para solicitar partes
   $stmt = $connect->prepare("
@@ -77,9 +67,7 @@ try {
 } catch (Exception $e) {
   error_log("Error carga inicial: " . $e->getMessage());
   $mensaje .= "<div class='alert alert-warning'>Error al cargar datos: " . htmlspecialchars($e->getMessage()) . "</div>";
-}
-
-// Procesamiento del formulario
+}// Procesamiento del formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   try {
     $connect->beginTransaction();
@@ -134,9 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $connect->rollBack();
     $mensaje .= "<div class='alert alert-danger'>❌ Error: " . htmlspecialchars($e->getMessage()) . "</div>";
   }
-}
-
-// Helper function for urgency badges
+}// Helper function for urgency badges
 function urgenciaBadgeClass(string $urgencia): string {
   $urgencia = strtoupper(trim($urgencia ?? ''));
   switch ($urgencia) {
@@ -145,9 +131,7 @@ function urgenciaBadgeClass(string $urgencia): string {
     case 'BAJA': return 'badge-info';
     default: return 'badge-secondary';
   }
-}
-
-// Helper function for status badges
+}// Helper function for status badges
 function estadoBadgeClass(string $estado): string {
   $estado = strtoupper(trim($estado ?? ''));
   switch ($estado) {
@@ -158,9 +142,7 @@ function estadoBadgeClass(string $estado): string {
     default: return 'badge-secondary';
   }
 }
-?>
-
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -237,9 +219,7 @@ function estadoBadgeClass(string $estado): string {
       <nav class="col-md-2 d-none d-md-block bg-dark sidebar">
         <?php include '../layouts/nav.php'; ?>
         <?php include '../layouts/menu_data.php'; ?>
-      </nav>
-
-      <!-- Main content -->
+      </nav>      <!-- Main content -->
       <main role="main" class="col-md-10 ml-sm-auto px-4">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
           <h1 class="h2">
@@ -256,11 +236,7 @@ function estadoBadgeClass(string $estado): string {
               </a>
             </div>
           </div>
-        </div>
-
-        <?php echo $mensaje; ?>
-
-        <!-- Estadísticas -->
+        </div>        <?php echo $mensaje; ?>        <!-- Estadísticas -->
         <div class="row mb-4">
           <div class="col-md-3">
             <div class="stats-card">
@@ -292,9 +268,7 @@ function estadoBadgeClass(string $estado): string {
               <div>Entregadas</div>
             </div>
           </div>
-        </div>
-
-        <div class="row">
+        </div>        <div class="row">
           <!-- Formulario de solicitud -->
           <div class="col-md-6">
             <div class="form-section">
@@ -308,16 +282,12 @@ function estadoBadgeClass(string $estado): string {
                   <label for="detalle_solicitud">Detalle de la Solicitud *</label>
                   <textarea class="form-control" id="detalle_solicitud" name="detalle_solicitud" rows="3" 
                             placeholder="Describa la parte que necesita..." required></textarea>
-                </div>
-
-                <div class="form-grid">
+                </div>                <div class="form-grid">
                   <div class="form-group">
                     <label for="cantidad_solicitada">Cantidad</label>
                     <input type="number" class="form-control" id="cantidad_solicitada" name="cantidad_solicitada" 
                            value="1" min="1" required>
-                  </div>
-
-                  <div class="form-group">
+                  </div>                  <div class="form-group">
                     <label for="nivel_urgencia">Nivel de Urgencia</label>
                     <select class="form-control" id="nivel_urgencia" name="nivel_urgencia" required>
                       <option value="Baja">Baja</option>
@@ -325,9 +295,7 @@ function estadoBadgeClass(string $estado): string {
                       <option value="Alta">Alta</option>
                     </select>
                   </div>
-                </div>
-
-                <div class="form-group">
+                </div>                <div class="form-group">
                   <label for="codigo_equipo">Código del Equipo *</label>
                   <select class="form-control" id="codigo_equipo" name="codigo_equipo" required>
                     <option value="">Seleccionar equipo...</option>
@@ -337,37 +305,27 @@ function estadoBadgeClass(string $estado): string {
                       </option>
                     <?php endforeach; ?>
                   </select>
-                </div>
-
-                <div class="form-grid">
+                </div>                <div class="form-grid">
                   <div class="form-group">
                     <label for="serial_parte">Serial de la Parte</label>
                     <input type="text" class="form-control" id="serial_parte" name="serial_parte" 
                            placeholder="Serial de la parte...">
-                  </div>
-
-                  <div class="form-group">
+                  </div>                  <div class="form-group">
                     <label for="marca_parte">Marca de la Parte</label>
                     <input type="text" class="form-control" id="marca_parte" name="marca_parte" 
                            placeholder="Marca de la parte...">
                   </div>
-                </div>
-
-                <div class="form-grid">
+                </div>                <div class="form-grid">
                   <div class="form-group">
                     <label for="referencia_parte">Referencia de la Parte</label>
                     <input type="text" class="form-control" id="referencia_parte" name="referencia_parte" 
                            placeholder="Referencia de la parte...">
-                  </div>
-
-                  <div class="form-group">
+                  </div>                  <div class="form-group">
                     <label for="ubicacion_pieza">Ubicación de la Pieza</label>
                     <input type="text" class="form-control" id="ubicacion_pieza" name="ubicacion_pieza" 
                            placeholder="Ubicación en bodega...">
                   </div>
-                </div>
-
-                <div class="form-group">
+                </div>                <div class="form-group">
                   <button type="submit" name="crear_solicitud" class="btn btn-primary">
                     <i class="material-icons">send</i> Crear Solicitud
                   </button>
@@ -377,9 +335,7 @@ function estadoBadgeClass(string $estado): string {
                 </div>
               </form>
             </div>
-          </div>
-
-          <!-- Lista de solicitudes -->
+          </div>          <!-- Lista de solicitudes -->
           <div class="col-md-6">
             <div class="form-section">
               <div class="section-title">
@@ -440,9 +396,7 @@ function estadoBadgeClass(string $estado): string {
               <?php endif; ?>
             </div>
           </div>
-        </div>
-
-        <!-- Información adicional -->
+        </div>        <!-- Información adicional -->
         <div class="row">
           <div class="col-md-12">
             <div class="form-section">
@@ -479,9 +433,7 @@ function estadoBadgeClass(string $estado): string {
         </div>
       </main>
     </div>
-  </div>
-
-  <script src="../assets/js/jquery.min.js"></script>
+  </div>  <script src="../assets/js/jquery.min.js"></script>
   <script src="../assets/js/bootstrap.bundle.min.js"></script>
   <script>
     // Auto-submit del formulario

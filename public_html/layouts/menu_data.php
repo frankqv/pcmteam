@@ -4,7 +4,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 $rol = $_SESSION['rol'] ?? 0; // Obtener el rol de la sesión
-
 // Configuración del panel según rol
 switch ($rol) {
     case 1:
@@ -40,7 +39,6 @@ switch ($rol) {
         $panelUrl = '../administrador/escritorio.php';
         break;
 }
-
 # Inicializar el menú principal
 $menu = [
     [
@@ -49,7 +47,6 @@ $menu = [
         'icon' => 'dashboard'
     ],
 ];
-
 # ==================== GRUPO 1: PROCESO ====================
 if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
     $menu[] = [
@@ -117,10 +114,8 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
     ];
 }
 
-
 # ==================== GRUPO 2: GESTIÓN COMERCIAL ====================
 $comercialItems = [];
-
 // Clientes
 if (in_array($rol, [1, 2, 4, 5, 7])) {
     $comercialItems[] = [
@@ -129,7 +124,6 @@ if (in_array($rol, [1, 2, 4, 5, 7])) {
         'url' => '../clientes/mostrar.php',
     ];
 }
-
 // Clientes por Tienda
 if (in_array($rol, [1, 2, 4, 5])) {
     $comercialItems[] = [
@@ -143,7 +137,6 @@ if (in_array($rol, [1, 2, 4, 5])) {
         ]
     ];
 }
-
 // Ventas
 if (in_array($rol, [1, 4, 5, 6, 7])) {
     $comercialItems[] = [
@@ -155,7 +148,6 @@ if (in_array($rol, [1, 4, 5, 6, 7])) {
         ]
     ];
 }
-
 // Historial de Ventas
 if (in_array($rol, [1, 3, 4])) {
     $comercialItems[] = [
@@ -164,7 +156,6 @@ if (in_array($rol, [1, 3, 4])) {
         'url' => '../venta/mostrar.php'
     ];
 }
-
 // Marketing
 if (in_array($rol, [1])) {
     $comercialItems[] = [
@@ -173,7 +164,6 @@ if (in_array($rol, [1])) {
         'icon' => 'campaign'
     ];
 }
-
 if (!empty($comercialItems)) {
     $menu[] = [
         'label' => 'COMERCIAL',
@@ -182,10 +172,8 @@ if (!empty($comercialItems)) {
         'children' => $comercialItems
     ];
 }
-
 # ==================== GRUPO 3: OPERACIONES TÉCNICAS ====================
 $tecnicoItems = [];
-
 // Servicios Técnicos
 if (in_array($rol, [1, 4, 5, 6, 7])) {
     $tecnicoItems[] = [
@@ -194,7 +182,6 @@ if (in_array($rol, [1, 4, 5, 6, 7])) {
         'icon' => 'view_timeline'
     ];
 }
-
 // Mis Servicios
 if (in_array($rol, [5, 6, 7])) {
     $tecnicoItems[] = [
@@ -203,7 +190,6 @@ if (in_array($rol, [5, 6, 7])) {
         'url' => '../mis_servicios/mostrar.php'
     ];
 }
-
 // Laboratorio Técnico
 if (in_array($rol, [1, 4, 5, 6])) {
     $tecnicoItems[] = [
@@ -212,7 +198,6 @@ if (in_array($rol, [1, 4, 5, 6])) {
         'icon' => 'biotech'
     ];
 }
-
 if (!empty($tecnicoItems)) {
     $menu[] = [
         'label' => 'ÁREA TÉCNICA',
@@ -221,10 +206,8 @@ if (!empty($tecnicoItems)) {
         'children' => $tecnicoItems
     ];
 }
-
 # ==================== GRUPO 4: INVENTARIO Y LOGÍSTICA ====================
 $inventarioItems = [];
-
 // Productos
 if (in_array($rol, [1, 4, 5, 6, 7])) {
     $inventarioItems[] = [
@@ -236,7 +219,6 @@ if (in_array($rol, [1, 4, 5, 6, 7])) {
         ]
     ];
 }
-
 // Bodega
 if (in_array($rol, [1, 4, 5, 7])) {
     $inventarioItems[] = [
@@ -253,7 +235,6 @@ if (in_array($rol, [1, 4, 5, 7])) {
         ]
     ];
 }
-
 // Alistamientos
 if (in_array($rol, [1, 4, 5])) {
     $inventarioItems[] = [
@@ -262,7 +243,6 @@ if (in_array($rol, [1, 4, 5])) {
         'icon' => 'unarchive'
     ];
 }
-
 if (!empty($inventarioItems)) {
     $menu[] = [
         'label' => 'LOGÍSTICA',
@@ -271,10 +251,8 @@ if (!empty($inventarioItems)) {
         'children' => $inventarioItems
     ];
 }
-
 # ==================== GRUPO 5: FINANZAS Y CONTABILIDAD ====================
 $finanzasItems = [];
-
 // Gastos Generales
 if (in_array($rol, [1, 2, 3, 4])) {
     $finanzasItems[] = [
@@ -286,7 +264,6 @@ if (in_array($rol, [1, 2, 3, 4])) {
         ]
     ];
 }
-
 // Facturas y Comprobantes
 if (in_array($rol, [1, 3, 4])) {
     $finanzasItems[] = [
@@ -298,7 +275,6 @@ if (in_array($rol, [1, 3, 4])) {
         ]
     ];
 }
-
 if (!empty($finanzasItems)) {
     $menu[] = [
         'label' => 'CONTABILIDAD',
@@ -307,10 +283,8 @@ if (!empty($finanzasItems)) {
         'children' => $finanzasItems
     ];
 }
-
 # ==================== GRUPO 6: ANÁLISIS Y REPORTES ====================
 $reportesItems = [];
-
 // Reportes
 if (in_array($rol, [1, 3])) {
     $reportesItems[] = [
@@ -324,7 +298,6 @@ if (in_array($rol, [1, 3])) {
         ]
     ];
 }
-
 // Gráficos
 if (in_array($rol, [1, 3])) {
     $reportesItems[] = [
@@ -333,7 +306,6 @@ if (in_array($rol, [1, 3])) {
         'icon' => 'grain'
     ];
 }
-
 if (!empty($reportesItems)) {
     $menu[] = [
         'label' => 'ANÁLISIS Y REPORTES',
@@ -342,10 +314,8 @@ if (!empty($reportesItems)) {
         'children' => $reportesItems
     ];
 }
-
 # ==================== GRUPO 7: ADMINISTRACIÓN DEL SISTEMA ====================
 $adminItems = [];
-
 // Documentos Generales
 if (!in_array($rol, [0])) {
     $adminItems[] = [
@@ -354,7 +324,6 @@ if (!in_array($rol, [0])) {
         'url' => '../docs/mostrar.php',
     ];
 }
-
 // Usuarios
 if (in_array($rol, [1, 3, 5])) {
     $adminItems[] = [
@@ -363,7 +332,6 @@ if (in_array($rol, [1, 3, 5])) {
         'icon' => 'manage_accounts'
     ];
 }
-
 // Configuración
 if (in_array($rol, [1, 3, 5, 7])) {
     $adminItems[] = [
@@ -372,7 +340,13 @@ if (in_array($rol, [1, 3, 5, 7])) {
         'icon' => 'settings'
     ];
 }
-
+if (in_array($rol, [1, 3, 5, 7])){
+    $adminItems[] = [
+        'label' => 'Perfil',
+        'url'   => '../cuenta/perfil.php',
+        'icon'  => 'settings_account_box'
+    ];
+}
 if (!empty($adminItems)) {
     $menu[] = [
         'label' => 'ADMINISTRACIÓN',
@@ -381,7 +355,6 @@ if (!empty($adminItems)) {
         'children' => $adminItems
     ];
 }
-
 # ==================== OPCIONES FINALES ====================
 // Información de versión (solo para desarrollo)
 if (in_array($rol, [1, 7])) { // Solo admin y bodega ven la versión
@@ -394,7 +367,6 @@ if (in_array($rol, [1, 7])) { // Solo admin y bodega ven la versión
         ]
     ];
 }
-
 // Salir - siempre al final
 if (!in_array($rol, [0])) {
     $menu[] = [

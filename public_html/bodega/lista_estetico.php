@@ -1,3 +1,4 @@
+
 <?php
 // estetico.php - Diagnóstico Estético de Equipos
 ob_start();
@@ -40,6 +41,8 @@ try {
 }
 
 // Cargar equipos pendientes de diagnóstico estético
+// Permite que cualquier usuario vea todos los equipos sin restricciones
+
 try {
   $stmt = $connect->prepare("
     SELECT i.*, 
@@ -47,15 +50,82 @@ try {
            est.fecha_proceso as fecha_estetico,
            e.estado_final as estado_electrico,
            d.falla_electrica,
-           d.falla_estetica
+           d.falla_estetica,
+           u_tecnico.nombre as tecnico_asignado
     FROM bodega_inventario i
     LEFT JOIN bodega_estetico est ON i.id = est.inventario_id
     LEFT JOIN bodega_electrico e ON i.id = e.inventario_id  
     LEFT JOIN bodega_diagnosticos d ON i.id = d.inventario_id
-    WHERE (i.disposicion = 'pendiente_estetico' OR e.estado_final = 'aprobado')
-      AND (est.estado_final IS NULL OR est.estado_final = 'requiere_revision')
-      AND i.estado = 'activo'
-    ORDER BY i.fecha_ingreso ASC
+    LEFT JOIN usuarios u_tecnico ON i.tecnico_id = u_tecnico.id
+    WHERE i.estado = 'activo'
+      AND (
+        -- Equipos pendientes de diagnóstico estético
+        i.disposicion = 'pendiente_estetico' 
+        OR 
+        -- Equipos que ya pasaron área eléctrica
+        e.estado_final = 'aprobado'
+        OR
+        -- Equipos que necesitan revisión estética
+        est.estado_final = 'requiere_revision'
+        OR
+        -- Equipos en cualquier etapa que puedan necesitar trabajo estético
+        i.disposicion IN ('en_diagnostico', 'en_mantenimiento', 'en_proceso')
+      )
+    ORDER BY 
+      CASE 
+        WHEN i.disposicion = 'pendiente_estetico' THEN 1
+        WHEN est.estado_final = 'requiere_revision' THEN 2
+        WHEN e.estado_final = 'aprobado' THEN 3
+        ELSE 4
+      END,
+      i.fecha_ingreso ASC
+  ");
+  $stmt->execute();
+  $equipos_pendientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+  error_log("Error carga equipos: " . $e->getMessage());
+  $mensaje .= "<div class='alert alert-warning'>Error al cargar equipos: " . htmlspecialchars($e->getMessage()) . "</div>";
+}
+
+// Sección CORREGIDA para cargar TODOS los equipos disponibles para diagnóstico estético
+// Permite que cualquier usuario vea todos los equipos sin restricciones
+
+try {
+  $stmt = $connect->prepare("
+    SELECT i.*, 
+           COALESCE(est.estado_final, 'pendiente') as estado_estetico,
+           est.fecha_proceso as fecha_estetico,
+           e.estado_final as estado_electrico,
+           d.falla_electrica,
+           d.falla_estetica,
+           u_tecnico.nombre as tecnico_asignado
+    FROM bodega_inventario i
+    LEFT JOIN bodega_estetico est ON i.id = est.inventario_id
+    LEFT JOIN bodega_electrico e ON i.id = e.inventario_id  
+    LEFT JOIN bodega_diagnosticos d ON i.id = d.inventario_id
+    LEFT JOIN usuarios u_tecnico ON i.tecnico_id = u_tecnico.id
+    WHERE i.estado = 'activo'
+      AND (
+        -- Equipos pendientes de diagnóstico estético
+        i.disposicion = 'pendiente_estetico' 
+        OR 
+        -- Equipos que ya pasaron área eléctrica
+        e.estado_final = 'aprobado'
+        OR
+        -- Equipos que necesitan revisión estética
+        est.estado_final = 'requiere_revision'
+        OR
+        -- Equipos en cualquier etapa que puedan necesitar trabajo estético
+        i.disposicion IN ('en_diagnostico', 'en_mantenimiento', 'en_proceso')
+      )
+    ORDER BY 
+      CASE 
+        WHEN i.disposicion = 'pendiente_estetico' THEN 1
+        WHEN est.estado_final = 'requiere_revision' THEN 2
+        WHEN e.estado_final = 'aprobado' THEN 3
+        ELSE 4
+      END,
+      i.fecha_ingreso ASC
   ");
   $stmt->execute();
   $equipos_pendientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -65,8 +135,6 @@ try {
 }
 
 // Código CORREGIDO para insertar diagnóstico estético
-// Reemplaza las líneas del POST en tu archivo (aproximadamente líneas 65-110)
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   try {
     $connect->beginTransaction();
@@ -99,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       ]);
       
       // Actualizar disposición del inventario según el estado final
-      $nueva_disposicion = 'en_revision'; // por defecto
+      $nueva_disposicion = 'en_revision';
       if ($_POST['estado_final'] === 'aprobado') {
         $nueva_disposicion = 'pendiente_control_calidad';
       } elseif ($_POST['estado_final'] === 'requiere_revision') {
@@ -113,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       ");
       $stmt->execute([$nueva_disposicion, $inventario_id]);
       
-      // Registrar cambio en log - CORREGIDO: usar nombres de columnas correctos
+      // Registrar cambio en log
       $stmt = $connect->prepare("
         INSERT INTO bodega_log_cambios 
         (inventario_id, usuario_id, campo_modificado, valor_anterior, valor_nuevo, fecha_cambio)
@@ -129,22 +197,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       
       $mensaje .= "<div class='alert alert-success'>✅ Diagnóstico estético guardado correctamente</div>";
       
-      // Recargar equipos pendientes
+      // Recargar TODOS los equipos disponibles (sin restricciones)
       $stmt = $connect->prepare("
         SELECT i.*, 
                COALESCE(est.estado_final, 'pendiente') as estado_estetico,
                est.fecha_proceso as fecha_estetico,
                e.estado_final as estado_electrico,
                d.falla_electrica,
-               d.falla_estetica
+               d.falla_estetica,
+               u_tecnico.nombre as tecnico_asignado
         FROM bodega_inventario i
         LEFT JOIN bodega_estetico est ON i.id = est.inventario_id
         LEFT JOIN bodega_electrico e ON i.id = e.inventario_id  
         LEFT JOIN bodega_diagnosticos d ON i.id = d.inventario_id
-        WHERE (i.disposicion = 'pendiente_estetico' OR e.estado_final = 'aprobado')
-          AND (est.estado_final IS NULL OR est.estado_final = 'requiere_revision')
-          AND i.estado = 'activo'
-        ORDER BY i.fecha_ingreso ASC
+        LEFT JOIN usuarios u_tecnico ON i.tecnico_id = u_tecnico.id
+        WHERE i.estado = 'activo'
+          AND (
+            i.disposicion = 'pendiente_estetico' 
+            OR e.estado_final = 'aprobado'
+            OR est.estado_final = 'requiere_revision'
+            OR i.disposicion IN ('en_diagnostico', 'en_mantenimiento', 'en_proceso')
+          )
+        ORDER BY 
+          CASE 
+            WHEN i.disposicion = 'pendiente_estetico' THEN 1
+            WHEN est.estado_final = 'requiere_revision' THEN 2
+            WHEN e.estado_final = 'aprobado' THEN 3
+            ELSE 4
+          END,
+          i.fecha_ingreso ASC
       ");
       $stmt->execute();
       $equipos_pendientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -181,7 +262,6 @@ if (isset($_GET['id']) && (int) $_GET['id'] > 0) {
     $mensaje .= "<div class='alert alert-warning'>Error al cargar equipo: " . htmlspecialchars($e->getMessage()) . "</div>";
   }
 }
-
 // Helper function for status badges
 function badgeClass(string $v): string {
   $v = strtoupper(trim($v ?? ''));
@@ -432,36 +512,62 @@ function gradoBadgeClass(string $grado): string {
     </div>
     
     <!-- Lista de Equipos Pendientes -->
-    <div class="form-section">
-      <div class="section-title">
-        <div class="card-icon">📋</div>
-        <h4>Equipos Pendientes de Diagnóstico Estético</h4>
-      </div>
-      
-      <?php if (empty($equipos_pendientes)): ?>
-        <div class="alert alert-info">
-          ✅ No hay equipos pendientes de diagnóstico estético en este momento.
-        </div>
-      <?php else: ?>
-        <div class="row">
-          <?php foreach ($equipos_pendientes as $equipo): ?>
-            <div class="col-md-6 col-lg-4">
-              <div class="equipment-card" onclick="seleccionarEquipo(<?php echo $equipo['id']; ?>)">
-                <div class="equipment-code"><?php echo htmlspecialchars($equipo['codigo_g'] ?? 'N/A'); ?></div>
-                <div class="equipment-details">
-                  <strong><?php echo htmlspecialchars(($equipo['marca'] ?? '') . ' ' . ($equipo['modelo'] ?? '')); ?></strong><br>
-                  <small>Serial: <?php echo htmlspecialchars($equipo['serial'] ?? 'N/A'); ?></small><br>
-                  <small>Ubicación: <?php echo htmlspecialchars($equipo['ubicacion'] ?? 'N/A'); ?></small><br>
-                  <span class="status-badge status-nd">
-                    <?php echo htmlspecialchars(ucfirst($equipo['estado_estetico'] ?? 'pendiente')); ?>
-                  </span>
-                </div>
-              </div>
-            </div>
-          <?php endforeach; ?>
-        </div>
-      <?php endif; ?>
+<!-- Reemplaza la sección de "Lista de Equipos Pendientes" en tu HTML -->
+<div class="form-section">
+  <div class="section-title">
+    <div class="card-icon">📋</div>
+    <h4>Todos los Equipos Disponibles para Diagnóstico Estético</h4>
+  </div>
+  
+  <?php if (empty($equipos_pendientes)): ?>
+    <div class="alert alert-info">
+      ℹ️ No hay equipos disponibles para diagnóstico estético en este momento.
     </div>
+  <?php else: ?>
+    <div class="alert alert-info">
+      📌 <strong>Mostrando <?php echo count($equipos_pendientes); ?> equipos disponibles</strong> - Cualquier técnico puede trabajar con estos equipos.
+    </div>
+    
+    <div class="row">
+      <?php foreach ($equipos_pendientes as $equipo): ?>
+        <div class="col-md-6 col-lg-4">
+          <div class="equipment-card" onclick="seleccionarEquipo(<?php echo $equipo['id']; ?>)">
+            <div class="equipment-code"><?php echo htmlspecialchars($equipo['codigo_g'] ?? 'N/A'); ?></div>
+            <div class="equipment-details">
+              <strong><?php echo htmlspecialchars(($equipo['marca'] ?? '') . ' ' . ($equipo['modelo'] ?? '')); ?></strong><br>
+              <small>Serial: <?php echo htmlspecialchars($equipo['serial'] ?? 'N/A'); ?></small><br>
+              <small>Ubicación: <?php echo htmlspecialchars($equipo['ubicacion'] ?? 'N/A'); ?></small><br>
+              
+              <!-- Información del técnico asignado (si existe) -->
+              <?php if (!empty($equipo['tecnico_asignado'])): ?>
+                <small>Técnico: <?php echo htmlspecialchars($equipo['tecnico_asignado']); ?></small><br>
+              <?php endif; ?>
+              
+              <!-- Estado actual del equipo -->
+              <span class="status-badge status-nd">
+                <?php echo htmlspecialchars(ucfirst(str_replace('_', ' ', $equipo['disposicion'] ?? 'pendiente'))); ?>
+              </span>
+              
+              <!-- Estado estético actual -->
+              <span class="status-badge <?php echo badgeClass($equipo['estado_estetico']); ?>">
+                Estético: <?php echo htmlspecialchars(ucfirst($equipo['estado_estetico'] ?? 'pendiente')); ?>
+              </span>
+              
+              <!-- Indicadores de fallas si existen -->
+              <?php if (!empty($equipo['falla_electrica']) && $equipo['falla_electrica'] === 'si'): ?>
+                <br><small class="text-warning">⚡ Tiene falla eléctrica</small>
+              <?php endif; ?>
+              
+              <?php if (!empty($equipo['falla_estetica']) && $equipo['falla_estetica'] === 'si'): ?>
+                <br><small class="text-danger">🎨 Tiene falla estética</small>
+              <?php endif; ?>
+            </div>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  <?php endif; ?>
+</div>
     
     <!-- Formulario de Diagnóstico Estético -->
     <?php if ($equipo_seleccionado): ?>
