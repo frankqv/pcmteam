@@ -181,6 +181,11 @@ $resultadoTriage = [
     'vida_util_disco' => '100%',
     'observaciones' => '',
     'estado_reparacion' => 'aprobado',
+    // NUEVOS CAMPOS PARA FALLAS
+    'falla_electrica' => 'no',
+    'detalle_falla_electrica' => '',
+    'falla_estetica' => 'no',
+    'detalle_falla_estetica' => '',
 ];
 /* -------------------- Lista de equipos asignados al técnico -------------------- */
 $equiposAsignados = [];
@@ -224,13 +229,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cargar_seleccionados'
 /* -------------------- Guardado (single o bulk) -------------------- */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar'])) {
     try {
-        // datos comunes
+        // datos comunes existentes
         $compPortatil = $_POST['componentes_portatil'] ?? [];
         $compComputador = $_POST['componentes_computador'] ?? [];
         $vidaUtilDisco = trim($_POST['vida_util_disco'] ?? '');
         $observaciones = trim($_POST['observaciones'] ?? '');
         $estadoRep = trim($_POST['estado_reparacion'] ?? 'aprobado');
-        // destinos: si se indicó bulk_hidden cargamos la lista del hidden
+        
+        // NUEVOS CAMPOS DE FALLAS
+        $fallaElectrica = $_POST['falla_electrica'] ?? 'no';
+        $detalleFallaElectrica = trim($_POST['detalle_falla_electrica'] ?? '');
+        $fallaEstetica = $_POST['falla_estetica'] ?? 'no';
+        $detalleFallaEstetica = trim($_POST['detalle_falla_estetica'] ?? '');
+        
+        // resto del código de guardado...
         $bulk_mode = isset($_POST['bulk_hidden']) && $_POST['bulk_hidden'] == '1';
         $targets = [];
         if ($bulk_mode) {
@@ -244,7 +256,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar'])) {
                 throw new Exception('Falta el parámetro inventario_id.');
             $targets[] = $inv;
         }
-        // Normaliza campos de portátil
+        
+        // Normalizar campos existentes
         $camara = $compPortatil['Camara'] ?? ($compPortatil['Cámara'] ?? 'N/D');
         $teclado = $compPortatil['Teclado'] ?? 'N/D';
         $parlantes = $compPortatil['Parlantes'] ?? ($compPortatil['Parlante'] ?? 'N/D');
@@ -257,9 +270,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar'])) {
         $discoTexto = "Estado: $discoEst; Vida útil: $vidaUtilDisco";
         $inserted = [];
         $failed = [];
+        
+        // SQL MODIFICADO para incluir los nuevos campos
         $sqlInsert = "INSERT INTO bodega_diagnosticos
-                (inventario_id, tecnico_id, camara, teclado, parlantes, bateria, microfono, pantalla, puertos, disco, estado_reparacion, observaciones)
-                VALUES (:inventario_id, :tecnico_id, :camara, :teclado, :parlantes, :bateria, :microfono, :pantalla, :puertos, :disco, :estado_reparacion, :observaciones)";
+                (inventario_id, tecnico_id, camara, teclado, parlantes, bateria, microfono, pantalla, puertos, disco, estado_reparacion, observaciones, falla_electrica, detalle_falla_electrica, falla_estetica, detalle_falla_estetica)
+                VALUES (:inventario_id, :tecnico_id, :camara, :teclado, :parlantes, :bateria, :microfono, :pantalla, :puertos, :disco, :estado_reparacion, :observaciones, :falla_electrica, :detalle_falla_electrica, :falla_estetica, :detalle_falla_estetica)";
+        
         foreach ($targets as $inv_id) {
             if ($db_type === 'pdo') {
                 $stmt = $pdo->prepare($sqlInsert);
@@ -275,17 +291,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar'])) {
                     ':puertos' => $puertosJSON,
                     ':disco' => $discoTexto,
                     ':estado_reparacion' => $estadoRep,
-                    ':observaciones' => $observaciones
+                    ':observaciones' => $observaciones,
+                    ':falla_electrica' => $fallaElectrica,
+                    ':detalle_falla_electrica' => $detalleFallaElectrica,
+                    ':falla_estetica' => $fallaEstetica,
+                    ':detalle_falla_estetica' => $detalleFallaEstetica
                 ]);
                 if ($ok)
                     $inserted[] = $inv_id;
                 else
                     $failed[] = $inv_id;
             } else {
-                $stmt = $mysqli->prepare(str_replace(':inventario_id', '?', $sqlInsert));
+                // Para MySQLi, ajustar también
+                $sqlInsertMysqli = str_replace([':inventario_id', ':tecnico_id', ':camara', ':teclado', ':parlantes', ':bateria', ':microfono', ':pantalla', ':puertos', ':disco', ':estado_reparacion', ':observaciones', ':falla_electrica', ':detalle_falla_electrica', ':falla_estetica', ':detalle_falla_estetica'], 
+                    ['?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?'], $sqlInsert);
+                $stmt = $mysqli->prepare($sqlInsertMysqli);
                 if ($stmt === false)
                     throw new Exception('MySQLi prepare error: ' . $mysqli->error);
-                $params = [$inv_id, $tecnico_id, $camara, $teclado, $parlantes, $bateria, $microfono, $pantalla, $puertosJSON, $discoTexto, $estadoRep, $observaciones];
+                $params = [$inv_id, $tecnico_id, $camara, $teclado, $parlantes, $bateria, $microfono, $pantalla, $puertosJSON, $discoTexto, $estadoRep, $observaciones, $fallaElectrica, $detalleFallaElectrica, $fallaEstetica, $detalleFallaEstetica];
                 $types = str_repeat('s', count($params));
                 $refs = [];
                 foreach ($params as $key => $value) {
@@ -300,13 +323,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar'])) {
                     $failed[] = $inv_id;
             }
         }
+        
+        // Mensajes de resultado
         if (!empty($inserted)) {
             $mensaje .= "<div class='alert alert-success'>✅ Guardado correctamente para inventario(s): " . implode(', ', $inserted) . ".</div>";
         }
         if (!empty($failed)) {
             $mensaje .= "<div class='alert alert-danger'>❌ Error al guardar para inventario(s): " . implode(', ', $failed) . ".</div>";
         }
-        // Si single, actualiza variables para mostrar datos reflejados
+        
+        // Si single, actualizar variables para mostrar datos reflejados
         if (!$bulk_mode && count($inserted) > 0) {
             // actualizar defaults con lo enviado
             $resultadoTriage['componentes_portatil'] = array_merge($resultadoTriage['componentes_portatil'], $compPortatil);
@@ -315,6 +341,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar'])) {
             $resultadoTriage['vida_util_disco'] = $vidaUtilDisco;
             $resultadoTriage['observaciones'] = $observaciones;
             $resultadoTriage['estado_reparacion'] = $estadoRep;
+            // ACTUALIZAR NUEVOS CAMPOS
+            $resultadoTriage['falla_electrica'] = $fallaElectrica;
+            $resultadoTriage['detalle_falla_electrica'] = $detalleFallaElectrica;
+            $resultadoTriage['falla_estetica'] = $fallaEstetica;
+            $resultadoTriage['detalle_falla_estetica'] = $detalleFallaEstetica;
             $id_equipo = $targets[0];
         }
     } catch (Throwable $e) {
@@ -765,6 +796,48 @@ if (!empty($ids_equipo) && $inventarioInfo === null) {
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
+                                <!-- Sección de Fallas Eléctricas -->
+<div class="row mt-3">
+    <div class="col-md-12">
+        <h5>Fallas Eléctricas</h5>
+        <div class="row">
+            <div class="col-md-3">
+                <label>¿Presenta falla eléctrica?</label>
+                <select name="falla_electrica" id="falla_electrica" class="form-control">
+                    <option value="no" <?= $resultadoTriage['falla_electrica'] === 'no' ? 'selected' : '' ?>>No</option>
+                    <option value="si" <?= $resultadoTriage['falla_electrica'] === 'si' ? 'selected' : '' ?>>Sí</option>
+                </select>
+            </div>
+            <div class="col-md-9">
+                <label>Detalle de la falla eléctrica</label>
+                <textarea name="detalle_falla_electrica" id="detalle_falla_electrica" rows="3" 
+                    class="form-control" 
+                    placeholder="Describa el detalle de la falla eléctrica (solo si seleccionó 'Sí')"><?= htmlspecialchars($resultadoTriage['detalle_falla_electrica']) ?></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Sección de Fallas Estéticas -->
+<div class="row mt-3">
+    <div class="col-md-12">
+        <h5>Fallas Estéticas</h5>
+        <div class="row">
+            <div class="col-md-3">
+                <label>¿Presenta falla estética?</label>
+                <select name="falla_estetica" id="falla_estetica" class="form-control">
+                    <option value="no" <?= $resultadoTriage['falla_estetica'] === 'no' ? 'selected' : '' ?>>No</option>
+                    <option value="si" <?= $resultadoTriage['falla_estetica'] === 'si' ? 'selected' : '' ?>>Sí</option>
+                </select>
+            </div>
+            <div class="col-md-9">
+                <label>Detalle de la falla estética</label>
+                <textarea name="detalle_falla_estetica" id="detalle_falla_estetica" rows="3" 
+                    class="form-control" 
+                    placeholder="Describa el detalle de la falla estética (solo si seleccionó 'Sí')"><?= htmlspecialchars($resultadoTriage['detalle_falla_estetica']) ?></textarea>
+            </div>
+        </div>
+    </div>
+</div>
                                 <div class="form-group">
                                     <label>Estado reparación</label>
                                     <select name="estado_reparacion" class="form-control">
@@ -875,6 +948,32 @@ if (!empty($ids_equipo) && $inventarioInfo === null) {
                 else if (status === 'MALO') { indicator.classList.remove('gray', 'green', 'yellow'); indicator.classList.add('red'); indicator.title = pct + '% — Malo'; }
             }
         }
+        // AGREGAR ESTE JAVASCRIPT AL FINAL DEL ARCHIVO (antes del cierre del body) -->
+        document.addEventListener('DOMContentLoaded', function() {
+    // Función para habilitar/deshabilitar campos de detalle según la selección
+    function toggleDetailField(selectId, textareaId) {
+        const select = document.getElementById(selectId);
+        const textarea = document.getElementById(textareaId);
+        function updateField() {
+            if (select.value === 'si') {
+                textarea.disabled = false;
+                textarea.required = true;
+                textarea.style.backgroundColor = '#fff';
+            } else {
+                textarea.disabled = true;
+                textarea.required = false;
+                textarea.value = '';
+                textarea.style.backgroundColor = '#f8f9fa';
+            }
+        }        
+        // Ejecutar al cargar y al cambiar
+        updateField();
+        select.addEventListener('change', updateField);
+    }    
+    // Aplicar la funcionalidad a ambos campos
+    toggleDetailField('falla_electrica', 'detalle_falla_electrica');
+    toggleDetailField('falla_estetica', 'detalle_falla_estetica');
+});
         // Inicializa al cargar
         document.addEventListener('DOMContentLoaded', function () {
             // actualizar indicador cuando cambie el input

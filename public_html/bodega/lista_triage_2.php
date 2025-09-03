@@ -190,7 +190,7 @@ if ($use_triages) {
                         <!-- Branding -->
                         <a class="navbar-brand" href="#" style="color: #fff; font-weight: bold;">
                             <i class="fas fa-tools" style="margin-right: 8px; color: #f39c12;"></i>
-                            <b>INGRESAR TRIAGE 2 </b>
+                            <b>Historial de INGRESAR TRIAGE 2 </b>
                         </a>
                         <!-- Menú derecho (usuario) -->
                         <ul class="nav navbar-nav ml-auto">
