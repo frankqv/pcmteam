@@ -415,7 +415,6 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                     
                     table.draw();
                 });
-
                 // Limpiar filtros - NUEVO
                 $('#clearFilters').click(function () {
                     // Limpiar todos los selects

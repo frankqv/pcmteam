@@ -1,3 +1,13 @@
+
+
+
+
+
+
+
+
+
+
 <!-- bodega/asignar_tecnico.php -->
 <?php
 require_once '../../config/ctconex.php';

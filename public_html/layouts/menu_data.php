@@ -227,6 +227,7 @@ if (in_array($rol, [1, 4, 5, 7])) {
             ['label' => '> Inventario', 'url' => '../bodega/inventario.php'],
             ['label' => '> Entradas', 'url' => '../bodega/entradas.php'],
             ['label' => '> Salidas', 'url' => '../bodega/salidas.php'],
+            ['label' => '> Despacho', 'url' => '../bodega/despacho.php'],
             ['label' => '> Listado General', 'url' => '../bodega/mostrar.php'],
             ['label' => '> Código de Barras', 'url' => '../bodega/barcode.php'],
             ['label' => '> Partes', 'url' => '../bodega/partes.php'],

@@ -1,4 +1,5 @@
 <?php
+/* b_room/mostrar.php */
 ob_start();
 session_start();
 if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5, 6, 7])) {
@@ -296,6 +297,7 @@ if (!$userInfo) {
                                                 <th>Ubicación</th>
                                                 <th>Grado</th>
                                                 <th>Disposicion</th>
+                                                <th>Precio</th>
                                                 <th>Técnico</th>
                                                 <th>Última Modificación</th>
                                                 <th>Acciones</th>
@@ -338,11 +340,22 @@ if (!$userInfo) {
                                                     echo "<td>" . htmlspecialchars($row['ubicacion']) . "</td>";
                                                     echo "<td><span class='badge badge-info'>" . htmlspecialchars($row['grado']) . "</span></td>";
                                                     echo "<td><span class='status-badge " . $statusClass . "'>" . htmlspecialchars($row['estado_actual']) . "</span></td>";
+                                                    // Precio o mensaje
+                                                    $precioTxt = '';
+                                                    if (isset($row['precio']) && $row['precio'] !== '' && $row['precio'] !== '0') {
+                                                        $precioTxt = '$' . number_format((float)$row['precio'], 0, ',', '.');
+                                                    } else {
+                                                        $precioTxt = "<span class='text-danger'>falta precio</span>";
+                                                    }
+                                                    echo "<td>" . $precioTxt . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['tecnico_nombre'] ?? 'Sin asignar') . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['fecha_modificacion']) . "</td>";
                                                     echo "<td class='text-center'>
                                                         <a href='javascript:void(0)' class='btn btn-info btn-sm view-btn' data-id='" . $row['id'] . "' title='Ver detalles'><i class='material-icons'>visibility</i></a>
                                                         <a href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "' title='Editar'><i class='material-icons'>edit</i></a>";
+                                                    if (!isset($row['precio']) || $row['precio'] === '' || $row['precio'] === '0') {
+                                                        echo "<button type='button' class='btn btn-warning btn-sm add-price-btn' data-id='" . $row['id'] . "' title='Agregar precio / foto'><i class='material-icons'>attach_money</i></button>";
+                                                    }
                                                     // Solo mostrar botón eliminar para administradores
                                                     if ($_SESSION['rol'] == 1) {
                                                         echo "<a href='javascript:void(0)' class='btn btn-danger btn-sm delete-btn' data-id='" . $row['id'] . "' title='Eliminar'><i class='material-icons'>delete</i></a>";
@@ -381,6 +394,36 @@ if (!$userInfo) {
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal agregar precio/foto -->
+    <div class="modal fade" id="priceModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="priceForm" method="post" action="../controllers/update_price.php" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Agregar precio / foto</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="inventario_id" id="priceInventarioId">
+                        <div class="form-group">
+                            <label>Precio</label>
+                            <input type="number" step="0.01" min="0" class="form-control" name="precio" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Foto (opcional)</label>
+                            <input type="file" class="form-control" name="foto" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -450,6 +493,12 @@ if (!$userInfo) {
             $(document).on('click', '.edit-btn', function () {
                 var id = $(this).data('id');
                 window.location.href = 'editar_inventario.php?id=' + id;
+            });
+            // Agregar precio/foto
+            $(document).on('click', '.add-price-btn', function () {
+                var id = $(this).data('id');
+                $('#priceInventarioId').val(id);
+                $('#priceModal').modal('show');
             });
             // Eliminar equipo (solo para administradores)
             $(document).on('click', '.delete-btn', function () {
