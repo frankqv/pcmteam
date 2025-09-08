@@ -1,4 +1,5 @@
 <?php
+/* proveedor/importar.php */
 ob_start();
 session_start();
 if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 5])){
@@ -35,9 +36,9 @@ if (isset($_GET['descargar_plantilla'])) {
             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
         ]
     ];
-    $sheet->getStyle('A1:E1')->applyFromArray($headerStyle);
+    $sheet->getStyle('A1:K1')->applyFromArray($headerStyle);
     // Ajustar ancho de columnas
-    foreach (range('A', 'E') as $col) {
+    foreach (range('A', 'K') as $col) {
         $sheet->getColumnDimension($col)->setAutoSize(true);
     }
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
@@ -126,8 +127,8 @@ if (isset($_GET['descargar_plantilla_generica'])) {
             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER
         ]
     ];
-    $sheet->getStyle('A1:E1')->applyFromArray($headerStyle);
-    foreach (range('A', 'E') as $col) {
+    $sheet->getStyle('A1:K1')->applyFromArray($headerStyle);
+    foreach (range('A', 'K') as $col) {
         $sheet->getColumnDimension($col)->setAutoSize(true);
     }
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -170,10 +171,17 @@ if (isset($_GET['descargar_plantilla_generica'])) {
                 </div>
                 <button type="submit" name="importar" class="btn btn-success mt-2">📊 Importar Proveedores</button>
                 <a href="mostrar.php" class="btn btn-secondary mt-2">Volver</a>
+                
             </form>
             <hr>
             <p>Porfavor sr usuario, subir nit de la empresa,  el cual puede encontrar en <b>https://www.datacreditoempresas.com.co/</b></p>
             <p class="text-muted">La plantilla debe tener las siguientes columnas: <b>nombre, nit, direccion, telefono, email</b>.</p>
+            <p class="text-muted">
+                <b> ● El nit debe ser un numero de 10 digitos.</b> <br/>
+                <b> ● El email debe ser un email valido.</b> <br/>
+                <b> ● El nombre debe ser un nombre real, mas adelante se consulta en el programa.</b> <br/>
+                <b> ● El telefono debe ser un numero de 10 digitos.</b> <br/>
+                <b> ● La nomenclatura (max. 15 caracteres)</b> </p>
         </div>
     </div>
 </div>
