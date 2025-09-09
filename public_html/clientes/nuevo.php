@@ -138,8 +138,11 @@ ob_start();
                                             <div class="form-group">
                                                 <label for="email">Celular del cliente<span
                                                         class="text-danger">*</span></label>
-                                                <input type="tel" class="form-control" maxlength="14"
+                                                <input type="tel" class="form-control" maxlength="10"
                                                     onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
+                                                    placeholder="324 123 1234"
+       pattern="^\d{10}$|^\d{3}\s\d{3}\s\d{4}$"
+       title="Formato: 324 123 1234 o 3241231234"
                                                     name="txtcel" required placeholder="Celular de la cliente">
                                             </div>
                                         </div>

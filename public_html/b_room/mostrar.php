@@ -1,21 +1,19 @@
 <?php
-/* b_room/mostrar.php - Business Room Inventory Management */
+/* b_room/mostrar.php */
 ob_start();
 session_start();
-
-// Verificación de roles mejorada
 if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5, 6, 7])) {
     header('location: ../error404.php');
     exit();
 }
-
 require_once '../../config/ctconex.php';
-
-// Configuración de la página
-$pageTitle = "Business Room - Inventario";
-$pageIcon = "business_center";
-
-// Obtener información del usuario
+// Obtener técnicos para filtros
+$tecnicos = [];
+$resultTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN ('5','6','7')");
+while ($rowTec = $resultTec->fetch_assoc()) {
+    $tecnicos[] = $rowTec;
+}
+// Verificar que el usuario existe y obtener su información
 $userInfo = null;
 if (isset($_SESSION['id'])) {
     $sql = "SELECT nombre, usuario, correo, rol, foto, idsede FROM usuarios WHERE id = ?";
@@ -25,109 +23,65 @@ if (isset($_SESSION['id'])) {
     $result = $stmt->get_result();
     $userInfo = $result->fetch_assoc();
 }
-
 if (!$userInfo) {
     header('Location: ../error404.php');
     exit();
 }
-
-// Obtener técnicos para filtros
-$tecnicos = [];
-$resultTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN ('5','6','7') ORDER BY nombre");
-while ($rowTec = $resultTec->fetch_assoc()) {
-    $tecnicos[] = $rowTec;
-}
-
-// Estadísticas del Business Room
-$stats = [];
-$whereClause = "estado = 'activo' AND disposicion IN ('Para Venta', 'Business', 'para_venta', 'Business Room')";
-
-if (in_array($_SESSION['rol'], [5, 6, 7])) {
-    $whereClause .= " AND tecnico_id = " . $_SESSION['id'];
-}
-
-// Total equipos
-$sql = "SELECT COUNT(*) as total FROM bodega_inventario WHERE " . $whereClause;
-$result = $conn->query($sql);
-$stats['total'] = $result->fetch_assoc()['total'];
-
-// Equipos con precio
-$sql = "SELECT COUNT(*) as con_precio FROM bodega_inventario WHERE " . $whereClause . " AND precio IS NOT NULL AND precio != '' AND precio != '0'";
-$result = $conn->query($sql);
-$stats['con_precio'] = $result->fetch_assoc()['con_precio'];
-
-// Equipos sin precio
-$stats['sin_precio'] = $stats['total'] - $stats['con_precio'];
-
-// Equipos con foto
-$sql = "SELECT COUNT(*) as con_foto FROM bodega_inventario WHERE " . $whereClause . " AND foto IS NOT NULL AND foto != ''";
-$result = $conn->query($sql);
-$stats['con_foto'] = $result->fetch_assoc()['con_foto'];
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title><?= $pageTitle ?> - PCMARKETTEAM</title>
-    
-    <!-- CSS -->
+    <title>Inventario - PCMARKETTEAM</title>
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/custom.css">
     <link rel="stylesheet" href="../assets/css/loader.css">
+    <!-- Data Tables -->
     <link rel="stylesheet" type="text/css" href="../assets/css/datatable.css">
     <link rel="stylesheet" type="text/css" href="../assets/css/buttonsdataTables.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/font.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../assets/img/favicon.webp" />
-    
     <style>
-        .business-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-        .business-card:hover {
-            transform: translateY(-5px);
-        }
         .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
         }
-        .status-business_room { background: #28a745; color: white; }
-        .status-para_venta { background: #17a2b8; color: white; }
-        .status-business { background: #6f42c1; color: white; }
-        .price-highlight { font-weight: bold; color: #28a745; }
-        .price-missing { color: #dc3545; font-style: italic; }
-        .equipo-card {
-            border: 1px solid #e9ecef;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
+        .status-disponible {
+            background-color: #d4edda;
+            color: #155724;
         }
-        .equipo-card:hover {
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
+        .status-en_diagnostico {
+            background-color: #fff3cd;
+            color: #856404;
         }
-        .filtros-avanzados {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
+        .status-en_reparacion {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .status-en_control {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .status-pendiente {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+        .status-business_room {
+            background-color: #d4edda;
+            color: #155724;
         }
     </style>
 </head>
 <body>
     <div class="wrapper">
         <div class="body-overlay"></div>
-        <?php include_once '../layouts/nav.php'; include_once '../layouts/menu_data.php'; ?>
-        
+        <?php include_once '../layouts/nav.php';
+        include_once '../layouts/menu_data.php'; ?>
         <!-- Sidebar -->
         <nav id="sidebar">
             <div class="sidebar-header">
@@ -135,196 +89,223 @@ $stats['con_foto'] = $result->fetch_assoc()['con_foto'];
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-        
         <!-- Page Content -->
         <div id="content">
-            <!-- Top Navbar -->
             <div class="top-navbar">
-                <nav class="navbar navbar-expand-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <nav class="navbar navbar-expand-lg" style="background: #27ae60;">
                     <div class="container-fluid">
                         <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
-                        <a class="navbar-brand text-white" href="#">
-                            <i class="material-icons">business_center</i>
-                            <strong>BUSINESS ROOM</strong> - <?= htmlspecialchars($userInfo['nombre']) ?>
+                        <?php
+                        $titulo = "";
+                        switch ($_SESSION['rol']) {
+                            case 1:
+                                $titulo = "ADMINISTRADOR";
+                                break;
+                            case 2:
+                                $titulo = "DEFAULT";
+                                break;
+                            case 3:
+                                $titulo = "CONTABLE";
+                                break;
+                            case 4:
+                                $titulo = "COMERCIAL";
+                                break;
+                            case 5:
+                                $titulo = "JEFE TÉCNICO";
+                                break;
+                            case 6:
+                                $titulo = "TÉCNICO";
+                                break;
+                            case 7:
+                                $titulo = "BODEGA";
+                                break;
+                            default:
+                                $titulo = $userInfo['nombre'];
+                                break;
+                        }
+                        ?>
+                        <a class="navbar-brand" href="#"> <B>BUSINESS ROOM </B> <?php echo htmlspecialchars($titulo); ?>
                         </a>
-                        <a class="navbar-brand text-white" href="#">Inventario de Venta</a>
+                        <a class="navbar-brand" href="#"> Inventario </a>
                     </div>
-                    <!-- Menú usuario -->
+                    <!-- Menú derecho (usuario) -->
                     <ul class="nav navbar-nav ml-auto">
                         <li class="dropdown nav-item active">
                             <a href="#" class="nav-link" data-toggle="dropdown">
-                                <img src="../assets/img/<?= htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
-                                    alt="Foto de perfil" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+                                <img src="../assets/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
+                                    alt="Foto de perfil"
+                                    style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
                             </a>
                             <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
-                                <li><strong><?= htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong></li>
-                                <li><?= htmlspecialchars($userInfo['usuario'] ?? 'usuario'); ?></li>
-                                <li><?= htmlspecialchars($userInfo['correo'] ?? 'correo@ejemplo.com'); ?></li>
-                                <li><?= htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?></li>
+                                <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong>
+                                </li>
+                                <li><?php echo htmlspecialchars($userInfo['usuario'] ?? 'usuario'); ?></li>
+                                <li><?php echo htmlspecialchars($userInfo['correo'] ?? 'correo@ejemplo.com'); ?></li>
+                                <li>
+                                    <?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?>
+                                </li>
                                 <li class="mt-2">
-                                    <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi perfil</a>
+                                    <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi
+                                        perfil</a>
                                 </li>
                             </ul>
                         </li>
                     </ul>
                 </nav>
             </div>
-            
-            <!-- Main Content -->
+            <!--- end:: top_navbar -->
             <div class="main-content">
-                <!-- Estadísticas del Business Room -->
-                <div class="row mb-4">
+                <!-- Resumen de Inventario -->
+                <div class="row">
                     <div class="col-md-3">
-                        <div class="card business-card">
-                            <div class="card-body text-center">
-                                <i class="material-icons" style="font-size: 3rem; margin-bottom: 10px;">inventory</i>
-                                <h2 class="mb-0"><?= $stats['total'] ?></h2>
+                        <div class="card bg-primary text-white mb-4">
+                            <div class="card-body">
+                                <?php
+                                // Filtro mejorado para mostrar equipos del técnico actual
+                                $whereClause = "i.estado = 'activo'";
+                                if (in_array($_SESSION['rol'], [5, 6, 7])) {
+                                    $whereClause .= " AND i.tecnico_id = " . $_SESSION['id'];
+                                }
+                                $sql = "SELECT COUNT(*) as total FROM bodega_inventario i WHERE " . $whereClause;
+                                $result = $conn->query($sql);
+                                $row = $result->fetch_assoc();
+                                ?>
+                                <h4 class="mb-0"><?php echo $row['total']; ?></h4>
                                 <div class="text-white-50">Total Equipos</div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card bg-success text-white">
-                            <div class="card-body text-center">
-                                <i class="material-icons" style="font-size: 3rem; margin-bottom: 10px;">attach_money</i>
-                                <h2 class="mb-0"><?= $stats['con_precio'] ?></h2>
-                                <div class="text-white-50">Con Precio</div>
+                        <div class="card bg-success text-white mb-4">
+                            <div class="card-body">
+                                <?php
+                                $sql = "SELECT COUNT(*) as disponibles FROM bodega_inventario i WHERE " . $whereClause . " AND i.disposicion IN ('disponible', 'Business Room')";
+                                $result = $conn->query($sql);
+                                $row = $result->fetch_assoc();
+                                ?>
+                                <h4 class="mb-0"><?php echo $row['disponibles']; ?></h4>
+                                <div class="text-white-50">Disponibles</div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card bg-warning text-white">
-                            <div class="card-body text-center">
-                                <i class="material-icons" style="font-size: 3rem; margin-bottom: 10px;">money_off</i>
-                                <h2 class="mb-0"><?= $stats['sin_precio'] ?></h2>
-                                <div class="text-white-50">Sin Precio</div>
+                        <div class="card bg-warning text-white mb-4">
+                            <div class="card-body">
+                                <?php
+                                $sql = "SELECT COUNT(*) as en_proceso FROM bodega_inventario i WHERE " . $whereClause . " AND i.disposicion IN ('en_diagnostico', 'en_reparacion', 'en_control', 'En revisión', 'En Alistamiento', 'En_Alistamiento')";
+                                $result = $conn->query($sql);
+                                $row = $result->fetch_assoc();
+                                ?>
+                                <h4 class="mb-0"><?php echo $row['en_proceso']; ?></h4>
+                                <div class="text-white-50">En Proceso</div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card bg-info text-white">
-                            <div class="card-body text-center">
-                                <i class="material-icons" style="font-size: 3rem; margin-bottom: 10px;">photo_camera</i>
-                                <h2 class="mb-0"><?= $stats['con_foto'] ?></h2>
-                                <div class="text-white-50">Con Foto</div>
+                        <div class="card bg-danger text-white mb-4">
+                            <div class="card-body">
+                                <?php
+                                $sql = "SELECT COUNT(*) as pendientes FROM bodega_inventario i WHERE " . $whereClause . " AND i.disposicion IN ('pendiente', 'En reparación')";
+                                $result = $conn->query($sql);
+                                $row = $result->fetch_assoc();
+                                ?>
+                                <h4 class="mb-0"><?php echo $row['pendientes']; ?></h4>
+                                <div class="text-white-50">Pendientes</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Filtros Avanzados -->
-                <div class="filtros-avanzados">
-                    <h5><i class="material-icons">filter_list</i> Filtros de Búsqueda</h5>
-                    <form id="filterForm" class="row">
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label><small>Estado</small></label>
-                                <select class="form-control form-control-sm" id="filterEstado">
-                                    <option value="">Todos</option>
-                                    <option value="Business Room">Business Room</option>
-                                    <option value="Para Venta">Para Venta</option>
-                                    <option value="Business">Business</option>
-                                </select>
+                <!-- Filtros -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Filtros de Búsqueda</h4>
+                            </div>
+                            <div class="card-body">
+                                <form id="filterForm" class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Estado</label>
+                                            <select class="form-control" id="filterEstado">
+                                                <option value="">Todos</option>
+                                                <option value="disponible">Disponible</option>
+                                                <option value="Business Room">Business Room</option>
+                                                <option value="en_diagnostico">En Diagnóstico</option>
+                                                <option value="en_reparacion">En Reparación</option>
+                                                <option value="En revisión">En Revisión</option>
+                                                <option value="en_control">En Control de Calidad</option>
+                                                <option value="pendiente">Pendiente</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Ubicación</label>
+                                            <select class="form-control" id="filterUbicacion">
+                                                <option value="">Todas</option>
+                                                <option value="Principal">Principal</option>
+                                                <option value="Bodega">Bodega</option>
+                                                <option value="Laboratorio">Laboratorio</option>
+                                                <option value="Exhibición">Exhibición</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Grado</label>
+                                            <select class="form-control" id="filterGrado">
+                                                <option value="">Todos</option>
+                                                <option value="A">A</option>
+                                                <option value="B">B</option>
+                                                <option value="C">C</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>&nbsp;</label>
+                                            <button type="button" class="btn btn-primary btn-block" id="applyFilters">
+                                                Aplicar Filtros
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label><small>Ubicación</small></label>
-                                <select class="form-control form-control-sm" id="filterUbicacion">
-                                    <option value="">Todas</option>
-                                    <option value="Principal">Principal</option>
-                                    <option value="Bodega">Bodega</option>
-                                    <option value="Laboratorio">Laboratorio</option>
-                                    <option value="Exhibición">Exhibición</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label><small>Grado</small></label>
-                                <select class="form-control form-control-sm" id="filterGrado">
-                                    <option value="">Todos</option>
-                                    <option value="A">A</option>
-                                    <option value="B">B</option>
-                                    <option value="C">C</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label><small>Precio</small></label>
-                                <select class="form-control form-control-sm" id="filterPrecio">
-                                    <option value="">Todos</option>
-                                    <option value="con_precio">Con Precio</option>
-                                    <option value="sin_precio">Sin Precio</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label><small>Técnico</small></label>
-                                <select class="form-control form-control-sm" id="filterTecnico">
-                                    <option value="">Todos</option>
-                                    <?php foreach ($tecnicos as $tecnico): ?>
-                                        <option value="<?= $tecnico['id'] ?>"><?= htmlspecialchars($tecnico['nombre']) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label><small>&nbsp;</small></label>
-                                <div class="btn-group btn-block">
-                                    <button type="button" class="btn btn-primary btn-sm" id="applyFilters">
-                                        <i class="material-icons">search</i> Filtrar
-                                    </button>
-                                    <button type="button" class="btn btn-secondary btn-sm" id="clearFilters">
-                                        <i class="material-icons">clear</i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-                
                 <!-- Tabla de Inventario -->
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5><i class="material-icons">inventory_2</i> Inventario Business Room</h5>
-                                <div class="btn-group">
-                                    <button class="btn btn-success btn-sm" id="addPriceBulk">
-                                        <i class="material-icons">attach_money</i> Agregar Precios
-                                    </button>
-                                    <button class="btn btn-info btn-sm" id="exportData">
-                                        <i class="material-icons">file_download</i> Exportar
-                                    </button>
-                                </div>
+                            <div class="card-header">
+                                <h4>Inventario Detallado</h4>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="inventarioTable" class="table table-striped table-hover">
-                                        <thead class="thead-dark">
+                                    <table id="inventarioTable" class="table table-striped table-hover table-bordered">
+                                        <thead>
                                             <tr>
-                                                <th><input type="checkbox" id="selectAll"></th>
                                                 <th>Código</th>
                                                 <th>Producto</th>
-                                                <th>Marca/Modelo</th>
+                                                <th>Marca</th>
+                                                <th>Modelo</th>
                                                 <th>Serial</th>
                                                 <th>Ubicación</th>
                                                 <th>Grado</th>
-                                                <th>Estado</th>
+                                                <th>Disposicion</th>
                                                 <th>Precio</th>
                                                 <th>Técnico</th>
-                                                <th>Modificación</th>
+                                                <th>Última Modificación</th>
                                                 <th>Acciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
+                                            // Consulta para mostrar solo equipos listos para venta
                                             $sql = "SELECT i.*, 
                                                 CASE 
                                                     WHEN d.estado_reparacion IS NOT NULL THEN d.estado_reparacion
@@ -338,51 +319,52 @@ $stats['con_foto'] = $result->fetch_assoc()['con_foto'];
                                                 LEFT JOIN bodega_control_calidad cc ON i.id = cc.inventario_id 
                                                     AND cc.id = (SELECT MAX(id) FROM bodega_control_calidad WHERE inventario_id = i.id)
                                                 LEFT JOIN usuarios u ON i.tecnico_id = u.id
-                                                WHERE " . $whereClause;
+                                                WHERE i.estado = 'activo' 
+                                                AND i.disposicion IN ('Para Venta', 'Business', 'para_venta')";
+                                            // Filtrar por técnico si no es administrador
+                                            if (in_array($_SESSION['rol'], [5, 6, 7])) {
+                                                $sql .= " AND i.tecnico_id = " . $_SESSION['id'];
+                                            }
                                             $sql .= " ORDER BY i.fecha_modificacion DESC";
-                                            
                                             $result = $conn->query($sql);
                                             if ($result && $result->num_rows > 0) {
                                                 while ($row = $result->fetch_assoc()) {
+                                                    // Determinar clase CSS para el estado
                                                     $statusClass = 'status-' . strtolower(str_replace(' ', '_', $row['estado_actual']));
-                                                    $precioTxt = '';
-                                                    $precioClass = '';
-                                                    
-                                                    if (isset($row['precio']) && $row['precio'] !== '' && $row['precio'] !== '0') {
-                                                        $precioTxt = '$' . number_format((float)$row['precio'], 0, ',', '.');
-                                                        $precioClass = 'price-highlight';
-                                                    } else {
-                                                        $precioTxt = "Sin precio";
-                                                        $precioClass = 'price-missing';
-                                                    }
-                                                    
                                                     echo "<tr>";
-                                                    echo "<td><input type='checkbox' class='equipo-checkbox' value='" . $row['id'] . "'></td>";
-                                                    echo "<td><strong>" . htmlspecialchars($row['codigo_g']) . "</strong></td>";
+                                                    echo "<td>" . htmlspecialchars($row['codigo_g']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['producto']) . "</td>";
-                                                    echo "<td><small>" . htmlspecialchars($row['marca'] . ' ' . $row['modelo']) . "</small></td>";
-                                                    echo "<td><code>" . htmlspecialchars($row['serial']) . "</code></td>";
+                                                    echo "<td>" . htmlspecialchars($row['marca']) . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row['modelo']) . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row['serial']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['ubicacion']) . "</td>";
                                                     echo "<td><span class='badge badge-info'>" . htmlspecialchars($row['grado']) . "</span></td>";
                                                     echo "<td><span class='status-badge " . $statusClass . "'>" . htmlspecialchars($row['estado_actual']) . "</span></td>";
-                                                    echo "<td class='" . $precioClass . "'>" . $precioTxt . "</td>";
-                                                    echo "<td><small>" . htmlspecialchars($row['tecnico_nombre'] ?? 'Sin asignar') . "</small></td>";
-                                                    echo "<td><small>" . date('d/m/Y', strtotime($row['fecha_modificacion'])) . "</small></td>";
-                                                    echo "<td class='text-center'>";
-                                                    echo "<div class='btn-group btn-group-sm'>";
-                                                    echo "<button class='btn btn-info btn-sm view-btn' data-id='" . $row['id'] . "' title='Ver detalles'><i class='material-icons'>visibility</i></button>";
-                                                    echo "<button class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "' title='Editar'><i class='material-icons'>edit</i></button>";
+                                                    // Precio o mensaje
+                                                    $precioTxt = '';
+                                                    if (isset($row['precio']) && $row['precio'] !== '' && $row['precio'] !== '0') {
+                                                        $precioTxt = '$' . number_format((float)$row['precio'], 0, ',', '.');
+                                                    } else {
+                                                        $precioTxt = "<span class='text-danger'>falta precio</span>";
+                                                    }
+                                                    echo "<td>" . $precioTxt . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row['tecnico_nombre'] ?? 'Sin asignar') . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row['fecha_modificacion']) . "</td>";
+                                                    echo "<td class='text-center'>
+                                                        <a href='javascript:void(0)' class='btn btn-info btn-sm view-btn' data-id='" . $row['id'] . "' title='Ver detalles'><i class='material-icons'>visibility</i></a>
+                                                        <a href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "' title='Editar'><i class='material-icons'>edit</i></a>";
                                                     if (!isset($row['precio']) || $row['precio'] === '' || $row['precio'] === '0') {
-                                                        echo "<button class='btn btn-warning btn-sm add-price-btn' data-id='" . $row['id'] . "' title='Agregar precio'><i class='material-icons'>attach_money</i></button>";
+                                                        echo "<button type='button' class='btn btn-warning btn-sm add-price-btn' data-id='" . $row['id'] . "' title='Agregar precio / foto'><i class='material-icons'>attach_money</i></button>";
                                                     }
+                                                    // Solo mostrar botón eliminar para administradores
                                                     if ($_SESSION['rol'] == 1) {
-                                                        echo "<button class='btn btn-danger btn-sm delete-btn' data-id='" . $row['id'] . "' title='Eliminar'><i class='material-icons'>delete</i></button>";
+                                                        echo "<a href='javascript:void(0)' class='btn btn-danger btn-sm delete-btn' data-id='" . $row['id'] . "' title='Eliminar'><i class='material-icons'>delete</i></a>";
                                                     }
-                                                    echo "</div></td>";
+                                                    echo "</td>";
                                                     echo "</tr>";
                                                 }
                                             } else {
-                                                echo "<tr><td colspan='12' class='text-center py-4'><i class='material-icons'>inbox</i><br>No hay equipos en Business Room</td></tr>";
+                                                echo "<tr><td colspan='11' class='text-center'>No hay equipos registrados</td></tr>";
                                             }
                                             ?>
                                         </tbody>
@@ -395,13 +377,73 @@ $stats['con_foto'] = $result->fetch_assoc()['con_foto'];
             </div>
         </div>
     </div>
-    
-    <!-- Modales y Scripts -->
-    <!-- ... (incluir modales para ver detalles, agregar precios, etc.) ... -->
-    
+    <!-- Modal para ver detalles -->
+    <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalles del Equipo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="viewModalBody">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Cargando...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal agregar precio/foto -->
+    <div class="modal fade" id="priceModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="priceForm" method="post" action="../controllers/update_price.php" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Agregar precio / foto</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="inventario_id" id="priceInventarioId">
+                        <div class="form-group">
+                            <label>Precio</label>
+                            <input type="number" step="0.01" min="0" class="form-control" name="precio" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Foto (opcional)</label>
+                            <input type="file" class="form-control" name="foto" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Scripts -->
+    <script src="../assets/js/jquery-3.3.1.min.js"></script>
+    <script src="../assets/js/popper.min.js"></script>
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../assets/js/sidebarCollapse.js"></script>
+    <script src="../assets/js/loader.js"></script>
+    <!-- Data Tables -->
+    <script type="text/javascript" src="../assets/js/datatable.js"></script>
+    <script type="text/javascript" src="../assets/js/datatablebuttons.js"></script>
+    <script type="text/javascript" src="../assets/js/jszip.js"></script>
+    <script type="text/javascript" src="../assets/js/pdfmake.js"></script>
+    <script type="text/javascript" src="../assets/js/vfs_fonts.js"></script>
+    <script type="text/javascript" src="../assets/js/buttonshtml5.js"></script>
+    <script type="text/javascript" src="../assets/js/buttonsprint.js"></script>
     <script>
-        $(document).ready(function() {
-            // Inicializar DataTable con configuración mejorada
+        $(document).ready(function () {
+            // Inicializar DataTable
             var table = $('#inventarioTable').DataTable({
                 dom: 'Bfrtip',
                 buttons: [
@@ -412,14 +454,84 @@ $stats['con_foto'] = $result->fetch_assoc()['con_foto'];
                 },
                 pageLength: 25,
                 responsive: true,
-                order: [[10, 'desc']],
-                columnDefs: [
-                    { orderable: false, targets: [0, 11] }
-                ]
+                order: [[9, 'desc']] // Ordenar por fecha de modificación
             });
-            
-            // Funcionalidades mejoradas
-            // ... (código JavaScript para filtros, modales, etc.) ...
+            // Aplicar filtros
+            $('#applyFilters').click(function () {
+                var estado = $('#filterEstado').val();
+                var ubicacion = $('#filterUbicacion').val();
+                var grado = $('#filterGrado').val();
+                table.columns(7).search(estado); // Estado
+                table.columns(5).search(ubicacion); // Ubicación
+                table.columns(6).search(grado); // Grado
+                table.draw();
+            });
+            // Limpiar filtros
+            $('#filterForm').append('<div class="col-md-12 mt-2"><button type="button" class="btn btn-secondary" id="clearFilters">Limpiar Filtros</button></div>');
+            $('#clearFilters').click(function () {
+                $('#filterEstado, #filterUbicacion, #filterGrado').val('');
+                table.search('').columns().search('').draw();
+            });
+            // Ver detalles
+            $(document).on('click', '.view-btn', function () {
+                var id = $(this).data('id');
+                $('#viewModalBody').html('<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Cargando...</span></div></div>');
+                $('#viewModal').modal('show');
+                $.ajax({
+                    url: '../controllers/get_inventario_details.php',
+                    type: 'GET',
+                    data: { id: id },
+                    success: function (response) {
+                        $('#viewModalBody').html(response);
+                    },
+                    error: function () {
+                        $('#viewModalBody').html('<div class="alert alert-danger">Error al cargar los detalles del equipo.</div>');
+                    }
+                });
+            });
+            // Editar equipo
+            $(document).on('click', '.edit-btn', function () {
+                var id = $(this).data('id');
+                window.location.href = 'editar_inventario.php?id=' + id;
+            });
+            // Agregar precio/foto
+            $(document).on('click', '.add-price-btn', function () {
+                var id = $(this).data('id');
+                $('#priceInventarioId').val(id);
+                $('#priceModal').modal('show');
+            });
+            // Eliminar equipo (solo para administradores)
+            $(document).on('click', '.delete-btn', function () {
+                if (confirm('¿Está seguro de que desea eliminar este equipo del inventario?')) {
+                    var id = $(this).data('id');
+                    var button = $(this);
+                    button.prop('disabled', true);
+                    $.ajax({
+                        url: '../../backend/php/delete_inventario.php',
+                        type: 'POST',
+                        data: { id: id },
+                        success: function (response) {
+                            try {
+                                var result = JSON.parse(response);
+                                if (result.success) {
+                                    alert('Equipo eliminado exitosamente');
+                                    location.reload();
+                                } else {
+                                    alert('Error: ' + result.message);
+                                    button.prop('disabled', false);
+                                }
+                            } catch (e) {
+                                alert('Equipo eliminado exitosamente');
+                                location.reload();
+                            }
+                        },
+                        error: function () {
+                            alert('Error al eliminar el equipo');
+                            button.prop('disabled', false);
+                        }
+                    });
+                }
+            });
         });
     </script>
 </body>

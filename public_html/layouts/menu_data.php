@@ -113,6 +113,37 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
     ];
 }
 
+
+# ==================== GRUPO 2: Proceso de Venta ====================
+$ventaItems = [];
+// Ventas
+if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
+    $ventaItems[] = [
+        'label' => 'Clientes',
+        'icon' => 'groups',
+        'url' => '../venta/mostrar2.php'
+    ];
+}
+if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
+    $ventaItems[] = [
+        'label' => 'VENDER',
+        'icon' => 'request_page',
+        'url' => '../venta/mostrar2.php'
+    ];
+}
+if (!empty( $ventaItems)) {
+    $menu[] = [
+        'label' => 'VENTAS',
+        'icon' => 'payments',
+        'id' => 'venta_group',
+        'children' =>  $ventaItems
+    ];
+}
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+
 # ==================== GRUPO 2: GESTIÓN COMERCIAL ====================
 $comercialItems = [];
 // Clientes
