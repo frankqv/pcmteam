@@ -112,30 +112,48 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
         ]
     ];
 }
-
-
 # ==================== GRUPO 2: Proceso de Venta ====================
 $ventaItems = [];
 // Ventas
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $ventaItems[] = [
-        'label' => 'Clientes',
-        'icon' => 'groups',
-        'url' => '../venta/mostrar2.php'
+        'label' => 'LISTA DE PRODUCTOS',
+        'icon' => 'assignment_add',
+        'url' => '../bodega/lista_producto.php'
     ];
 }
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $ventaItems[] = [
-        'label' => 'Clientes',
+        'label' => 'CLIENTES',
         'icon' => 'groups',
-        'url' => '../venta/mostrar2.php'
+        'url' => '../clientes/mostrar.php'
     ];
 }
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $ventaItems[] = [
         'label' => 'VENDER',
         'icon' => 'request_page',
-        'url' => '../venta/mostrar2.php'
+        'url' => 'venta/nuevo.phpp'
+    ];
+}
+if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
+    $ventaItems[] = [
+        'label' => 'HISTORIA VENTA',
+        'icon' => 'store',
+        'url' => '../venta/mostrar.php'
+    ];
+}
+// Clientes por Tienda
+if (in_array($rol, [1, 2, 4, 5])) {
+    $ventaItems[] = [
+        'label' => 'Cliente por Local',
+        'icon' => 'store',
+        'children' => [
+            ['label' => ' > Puente Aranda', 'url' => '../clientes/bodega.php'],
+            ['label' => ' > Unilago', 'url' => '../clientes/unilago.php'],
+            ['label' => ' > Cúcuta', 'url' => '../clientes/cucuta.php'],
+            ['label' => ' > Medellín', 'url' => '../clientes/medellin.php']
+        ]
     ];
 }
 if (!empty( $ventaItems)) {
@@ -146,11 +164,35 @@ if (!empty( $ventaItems)) {
         'children' =>  $ventaItems
     ];
 }
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-
-
+# ==================== GRUPO 3: Proceso de Despacho ====================
+$despachoItems = [];
+// Ordenes pendientes de despacho
+if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
+    $despachoItems[] = [
+        'label' => 'ÓRDENES PENDIENTES',
+        'icon' => 'local_shipping',
+        'url' => '../despacho/pendientes.php'
+    ];
+}
+// Historial de despachos
+if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
+    $despachoItems[] = [
+        'label' => 'HISTORIAL DESPACHOS',
+        'icon' => 'inventory_2',
+        'url' => '../despacho/historial.php'
+    ];
+}
+// Si hay elementos en despacho, agregar al menú
+if (!empty($despachoItems)) {
+    $menu[] = [
+        'label' => 'DESPACHO',
+        'icon' => 'local_shipping',
+        'id'   => 'despacho_group',
+        'children' => $despachoItems
+    ];
+}
 # ==================== GRUPO 2: GESTIÓN COMERCIAL ====================
 $comercialItems = [];
 // Clientes
@@ -209,7 +251,7 @@ if (!empty($comercialItems)) {
         'children' => $comercialItems
     ];
 }
-# ==================== GRUPO 3: OPERACIONES TÉCNICAS ====================
+# ==================== GRUPO 4: OPERACIONES TÉCNICAS ====================
 $tecnicoItems = [];
 // Servicios Técnicos
 if (in_array($rol, [1, 4, 5, 6, 7])) {
@@ -401,7 +443,7 @@ if (in_array($rol, [1, 7])) { // Solo admin y bodega ven la versión
         'icon' => 'info',
         'children' => [
             ['label' => 'Versión: 0.790', 'url' => '#'],
-            ['label' => 'Beτα - AGOSTO 2025', 'url' => '#']
+            ['label' =>  'αlfa - Septiembre 2025', 'url' => '#']
         ]
     ];
 }
