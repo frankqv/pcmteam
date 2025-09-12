@@ -133,7 +133,7 @@ if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $ventaItems[] = [
         'label' => 'VENDER',
         'icon' => 'request_page',
-        'url' => 'venta/nuevo.phpp'
+        'url' => '../venta/nuevo.php'
     ];
 }
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
@@ -141,6 +141,14 @@ if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
         'label' => 'HISTORIA VENTA',
         'icon' => 'store',
         'url' => '../venta/mostrar.php'
+    ];
+}
+// Marketing
+if (in_array($rol, [1])) {
+    $ventaItems[] = [
+        'icon' => 'touch_app',
+        'label' => 'MARKETING',
+        'url' => '../marketing/mostrar.php'
     ];
 }
 // Clientes por Tienda
@@ -154,6 +162,14 @@ if (in_array($rol, [1, 2, 4, 5])) {
             ['label' => ' > Cúcuta', 'url' => '../clientes/cucuta.php'],
             ['label' => ' > Medellín', 'url' => '../clientes/medellin.php']
         ]
+    ];
+}
+if (in_array($rol, [1, 2, 4, 5])) {
+    $ventaItems[] = [
+        'label' => 'Venta De Servicio',
+        'icon' => 'engineering',
+        'id' => 'tecnico_group',
+        'url' => '../servicio/mostrar.php',
     ];
 }
 if (!empty( $ventaItems)) {
@@ -171,16 +187,14 @@ $despachoItems = [];
 // Ordenes pendientes de despacho
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $despachoItems[] = [
-        'label' => 'ÓRDENES PENDIENTES',
-        'icon' => 'local_shipping',
+        'label' => '📦 ÓRDENES PENDIENTES',
         'url' => '../despacho/pendientes.php'
     ];
 }
 // Historial de despachos
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $despachoItems[] = [
-        'label' => 'HISTORIAL DESPACHOS',
-        'icon' => 'inventory_2',
+        'label' => '📄 HISTORIAL DESPACHOS',
         'url' => '../despacho/historial.php'
     ];
 }
@@ -191,144 +205,6 @@ if (!empty($despachoItems)) {
         'icon' => 'local_shipping',
         'id'   => 'despacho_group',
         'children' => $despachoItems
-    ];
-}
-# ==================== GRUPO 2: GESTIÓN COMERCIAL ====================
-$comercialItems = [];
-// Clientes
-if (in_array($rol, [1, 2, 4, 5, 7])) {
-    $comercialItems[] = [
-        'label' => 'CLIENTES',
-        'icon' => 'group',
-        'url' => '../clientes/mostrar.php',
-    ];
-}
-// Clientes por Tienda
-if (in_array($rol, [1, 2, 4, 5])) {
-    $comercialItems[] = [
-        'label' => 'Mis Clientes',
-        'icon' => 'store',
-        'children' => [
-            ['label' => ' > Puente Aranda', 'url' => '../clientes/bodega.php'],
-            ['label' => ' > Unilago', 'url' => '../clientes/unilago.php'],
-            ['label' => ' > Cúcuta', 'url' => '../clientes/cucuta.php'],
-            ['label' => ' > Medellín', 'url' => '../clientes/medellin.php']
-        ]
-    ];
-}
-// Ventas
-if (in_array($rol, [1, 4, 5, 6, 7])) {
-    $comercialItems[] = [
-        'label' => 'VENTAS',
-        'icon' => 'shopping_basket',
-        'children' => [
-            ['label' => '> Mostrar Ventas', 'url' => '../compra/mostrar.php'],
-            ['label' => '> Nueva Venta', 'url' => '../compra/nuevo.php']
-        ]
-    ];
-}
-// Historial de Ventas
-if (in_array($rol, [1, 3, 4])) {
-    $comercialItems[] = [
-        'label' => 'Historial de Ventas',
-        'icon' => 'point_of_sale',
-        'url' => '../venta/mostrar.php'
-    ];
-}
-// Marketing
-if (in_array($rol, [1])) {
-    $comercialItems[] = [
-        'label' => 'Marketing',
-        'url' => '../marketing/mostrar.php',
-        'icon' => 'campaign'
-    ];
-}
-if (!empty($comercialItems)) {
-    $menu[] = [
-        'label' => 'COMERCIAL',
-        'icon' => 'storefront',
-        'id' => 'comercial_group',
-        'children' => $comercialItems
-    ];
-}
-# ==================== GRUPO 4: OPERACIONES TÉCNICAS ====================
-$tecnicoItems = [];
-// Servicios Técnicos
-if (in_array($rol, [1, 4, 5, 6, 7])) {
-    $tecnicoItems[] = [
-        'label' => 'Servicios Técnicos',
-        'url' => '../servicio/mostrar.php',
-        'icon' => 'view_timeline'
-    ];
-}
-// Mis Servicios
-if (in_array($rol, [5, 6, 7])) {
-    $tecnicoItems[] = [
-        'label' => 'Mis Servicios',
-        'icon' => 'dataset',
-        'url' => '../mis_servicios/mostrar.php'
-    ];
-}
-// Laboratorio Técnico
-if (in_array($rol, [1, 4, 5, 6])) {
-    $tecnicoItems[] = [
-        'label' => 'Laboratorio Técnico',
-        'url' => '../laboratorio/mostrar.php',
-        'icon' => 'biotech'
-    ];
-}
-if (!empty($tecnicoItems)) {
-    $menu[] = [
-        'label' => 'ÁREA TÉCNICA',
-        'icon' => 'engineering',
-        'id' => 'tecnico_group',
-        'children' => $tecnicoItems
-    ];
-}
-# ==================== GRUPO 4: INVENTARIO Y LOGÍSTICA ====================
-$inventarioItems = [];
-// Productos
-if (in_array($rol, [1, 4, 5, 6, 7])) {
-    $inventarioItems[] = [
-        'label' => 'Productos',
-        'icon' => 'conveyor_belt',
-        'children' => [
-            ['label' => '> Lista de Productos', 'url' => '../producto/mostrar.php'],
-            ['label' => '> Categoría', 'url' => '../categoria/mostrar.php']
-        ]
-    ];
-}
-// Bodega
-if (in_array($rol, [1, 4, 5, 7])) {
-    $inventarioItems[] = [
-        'label' => 'Bodega',
-        'icon' => 'warehouse',
-        'children' => [
-            ['label' => '> Inventario', 'url' => '../bodega/inventario.php'],
-            ['label' => '> Entradas', 'url' => '../bodega/entradas.php'],
-            ['label' => '> Salidas', 'url' => '../bodega/salidas.php'],
-            ['label' => '> Despacho', 'url' => '../bodega/despacho.php'],
-            ['label' => '> Listado General', 'url' => '../bodega/mostrar.php'],
-            ['label' => '> Código de Barras', 'url' => '../bodega/barcode.php'],
-            ['label' => '> Partes', 'url' => '../bodega/partes.php'],
-            ['label' => '> Baterías', 'url' => '../bodega/bateria.php'],
-        ]
-    ];
-}
-// Alistamientos
-if (in_array($rol, [1, 4, 5])) {
-    $inventarioItems[] = [
-        'label' => 'Alistamientos',
-        'url' => '../pedidos_ruta/mostrar.php',
-        'icon' => 'unarchive'
-    ];
-}
-if (!empty($inventarioItems)) {
-    $menu[] = [
-        'label' => 'LOGÍSTICA',
-        'icon' => 'inventory_2',
-        'id' => 'inventario_group',
-        'children' => $inventarioItems
     ];
 }
 # ==================== GRUPO 5: FINANZAS Y CONTABILIDAD ====================
