@@ -231,6 +231,14 @@ if (in_array($rol, [1, 3, 4])) {
         ]
     ];
 }
+if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
+    $finanzasItems[] = [
+        'label' => 'HISTORIA VENTA',
+        'icon' => 'store',
+        'url' => '../venta/mostrar.php'
+    ];
+}
+// Si hay elementos en finanzas, agregar al menú
 if (!empty($finanzasItems)) {
     $menu[] = [
         'label' => 'CONTABILIDAD',

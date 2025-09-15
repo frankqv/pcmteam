@@ -154,7 +154,7 @@ while ($r = $sentencia->fetchObject()) {
                 <div class="form-group">
                     <label for="email">Estado del Perfil<span
                             class="text-danger">*</span></label>
-                    <select class="form-control" required name="txtesta">
+                    <select class="form-control" required name="txtesta" disabled>
                         <?php if ($d->estado == '1') { ?>
                             <option value="<?php echo $d->estado; ?>">activo</option>
                         <?php } else { ?>
