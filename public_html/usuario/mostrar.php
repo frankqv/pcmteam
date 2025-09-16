@@ -119,19 +119,18 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2])) {
                                                 <td><?php echo  $g->correo; ?></td>
                                                 <td>
                                                     <?php if ($g->rol == '1') { ?>
-                                                        <span class="badge" style="background: #27ae60;">Administrador</span>
+                                                        <span class="badge" style="background: #911991; color: #fff   ">Administrador</span>
                                                     <?php } elseif ($g->rol == '2') { ?>
                                                         <span class="badge badge-secondary">Default Genérico</span>
                                                     <?php } elseif ($g->rol == '3') { ?>
-                                                        <span class="badge badge-info">Contable</span>
                                                     <?php } elseif ($g->rol == '4') { ?>
-                                                        <span class="badge badge-primary">Comercial</span>
+                                                        <span class="badge" style="background: linear-gradient(135deg, #27ae60 0%, #229954 100%); color: #fff  ;">Comercial</span>
                                                     <?php } elseif ($g->rol == '5') { ?>
-                                                        <span class="badge badge-warning">Jefe Técnico</span>
+                                                        <span class="badge" style="background:#e74c3c; color: #fff  ;">Jefe Técnico</span>
                                                     <?php } elseif ($g->rol == '6') { ?>
-                                                        <span class="badge badge-dark">Técnico</span>
+                                                        <span class="badge badge-dark" style="background:  #2b445cff;">Técnico</span>
                                                     <?php } elseif ($g->rol == '7') { ?>
-                                                        <span class="badge badge-light text-dark">Bodega</span>
+                                                        <span class="badge" style="background: #ac8358 ; color: #fff;">Bodega</span>
                                                     <?php } else { ?>
                                                         <span class="badge badge-danger">null</span>
                                                     <?php } ?>
