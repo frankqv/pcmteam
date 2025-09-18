@@ -139,7 +139,22 @@ function estadoPedido($status) {
                     <?php foreach($pedidos as $pedido): ?>
                         <tr>
                             <td>
-                                <form method="post" action="asignar_tecnico.php" style="display:inline-block;">
+                            <?php
+                                // Procesar asignación de técnico
+                                if ($_POST && isset($_POST['idord'], $_POST['tecnico_id'])) {
+                                    $idord = intval($_POST['idord']);
+                                    $tecnico_id = intval($_POST['tecnico_id']);
+                                    
+                                    $stmt = $conn->prepare("UPDATE pedidos SET user_id = ? WHERE idord = ?");
+                                    $stmt->bind_param("ii", $tecnico_id, $idord);
+                                    $stmt->execute();
+                                    
+                                    // Opcional: recargar la página para ver el cambio
+                                    header('Location: ' . $_SERVER['PHP_SELF']);
+                                    exit;
+                                }
+                            ?>
+                                <form method="post" action="" style="display:inline-block;">
                                     <input type="hidden" name="idord" value="<?php echo $pedido['idord']; ?>">
                                     <select name="tecnico_id" class="form-control form-control-sm" onchange="this.form.submit()">
                                         <option value="">Seleccionar</option>

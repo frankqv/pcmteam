@@ -92,8 +92,11 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
             ],
             [
                 'label' => 'ESTETICO',
-                'url' => '../bodega/estetico.php',
-                'class' => 'style-estetico'
+                'class' => 'style-estetico',
+                'children' => [
+                    ['label' => '◖REPARAR', 'url' => '../bodega/estetico.php',],
+                    ['label' => '◖LISTADO', 'url' => '../bodega/lista_estetico.php'],
+                ]
             ],            
             [
                 'label' => 'CONTROL DE CALIDAD',
@@ -120,6 +123,13 @@ if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
         'label' => 'LISTA DE PRODUCTOS',
         'icon' => 'assignment_add',
         'url' => '../bodega/lista_producto.php'
+    ];
+}
+if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
+    $ventaItems[] = [
+    'label' => 'CATALOGO',
+    'icon' => 'book',
+    'url' => '../venta/catalogo.php'
     ];
 }
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {

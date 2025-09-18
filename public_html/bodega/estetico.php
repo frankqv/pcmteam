@@ -421,6 +421,9 @@ function gradoBadgeClass(string $grado): string
           <i class="material-icons" style="margin-right: 8px;">palette</i>
           🎨 DIAGNÓSTICO ESTÉTICO | <?php echo htmlspecialchars($_SESSION['nombre'] ?? 'USUARIO'); ?>
         </a>
+        <a href="inventario.php" class="btn btn-sm btn-outline-secondary">
+                <i class="material-icons">inventory</i> Inventario
+              </a>
       </div>
     </div>
     <!-- Mensajes de alerta -->

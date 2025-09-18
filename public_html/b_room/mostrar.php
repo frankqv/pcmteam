@@ -281,14 +281,20 @@ if (!$userInfo) {
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-header">
+                            <div class="card-header d-flex justify-content-between align-items-center">
                                 <h4>Inventario Detallado</h4>
+                                <button type="button" id="enviarVentasBtn" class="btn btn-success" disabled>
+                                    <i class="material-icons">shopping_cart</i> Enviar Seleccionados a Ventas
+                                </button>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table id="inventarioTable" class="table table-striped table-hover table-bordered">
                                         <thead>
                                             <tr>
+                                                <th>
+                                                    <input type="checkbox" id="selectAll" title="Seleccionar todos">
+                                                </th>
                                                 <th>Código</th>
                                                 <th>Producto</th>
                                                 <th>Marca</th>
@@ -305,7 +311,7 @@ if (!$userInfo) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            // Consulta para mostrar solo equipos listos para venta
+                                            // Consulta para mostrar equipos listos para enviar a ventas
                                             $sql = "SELECT i.*, 
                                                 CASE 
                                                     WHEN d.estado_reparacion IS NOT NULL THEN d.estado_reparacion
@@ -320,7 +326,7 @@ if (!$userInfo) {
                                                     AND cc.id = (SELECT MAX(id) FROM bodega_control_calidad WHERE inventario_id = i.id)
                                                 LEFT JOIN usuarios u ON i.tecnico_id = u.id
                                                 WHERE i.estado = 'activo' 
-                                                AND i.disposicion IN ('Para Venta', 'Business', 'para_venta')";
+                                                AND i.disposicion IN ('Para Venta', 'Business', 'para_venta', 'aprobado', 'Business Room', 'en_control')";
                                             // Filtrar por técnico si no es administrador
                                             if (in_array($_SESSION['rol'], [5, 6, 7])) {
                                                 $sql .= " AND i.tecnico_id = " . $_SESSION['id'];
@@ -332,6 +338,7 @@ if (!$userInfo) {
                                                     // Determinar clase CSS para el estado
                                                     $statusClass = 'status-' . strtolower(str_replace(' ', '_', $row['estado_actual']));
                                                     echo "<tr>";
+                                                    echo "<td><input type='checkbox' class='equipo-checkbox' value='" . $row['id'] . "'></td>";
                                                     echo "<td>" . htmlspecialchars($row['codigo_g']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['producto']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['marca']) . "</td>";
@@ -366,7 +373,7 @@ if (!$userInfo) {
                                                     echo "</tr>";
                                                 }
                                             } else {
-                                                echo "<tr><td colspan='11' class='text-center'>No hay equipos registrados</td></tr>";
+                                                echo "<tr><td colspan='12' class='text-center'>No hay equipos listos para enviar a ventas</td></tr>";
                                             }
                                             ?>
                                         </tbody>
@@ -533,6 +540,88 @@ if (!$userInfo) {
                         }
                     });
                 }
+            });
+
+            // Funcionalidad de selección múltiple
+            $('#selectAll').change(function() {
+                $('.equipo-checkbox').prop('checked', this.checked);
+                updateEnviarButton();
+            });
+
+            $('.equipo-checkbox').change(function() {
+                updateEnviarButton();
+                // Si se deselecciona uno, desmarcar "Seleccionar todo"
+                if (!this.checked) {
+                    $('#selectAll').prop('checked', false);
+                }
+                // Si todos están seleccionados, marcar "Seleccionar todo"
+                var totalCheckboxes = $('.equipo-checkbox').length;
+                var checkedCheckboxes = $('.equipo-checkbox:checked').length;
+                if (checkedCheckboxes === totalCheckboxes && totalCheckboxes > 0) {
+                    $('#selectAll').prop('checked', true);
+                }
+            });
+
+            function updateEnviarButton() {
+                var selectedCount = $('.equipo-checkbox:checked').length;
+                if (selectedCount > 0) {
+                    $('#enviarVentasBtn').prop('disabled', false).text('Enviar ' + selectedCount + ' Equipos a Ventas');
+                } else {
+                    $('#enviarVentasBtn').prop('disabled', true).html('<i class="material-icons">shopping_cart</i> Enviar Seleccionados a Ventas');
+                }
+            }
+
+            // Enviar equipos a ventas
+            $('#enviarVentasBtn').click(function() {
+                var selectedIds = [];
+                $('.equipo-checkbox:checked').each(function() {
+                    selectedIds.push($(this).val());
+                });
+
+                if (selectedIds.length === 0) {
+                    alert('Por favor seleccione al menos un equipo');
+                    return;
+                }
+
+                if (!confirm('¿Está seguro de enviar ' + selectedIds.length + ' equipos a ventas?')) {
+                    return;
+                }
+
+                var button = $(this);
+                button.prop('disabled', true).html('<i class="material-icons">hourglass_empty</i> Procesando...');
+
+                $.ajax({
+                    url: '../../backend/php/procesar_envio_ventas.php',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ equipos_ids: selectedIds }),
+                    success: function(response) {
+                        try {
+                            var result = JSON.parse(response);
+                            if (result.status === 'success') {
+                                var message = result.message;
+                                if (result.warnings) {
+                                    message += '\n\nAdvertencias: ' + result.warnings;
+                                }
+                                if (result.info) {
+                                    message += '\n\nInformación: ' + result.info;
+                                }
+                                alert(message);
+                                location.reload();
+                            } else {
+                                alert('Error: ' + result.message);
+                                button.prop('disabled', false).html('<i class="material-icons">shopping_cart</i> Enviar Seleccionados a Ventas');
+                            }
+                        } catch (e) {
+                            alert('Error al procesar la respuesta del servidor');
+                            button.prop('disabled', false).html('<i class="material-icons">shopping_cart</i> Enviar Seleccionados a Ventas');
+                        }
+                    },
+                    error: function() {
+                        alert('Error de conexión. Intente nuevamente.');
+                        button.prop('disabled', false).html('<i class="material-icons">shopping_cart</i> Enviar Seleccionados a Ventas');
+                    }
+                });
             });
         });
     </script>

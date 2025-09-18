@@ -27,7 +27,6 @@ if ($from_catalog) {
 
 <!doctype html>
 <html lang="es">
-
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -51,7 +50,6 @@ if ($from_catalog) {
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../assets/img/favicon.webp" />
 </head>
-
 <body>
     <div class="wrapper">
         <div class="body-overlay"></div>
@@ -151,156 +149,29 @@ if ($from_catalog) {
                     </div>
                 </div>
                 <?php endif; ?>
-                <div class="row ">
-                    <div class="col-lg-6 col-md-6">
-                        <div class="card" style="min-height: 485px">
-                            <div class="card-header card-header-text">
-                                <h4 class="card-title">Ventas</h4>
-                                <p class="category">Nuevas ventas</p>
-                            </div>
-                            <br>
-                            <div class="card-content table-responsive">
-                                <table class="table table-hover" id="example1">
-                                    <thead class="text-primary">
-                                        <tr>
-                                            <th>Articulo</th>
-                                            <th>Precio</th>
-                                            <th>Stock</th>
-                                            <th>Cantidad</th>
-                                            <th>Subtotal</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php
-                                        require_once('../../config/ctconex.php');
-                                        $grand_total = 0;
-                                        $select_cart = $connect->prepare("SELECT cart.idv, usuarios.id, usuarios.nombre, producto.idprod, producto.codba, producto.nomprd, producto.precio, producto.stock, cart.name, cart.price, cart.quantity FROM cart INNER JOIN usuarios ON cart.user_id = usuarios.id INNER JOIN producto ON cart.idprod = producto.idprod");
-                                        $select_cart->execute();
-                                        if($select_cart->rowCount() > 0){
-                                            while($fetch_cart = $select_cart->fetch(PDO::FETCH_ASSOC)){ 
-                                    ?>
-                                        <td><?= $fetch_cart['nomprd']; ?></td>
-                                        <td><?= $fetch_cart['precio']; ?></td>
-                                        <td><?= $fetch_cart['stock']; ?></td>
-                                        <td>
-                                            <form action="" method="POST">
-                                                <div class="form-group">
-                                                    <input type="hidden" name="prdt" value="<?= $fetch_cart['idv']; ?>">
-                                                    <input type="number" name="p_qty"
-                                                        value="<?= $fetch_cart['quantity']; ?>" style="width:100px;"
-                                                        min="1" max="99" class="form-control" placeholder="Cantidad">
-                                                </div>
-                                                <button type="submit" name="update_qty" class="btn btn-danger"> <i
-                                                        class='material-icons' data-toggle='tooltip'
-                                                        title='crear'>refresh</i></button>
-                                            </form>
-                                        </td>
-                                        <td><span><?= $sub_total = ($fetch_cart['price'] * $fetch_cart['quantity']); ?></span>
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-danger" onclick="return confirm('Eliminar del carrito?');"
-                                                href="../venta/eliminar.php?id=<?= $fetch_cart['idv']; ?>"><i
-                                                    class='material-icons' data-toggle='tooltip'
-                                                    title='crear'>close</i></a>
-                                        </td>
-                                    </tbody>
-                                    <?php
-                                        $grand_total += $sub_total;
-                                        }
-                                    }else{
-                                        echo '<p class="alert alert-warning">Tu carrito esta vació</p>';
-                                    }
-                                    ?>
-                                </table>
-                            </div>
+
+                <?php if (!$from_catalog): ?>
+                <!-- Solo mostrar esta sección si NO viene desde el catálogo -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            <h4><i class="material-icons">info</i> Sistema de Ventas Actualizado</h4>
+                            <p>Para realizar ventas, por favor utilice el <strong>Catálogo de Productos</strong> que muestra los equipos disponibles del inventario.</p>
+                            <a href="catalogo.php" class="btn btn-success btn-lg">
+                                <i class="material-icons">shopping_cart</i> Ir al Catálogo de Productos
+                            </a>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="card" style="min-height: 485px">
-                            <div class="card-header card-header-text">
-                                <h4 class="card-title">Articulo</h4>
-                                <p class="category">Agrega un articulo</p>
-                            </div>
-                            <br>
-                            <div class="card-content table-responsive">
-                                <?php 
-                                    $sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere, producto.serial, producto.marca, producto.ram, producto.disco, producto.prcpro, producto.pntpro, producto.tarpro, producto.grado FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate order BY codba DESC;");
-                                    $sentencia->execute();
-                                    $data =  array();
-                                    if($sentencia){
-                                    while($r = $sentencia->fetchObject()){
-                                        $data[] = $r;
-                                    }
-                                    }
-                                     ?>
-                                <?php if(count($data)>0):?>
-                                <table class="table table-hover" id="example">
-                                    <thead class="text-primary">
-                                        <tr>
-                                            <th>Nombre</th>
-                                            <th>Precio</th>
-                                            <th>Foto</th>
-                                            <th>Stock</th>
-                                            <th>Opcion</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach($data as $d):?>
-                                        <tr>
-                                            <td><?php echo  $d->nomprd; ?></td>
-                                            <td><?php echo  $d->precio; ?></td>
-                                            <td><img src="../assets/img/subidas/<?php echo $d->foto ?>" width='50'
-                                                    height='50'></td>
-                                            <?php 
-                                                if ($d->stock <= 0) {
-                                                
-                                                    echo '<td><span class="badge badge-danger">stock vacio</span></td>';
-                                                }elseif ($d->stock <= 1) {
-                                                    echo '<td><span class="badge badge-warning">Última Unidad</span></td>';
-                                                
-                                                }else {
-                                                    echo '<td><span class="badge badge-success">' . $d->stock . '</span></td>';
-                                                }
-                                            ?>
-                                            <td>
-                                                <form class="form-inline" method="post" action="">
-                                                    <input type="hidden" name="prdt" value="<?php echo $d->idprod; ?>">
-                                                    <input type="hidden" name="pdrus"
-                                                        value="<?php echo $_SESSION['id']; ?>">
-                                                    <input type="hidden" name="name" value="<?php echo $d->nomprd; ?>">
-                                                    <input type="hidden" name="prec" value="<?php echo $d->precio; ?>">
+                </div>
+                <?php endif; ?>
 
-                                                    <div class="form-group">
-                                                        <input type="number" name="p_qty" value="1" style="width:100px;"
-                                                            min="1" class="form-control" placeholder="Cantidad">
-                                                    </div>
-                                                    <button type="submit" name="add_to_cart" class="btn btn-success"> <i
-                                                            class='material-icons' data-toggle='tooltip'
-                                                            title='crear'>shopping_cart</i></button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                                <?php else:?>
-                                <!-- Warning Alert -->
-                                <div class="alert alert-warning" role="alert">
-                                    No se encontró ningún dato!
-                                </div>
-
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
+                <div class="row">
                     <div class="col-lg-12 col-md-12">
                         <div class="card" style="min-height: 485px">
                             <div class="card-header card-header-text">
-                                <h4 class="card-title">Ventas recientes</h4>
-                                <p class="category">Finalizar ventas reciente añadidos el dia de hoy</p>
+                                <h4 class="card-title">Procesar Venta</h4>
+                                <p class="category">Complete los datos para procesar la venta</p>
                             </div>
-
                             <div class="card-content table-responsive">
                                 <div class="alert alert-warning">
                                     <strong>Estimado usuario!</strong> Los campos remarcados con <span
@@ -340,8 +211,8 @@ if ($from_catalog) {
                                                 <label for="email">Comprobante<span class="text-danger">*</span></label>
                                                 <select class="form-control" required name="cxcom">
                                                     <option value="">----------Seleccione------------</option>
-                                                    <option value="Ticket">Factura</option>
-                                                    <option value="Ticket">Boleta</option>
+                                                    <option value="Factura">Factura</option>
+                                                    <option value="Boleta">Boleta</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -353,11 +224,11 @@ if ($from_catalog) {
                                                     <option value="">----------Seleccione------------</option>
                                                     <option value="Transferencia">Transferencia PSE</option>
                                                     <option value="Efectivo">Efectivo</option>
-                                                    <option value="Efectivo">Tarjeta</option>
-                                                    <option value="Efectivo">Addi</option>
-                                                    <option value="Efectivo">Wompi</option>
-                                                    <option value="Efectivo">SisteCredito</option>
-                                                    <option value="Efectivo">PSE</option>
+                                                    <option value="Tarjeta">Tarjeta</option>
+                                                    <option value="Addi">Addi</option>
+                                                    <option value="Wompi">Wompi</option>
+                                                    <option value="SisteCredito">SisteCredito</option>
+                                                    <option value="PSE">PSE</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -372,44 +243,31 @@ if ($from_catalog) {
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <?php
-                                        //require_once('../../backend/config/Conexion.php');
-                                            $user_id = $_SESSION['id'];
-                                            $cart_grand_total = 0;
-                                            $select_cart_items = $connect->prepare("SELECT cart.idv, usuarios.id, usuarios.nombre, producto.idprod, producto.codba, producto.nomprd, producto.precio, producto.stock, cart.name, cart.price, cart.quantity FROM cart INNER JOIN usuarios ON cart.user_id = usuarios.id INNER JOIN producto ON cart.idprod = producto.idprod WHERE user_id = ?");
-                                            $select_cart_items->execute([$user_id]);
-                                            if($select_cart_items->rowCount() > 0){
-                                                while($fetch_cart_items = $select_cart_items->fetch(PDO::FETCH_ASSOC)){
-                                                $cart_total_price = ($fetch_cart_items['precio'] * $fetch_cart_items['quantity']);
-                                                $cart_grand_total += $cart_total_price;
-                                        ?>
                                         <div class="col-md-12 col-lg-12">
+                                            <?php if ($from_catalog): ?>
                                             <div class="form-group">
-                                                <label for="email">Mis productos<span
-                                                        class="text-danger">*</span></label>
-
-                                                <input type="hidden" value="<?= $fetch_cart_items['idprod']; ?>"
-                                                    name="product1[]">
-                                                <input type="hidden" value="<?= $fetch_cart_items['quantity']; ?>"
-                                                    name="canti[]">
-                                                <input type="hidden" value="<?= $fetch_cart_items['idv']; ?>"
-                                                    name="idcart">
+                                                <label for="email">Producto Seleccionado<span class="text-danger">*</span></label>
                                                 <input readonly class="form-control" type="text"
-                                                    value="<?= $fetch_cart_items['name']; ?> (<?= 'S/'.$fetch_cart_items['precio'].'/- x '. $fetch_cart_items['quantity']; ?>)"
+                                                    value="<?php echo htmlspecialchars($producto_data['marca'] . ' ' . $producto_data['modelo']); ?> (Cantidad: <?php echo $producto_data['cantidad']; ?>)"
                                                     name="">
                                             </div>
+                                            <?php else: ?>
+                                            <div class="alert alert-info">
+                                                <p>No hay productos seleccionados. Por favor, seleccione un producto desde el catálogo.</p>
+                                            </div>
+                                            <?php endif; ?>
                                         </div>
-                                        <?php }
-                                        }else{  echo '<p class="empty"><p class="alert alert-warning">Tu carrito esta vació</p></p>';   }
-                                        ?> 
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 col-lg-12">
-                                            <h1 style="font-size:42px; color:#000000;"><strong>Precio Total
-                                                    :S/<?php echo number_format($cart_grand_total, 2); ?> </strong></h1>
+                                            <?php if ($from_catalog): ?>
+                                            <h1 style="font-size:42px; color:#000000;"><strong>Precio Total: $<?php echo number_format($producto_data['precio'] * $producto_data['cantidad'], 0, ',', '.'); ?></strong></h1>
+                                            <?php else: ?>
+                                            <h1 style="font-size:42px; color:#000000;"><strong>Precio Total: $0</strong></h1>
+                                            <?php endif; ?>
                                         </div>
-                                        <input type="hidden" value="<?php  echo $cart_grand_total ?>" name="txttotalll">
-                                    </div> <hr>
+                                    </div> 
+                                    <hr>
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <?php if ($from_catalog): ?>
@@ -417,8 +275,9 @@ if ($from_catalog) {
                                                 Procesar Venta
                                             </button>
                                             <?php else: ?>
-                                            <button name="order" type="submit"
-                                                class="btn btn-success text-white <?= ($cart_grand_total > 1)?'':'disabled'; ?>">Guardar</button>
+                                            <button type="button" class="btn btn-secondary text-white" disabled>
+                                                Seleccione un producto del catálogo
+                                            </button>
                                             <?php endif; ?>
                                             <a class="btn btn-danger text-white" href="mostrar.php">Cancelar</a>
                                         </div>
@@ -432,7 +291,6 @@ if ($from_catalog) {
         </div>
     </div>
     </div>
-
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="../assets/js/jquery-3.3.1.slim.min.js"></script>
@@ -440,47 +298,20 @@ if ($from_catalog) {
     <script src="../assets/js/bootstrap.min.js"></script>
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/sweetalert.js"></script>
-    <?php
-    include_once '../../backend/php/st_add_cart.php'?>
-    <?php
-    include_once '../../backend/php/st_updcart.php'?>
-    <?php
-    include_once '../../backend/php/st_addcheck.php'  ?>
+    
     <script type="text/javascript">
     $(document).ready(function() {
         $('#sidebarCollapse').on('click', function() {
             $('#sidebar').toggleClass('active');
             $('#content').toggleClass('active');
         });
-
         $('.more-button,.body-overlay').on('click', function() {
             $('#sidebar,.body-overlay').toggleClass('show-nav');
         });
-
     });
     </script>
     <script src="../assets/js/loader.js"></script>
-    <!-- Data Tables -->
-    <script type="text/javascript" src="../assets/js/datatable.js"></script>
-    <script type="text/javascript" src="../assets/js/datatablebuttons.js"></script>
-    <script type="text/javascript" src="../assets/js/jszip.js"></script>
-    <script type="text/javascript" src="../assets/js/pdfmake.js"></script>
-    <script type="text/javascript" src="../assets/js/vfs_fonts.js"></script>
-    <script type="text/javascript" src="../assets/js/buttonshtml5.js"></script>
-    <script type="text/javascript" src="../assets/js/buttonsprint.js"></script>
-    <script type="text/javascript">
-    $(document).ready(function() {
-        $('#example').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ],
-            language: {
-                search: "🔍buscar:"
-            }
-        });
-    });
-    </script>
+    
     <script type="text/javascript">
     window.onload = function() {
         var fecha = new Date(); //Fecha actual
@@ -549,7 +380,6 @@ if ($from_catalog) {
     });
     </script>
 </body>
-
 </html>
 
 <?php }else{ 

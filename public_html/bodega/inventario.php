@@ -1,3 +1,4 @@
+<!-- /bodega/inventario.php -->
 <?php
 ob_start();
 session_start();
@@ -9,6 +10,21 @@ $tecnicos = [];
 $resultTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN ('5','6','7')");
 while ($rowTec = $resultTec->fetch_assoc()) {
     $tecnicos[] = $rowTec;
+}
+?>
+<?php
+// Procesar asignación de técnico
+if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
+    $equipo_id = intval($_POST['equipo_id']);
+    $tecnico_id = intval($_POST['tecnico_id']);
+    
+    $stmt = $conn->prepare("UPDATE bodega_inventario SET tecnico_id = ? WHERE id = ?");
+    $stmt->bind_param("ii", $tecnico_id, $equipo_id);
+    $stmt->execute();
+    
+    // Opcional: recargar la página para ver el cambio inmediatamente
+    header('Location: ' . $_SERVER['PHP_SELF']);
+    exit;
 }
 ?>
 <?php if (isset($_SESSION['id'])) { ?>
@@ -186,6 +202,87 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                     <form id="filterForm" class="row">
                                         <div class="col-md-2">
                                             <div class="form-group">
+                                                <label>Producto</label>
+                                                <select class="form-control" id="filterProducto">
+                                                    <option value="">Todos</option>
+                                                    <?php
+                                                    $query_sedes = "SELECT DISTINCT producto FROM bodega_inventario WHERE producto IS NOT NULL AND producto != '' ORDER BY producto";
+                                                    $result_sedes = $connect->prepare($query_sedes);
+                                                    $result_sedes->execute();
+                                                    $sedes = $result_sedes->fetchAll(PDO::FETCH_ASSOC);
+                                                    foreach ($sedes as $sede) {
+                                                        $selected = (isset($f->producto) && $f->producto == $sede['producto']) ? 'selected' : '';
+                                                        echo '<option value="' . htmlspecialchars($sede['producto']) . '" ' . $selected . '>';
+                                                        echo htmlspecialchars($sede['producto']);
+                                                        echo '</option>';
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Grado</label>
+                                                <select class="form-control" id="filterGrado">
+                                                <option value="">Todos</option>
+                                                <?php
+                                                    $query_sedes = "SELECT DISTINCT grado FROM bodega_inventario WHERE grado IS NOT NULL AND grado != '' ORDER BY grado";
+                                                    $result_sedes = $connect->prepare($query_sedes);
+                                                    $result_sedes->execute();
+                                                    $sedes = $result_sedes->fetchAll(PDO::FETCH_ASSOC);
+                                                    foreach ($sedes as $sede) {
+                                                        $selected = (isset($f->grado) && $f->grado == $sede['grado']) ? 'selected' : '';
+                                                        echo '<option value="' . htmlspecialchars($sede['grado']) . '" ' . $selected . '>';
+                                                        echo htmlspecialchars($sede['grado']);
+                                                        echo '</option>';
+                                                    }
+                                                    ?>
+                                                    <option value="SCRAP">SCRAP</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Ubicacion</label>
+                                                <select class="form-control" id="filterUbicacion">
+                                                    <option value="">Todos</option>
+                                                    <?php
+                                                    $query_sedes = "SELECT DISTINCT ubicacion FROM bodega_inventario WHERE ubicacion IS NOT NULL AND ubicacion != '' ORDER BY ubicacion";
+                                                    $result_sedes = $connect->prepare($query_sedes);
+                                                    $result_sedes->execute();
+                                                    $sedes = $result_sedes->fetchAll(PDO::FETCH_ASSOC);
+                                                    foreach ($sedes as $sede) {
+                                                        $selected = (isset($f->ubicacion) && $f->ubicacion == $sede['ubicacion']) ? 'selected' : '';
+                                                        echo '<option value="' . htmlspecialchars($sede['ubicacion']) . '" ' . $selected . '>';
+                                                        echo htmlspecialchars($sede['ubicacion']);
+                                                        echo '</option>';
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Posicion</label>
+                                                <select class="form-control" id="filterPosicion">
+                                                    <option value="">Todos</option>
+                                                    <?php
+                                                    $query_sedes = "SELECT DISTINCT posicion FROM bodega_inventario WHERE posicion IS NOT NULL AND posicion != '' ORDER BY posicion";
+                                                    $result_sedes = $connect->prepare($query_sedes);
+                                                    $result_sedes->execute();
+                                                    $sedes = $result_sedes->fetchAll(PDO::FETCH_ASSOC);
+                                                    foreach ($sedes as $sede) {
+                                                        $selected = (isset($f->posicion) && $f->posicion == $sede['posicion']) ? 'selected' : '';
+                                                        echo '<option value="' . htmlspecialchars($sede['posicion']) . '" ' . $selected . '>';
+                                                        echo htmlspecialchars($sede['posicion']);
+                                                        echo '</option>';
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
                                                 <label>Disposición</label>
                                                 <select class="form-control" id="filterDisposicion">
                                                     <option value="">Todas</option>
@@ -199,7 +296,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <div class="form-group">
                                                 <label>Estado</label>
                                                 <select class="form-control" id="filterEstado">
@@ -208,43 +305,8 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                     <option value="Business">Business</option>
                                                 </select>
                                             </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label>Sede</label>
-                                                <select class="form-control" id="filterUbicacion">
-                                                    <option value="">Todas</option>
-                                                    <option value="Principal">Principal</option>
-                                                    <option value="Cúcuta">Cúcuta</option>
-                                                    <option value="Bodega">Bodega</option>
-                                                    <option value="Laboratorio">Laboratorio</option>
-                                                    <option value="Exhibición">Exhibición</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label>Grado</label>
-                                                <select class="form-control" id="filterGrado">
-                                                    <option value="">Todos</option>
-                                                    <option value="A">A</option>
-                                                    <option value="B">B</option>
-                                                    <option value="C">C</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label>Producto</label>
-                                                <select class="form-control" id="filterProducto">
-                                                    <option value="">Todos</option>
-                                                    <option value="Portatil">Portátil</option>
-                                                    <option value="Desktop">Desktop</option>
-                                                    <option value="AIO">AIO</option>
-                                                    <option value="Periferico">Periférico</option>
-                                                </select>
-                                            </div>
-                                        </div>
+                                        </div> -->
+                                        <br/>
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label>&nbsp;</label>
@@ -253,14 +315,14 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                 </button>
                                             </div>
                                         </div>
-                                    </form>
-                                    <div class="row mt-2">
+                                        <div class="row mt-2">
                                         <div class="col-md-12">
                                             <button type="button" class="btn btn-secondary" id="clearFilters">
                                                 Limpiar Filtros
                                             </button>
                                         </div>
-                                    </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -283,6 +345,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                     <th>Modelo</th>
                                                     <th>Serial</th>
                                                     <th>Ubicación</th>
+                                                    <th>Posicion</th>
                                                     <th>Grado</th>
                                                     <th>Disposición</th>
                                                     <th>Estado</th>
@@ -307,11 +370,12 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                     echo "<td>" . htmlspecialchars($row['modelo']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['serial']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['ubicacion']) . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row['posicion']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['grado']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['disposicion']) . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['estado']) . "</td>";
                                                     echo "<td>
-            <form method='post' action='asignar_tecnico.php' style='margin:0;'>
+            <form method='post' style='margin:0;'>
                 <input type='hidden' name='equipo_id' value='" . $row['id'] . "'>
                 <select name='tecnico_id' class='form-control form-control-sm' onchange='this.form.submit()'>
                     <option value=''>Seleccionar</option>";
@@ -384,37 +448,38 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                     },
                     order: [[10, 'desc']] // Ordenar por fecha de modificación descendente
                 });
-
-                // Aplicar filtros - CORREGIDO
-                $('#applyFilters').click(function () {
-                    var disposicion = $('#filterDisposicion').val();
-                    var estado = $('#filterEstado').val();
-                    var ubicacion = $('#filterUbicacion').val();
-                    var grado = $('#filterGrado').val();
-                    var producto = $('#filterProducto').val();
-
-                    // Limpiar filtros anteriores
-                    table.search('').columns().search('').draw();
-
-                    // Aplicar filtros por columna (índices corregidos)
-                    if (disposicion) {
-                        table.column(7).search('^' + disposicion + '$', true, false); // Disposición - columna 7
-                    }
-                    if (estado) {
-                        table.column(8).search('^' + estado + '$', true, false); // Estado - columna 8
-                    }
-                    if (ubicacion) {
-                        table.column(5).search('^' + ubicacion + '$', true, false); // Ubicación - columna 5
-                    }
-                    if (grado) {
-                        table.column(6).search('^' + grado + '$', true, false); // Grado - columna 6
-                    }
-                    if (producto) {
-                        table.column(1).search('^' + producto + '$', true, false); // Producto - columna 1
-                    }
-                    
-                    table.draw();
-                });
+                    // helper: escapar texto para usarlo en una regex segura
+function escapeRegex(text) {
+    return text.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+$('#applyFilters').click(function () {
+    var disposicion = $.trim($('#filterDisposicion').val() || '');
+    // Si no tienes filterEstado en el HTML, quita la siguiente línea o crea el select
+    var estado = $.trim($('#filterEstado').val() || '');
+    var ubicacion = $.trim($('#filterUbicacion').val() || '');
+    var grado = $.trim($('#filterGrado').val() || '');
+    var producto = $.trim($('#filterProducto').val() || '');
+    var posicion = $.trim($('#filterPosicion').val() || '');
+    // Limpiar filtros anteriores
+    table.search('').columns().search('').draw();
+    // Aplicar filtros por columna (índices base 0)
+    if (producto) {
+        table.column(1).search('^' + escapeRegex(producto) + '$', true, false, true);
+    }
+    if (ubicacion) {
+        table.column(5).search('^' + escapeRegex(ubicacion) + '$', true, false, true);
+    }
+    if (posicion) {
+        table.column(6).search('^' + escapeRegex(posicion) + '$', true, false, true);
+    }
+    if (grado) {
+        table.column(7).search('^' + escapeRegex(grado) + '$', true, false, true);
+    }
+    if (disposicion) {
+        table.column(8).search('^' + escapeRegex(disposicion) + '$', true, false, true);
+    }
+    table.draw();
+});
                 // Limpiar filtros - NUEVO
                 $('#clearFilters').click(function () {
                     // Limpiar todos los selects
@@ -423,11 +488,11 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                     $('#filterUbicacion').val('');
                     $('#filterGrado').val('');
                     $('#filterProducto').val('');
+                    $('#filterPosicion').val('');
                     
                     // Limpiar filtros de DataTable
                     table.search('').columns().search('').draw();
                 });
-
                 // Ver detalles
                 $(document).on('click', '.view-btn', function () {
                     var id = $(this).data('id');
@@ -444,13 +509,11 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                         }
                     });
                 });
-
                 // Editar equipo
                 $(document).on('click', '.edit-btn', function () {
                     var id = $(this).data('id');
                     window.location.href = 'editar_inventario.php?id=' + id;
                 });
-
                 // Eliminar equipo
                 $(document).on('click', '.delete-btn', function () {
                     if (confirm('¿Está seguro de que desea eliminar este equipo?')) {

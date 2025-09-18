@@ -114,7 +114,8 @@ ob_start();
                                 <p class="category">Nuevas ventas reciente añadidos el dia de hoy</p>
                             </div>
                             <br>
-                            <a href="../venta/nuevo.php" class="btn btn-danger text-white">Nueva venta</a>
+                            <a href="catalogo.php" class="btn btn-success text-white">Ver Catálogo de Productos</a>
+                            <a href="nuevo.php" class="btn btn-danger text-white">Nueva venta</a>
                             <br>
                             <div class="card-content table-responsive">
                                 <?php
