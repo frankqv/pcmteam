@@ -5,7 +5,7 @@
 define('dbhost', 'localhost');
 define('dbuser', 'u171145084_pcmteam');
 define('dbpass', 'PCcomercial2025*');
-define('dbname', 'u171145084_pcmteam');
+define('dbname', 'new_u171145084_pcmteam');
 try {
     // Conexión PDO
     $connect = new PDO("mysql:host=" . dbhost . ";dbname=" . dbname . ";charset=utf8", dbuser, dbpass);

@@ -216,7 +216,12 @@ if (!$userInfo) {
                                         echo "<div class='mt-3'>";
                                         echo "<button class='btn btn-success btn-sm procesar-despacho' data-orden-id='" . $orden['idord'] . "'>";
                                         echo "<i class='material-icons'>local_shipping</i> Procesar Despacho";
-                                        echo "</button>";
+                                        echo "</button>"; echo "<br/>"; echo"<br/>";
+                                        // Segundo botón: Redirigir a delicado.php
+                                        echo "<a href='delicado.php?orden_id=" . $orden['idord'] . "' class='btn btn-info btn-sm'>";
+                                        echo "<i class='material-icons'>assignment</i> Gestión Detallada";
+                                        echo "</a>";
+                                        
                                         echo "</div>";
                                         echo "</div>";
                                         echo "</div>";

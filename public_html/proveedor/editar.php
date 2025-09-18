@@ -109,7 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-warning text-white">Guardar Cambios</button>
-                                    <a href="ver.php?id=<?php echo $proveedor->id; ?>" class="btn btn-secondary ml-2">Cancelar</a>
+                                    <a href="../proveedor/mostrar.php" class="btn btn-secondary ml-2">Cancelar /Volver a la lista</a>
+                                    <!-- <a href="ver.php?id= ?php echo $proveedor->id; ?>" class="btn btn-secondary ml-2">Cancelar /Volver a la lista</a> -->
                                 </div>
                             </form>
                         </div>

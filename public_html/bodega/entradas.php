@@ -272,7 +272,6 @@ require_once '../../config/ctconex.php';
                                                     class="text-danger">*</span></label>
                                             <select class="form-control" name="disposicion" id="disposicion"
                                                 required>
-                                                <option value="">Seleccione el estado</option>
                                                 <option value="En revisión">En revisión</option>
                                                 <option value="Por Alistamiento">Por Alistamiento</option>
                                                 <option value="En Laboratorio">En Laboratorio</option>
@@ -318,9 +317,8 @@ require_once '../../config/ctconex.php';
                                             <label for="tactil">¿El equipo es táctil? <span
                                                     class="text-danger">*</span></label>
                                             <select class="form-control" required name="tactil" id="tactil">
-                                                <option value="">----------Seleccione-----------</option>
-                                                <option value="SI">Sí</option>
                                                 <option value="NO">No</option>
+                                                <option value="SI">Sí</option>
                                             </select>
                                             <div class="invalid-feedback">Debe seleccionar si es táctil o no</div>
                                         </div>
@@ -754,7 +752,7 @@ require_once '../../config/ctconex.php';
             $('#detallesModal').modal('show');
             // Cargar detalles vía AJAX
             $.ajax({
-                url: '../controllers/get_entrada_details.php',
+                url: '../controllers/get_entrada_fun_det.php',
                 type: 'GET',
                 data: { id: entradaId },
                 dataType: 'json',

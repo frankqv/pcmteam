@@ -210,13 +210,13 @@ if (isset($_SESSION['id'])) {
                                                         </a>
                                                         <?php if ($d->privado == 1): ?>
                                                             <a class="btn btn-danger btn-sm"
-                                                                href="../proveedor/desactivar.php?id=<?php echo $d->id; ?>">
+                                                                href="../proveedor/editar.php?id=<?php echo $d->id; ?>">
                                                                 <i class='material-icons' data-toggle='tooltip'
                                                                     title='Desactivar'>block</i>
                                                             </a>
                                                         <?php else: ?>
                                                             <a class="btn btn-success btn-sm"
-                                                                href="../proveedor/activar.php?id=<?php echo $d->id; ?>">
+                                                                href="../proveedor/editar.php?id=<?php echo $d->id; ?>">
                                                                 <i class='material-icons' data-toggle='tooltip'
                                                                     title='Activar'>check_circle</i>
                                                             </a>

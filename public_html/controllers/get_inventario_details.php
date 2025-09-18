@@ -1,7 +1,8 @@
 <?php
 session_start();
-// ✅ RUTA CORREGIDA - Usando __DIR__ de manera segura
-require_once __DIR__ . '../../config/ctconex.php';
+// ✅ RUTA CORREGIDA - Usando dirname() para ir dos niveles arriba
+require_once dirname(__DIR__, 2) . '/config/ctconex.php';
+
 // Verificar que la conexión exista (esperamos $conn como mysqli)
 if (!isset($conn) || !($conn instanceof mysqli)) {
     http_response_code(500);
@@ -9,19 +10,23 @@ if (!isset($conn) || !($conn instanceof mysqli)) {
     error_log("get_inventario_details.php: \$conn no existe o no es mysqli.");
     exit;
 }
+
 // Permisos (ajusta roles si quieres otros)
 if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1,2,5,6,7])) {
     http_response_code(403);
     echo "<div class='alert alert-danger'>Acceso no autorizado</div>";
     exit;
 }
+
 // Validar ID
 if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     http_response_code(400);
     echo "<div class='alert alert-danger'>ID inválido</div>";
     exit;
 }
+
 $id = intval($_GET['id']);
+
 $sql = "
 SELECT i.*, 
     e.fecha_entrada,
@@ -36,16 +41,19 @@ LEFT JOIN usuarios t ON i.tecnico_id = t.id
 WHERE i.id = ?
 LIMIT 1
 ";
+
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $res = $stmt->get_result();
     $equipo = $res->fetch_assoc();
     $stmt->close();
+    
     if (!$equipo) {
         echo "<div class='alert alert-warning'>Equipo no encontrado</div>";
         exit;
     }
+    
     // Obtener diagnóstico más reciente (mysqli)
     $diag = null;
     $sql_diag = "SELECT * FROM bodega_diagnosticos WHERE inventario_id = ? ORDER BY fecha_diagnostico DESC LIMIT 1";
@@ -56,6 +64,7 @@ if ($stmt = $conn->prepare($sql)) {
         $diag = $r2->fetch_assoc();
         $s2->close();
     }
+    
     // Obtener control de calidad más reciente
     $cc = null;
     $sql_cc = "SELECT * FROM bodega_control_calidad WHERE inventario_id = ? ORDER BY fecha_control DESC LIMIT 1";
@@ -66,6 +75,7 @@ if ($stmt = $conn->prepare($sql)) {
         $cc = $r3->fetch_assoc();
         $s3->close();
     }
+    
     // Generar HTML (puedes adaptar diseño)
     ?>
     <div class="row">
@@ -92,6 +102,7 @@ if ($stmt = $conn->prepare($sql)) {
             </table>
         </div>
     </div>
+    
     <?php if (!empty($equipo['observaciones'])): ?>
     <div class="row mt-2">
         <div class="col-md-12">
@@ -100,6 +111,7 @@ if ($stmt = $conn->prepare($sql)) {
         </div>
     </div>
     <?php endif; ?>
+    
     <div class="row mt-3">
         <div class="col-md-6">
             <h5>Información de Entrada</h5>
@@ -117,17 +129,20 @@ if ($stmt = $conn->prepare($sql)) {
                     <small>Fecha: <?= htmlspecialchars($diag['fecha_diagnostico'] ?? 'N/A') ?></small>
                 </div>
             <?php endif; ?>
+            
             <?php if ($cc): ?>
                 <div class="alert <?= ($cc['estado_final'] ?? '') === 'aprobado' ? 'alert-success' : 'alert-danger' ?>">
                     <strong>Control de Calidad:</strong> <?= htmlspecialchars($cc['estado_final'] ?? 'N/A') ?><br>
                     <small>Fecha: <?= htmlspecialchars($cc['fecha_control'] ?? 'N/A') ?></small>
                 </div>
             <?php endif; ?>
+            
             <?php if (!$diag && !$cc): ?>
                 <div class="alert alert-secondary">No hay historial técnico disponible</div>
             <?php endif; ?>
         </div>
     </div>
+    
     <div class="row mt-3">
         <div class="col-md-12 text-center">
             <a href="../bodega/editar_inventario.php?id=<?= intval($equipo['id']) ?>" class="btn btn-primary"><i class="material-icons">edit</i> Editar Equipo</a>

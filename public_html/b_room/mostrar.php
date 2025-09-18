@@ -359,11 +359,11 @@ if (!$userInfo) {
                                                     echo "<td>" . htmlspecialchars($row['fecha_modificacion']) . "</td>";
                                                     echo "<td class='text-center'>
                                                         <a href='javascript:void(0)' class='btn btn-info btn-sm view-btn' data-id='" . $row['id'] . "' title='Ver detalles'><i class='material-icons'>visibility</i></a>
-                                                        <a href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "' title='Editar'><i class='material-icons'>edit</i></a>
-                                                        <a href='../' class='btn btn-success btn-sm add-price-btn' data-id='" . $row['id'] . "' title='Mandar a Productos'><i class='material-icons'>price_check</i></a>";
+                                                        <a href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "' title='Editar'><i class='material-icons'>edit</i></a>";
+                                                        //  <a href='../' class='btn btn-success btn-sm add-price-btn' data-id='" . $row['id'] . "' title='Mandar a Productos'><i class='material-icons'>price_check</i></a>"
                                                         // <a href='javascript:void(0)' class='btn btn-success btn-sm add-price-btn' data-id='" . $row['id'] . "' title='Mandar a Productos'><i class='material-icons'>price_check</i></a>";
                                                         if (!isset($row['precio']) || $row['precio'] === '' || $row['precio'] === '0') {
-                                                        echo "<button type='button' class='btn btn-warning btn-sm add-price-btn' data-id='" . $row['id'] . "' title='Agregar precio / foto'><i class='material-icons'>attach_moneyV</i></button>";
+                                                        echo "<button type='button' class='btn btn-success btn-sm add-price-btn' data-id='" . $row['id'] . "' title='Agregar precio / foto'><i class='material-icons'>attach_moneyV</i></button>";
                                                     }
                                                     // Solo mostrar botón eliminar para administradores
                                                     if ($_SESSION['rol'] == 1) {

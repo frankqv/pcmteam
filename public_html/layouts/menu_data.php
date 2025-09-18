@@ -71,8 +71,8 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
                 'class' => 'style-triage2',
                 'icon' => 'assignment_late',
                 'children' => [
-                    ['label' => '◖ HISTORICO TRIAGE 2', 'url' => '../bodega/lista_triage_2.php'],
                     ['label' => '◖ INGRESAR TRIAGE 2', 'url' => '../bodega/triage2.php'],
+                    ['label' => '◖ HISTORICO TRIAGE 2', 'url' => '../bodega/lista_triage_2.php'],
                     ['label' => '●  Asignar Técnico MYL', 'url' => '../bodega/asignar.php'],
                 ]
             ],
