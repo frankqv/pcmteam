@@ -5,528 +5,553 @@ if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], [1, 2, 5, 6, 7
     header('Location: ../error404.php');
     exit;
 }
-require_once '../../config/ctconex.php'; // Debe definir $connect (PDO)
-
+require_once '../../config/ctconex.php';
 // Obtener ID del inventario (equipo) de la URL
 $inventario_id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 if ($inventario_id <= 0) {
     echo "<p>ID de equipo inválido.</p>";
     exit;
 }
-
-// Consulta unificada (UNION) para recoger todos los eventos relevantes
-// Nota: los JSON_OBJECT incluyen campo 'meta' para facilitar extracción de lote/proveedor si existen
-$sql = "
-(SELECT
-  'entrada' AS tipo,
-  fecha_entrada AS fecha_evento,
-  usuario_id AS actor_id,
-  NULL AS tecnico_id,
-  observaciones AS descripcion,
-  CONCAT('Entrada ID=', id) AS referencia,
-  -- Intentamos incluir lote/proveedor si existen en la tabla
-  JSON_OBJECT('tabla','bodega_entradas','id',id,
-    'lote', IFNULL(lote, ''),
-    'proveedor_id', IFNULL(proveedor_id, ''),
-    'proveedor', IFNULL(proveedor, '')) AS meta
- FROM bodega_entradas
- WHERE inventario_id = :id)
-
-UNION ALL
-
-(SELECT
-  'diagnostico' AS tipo,
-  fecha_diagnostico AS fecha_evento,
-  NULL AS actor_id,
-  tecnico_id AS tecnico_id,
-  CONCAT('Estado:', estado_reparacion, ' | Obs: ', IFNULL(observaciones, '')) AS descripcion,
-  CONCAT('Diagnóstico ID=', id) AS referencia,
-  JSON_OBJECT('tabla','bodega_diagnosticos','id',id,
-    'lote', IFNULL(lote, ''),
-    'proveedor_id', IFNULL(proveedor_id, ''),
-    'proveedor', IFNULL(proveedor, '')) AS meta
- FROM bodega_diagnosticos
- WHERE inventario_id = :id)
-
-UNION ALL
-
-(SELECT
-  'electrico' AS tipo,
-  fecha_proceso AS fecha_evento,
-  NULL AS actor_id,
-  tecnico_id AS tecnico_id,
-  CONCAT('Fallas: ', IFNULL(fallas_detectadas, ''), ' | Reparaciones: ', IFNULL(reparaciones_realizadas, '')) AS descripcion,
-  CONCAT('Eléctrico ID=', id) AS referencia,
-  JSON_OBJECT('tabla','bodega_electrico','id',id,
-    'lote', IFNULL(lote, ''),
-    'proveedor_id', IFNULL(proveedor_id, ''),
-    'proveedor', IFNULL(proveedor, '')) AS meta
- FROM bodega_electrico
- WHERE inventario_id = :id)
-
-UNION ALL
-
-(SELECT
-  'estetico' AS tipo,
-  fecha_proceso AS fecha_evento,
-  NULL AS actor_id,
-  tecnico_id AS tecnico_id,
-  CONCAT('Grado: ', IFNULL(grado_asignado,''), ' | Partes: ', IFNULL(partes_reemplazadas,''), ' | Obs: ', IFNULL(observaciones,'')) AS descripcion,
-  CONCAT('Estético ID=', id) AS referencia,
-  JSON_OBJECT('tabla','bodega_estetico','id',id,
-    'lote', IFNULL(lote, ''),
-    'proveedor_id', IFNULL(proveedor_id, ''),
-    'proveedor', IFNULL(proveedor, '')) AS meta
- FROM bodega_estetico
- WHERE inventario_id = :id)
-
-UNION ALL
-
-(SELECT
-  'control_calidad' AS tipo,
-  fecha_control AS fecha_evento,
-  NULL AS actor_id,
-  tecnico_id AS tecnico_id,
-  CONCAT('Estado final: ', IFNULL(estado_final,''), ' | Cat: ', IFNULL(categoria_rec,''), ' | Obs: ', IFNULL(observaciones,'')) AS descripcion,
-  CONCAT('ControlQA ID=', id) AS referencia,
-  JSON_OBJECT('tabla','bodega_control_calidad','id',id,
-    'lote', IFNULL(lote, ''),
-    'proveedor_id', IFNULL(proveedor_id, ''),
-    'proveedor', IFNULL(proveedor, '')) AS meta
- FROM bodega_control_calidad
- WHERE inventario_id = :id)
-
-UNION ALL
-
-(SELECT
-  'cambio' AS tipo,
-  fecha_cambio AS fecha_evento,
-  usuario_id AS actor_id,
-  NULL AS tecnico_id,
-  CONCAT('Campo: ', IFNULL(campo_modificado,''), ' | De: ', IFNULL(valor_anterior,''), ' | A: ', IFNULL(valor_nuevo,'')) AS descripcion,
-  CONCAT('Log ID=', id) AS referencia,
-  JSON_OBJECT('tabla','bodega_log_cambios','id',id,
-    'lote', IFNULL(lote, ''),
-    'proveedor_id', IFNULL(proveedor_id, ''),
-    'proveedor', IFNULL(proveedor, '')) AS meta
- FROM bodega_log_cambios
- WHERE inventario_id = :id)
-
-ORDER BY fecha_evento DESC, tipo DESC
-";
-
-try {
-    $stmt = $connect->prepare($sql);
-    $stmt->bindValue(':id', $inventario_id, PDO::PARAM_INT);
-    $stmt->execute();
-    $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo "<p>Error al obtener historial: " . htmlspecialchars($e->getMessage()) . "</p>";
+// Primero obtener información del equipo desde bodega_inventario
+$sql_equipo = "SELECT * FROM bodega_inventario WHERE id = ?";
+$stmt = $conn->prepare($sql_equipo);
+$stmt->bind_param("i", $inventario_id);
+$stmt->execute();
+$equipo = $stmt->get_result()->fetch_assoc();
+if (!$equipo) {
+    echo "<p>Equipo no encontrado.</p>";
     exit;
 }
-
-// Función mejorada para resolver información del actor/técnico (nombre, email, teléfono, tipo)
-function resolverActorFull(PDO $pdo, $id) {
-    static $cache = [];
-    if (!$id) return null;
-    if (isset($cache[$id])) return $cache[$id];
-
-    // Tablas y columnas candidatas para buscar información del usuario/cliente/técnico
-    $tables = [
-        ['table'=>'clientes','idcols'=>['idclie','id','user_id'],'namecols'=>['nomcli','nombres','nombre'],'lastnamecols'=>['apecli','apellidos','apellido'],'emailcols'=>['email','correo'],'phonecols'=>['celu','telefono','telefono_movil','phone']],
-        ['table'=>'usuarios','idcols'=>['id','user_id','usuario_id'],'namecols'=>['nombre','nombres','first_name'],'lastnamecols'=>['apellido','apellidos','last_name'],'emailcols'=>['email','mail'],'phonecols'=>['telefono','celular','phone']],
-        ['table'=>'users','idcols'=>['id','user_id'],'namecols'=>['name','username','first_name'],'lastnamecols'=>['last_name'],'emailcols'=>['email'],'phonecols'=>['phone','telefono']],
-        ['table'=>'empleados','idcols'=>['id'],'namecols'=>['nombres'],'lastnamecols'=>['apellidos'],'emailcols'=>['email'],'phonecols'=>['telefono']],
-        ['table'=>'tecnicos','idcols'=>['id'],'namecols'=>['nombres'],'lastnamecols'=>['apellidos'],'emailcols'=>['email'],'phonecols'=>['telefono']]
-    ];
-
-    foreach ($tables as $t) {
-        // verificar existencia de tabla
-        $q = $pdo->prepare("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = :table");
-        $q->execute([':table' => $t['table']]);
-        if ($q->fetchColumn() == 0) continue;
-
-        // intentar por cada columna idcandidate
-        foreach ($t['idcols'] as $idcol) {
-            // verificar columna
-            $q2 = $pdo->prepare("SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = :table AND column_name = :col");
-            $q2->execute([':table'=>$t['table'], ':col'=>$idcol]);
-            if ($q2->fetchColumn() == 0) continue;
-
-            // construir select dinámico con columnas disponibles
-            $colsToTry = array_merge($t['namecols'], $t['lastnamecols'], $t['emailcols'], $t['phonecols']);
-            $foundCols = [];
-            foreach ($colsToTry as $c) {
-                $q3 = $pdo->prepare("SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = :table AND column_name = :col");
-                $q3->execute([':table'=>$t['table'], ':col'=>$c]);
-                if ($q3->fetchColumn() > 0) $foundCols[] = $c;
-            }
-            if (empty($foundCols)) continue;
-
-            $selectParts = [];
-            foreach ($foundCols as $c) {
-                $selectParts[] = "IFNULL(`$c`,'') AS `$c`";
-            }
-            $selectSQL = implode(',', $selectParts);
-            try {
-                $s = $pdo->prepare("SELECT $selectSQL FROM `{$t['table']}` WHERE `$idcol` = :id LIMIT 1");
-                $s->execute([':id'=>$id]);
-                $row = $s->fetch(PDO::FETCH_ASSOC);
-                if ($row) {
-                    // armar nombre completo
-                    $nameParts = [];
-                    foreach ($t['namecols'] as $nc) if (!empty($row[$nc])) $nameParts[] = $row[$nc];
-                    foreach ($t['lastnamecols'] as $lc) if (!empty($row[$lc])) $nameParts[] = $row[$lc];
-                    $fullname = trim(implode(' ', $nameParts));
-                    $result = [
-                        'id'=>$id,
-                        'tabla'=>$t['table'],
-                        'nombre'=> $fullname ?: ('Usuario #'.$id),
-                        'email'=> (isset($row[$t['emailcols'][0]])? $row[$t['emailcols'][0]] : null),
-                        'telefono'=> (isset($row[$t['phonecols'][0]])? $row[$t['phonecols'][0]] : null),
-                    ];
-                    $cache[$id] = $result;
-                    return $result;
-                }
-            } catch (Exception $e) {
-                // ignorar y continuar
-            }
-        }
-    }
-
-    // fallback: devolver solo id
-    $cache[$id] = ['id'=>$id,'tabla'=>null,'nombre'=>'Usuario #'.$id,'email'=>null,'telefono'=>null];
-    return $cache[$id];
+// Función para obtener nombre del técnico/usuario
+function getNombreTecnico($conn, $tecnico_id) {
+    if (!$tecnico_id || $tecnico_id == 0) return 'No asignado';
+    $sql = "SELECT nombre FROM usuarios WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $tecnico_id);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    return $result ? $result['nombre'] : 'Usuario #' . $tecnico_id;
 }
-
-// Resolver proveedor (similar a resolverActorFull)
-function resolverProveedorFull(PDO $pdo, $idOrName) {
-    static $cache = [];
-    if (!$idOrName) return null;
-    // Si es numérico, tratar como id, si no, como nombre
-    $cacheKey = is_numeric($idOrName) ? 'id_'.$idOrName : 'name_'.md5($idOrName);
-    if (isset($cache[$cacheKey])) return $cache[$cacheKey];
-
-    $candidates = [
-        ['table'=>'proveedores','idcols'=>['id','proveedor_id'],'namecols'=>['nombre','razon_social','nombre_proveedor'],'emailcols'=>['email','correo'],'phonecols'=>['telefono','celular','telefono']],
-        ['table'=>'proveedor','idcols'=>['id'],'namecols'=>['nombre','razon_social'],'emailcols'=>['email'],'phonecols'=>['telefono']],
-        ['table'=>'suppliers','idcols'=>['id','supplier_id'],'namecols'=>['name','company'],'emailcols'=>['email'],'phonecols'=>['phone']]
-    ];
-
-    foreach ($candidates as $t) {
-        // verificar existencia de tabla
-        $q = $pdo->prepare("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = :table");
-        $q->execute([':table' => $t['table']]);
-        if ($q->fetchColumn() == 0) continue;
-
-        // si es id numeric probar columnas idcols
-        if (is_numeric($idOrName)) {
-            foreach ($t['idcols'] as $idcol) {
-                $q2 = $pdo->prepare("SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = :table AND column_name = :col");
-                $q2->execute([':table'=>$t['table'], ':col'=>$idcol]);
-                if ($q2->fetchColumn() == 0) continue;
-
-                $colsToTry = array_merge($t['namecols'], $t['emailcols'], $t['phonecols']);
-                $foundCols = [];
-                foreach ($colsToTry as $c) {
-                    $q3 = $pdo->prepare("SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = :table AND column_name = :col");
-                    $q3->execute([':table'=>$t['table'], ':col'=>$c]);
-                    if ($q3->fetchColumn() > 0) $foundCols[] = $c;
-                }
-                if (empty($foundCols)) continue;
-
-                $selectParts = [];
-                foreach ($foundCols as $c) $selectParts[] = "IFNULL(`$c`,'') AS `$c`";
-                $selectSQL = implode(',', $selectParts);
-                try {
-                    $s = $pdo->prepare("SELECT $selectSQL FROM `{$t['table']}` WHERE `$idcol` = :id LIMIT 1");
-                    $s->execute([':id'=>$idOrName]);
-                    $row = $s->fetch(PDO::FETCH_ASSOC);
-                    if ($row) {
-                        $name = null;
-                        foreach ($t['namecols'] as $nc) if (!empty($row[$nc])) { $name = $row[$nc]; break; }
-                        $result = ['id'=>$idOrName,'tabla'=>$t['table'],'nombre'=>$name ?: ('Proveedor #'.$idOrName),'email'=>($row[$t['emailcols'][0]] ?? null),'telefono'=>($row[$t['phonecols'][0]] ?? null)];
-                        $cache[$cacheKey] = $result; return $result;
-                    }
-                } catch (Exception $e) {}
-            }
-        } else {
-            // buscar por nombre parcial en las columnas namecols
-            foreach ($t['namecols'] as $nc) {
-                $q4 = $pdo->prepare("SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = :table AND column_name = :col");
-                $q4->execute([':table'=>$t['table'], ':col'=>$nc]);
-                if ($q4->fetchColumn() == 0) continue;
-
-                try {
-                    $s = $pdo->prepare("SELECT * FROM `{$t['table']}` WHERE `$nc` LIKE :name LIMIT 1");
-                    $s->execute([':name'=>'%'.substr($idOrName,0,200).'%']);
-                    $row = $s->fetch(PDO::FETCH_ASSOC);
-                    if ($row) {
-                        $name = $row[$nc];
-                        $result = ['id'=>($row['id'] ?? null),'tabla'=>$t['table'],'nombre'=>$name,'email'=>($row[$t['emailcols'][0]] ?? null),'telefono'=>($row[$t['phonecols'][0]] ?? null)];
-                        $cache[$cacheKey] = $result; return $result;
-                    }
-                } catch (Exception $e) {}
-            }
-        }
-    }
-
-    $cache[$cacheKey] = ['id'=>$idOrName,'tabla'=>null,'nombre'=>is_numeric($idOrName)? 'Proveedor #'.$idOrName : $idOrName,'email'=>null,'telefono'=>null];
-    return $cache[$cacheKey];
+// Función para obtener nombre del proveedor
+function getNombreProveedor($conn, $proveedor_id) {
+    if (!$proveedor_id || $proveedor_id == 0) return null;
+    $sql = "SELECT nombre FROM proveedores WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $proveedor_id);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    return $result ? $result['nombre'] : 'Proveedor #' . $proveedor_id;
 }
-
-// Cargar datos del equipo (seleccionamos todo para detectar columnas como configuracion/lote/proveedor)
-$equip = [];
-try {
-    $q = $connect->prepare('SELECT * FROM bodega_inventario WHERE id = :id');
-    $q->execute([':id' => $inventario_id]);
-    $equip = $q->fetch(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    // continuar sin datos
+// Obtener historial completo del equipo
+$historial = [];
+// 1. Entradas
+$sql = "SELECT 'ENTRADA' as tipo, fecha_entrada as fecha, usuario_id as tecnico_id, 
+        observaciones, cantidad, NULL as estado, proveedor_id
+        FROM bodega_entradas 
+        WHERE inventario_id = ? ORDER BY fecha_entrada DESC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $inventario_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $row['tecnico_nombre'] = getNombreTecnico($conn, $row['tecnico_id']);
+    $row['proveedor_nombre'] = $row['proveedor_id'] ? getNombreProveedor($conn, $row['proveedor_id']) : null;
+    $row['detalles'] = "Cantidad: " . $row['cantidad'] . ($row['proveedor_nombre'] ? " | Proveedor: " . $row['proveedor_nombre'] : "");
+    $historial[] = $row;
 }
-
-// Extraer datos útiles de equip si existen
-function pickEquipField(array $equip, array $candidates) {
-    foreach ($candidates as $c) if (isset($equip[$c]) && $equip[$c] !== '') return $equip[$c];
-    return null;
+// 2. Diagnósticos (Triage 2)
+$sql = "SELECT 'DIAGNOSTICO' as tipo, fecha_diagnostico as fecha, tecnico_id,
+        observaciones, estado_reparacion as estado,
+        CONCAT('Cámara: ', IFNULL(camara, 'N/D'), 
+               ' | Teclado: ', IFNULL(teclado, 'N/D'),
+               ' | Pantalla: ', IFNULL(pantalla, 'N/D'),
+               ' | Batería: ', IFNULL(bateria, 'N/D'),
+               ' | Parlantes: ', IFNULL(parlantes, 'N/D'),
+               ' | Micrófono: ', IFNULL(microfono, 'N/D'),
+               ' | Disco: ', IFNULL(disco, 'N/D')) as detalles,
+        falla_electrica, detalle_falla_electrica,
+        falla_estetica, detalle_falla_estetica
+        FROM bodega_diagnosticos WHERE inventario_id = ? 
+        ORDER BY fecha_diagnostico DESC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $inventario_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $row['tecnico_nombre'] = getNombreTecnico($conn, $row['tecnico_id']);
+    $historial[] = $row;
 }
-
-$configuracion = pickEquipField($equip, ['configuracion','config','specs','especificaciones','config_json']);
-$lote_equipo = pickEquipField($equip, ['lote','batch','lote_num','batch_no','lot']);
-$proveedor_ref = pickEquipField($equip, ['proveedor_id','id_proveedor','proveedor','supplier_id','supplier']);
-
-$proveedorInfoEquip = null;
-if ($proveedor_ref) {
-    $proveedorInfoEquip = resolverProveedorFull($connect, $proveedor_ref);
+// 3. Mantenimiento
+$sql = "SELECT 'MANTENIMIENTO' as tipo, fecha_registro as fecha, tecnico_id,
+        observaciones_globales as observaciones, estado,
+        CONCAT('Limpieza: ', IFNULL(limpieza_general, 'N/D'),
+               ' | Mantenimiento Partes: ', IFNULL(mantenimiento_partes, 'N/D'),
+               ' | Falla Eléctrica: ', IFNULL(falla_electrica, 'No'),
+               ' | Falla Estética: ', IFNULL(falla_estetica, 'No'),
+               ' | Cambio Piezas: ', IFNULL(cambio_piezas, 'No')) as detalles,
+        detalle_falla_electrica, detalle_falla_estetica,
+        piezas_solicitadas_cambiadas
+        FROM bodega_mantenimiento WHERE inventario_id = ? 
+        ORDER BY fecha_registro DESC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $inventario_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $row['tecnico_nombre'] = getNombreTecnico($conn, $row['tecnico_id']);
+    $historial[] = $row;
 }
-
-// Resumen estadístico sencillo
-$totales = ['total'=>count($eventos)];
-$porTipo = [];
-foreach ($eventos as $ev) {
-    $porTipo[$ev['tipo']] = ($porTipo[$ev['tipo']] ?? 0) + 1;
+// 4. Proceso Eléctrico
+$sql = "SELECT 'ELECTRICO' as tipo, fecha_proceso as fecha, tecnico_id,
+        observaciones, estado_final as estado,
+        CONCAT('Batería: ', IFNULL(estado_bateria, 'N/D'),
+               ' | Fuente: ', IFNULL(estado_fuente, 'N/D'),
+               ' | Pantalla: ', IFNULL(estado_pantalla, 'N/D'),
+               ' | Puertos: ', IFNULL(estado_puertos, 'N/D'),
+               ' | Audio: ', IFNULL(estado_audio, 'N/D')) as detalles,
+        fallas_detectadas, reparaciones_realizadas
+        FROM bodega_electrico WHERE inventario_id = ? 
+        ORDER BY fecha_proceso DESC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $inventario_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $row['tecnico_nombre'] = getNombreTecnico($conn, $row['tecnico_id']);
+    $historial[] = $row;
 }
-
-// Pre-resolver actores y proveedores encontrados en eventos (para no hacer consultas repetidas en modal)
-$preResolved = [];
-$preSuppliers = [];
-foreach ($eventos as $ev) {
-    if (!empty($ev['actor_id'])) $preResolved[$ev['actor_id']] = resolverActorFull($connect, $ev['actor_id']);
-    if (!empty($ev['tecnico_id'])) $preResolved[$ev['tecnico_id']] = resolverActorFull($connect, $ev['tecnico_id']);
-    // intentar parsear meta JSON para buscar proveedor_id o proveedor
-    $meta = null;
-    if (!empty($ev['meta'])) {
-        $decoded = json_decode($ev['meta'], true);
-        if (is_array($decoded)) {
-            if (!empty($decoded['proveedor_id'])) $preSuppliers[$decoded['proveedor_id']] = resolverProveedorFull($connect, $decoded['proveedor_id']);
-            if (!empty($decoded['proveedor'])) $preSuppliers['name_'.md5($decoded['proveedor'])] = resolverProveedorFull($connect, $decoded['proveedor']);
-            if (!empty($decoded['lote']) && empty($lote_equipo)) $lote_equipo = $decoded['lote'];
-        }
+// 5. Proceso Estético
+$sql = "SELECT 'ESTETICO' as tipo, fecha_proceso as fecha, tecnico_id,
+        observaciones, estado_final as estado,
+        CONCAT('Grado: ', IFNULL(grado_asignado, 'N/D'), 
+               ' | Carcasa: ', IFNULL(estado_carcasa, 'N/D'),
+               ' | Pantalla Física: ', IFNULL(estado_pantalla_fisica, 'N/D'),
+               ' | Limpieza: ', IFNULL(limpieza_realizada, 'No')) as detalles,
+        partes_reemplazadas, rayones_golpes
+        FROM bodega_estetico WHERE inventario_id = ? 
+        ORDER BY fecha_proceso DESC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $inventario_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $row['tecnico_nombre'] = getNombreTecnico($conn, $row['tecnico_id']);
+    $historial[] = $row;
+}
+// 6. Control de Calidad
+$sql = "SELECT 'CONTROL_CALIDAD' as tipo, fecha_control as fecha, tecnico_id,
+        observaciones, estado_final as estado,
+        CONCAT('Burning Test: ', IFNULL(burning_test, 'N/D'),
+               ' | Sentinel: ', IFNULL(sentinel_test, 'N/D'),
+               ' | Categoría REC: ', IFNULL(categoria_rec, 'N/D')) as detalles
+        FROM bodega_control_calidad WHERE inventario_id = ? 
+        ORDER BY fecha_control DESC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $inventario_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $row['tecnico_nombre'] = getNombreTecnico($conn, $row['tecnico_id']);
+    $historial[] = $row;
+}
+// 7. Log de Cambios
+$sql = "SELECT 'CAMBIO' as tipo, fecha_cambio as fecha, usuario_id as tecnico_id,
+        CONCAT('Campo: ', IFNULL(campo_modificado,'N/D'), 
+               ' | De: ', IFNULL(LEFT(valor_anterior, 50),'N/D'), 
+               ' | A: ', IFNULL(LEFT(valor_nuevo, 50),'N/D')) as observaciones,
+        tipo_cambio as estado,
+        CONCAT('Tipo: ', IFNULL(tipo_cambio, 'N/D')) as detalles,
+        valor_anterior, valor_nuevo, campo_modificado
+        FROM bodega_log_cambios WHERE inventario_id = ? 
+        ORDER BY fecha_cambio DESC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $inventario_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $row['tecnico_nombre'] = getNombreTecnico($conn, $row['tecnico_id']);
+    $historial[] = $row;
+}
+// Ordenar historial por fecha (más reciente primero)
+usort($historial, function($a, $b) {
+    return strtotime($b['fecha']) - strtotime($a['fecha']);
+});
+// Función para obtener el color del badge según el tipo de proceso
+function getTipoBadge($tipo) {
+    switch($tipo) {
+        case 'ENTRADA': return 'badge-primary';
+        case 'DIAGNOSTICO': return 'badge-warning';
+        case 'MANTENIMIENTO': return 'badge-info';
+        case 'ELECTRICO': return 'badge-danger';
+        case 'ESTETICO': return 'badge-success';
+        case 'CONTROL_CALIDAD': return 'badge-dark';
+        case 'CAMBIO': return 'badge-secondary';
+        default: return 'badge-light';
     }
 }
-if ($proveedorInfoEquip) $preSuppliers[$proveedorInfoEquip['id'] ?? 'equip_ref'] = $proveedorInfoEquip;
-
-?><!doctype html>
+function getEstadoBadge($estado) {
+    if (!$estado) return '';
+    switch(strtolower($estado)) {
+        case 'aprobado': return 'badge-success';
+        case 'realizado': return 'badge-success';
+        case 'rechazado': return 'badge-danger';
+        case 'pendiente': return 'badge-warning';
+        case 'requiere_revision': return 'badge-warning';
+        default: return 'badge-secondary';
+    }
+}
+// Estadísticas
+$tipos_count = [];
+foreach ($historial as $evento) {
+    $tipos_count[$evento['tipo']] = ($tipos_count[$evento['tipo']] ?? 0) + 1;
+}
+?>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Historial de Trazabilidad - Equipo <?= htmlspecialchars($equip['codigo_g'] ?? $inventario_id) ?></title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<style>
-.timeline { position: relative; padding: 1rem 0; }
-.timeline::before { content: ''; position: absolute; left: 20px; width: 4px; top: 0; bottom: 0; background: #e9ecef; }
-.timeline-item { position: relative; margin-left: 60px; margin-bottom: 1.25rem; }
-.timeline-item .time { font-size: .9rem; color: #6c757d; }
-.timeline-item .badge-type { font-size:.7rem; }
-.card-small { box-shadow: 0 1px 2px rgba(0,0,0,.05); }
-.event-meta { font-size: .85rem; color: #495057; }
-@media (max-width:576px){ .timeline::before{ left:10px } .timeline-item{ margin-left:48px} }
-</style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Historial de Trazabilidad - <?= htmlspecialchars($equipo['codigo_g']) ?></title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+    <link rel="icon" type="image/png" href="../assets/img/favicon.webp" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f9fa;
+        }
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #007bff 0%, #6f42c1 100%);
+            box-shadow: 0 0 5px rgba(0,123,255,0.3);
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+            padding-left: 70px;
+        }
+        .timeline-marker {
+            position: absolute;
+            left: 18px;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 2;
+        }
+        .timeline-marker.entrada { background: #007bff; }
+        .timeline-marker.diagnostico { background: #ffc107; }
+        .timeline-marker.mantenimiento { background: #17a2b8; }
+        .timeline-marker.electrico { background: #dc3545; }
+        .timeline-marker.estetico { background: #28a745; }
+        .timeline-marker.control_calidad { background: #6c757d; }
+        .timeline-marker.cambio { background: #6f42c1; }
+        
+        .timeline-content {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .timeline-content:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        .timeline-content.entrada { border-left-color: #007bff; }
+        .timeline-content.diagnostico { border-left-color: #ffc107; }
+        .timeline-content.mantenimiento { border-left-color: #17a2b8; }
+        .timeline-content.electrico { border-left-color: #dc3545; }
+        .timeline-content.estetico { border-left-color: #28a745; }
+        .timeline-content.control_calidad { border-left-color: #6c757d; }
+        .timeline-content.cambio { border-left-color: #6f42c1; }
+        
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .timeline-date {
+            color: #6c757d;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .equipo-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .proceso-details {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            border: 1px solid #e9ecef;
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.375rem 0.75rem;
+        }
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .stats-card:hover {
+            transform: translateY(-2px);
+        }
+        .modal-body .detail-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .detail-section h6 {
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        @print {
+            .timeline::before { background: #000 !important; }
+            .timeline-content { box-shadow: none !important; border: 1px solid #ddd !important; }
+        }
+    </style>
 </head>
-<body class="bg-light">
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-start mb-3">
-    <div>
-      <h3>Historial de Trazabilidad</h3>
-      <p class="mb-0">Equipo: <strong><?= htmlspecialchars($equip['codigo_g'] ?? 'ID '.$inventario_id) ?></strong> — <?= htmlspecialchars(trim(($equip['producto'] ?? '') . ' ' . ($equip['marca'] ?? ''))) ?></p>
-      <small class="text-muted">Serial: <?= htmlspecialchars($equip['serial'] ?? '') ?> · Modelo: <?= htmlspecialchars($equip['modelo'] ?? '') ?></small>
-      <div class="mt-2 small">
-        <strong>Total eventos:</strong> <?= $totales['total'] ?> &nbsp; • &nbsp; <strong>Última actualización:</strong> <?= $eventos ? htmlspecialchars(date('Y-m-d H:i:s', strtotime($eventos[0]['fecha_evento']))) : 'N/A' ?>
-      </div>
-      <div class="mt-2">
-        <?php foreach ($porTipo as $t => $c): ?>
-          <span class="badge bg-secondary me-1"><?= htmlspecialchars($t) ?>: <?= $c ?></span>
-        <?php endforeach; ?>
-      </div>
-
-      <div class="mt-2">
-        <?php if ($configuracion): ?>
-          <div><strong>Configuración:</strong> <?= htmlspecialchars($configuracion) ?></div>
-        <?php endif; ?>
-        <?php if ($lote_equipo): ?>
-          <div><strong>Lote:</strong> <?= htmlspecialchars($lote_equipo) ?></div>
-        <?php endif; ?>
-        <?php if ($proveedorInfoEquip): ?>
-          <div><strong>Proveedor:</strong> <?= htmlspecialchars($proveedorInfoEquip['nombre']) ?> <?= $proveedorInfoEquip['email'] ? '· ' . htmlspecialchars($proveedorInfoEquip['email']) : '' ?> <?= $proveedorInfoEquip['telefono'] ? '· ' . htmlspecialchars($proveedorInfoEquip['telefono']) : '' ?></div>
-        <?php endif; ?>
-      </div>
-
-    </div>
-    <div class="text-end">
-      <a href="lista_triage_2.php" class="btn btn-outline-secondary btn-sm">← Volver al listado</a>
-      <button onclick="window.print()" class="btn btn-primary btn-sm ms-2">Imprimir historial</button>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-12">
-      <div class="timeline">
-        <?php if (empty($eventos)): ?>
-          <div class="alert alert-info">No se encontraron eventos para este equipo.</div>
-        <?php else: ?>
-          <?php foreach ($eventos as $idx => $ev):
-              // resolver nombre de actor/técnico cuando aplique
-              $actorInfo = null;
-              if (!empty($ev['actor_id'])) $actorInfo = resolverActorFull($connect, $ev['actor_id']);
-              $tecnicoInfo = null;
-              if (!empty($ev['tecnico_id'])) $tecnicoInfo = resolverActorFull($connect, $ev['tecnico_id']);
-              $fecha = date('Y-m-d H:i:s', strtotime($ev['fecha_evento']));
-              $shortDesc = mb_strimwidth($ev['descripcion'], 0, 220, '...');
-
-              // intentar extraer lote/proveedor desde meta JSON
-              $meta = json_decode($ev['meta'], true);
-              $ev_lote = $meta['lote'] ?? null;
-              $ev_prov_ref = $meta['proveedor_id'] ?? ($meta['proveedor'] ?? null);
-              $ev_prov = null;
-              if ($ev_prov_ref) $ev_prov = resolverProveedorFull($connect, $ev_prov_ref);
-          ?>
-            <div class="timeline-item">
-              <div class="card card-small">
-                <div class="card-body p-2">
-                  <div class="d-flex justify-content-between align-items-start">
-                    <div style="flex:1">
-                      <h6 class="mb-1">
-                        <?= ucfirst(htmlspecialchars(str_replace('_',' ',$ev['tipo']))) ?>
-                        <span class="badge bg-secondary badge-type"><?= htmlspecialchars($ev['referencia']) ?></span>
-                      </h6>
-
-                      <p class="mb-1 small text-muted time"><?= htmlspecialchars($fecha) ?>
-                        <?php if($tecnicoInfo): ?>
-                          · Técnico: <strong><?= htmlspecialchars($tecnicoInfo['nombre']) ?></strong>
-                        <?php elseif($actorInfo): ?>
-                          · Usuario: <strong><?= htmlspecialchars($actorInfo['nombre']) ?></strong>
-                        <?php endif; ?>
-                      </p>
-
-                      <p class="mb-1 event-meta">
-                        <?= nl2br(htmlspecialchars($shortDesc)) ?>
-                      </p>
-
-                      <div>
-                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalEvent" data-idx="<?= $idx ?>">Ver detalles</button>
-                        <?php if($actorInfo && ($actorInfo['email'] || $actorInfo['telefono'])): ?>
-                          <small class="text-muted ms-2">Contacto: <?= htmlspecialchars($actorInfo['email'] ?? $actorInfo['telefono']) ?></small>
-                        <?php endif; ?>
-                        <?php if($ev_lote): ?>
-                          <small class="text-muted ms-2">Lote: <?= htmlspecialchars($ev_lote) ?></small>
-                        <?php endif; ?>
-                        <?php if($ev_prov): ?>
-                          <small class="text-muted ms-2">Proveedor: <?= htmlspecialchars($ev_prov['nombre']) ?></small>
-                        <?php endif; ?>
-                      </div>
+<body>
+    <div class="container-fluid mt-3">
+        <div class="row">
+            <div class="col-12">
+                <!-- Información del Equipo -->
+                <div class="equipo-info">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-3">
+                                <span class="material-icons" style="vertical-align: middle; margin-right: 10px;">computer</span>
+                                Historial de Trazabilidad Completo
+                            </h2>
+                            <h4><?= htmlspecialchars($equipo['marca']) ?> <?= htmlspecialchars($equipo['modelo']) ?></h4>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <p class="mb-2"><strong>Código:</strong> <?= htmlspecialchars($equipo['codigo_g']) ?></p>
+                                    <p class="mb-2"><strong>Serial:</strong> <?= htmlspecialchars($equipo['serial']) ?></p>
+                                    <p class="mb-2"><strong>Ubicación:</strong> <?= htmlspecialchars($equipo['ubicacion']) ?> - <?= htmlspecialchars($equipo['posicion']) ?></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2"><strong>Lote:</strong> <?= htmlspecialchars($equipo['lote'] ?: 'No asignado') ?></p>
+                                    <p class="mb-2"><strong>Procesador:</strong> <?= htmlspecialchars($equipo['procesador'] ?: 'No especificado') ?></p>
+                                    <p class="mb-2"><strong>RAM:</strong> <?= htmlspecialchars($equipo['ram'] ?: 'No especificado') ?></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-right">
+                            <div class="mb-2">
+                                <span class="badge badge-info badge-lg"><?= htmlspecialchars($equipo['disposicion']) ?></span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="badge badge-<?= ($equipo['estado'] == 'activo') ? 'success' : 'danger' ?>"><?= htmlspecialchars($equipo['estado']) ?></span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="badge badge-secondary">Grado: <?= htmlspecialchars($equipo['grado']) ?></span>
+                            </div>
+                            <p class="mt-3 mb-0"><small>Ingresó: <?= date('d/m/Y', strtotime($equipo['fecha_ingreso'])) ?></small></p>
+                        </div>
                     </div>
-                  </div>
                 </div>
-              </div>
+                <!-- Botones de Navegación -->
+                <div class="mb-3 d-flex justify-content-between">
+                    <a href="lista_triage_2.php" class="btn btn-secondary">
+                        <span class="material-icons" style="vertical-align: middle;">arrow_back</span>
+                        Volver al Listado
+                    </a>
+                    <button onclick="window.print()" class="btn btn-primary">
+                        <span class="material-icons" style="vertical-align: middle;">print</span>
+                        Imprimir Historial
+                    </button>
+                </div>
+                <!-- Resumen Estadístico -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5>
+                            <span class="material-icons" style="vertical-align: middle; margin-right: 10px;">analytics</span>
+                            Resumen de Actividad (<?= count($historial) ?> eventos registrados)
+                        </h5>
+                    </div>
+                    <?php foreach ($tipos_count as $tipo => $count): ?>
+                        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
+                            <div class="stats-card">
+                                <div class="h3 mb-1"><?= $count ?></div>
+                                <span class="badge <?= getTipoBadge($tipo) ?>"><?= htmlspecialchars($tipo) ?></span>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <!-- Timeline del Historial -->
+                <div class="timeline">                    
+                    <?php if (empty($historial)): ?>
+                        <div class="alert alert-info">
+                            <span class="material-icons" style="vertical-align: middle; margin-right: 10px;">info</span>
+                            No se encontraron registros de procesos para este equipo.
+                        </div>
+                    <?php else: ?>
+                        <?php foreach ($historial as $index => $registro): ?>
+                            <?php $tipo_lower = strtolower($registro['tipo']); ?>
+                            <div class="timeline-item">
+                                <div class="timeline-marker <?= $tipo_lower ?>"></div>
+                                <div class="timeline-content <?= $tipo_lower ?>">
+                                    <div class="timeline-header">
+                                        <div>
+                                            <h6 class="mb-1">
+                                                <span class="badge <?= getTipoBadge($registro['tipo']) ?> mr-2">
+                                                    <?= htmlspecialchars($registro['tipo']) ?>
+                                                </span>
+                                                <?php if ($registro['estado']): ?>
+                                                    <span class="badge <?= getEstadoBadge($registro['estado']) ?>">
+                                                        <?= htmlspecialchars($registro['estado']) ?>
+                                                    </span>
+                                                <?php endif; ?>
+                                            </h6>
+                                        </div>
+                                        <div class="timeline-date">
+                                            <span class="material-icons" style="font-size: 16px;">schedule</span>
+                                            <?= date('d/m/Y H:i', strtotime($registro['fecha'])) ?>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <?php if ($registro['observaciones']): ?>
+                                                <div class="mb-3">
+                                                    <strong>Observaciones:</strong>
+                                                    <p class="mb-0 mt-1"><?= nl2br(htmlspecialchars($registro['observaciones'])) ?></p>
+                                                </div>
+                                            <?php endif; ?>
+                                            
+                                            <?php if (isset($registro['detalles']) && $registro['detalles']): ?>
+                                                <div class="proceso-details">
+                                                    <strong>Detalles del Proceso:</strong><br>
+                                                    <small><?= htmlspecialchars($registro['detalles']) ?></small>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="text-right">
+                                                <p class="mb-1">
+                                                    <span class="material-icons" style="vertical-align: middle; font-size: 16px;">person</span>
+                                                    <strong>Responsable:</strong>
+                                                </p>
+                                                <p class="mb-2"><?= htmlspecialchars($registro['tecnico_nombre']) ?></p>
+                                                
+                                                <button class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#detalleModal" 
+                                                        data-evento='<?= json_encode($registro) ?>'>
+                                                    <span class="material-icons" style="font-size: 16px;">visibility</span>
+                                                    Ver Detalles
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
             </div>
-          <?php endforeach; ?>
-        <?php endif; ?>
-      </div>
+        </div>
     </div>
-  </div>
-
-  <hr>
-  <p class="small text-muted">Generado: <?= date('Y-m-d H:i:s') ?> — Trazabilidad combinada desde tablas: entradas, diagnósticos, eléctrico, estético, control de calidad y log de cambios.</p>
-</div>
-
-<!-- Modal detalles -->
-<div class="modal fade" id="modalEvent" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Detalle del evento</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div id="modalBodyContent">Cargando...</div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-      </div>
+    <!-- Modal para Ver Detalles -->
+    <div class="modal fade" id="detalleModal" tabindex="-1" role="dialog" aria-labelledby="detalleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detalleModalLabel">Detalles del Evento</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalDetalleContent">
+                    <!-- Content will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  // Pasar datos de PHP a JS de forma segura (solo lo necesario)
-  const EVENTOS = <?= json_encode(array_values($eventos), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) ?>;
-  const ACTORES = {};
-  const PROVEEDORES = {};
-  <?php
-  echo 'const PRE_ACTORES = ' . json_encode(array_values($preResolved), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) . ';';
-  echo 'const PRE_PROVEEDORES = ' . json_encode(array_values($preSuppliers), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) . ';';
-  ?>
-  PRE_ACTORES.forEach(a => { if(a && a.id) ACTORES[a.id] = a; });
-  PRE_PROVEEDORES.forEach(p => { if(p && (p.id || p.nombre)) PROVEEDORES[p.id ?? p.nombre] = p; });
-
-  const modal = document.getElementById('modalEvent');
-  modal.addEventListener('show.bs.modal', function (event) {
-    const button = event.relatedTarget;
-    const idx = button.getAttribute('data-idx');
-    const ev = EVENTOS[idx];
-    if (!ev) {
-      document.getElementById('modalBodyContent').innerHTML = '<p class="text-danger">Evento no encontrado.</p>';
-      return;
-    }
-
-    const actor = ev.actor_id ? (ACTORES[ev.actor_id] || {id:ev.actor_id,nombre:'Usuario #'+ev.actor_id}) : null;
-    const tecnico = ev.tecnico_id ? (ACTORES[ev.tecnico_id] || {id:ev.tecnico_id,nombre:'Técnico #'+ev.tecnico_id}) : null;
-
-    let meta = {};
-    try { meta = ev.meta ? JSON.parse(ev.meta) : {}; } catch(e) { meta = {}; }
-    let provRef = meta.proveedor_id || meta.proveedor || null;
-    let prov = null;
-    if (provRef) prov = PROVEEDORES[provRef] || PROVEEDORES['name_' + md5(provRef)] || {id:provRef,nombre:provRef};
-
-    let html = '';
-    html += '<dl class="row">';
-    html += '<dt class="col-sm-3">Tipo</dt><dd class="col-sm-9">' + htmlspecialchars(ev.tipo) + '</dd>';
-    html += '<dt class="col-sm-3">Referencia</dt><dd class="col-sm-9">' + htmlspecialchars(ev.referencia) + '</dd>';
-    html += '<dt class="col-sm-3">Fecha</dt><dd class="col-sm-9">' + htmlspecialchars(ev.fecha_evento) + '</dd>';
-    if(actor) html += '<dt class="col-sm-3">Usuario</dt><dd class="col-sm-9">' + htmlspecialchars(actor.nombre || ('Usuario #'+actor.id)) + (actor.email? ' · ' + htmlspecialchars(actor.email) : '') + (actor.telefono? ' · ' + htmlspecialchars(actor.telefono) : '') + '</dd>';
-    if(tecnico) html += '<dt class="col-sm-3">Técnico</dt><dd class="col-sm-9">' + htmlspecialchars(tecnico.nombre || ('Técnico #'+tecnico.id)) + '</dd>';
-    if(meta.lote) html += '<dt class="col-sm-3">Lote</dt><dd class="col-sm-9">' + htmlspecialchars(meta.lote) + '</dd>';
-    if(prov) html += '<dt class="col-sm-3">Proveedor</dt><dd class="col-sm-9">' + htmlspecialchars(prov.nombre || prov.id) + (prov.email? ' · ' + htmlspecialchars(prov.email) : '') + (prov.telefono? ' · ' + htmlspecialchars(prov.telefono) : '') + '</dd>';
-    html += '<dt class="col-sm-3">Descripción</dt><dd class="col-sm-9"><pre style="white-space:pre-wrap;">' + htmlspecialchars(ev.descripcion) + '</pre></dd>';
-    html += '<dt class="col-sm-3">Meta raw</dt><dd class="col-sm-9"><code>' + htmlspecialchars(ev.meta) + '</code></dd>';
-    html += '</dl>';
-
-    document.getElementById('modalBodyContent').innerHTML = html;
-  });
-
-  // función de escape simple para HTML
-  function htmlspecialchars(str) {
-    if (!str && str !== 0) return '';
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-  }
-
-  // función md5 simple (para claves de proveedores por nombre en el map) - usa un hash sencillo
-  function md5(s){
-    // fallback hashing simple si no se dispone de una librería. No es criptográfico, solo para claves.
-    var h=0; for(var i=0;i<s.length;i++){ h = ((h<<5)-h)+s.charCodeAt(i); h |= 0; } return String(h);
-  }
-</script>
+    <script src="../assets/js/jquery-3.3.1.min.js"></script>
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <script>
+        $('#detalleModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var evento = button.data('evento');
+            var content = '<div class="detail-section">';
+            content += '<h6>Información General</h6>';
+            content += '<div class="row">';
+            content += '<div class="col-md-6"><strong>Tipo:</strong> ' + evento.tipo + '</div>';
+            content += '<div class="col-md-6"><strong>Fecha:</strong> ' + evento.fecha + '</div>';
+            content += '<div class="col-md-6"><strong>Responsable:</strong> ' + evento.tecnico_nombre + '</div>';
+            if (evento.estado) {
+                content += '<div class="col-md-6"><strong>Estado:</strong> ' + evento.estado + '</div>';
+            }
+            content += '</div></div>';
+            if (evento.observaciones) {
+                content += '<div class="detail-section">';
+                content += '<h6>Observaciones</h6>';
+                content += '<p>' + evento.observaciones.replace(/\n/g, '<br>') + '</p>';
+                content += '</div>';
+            }
+            if (evento.detalles) {
+                content += '<div class="detail-section">';
+                content += '<h6>Detalles Técnicos</h6>';
+                content += '<p>' + evento.detalles + '</p>';
+                content += '</div>';
+            }
+            // Detalles específicos por tipo
+            if (evento.tipo === 'DIAGNOSTICO') {
+                content += '<div class="detail-section">';
+                content += '<h6>Información de Fallas</h6>';
+                if (evento.falla_electrica === 'si') {
+                    content += '<div class="alert alert-warning"><strong>Falla Eléctrica:</strong> ' + (evento.detalle_falla_electrica || 'Sin detalles') + '</div>';
+                }
+                if (evento.falla_estetica === 'si') {
+                    content += '<div class="alert alert-info"><strong>Falla Estética:</strong> ' + (evento.detalle_falla_estetica || 'Sin detalles') + '</div>';
+                }
+                content += '</div>';
+            }
+            if (evento.tipo === 'ELECTRICO' && (evento.fallas_detectadas || evento.reparaciones_realizadas)) {
+                content += '<div class="detail-section">';
+                content += '<h6>Reparaciones Eléctricas</h6>';
+                if (evento.fallas_detectadas) {
+                    content += '<p><strong>Fallas Detectadas:</strong> ' + evento.fallas_detectadas + '</p>';
+                }
+                if (evento.reparaciones_realizadas) {
+                    content += '<p><strong>Reparaciones Realizadas:</strong> ' + evento.reparaciones_realizadas + '</p>';
+                }
+                content += '</div>';
+            }
+            $('#modalDetalleContent').html(content);
+        });
+    </script>
 </body>
 </html>

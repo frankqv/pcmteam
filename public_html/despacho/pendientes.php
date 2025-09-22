@@ -201,7 +201,6 @@ if (!$userInfo) {
                                         echo "<p><strong>Total:</strong> $" . number_format($orden['total_price'], 0, ',', '.') . "</p>";
                                         echo "<p><strong>Fecha:</strong> " . htmlspecialchars($orden['placed_on']) . "</p>";
                                         echo "</div>";
-                                        
                                         echo "<div class='col-md-4'>";
                                         echo "<div class='serial-list'>";
                                         echo "<strong>Seriales a Despachar:</strong><br>";
@@ -217,11 +216,9 @@ if (!$userInfo) {
                                         echo "<button class='btn btn-success btn-sm procesar-despacho' data-orden-id='" . $orden['idord'] . "'>";
                                         echo "<i class='material-icons'>local_shipping</i> Procesar Despacho";
                                         echo "</button>"; echo "<br/>"; echo"<br/>";
-                                        // Segundo botón: Redirigir a delicado.php
-                                        echo "<a href='delicado.php?orden_id=" . $orden['idord'] . "' class='btn btn-info btn-sm'>";
-                                        echo "<i class='material-icons'>assignment</i> Gestión Detallada";
-                                        echo "</a>";
-                                        
+                                        echo "<button class='btn btn-success btn-sm procesar-despacho' data-orden-id='" . $orden['idord'] . "'>";
+                                        echo "<i href='delicado.php' class='material-icons'>local_shipping</i> Procesar Despacho";
+                                        echo "</button>";
                                         echo "</div>";
                                         echo "</div>";
                                         echo "</div>";
@@ -241,7 +238,6 @@ if (!$userInfo) {
             </div>
         </div>
     </div>
-
     <!-- Modal para confirmar despacho -->
     <div class="modal fade" id="despachoModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
@@ -263,14 +259,12 @@ if (!$userInfo) {
             </div>
         </div>
     </div>
-
     <!-- Scripts -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/popper.min.js"></script>
     <script src="../assets/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../assets/js/sidebarCollapse.js"></script>
     <script src="../assets/js/loader.js"></script>
-    
     <script>
         $(document).ready(function() {
             // Manejar clic en procesar despacho

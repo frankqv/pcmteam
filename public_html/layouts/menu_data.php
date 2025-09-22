@@ -127,16 +127,29 @@ if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
 }
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $ventaItems[] = [
-    'label' => 'CATALOGO',
-    'icon' => 'book',
-    'url' => '../venta/catalogo.php'
+        'label' => 'CLIENTES',
+        'icon' => 'groups',
+        'url' => '../clientes/mostrar.php'
+    ];
+}
+// Clientes por Tienda
+if (in_array($rol, [1, 2, 4, 5])) {
+    $ventaItems[] = [
+        'label' => 'CLIENTES × LOCAL',
+        'icon' => 'store',
+        'children' => [
+            ['label' => ' > Puente Aranda', 'url' => '../clientes/bodega.php'],
+            ['label' => ' > Unilago', 'url' => '../clientes/unilago.php'],
+            ['label' => ' > Cúcuta', 'url' => '../clientes/cucuta.php'],
+            ['label' => ' > Medellín', 'url' => '../clientes/medellin.php']
+        ]
     ];
 }
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $ventaItems[] = [
-        'label' => 'CLIENTES',
-        'icon' => 'groups',
-        'url' => '../clientes/mostrar.php'
+    'label' => 'CATALOGO',
+    'icon' => 'book',
+    'url' => '../venta/catalogo.php'
     ];
 }
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
@@ -159,19 +172,6 @@ if (in_array($rol, [1])) {
         'icon' => 'touch_app',
         'label' => 'MARKETING',
         'url' => '../marketing/mostrar.php'
-    ];
-}
-// Clientes por Tienda
-if (in_array($rol, [1, 2, 4, 5])) {
-    $ventaItems[] = [
-        'label' => 'Cliente por Local',
-        'icon' => 'store',
-        'children' => [
-            ['label' => ' > Puente Aranda', 'url' => '../clientes/bodega.php'],
-            ['label' => ' > Unilago', 'url' => '../clientes/unilago.php'],
-            ['label' => ' > Cúcuta', 'url' => '../clientes/cucuta.php'],
-            ['label' => ' > Medellín', 'url' => '../clientes/medellin.php']
-        ]
     ];
 }
 if (in_array($rol, [1, 2, 4, 5])) {

@@ -1,429 +1,185 @@
 <?php
 ob_start();
 session_start();
-
-if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4])){
+if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4])) {
     header('location: ../error404.php');
+    exit;
 }
-
-// Verificar si viene desde el catálogo
-$from_catalog = isset($_GET['marca']) && isset($_GET['modelo']);
-$producto_data = null;
-
-if ($from_catalog) {
-    $producto_data = [
-        'marca' => $_GET['marca'] ?? '',
-        'modelo' => $_GET['modelo'] ?? '',
-        'procesador' => $_GET['procesador'] ?? '',
-        'ram' => $_GET['ram'] ?? '',
-        'disco' => $_GET['disco'] ?? '',
-        'grado' => $_GET['grado'] ?? '',
-        'precio' => floatval($_GET['precio'] ?? 0),
-        'cantidad' => intval($_GET['cantidad'] ?? 1)
-    ];
+require_once('../../config/ctconex.php');
+// --- CÓDIGO AÑADIDO PARA LA BARRA DE NAVEGACIÓN ---
+$userInfo = []; 
+if (isset($_SESSION['id'])) {
+    $userId = $_SESSION['id'];
+    try {
+        $sqlUser = "SELECT nombre, usuario, correo, foto, idsede FROM usuarios WHERE id = :id";
+        $stmtUser = $connect->prepare($sqlUser);
+        $stmtUser->bindParam(':id', $userId, PDO::PARAM_INT);
+        $stmtUser->execute();
+        $userInfo = $stmtUser->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // En caso de error, $userInfo quedará vacío y el menú mostrará valores por defecto
+        $userInfo = [];
+    }
 }
+// Consulta para obtener los productos disponibles del inventario
+$sql_inventario = "
+    SELECT 
+        marca, modelo, procesador, ram, disco, grado, precio, 
+        COUNT(id) as stock_disponible,
+        GROUP_CONCAT(id) as ids_disponibles 
+    FROM bodega_inventario 
+    WHERE disposicion = 'Para Venta' 
+      AND precio IS NOT NULL AND precio > 0 AND estado = 'activo'
+    GROUP BY marca, modelo, procesador, ram, disco, grado, precio
+    ORDER BY marca, modelo";
+$stmt_inventario = $connect->prepare($sql_inventario);
+$stmt_inventario->execute();
+$productos_inventario = $stmt_inventario->fetchAll(PDO::FETCH_ASSOC);
+
+// Consulta para obtener los clientes activos
+$stmt_clientes = $connect->prepare("SELECT idclie, nomcli, apecli FROM clientes WHERE estad='Activo' ORDER BY nomcli ASC");
+$stmt_clientes->execute();
+$clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
 ?>
-<?php if(isset($_SESSION['id'])) { ?>
-
 <!doctype html>
 <html lang="es">
-
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-    <title>PCMARKETTEAM</title>
-    <!-- Bootstrap CSS -->
+    <title>Nueva Venta - PCMARKETTEAM</title>
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-    <!----css3---->
     <link rel="stylesheet" href="../assets/css/custom.css">
-    <link rel="stylesheet" href="../assets/css/loader.css">
-    <!-- Data Tables -->
-    <link rel="stylesheet" type="text/css" href="../assets/css/datatable.css">
-    <link rel="stylesheet" type="text/css" href="../assets/css/buttonsdataTables.css">
-    <link rel="stylesheet" type="text/css" href="../assets/css/font.css">
-    <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <!--google material icon-->
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-    <link rel="icon" type="image/png" href="../assets/img/favicon.webp" />
+    <style>
+        .product-card { border: 1px solid #e9ecef; border-radius: .25rem; }
+        .cart-summary { background-color: #f8f9fa; border-radius: .25rem; }
+        .selected-items { max-height: 350px; overflow-y: auto; }
+    </style>
 </head>
-
 <body>
-    <div class="wrapper">
-        <div class="body-overlay"></div>
-        <!-- layouts nav.php  |  Sidebar -->
-        <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
-        <nav id="sidebar">
-            <div class="sidebar-header">
-                <h3><img src="../assets/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
-            </div>
-            <?php renderMenu($menu); ?>
-        </nav>
-        <!-- Page Content  -->
-        <div id="content">
-            <div class='pre-loader'>
-                <img class='loading-gif' alt='loading' src="https://i.imgflip.com/9vd6wr.gif" />
-            </div>
-            <div class="top-navbar">
-                <nav class="navbar navbar-expand-lg">
-                    <div class="container-fluid">
-                        <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
-                            <span class="material-icons">arrow_back_ios</span>
-                        </button>
-                        <a class="navbar-brand" href="#"> Ventas </a>
-                        <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
-                            data-toggle="collapse" data-target="#navbarSupportedContent"
-                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="material-icons">more_vert</span>
-                        </button>
-                        <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
-                            id="navbarSupportedContent">
-                            <ul class="nav navbar-nav ml-auto">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="../cuenta/configuracion.php">
-                                        <span class="material-icons">settings</span>
-                                    </a>
-                                </li>
-                                <li class="dropdown nav-item active">
-                                    <a href="#" class="nav-link" data-toggle="dropdown">
-                                        <img src="../assets/img/reere.webp">
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a href="../cuenta/perfil.php">Mi perfil</a>
-                                        </li>
-                                        <li>
-                                            <a href="../cuenta/salir.php">Salir</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-            </div>
-            <div class="main-content">
-                <?php if ($from_catalog && $producto_data): ?>
-                <!-- Producto seleccionado desde catálogo -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="card border-success">
-                            <div class="card-header bg-success text-white">
-                                <h5 class="mb-0"><i class="material-icons">shopping_cart</i> Producto Seleccionado</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <h4><?php echo htmlspecialchars($producto_data['marca'] . ' ' . $producto_data['modelo']); ?></h4>
-                                        <div class="row">
-                                            <?php if ($producto_data['procesador']): ?>
-                                            <div class="col-md-6">
-                                                <strong>Procesador:</strong> <?php echo htmlspecialchars($producto_data['procesador']); ?>
-                                            </div>
-                                            <?php endif; ?>
-                                            <?php if ($producto_data['ram']): ?>
-                                            <div class="col-md-6">
-                                                <strong>RAM:</strong> <?php echo htmlspecialchars($producto_data['ram']); ?>
-                                            </div>
-                                            <?php endif; ?>
-                                            <?php if ($producto_data['disco']): ?>
-                                            <div class="col-md-6">
-                                                <strong>Disco:</strong> <?php echo htmlspecialchars($producto_data['disco']); ?>
-                                            </div>
-                                            <?php endif; ?>
-                                            <div class="col-md-6">
-                                                <strong>Grado:</strong> <?php echo htmlspecialchars($producto_data['grado']); ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 text-right">
-                                        <h3 class="text-success">$<?php echo number_format($producto_data['precio'], 0, ',', '.'); ?></h3>
-                                        <p class="mb-0">Cantidad: <strong><?php echo $producto_data['cantidad']; ?></strong></p>
-                                        <p class="mb-0">Total: <strong>$<?php echo number_format($producto_data['precio'] * $producto_data['cantidad'], 0, ',', '.'); ?></strong></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+<div class="wrapper">
+    <?php include_once '../layouts/nav.php'; include_once '../layouts/menu_data.php'; ?>
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3><img src="../assets/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
+        </div>
+        <?php if(function_exists('renderMenu')) { renderMenu($menu); } ?>
+    </nav>
+    
+    <div id="content">
+        <div class="top-navbar">
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
+                        <span class="material-icons">arrow_back_ios</span>
+                    </button>
+                    <a class="navbar-brand" href="#"> Ventas </a>
+                    <button class="d-inline-block d-lg-none ml-auto more-button" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+                        <span class="material-icons">more_vert</span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav ml-auto">
+                            <li class="dropdown nav-item active">
+                                <a href="#" class="nav-link" data-toggle="dropdown">
+                                    <img src="../assets/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
+                                        alt="Foto de perfil" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+                                </a>
+                                <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
+                                    <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong></li>
+                                    <li><small><?php echo htmlspecialchars($userInfo['usuario'] ?? 'usuario'); ?></small></li>
+                                    <li><small class="text-muted"><?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') ?: 'Sede sin definir'); ?></small></li>
+                                    <li class="mt-2">
+                                        <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi perfil</a>
+                                        <a href="../cuenta/salir.php" class="btn btn-sm btn-danger btn-block mt-1">Salir</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-                <?php endif; ?>
-                <div class="row ">
-                    <div class="col-lg-6 col-md-6">
-                        <div class="card" style="min-height: 485px">
-                            <div class="card-header card-header-text">
-                                <h4 class="card-title">Ventas</h4>
-                                <p class="category">Nuevas ventas</p>
-                            </div>
-                            <br>
-                            <div class="card-content table-responsive">
-                                <table class="table table-hover" id="example1">
-                                    <thead class="text-primary">
-                                        <tr>
-                                            <th>Articulo</th>
-                                            <th>Precio</th>
-                                            <th>Stock</th>
-                                            <th>Cantidad</th>
-                                            <th>Subtotal</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php
-                                        require_once('../../config/ctconex.php');
-                                        $grand_total = 0;
-                                        $select_cart = $connect->prepare("SELECT cart.idv, usuarios.id, usuarios.nombre, producto.idprod, producto.codba, producto.nomprd, producto.precio, producto.stock, cart.name, cart.price, cart.quantity FROM cart INNER JOIN usuarios ON cart.user_id = usuarios.id INNER JOIN producto ON cart.idprod = producto.idprod");
-                                        $select_cart->execute();
-                                        if($select_cart->rowCount() > 0){
-                                            while($fetch_cart = $select_cart->fetch(PDO::FETCH_ASSOC)){ 
-                                    ?>
-                                        <td><?= $fetch_cart['nomprd']; ?></td>
-                                        <td><?= $fetch_cart['precio']; ?></td>
-                                        <td><?= $fetch_cart['stock']; ?></td>
-                                        <td>
-                                            <form action="" method="POST">
-                                                <div class="form-group">
-                                                    <input type="hidden" name="prdt" value="<?= $fetch_cart['idv']; ?>">
-                                                    <input type="number" name="p_qty"
-                                                        value="<?= $fetch_cart['quantity']; ?>" style="width:100px;"
-                                                        min="1" max="99" class="form-control" placeholder="Cantidad">
-                                                </div>
-                                                <button type="submit" name="update_qty" class="btn btn-danger"> <i
-                                                        class='material-icons' data-toggle='tooltip'
-                                                        title='crear'>refresh</i></button>
-                                            </form>
-                                        </td>
-                                        <td><span><?= $sub_total = ($fetch_cart['price'] * $fetch_cart['quantity']); ?></span>
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-danger" onclick="return confirm('Eliminar del carrito?');"
-                                                href="../venta/eliminar.php?id=<?= $fetch_cart['idv']; ?>"><i
-                                                    class='material-icons' data-toggle='tooltip'
-                                                    title='crear'>close</i></a>
-                                        </td>
-                                    </tbody>
-                                    <?php
-                                        $grand_total += $sub_total;
-                                        }
-                                    }else{
-                                        echo '<p class="alert alert-warning">Tu carrito esta vació</p>';
-                                    }
-                                    ?>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="card" style="min-height: 485px">
-                            <div class="card-header card-header-text">
-                                <h4 class="card-title">Articulo</h4>
-                                <p class="category">Agrega un articulo</p>
-                            </div>
-                            <br>
-                            <div class="card-content table-responsive">
-                                <?php 
-                                    $sentencia = $connect->prepare("SELECT producto.idprod, producto.codba, producto.nomprd, categoria.idcate, categoria.nomca, producto.precio, producto.stock, producto.foto, producto.venci, producto.esta, producto.fere, producto.serial, producto.marca, producto.ram, producto.disco, producto.prcpro, producto.pntpro, producto.tarpro, producto.grado FROM producto INNER JOIN categoria ON producto.idcate = categoria.idcate order BY codba DESC;");
-                                    $sentencia->execute();
-                                    $data =  array();
-                                    if($sentencia){
-                                    while($r = $sentencia->fetchObject()){
-                                        $data[] = $r;
-                                    }
-                                    }
-                                     ?>
-                                <?php if(count($data)>0):?>
-                                <table class="table table-hover" id="example">
-                                    <thead class="text-primary">
-                                        <tr>
-                                            <th>Nombre</th>
-                                            <th>Precio</th>
-                                            <th>Foto</th>
-                                            <th>Stock</th>
-                                            <th>Opcion</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach($data as $d):?>
-                                        <tr>
-                                            <td><?php echo  $d->nomprd; ?></td>
-                                            <td><?php echo  $d->precio; ?></td>
-                                            <td><img src="../assets/img/subidas/<?php echo $d->foto ?>" width='50'
-                                                    height='50'></td>
-                                            <?php 
-                                                if ($d->stock <= 0) {
-                                                
-                                                    echo '<td><span class="badge badge-danger">stock vacio</span></td>';
-                                                }elseif ($d->stock <= 1) {
-                                                    echo '<td><span class="badge badge-warning">Última Unidad</span></td>';
-                                                
-                                                }else {
-                                                    echo '<td><span class="badge badge-success">' . $d->stock . '</span></td>';
-                                                }
-                                            ?>
-                                            <td>
-                                                <form class="form-inline" method="post" action="">
-                                                    <input type="hidden" name="prdt" value="<?php echo $d->idprod; ?>">
-                                                    <input type="hidden" name="pdrus"
-                                                        value="<?php echo $_SESSION['id']; ?>">
-                                                    <input type="hidden" name="name" value="<?php echo $d->nomprd; ?>">
-                                                    <input type="hidden" name="prec" value="<?php echo $d->precio; ?>">
-
-                                                    <div class="form-group">
-                                                        <input type="number" name="p_qty" value="1" style="width:100px;"
-                                                            min="1" class="form-control" placeholder="Cantidad">
-                                                    </div>
-                                                    <button type="submit" name="add_to_cart" class="btn btn-success"> <i
-                                                            class='material-icons' data-toggle='tooltip'
-                                                            title='crear'>shopping_cart</i></button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                                <?php else:?>
-                                <!-- Warning Alert -->
-                                <div class="alert alert-warning" role="alert">
-                                    No se encontró ningún dato!
+            </nav>
+        </div>
+    <div id="content">
+        <div class="main-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-7">
+                        <div class="card">
+                            <div class="card-header"><h4 class="card-title">Carrito y Datos de la Venta</h4></div>
+                            <div class="card-body">
+                                <div class="cart-summary p-3 mb-4">
+                                    <h5>Productos en el Carrito</h5>
+                                    <div class="selected-items" id="selectedItems">
+                                        <p class="text-center text-muted">Aún no has agregado productos.</p>
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <strong>Total:</strong>
+                                        <h4 class="mb-0 text-success">$<span id="totalPrice">0</span></h4>
+                                    </div>
                                 </div>
 
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-12 col-md-12">
-                        <div class="card" style="min-height: 485px">
-                            <div class="card-header card-header-text">
-                                <h4 class="card-title">Ventas recientes</h4>
-                                <p class="category">Finalizar ventas reciente añadidos el dia de hoy</p>
-                            </div>
-
-                            <div class="card-content table-responsive">
-                                <div class="alert alert-warning">
-                                    <strong>Estimado usuario!</strong> Los campos remarcados con <span
-                                        class="text-danger">*</span> son necesarios.
-                                    <br>
-                                    <strong>Al registrar una venta en el apartado clientes debes añadir uno nuevo si es
-                                        primera vez</strong>
-                                </div>
-                                <form id="ventaForm" enctype="multipart/form-data" method="POST" autocomplete="off">
+                                <form id="ventaForm" action="../../backend/php/procesar_venta_final.php" method="POST">
                                     <div class="row">
-                                        <div class="col-md-4 col-lg-4">
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="email">Clientes<span class="text-danger">*</span></label>
-                                                <input type="hidden" name="pdrus" value="<?php echo $_SESSION['id']; ?>">
-                                                <?php if ($from_catalog): ?>
-                                                <input type="hidden" id="productoData" value='<?php echo json_encode($producto_data); ?>'>
-                                                <?php endif; ?>
-                                                <select class="form-control" required name="cxtip" id="clienteSelect">
-                                                    <option value="">----------Seleccione------------</option>
-                                                    <?php
-                                                    require_once '../../config/ctconex.php';
-                                                    $stmt = $connect->prepare("SELECT * FROM clientes where estad='Activo' order by idclie desc");
-                                                    $stmt->execute();
-                                                    while($row=$stmt->fetch(PDO::FETCH_ASSOC)) {
-                                                        extract($row);
-                                                        ?>
-                                                    <option value="<?php echo $idclie; ?>"><?php echo $nomcli; ?>
-                                                        <?php echo $apecli; ?></option>
-                                                    <?php
-                                                    }
-                                                    ?>
+                                                <label>Cliente <span class="text-danger">*</span></label>
+                                                <select class="form-control" name="cliente_id" required>
+                                                    <option value="">-- Seleccione un cliente --</option>
+                                                    <?php foreach ($clientes as $cliente): ?>
+                                                        <option value="<?= $cliente['idclie'] ?>"><?= htmlspecialchars($cliente['nomcli'] . ' ' . $cliente['apecli']) ?></option>
+                                                    <?php endforeach; ?>
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-4 col-lg-4">
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="email">Comprobante<span class="text-danger">*</span></label>
-                                                <select class="form-control" required name="cxcom">
-                                                    <option value="">----------Seleccione------------</option>
-                                                    <option value="Ticket">Factura</option>
-                                                    <option value="Ticket">Boleta</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 col-lg-4">
-                                            <div class="form-group">
-                                                <label for="email">Tipo de pago<span
-                                                        class="text-danger">*</span></label>
-                                                <select class="form-control" required name="cxtcre">
-                                                    <option value="">----------Seleccione------------</option>
-                                                    <option value="Transferencia">Transferencia PSE</option>
+                                                <label>Método de Pago <span class="text-danger">*</span></label>
+                                                <select class="form-control" name="metodo_pago" required>
+                                                    <option value="">-- Seleccione --</option>
                                                     <option value="Efectivo">Efectivo</option>
-                                                    <option value="Efectivo">Tarjeta</option>
-                                                    <option value="Efectivo">Addi</option>
-                                                    <option value="Efectivo">Wompi</option>
-                                                    <option value="Efectivo">SisteCredito</option>
-                                                    <option value="Efectivo">PSE</option>
+                                                    <option value="Transferencia">Transferencia</option>
+                                                    <option value="Tarjeta">Tarjeta</option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-12 col-lg-12">
-                                            <div class="form-group">
-                                                <label for="email">Fecha<span class="text-danger">*</span></label>
-                                                <input type="text" id="fechaActual" class="form-control" name="txtdate"
-                                                    required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <?php
-                                        //require_once('../../backend/config/Conexion.php');
-                                            $user_id = $_SESSION['id'];
-                                            $cart_grand_total = 0;
-                                            $select_cart_items = $connect->prepare("SELECT cart.idv, usuarios.id, usuarios.nombre, producto.idprod, producto.codba, producto.nomprd, producto.precio, producto.stock, cart.name, cart.price, cart.quantity FROM cart INNER JOIN usuarios ON cart.user_id = usuarios.id INNER JOIN producto ON cart.idprod = producto.idprod WHERE user_id = ?");
-                                            $select_cart_items->execute([$user_id]);
-                                            if($select_cart_items->rowCount() > 0){
-                                                while($fetch_cart_items = $select_cart_items->fetch(PDO::FETCH_ASSOC)){
-                                                $cart_total_price = ($fetch_cart_items['precio'] * $fetch_cart_items['quantity']);
-                                                $cart_grand_total += $cart_total_price;
-                                        ?>
-                                        <div class="col-md-12 col-lg-12">
-                                            <div class="form-group">
-                                                <label for="email">Mis productos<span
-                                                        class="text-danger">*</span></label>
-
-                                                <input type="hidden" value="<?= $fetch_cart_items['idprod']; ?>"
-                                                    name="product1[]">
-                                                <input type="hidden" value="<?= $fetch_cart_items['quantity']; ?>"
-                                                    name="canti[]">
-                                                <input type="hidden" value="<?= $fetch_cart_items['idv']; ?>"
-                                                    name="idcart">
-                                                <input readonly class="form-control" type="text"
-                                                    value="<?= $fetch_cart_items['name']; ?> (<?= 'S/'.$fetch_cart_items['precio'].'/- x '. $fetch_cart_items['quantity']; ?>)"
-                                                    name="">
-                                            </div>
-                                        </div>
-                                        <?php }
-                                        }else{  echo '<p class="empty"><p class="alert alert-warning">Tu carrito esta vació</p></p>';   }
-                                        ?> 
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 col-lg-12">
-                                            <h1 style="font-size:42px; color:#000000;"><strong>Precio Total
-                                                    :S/<?php echo number_format($cart_grand_total, 2); ?> </strong></h1>
-                                        </div>
-                                        <input type="hidden" value="<?php  echo $cart_grand_total ?>" name="txttotalll">
-                                    </div> <hr>
-                                    <div class="form-group">
-                                        <div class="col-sm-12">
-                                            <?php if ($from_catalog): ?>
-                                            <button type="button" id="procesarVentaCatalogo" class="btn btn-success text-white">
-                                                Procesar Venta
-                                            </button>
-                                            <?php else: ?>
-                                            <button name="order" type="submit"
-                                                class="btn btn-success text-white <?= ($cart_grand_total > 1)?'':'disabled'; ?>">Guardar</button>
-                                            <?php endif; ?>
-                                            <a class="btn btn-danger text-white" href="mostrar.php">Cancelar</a>
-                                        </div>
-                                    </div>
+                                    <input type="hidden" id="productosSeleccionados" name="carrito_json">
+                                    <input type="hidden" id="totalVenta" name="total_venta">
+                                    <button type="submit" id="procesarVentaBtn" class="btn btn-success" disabled>
+                                        <i class="material-icons">check_circle</i> Procesar Venta
+                                    </button>
+                                    <a href="mostrar.php" class="btn btn-secondary">Cancelar</a>
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="card">
+                            <div class="card-header"><h4 class="card-title">Inventario Disponible</h4></div>
+                            <div class="card-body" style="max-height: 80vh; overflow-y: auto;">
+                                <?php if(count($productos_inventario) > 0): ?>
+                                    <?php foreach($productos_inventario as $producto): ?>
+                                    <div class="product-card p-2 mb-2" data-producto-json='<?= json_encode($producto, JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
+                                        <div class="d-flex justify-content-between">
+                                            <strong><?= htmlspecialchars($producto['marca'] . ' ' . $producto['modelo']) ?></strong>
+                                            <span class="badge badge-info">Stock: <?= $producto['stock_disponible'] ?></span>
+                                        </div>
+                                        <small class="text-muted"><?= htmlspecialchars($producto['procesador'] . ' | ' . $producto['ram'] . ' | ' . $producto['disco']) ?></small>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <span class="text-success font-weight-bold">$<?= number_format((float)$producto['precio'], 0, ',', '.') ?></span>
+                                            <div class="input-group" style="width: 120px;">
+                                                <input type="number" class="form-control form-control-sm cantidad-input" value="1" min="1" max="<?= $producto['stock_disponible'] ?>">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-primary btn-sm add-to-cart-btn" type="button"><i class="material-icons" style="font-size: 16px;">add</i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="alert alert-warning">No hay productos "Para Venta" en el inventario.</div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -431,128 +187,97 @@ if ($from_catalog) {
             </div>
         </div>
     </div>
-    </div>
+</div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="../assets/js/jquery-3.3.1.slim.min.js"></script>
-    <script src="../assets/js/popper.min.js"></script>
-    <script src="../assets/js/bootstrap.min.js"></script>
-    <script src="../assets/js/jquery-3.3.1.min.js"></script>
-    <script src="../assets/js/sweetalert.js"></script>
-    <?php
-    include_once '../../backend/php/st_add_cart.php'?>
-    <?php
-    include_once '../../backend/php/st_updcart.php'?>
-    <?php
-    include_once '../../backend/php/st_addcheck.php'  ?>
-    <script type="text/javascript">
-    $(document).ready(function() {
-        $('#sidebarCollapse').on('click', function() {
-            $('#sidebar').toggleClass('active');
-            $('#content').toggleClass('active');
-        });
+<script src="../assets/js/jquery-3.3.1.min.js"></script>
+<script src="../assets/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        $('.more-button,.body-overlay').on('click', function() {
-            $('#sidebar,.body-overlay').toggleClass('show-nav');
-        });
+<script>
+$(document).ready(function() {
+    let carrito = [];
 
-    });
-    </script>
-    <script src="../assets/js/loader.js"></script>
-    <!-- Data Tables -->
-    <script type="text/javascript" src="../assets/js/datatable.js"></script>
-    <script type="text/javascript" src="../assets/js/datatablebuttons.js"></script>
-    <script type="text/javascript" src="../assets/js/jszip.js"></script>
-    <script type="text/javascript" src="../assets/js/pdfmake.js"></script>
-    <script type="text/javascript" src="../assets/js/vfs_fonts.js"></script>
-    <script type="text/javascript" src="../assets/js/buttonshtml5.js"></script>
-    <script type="text/javascript" src="../assets/js/buttonsprint.js"></script>
-    <script type="text/javascript">
-    $(document).ready(function() {
-        $('#example').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ],
-            language: {
-                search: "🔍buscar:"
-            }
-        });
-    });
-    </script>
-    <script type="text/javascript">
-    window.onload = function() {
-        var fecha = new Date(); //Fecha actual
-        var mes = fecha.getMonth() + 1; //obteniendo mes
-        var dia = fecha.getDate(); //obteniendo dia
-        var ano = fecha.getFullYear(); //obteniendo año
-        if (dia < 10)
-            dia = '0' + dia; //agrega cero si el menor de 10
-        if (mes < 10)
-            mes = '0' + mes //agrega cero si el menor de 10
-        document.getElementById('fechaActual').value = ano + "-" + mes + "-" + dia;
+    // --- CORRECCIÓN CLAVE 1: Usar un ID único para cada tipo de producto ---
+    function generarCartId(producto) {
+        return `prod_${producto.marca}_${producto.modelo}_${producto.procesador}_${producto.ram}_${producto.disco}_${producto.precio}`.replace(/\s+/g, '');
     }
 
-    // Manejar ventas desde catálogo
-    $(document).ready(function() {
-        $('#procesarVentaCatalogo').click(function() {
-            var clienteId = $('#clienteSelect').val();
-            var metodoPago = $('select[name="cxtcre"]').val();
-            var tipoComprobante = $('select[name="cxcom"]').val();
-            var productoData = JSON.parse($('#productoData').val());
-            
-            if (!clienteId || !metodoPago || !tipoComprobante) {
-                alert('Por favor complete todos los campos obligatorios');
-                return;
-            }
-            
-            if (!confirm('¿Está seguro de procesar esta venta?')) {
-                return;
-            }
-            
-            var button = $(this);
-            button.prop('disabled', true).text('Procesando...');
-            
-            $.ajax({
-                url: '../../backend/php/procesar_venta_inventario.php',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    producto_data: productoData,
-                    cantidad: productoData.cantidad,
-                    cliente_id: clienteId,
-                    metodo_pago: metodoPago,
-                    tipo_comprobante: tipoComprobante
-                }),
-                success: function(response) {
-                    try {
-                        var result = JSON.parse(response);
-                        if (result.status === 'success') {
-                            alert('Venta procesada exitosamente!\nOrden #' + result.orden_id + '\nTotal: $' + parseFloat(result.total_venta).toLocaleString());
-                            window.location.href = 'mostrar.php';
-                        } else {
-                            alert('Error: ' + result.message);
-                            button.prop('disabled', false).text('Procesar Venta');
-                        }
-                    } catch (e) {
-                        alert('Error al procesar la respuesta del servidor');
-                        button.prop('disabled', false).text('Procesar Venta');
-                    }
-                },
-                error: function() {
-                    alert('Error de conexión. Intente nuevamente.');
-                    button.prop('disabled', false).text('Procesar Venta');
-                }
-            });
+    function actualizarCarrito() {
+        const itemsContainer = $('#selectedItems');
+        itemsContainer.empty();
+        let total = 0;
+
+        if (carrito.length === 0) {
+            itemsContainer.html('<p class="text-center text-muted">Aún no has agregado productos.</p>');
+            $('#procesarVentaBtn').prop('disabled', true);
+            $('#totalPrice').text('0');
+            return;
+        }
+
+        carrito.forEach(item => {
+            const subtotal = parseFloat(item.precio) * item.cantidad;
+            total += subtotal;
+            const itemHtml = `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <strong>${item.marca} ${item.modelo}</strong><br>
+                        <small>${item.cantidad} x $${parseFloat(item.precio).toLocaleString()}</small>
+                    </div>
+                    <div>
+                        <strong>$${subtotal.toLocaleString()}</strong>
+                        <button class="btn btn-danger btn-sm ml-2 remove-from-cart" data-cart-id="${item.cartId}">&times;</button>
+                    </div>
+                </div>`;
+            itemsContainer.append(itemHtml);
         });
+
+        $('#totalPrice').text(total.toLocaleString());
+        $('#productosSeleccionados').val(JSON.stringify(carrito));
+        $('#totalVenta').val(total);
+        $('#procesarVentaBtn').prop('disabled', false);
+    }
+
+    $('.add-to-cart-btn').on('click', function() {
+        const card = $(this).closest('.product-card');
+        let producto = card.data('producto-json');
+        const cantidad = parseInt(card.find('.cantidad-input').val());
+        producto.cartId = generarCartId(producto); // Asignar ID único
+
+        const itemExistente = carrito.find(p => p.cartId === producto.cartId);
+        
+        if (itemExistente) {
+            const nuevaCantidad = itemExistente.cantidad + cantidad;
+            if (nuevaCantidad > producto.stock_disponible) {
+                Swal.fire('Error', 'No hay suficiente stock para agregar esa cantidad.', 'error');
+                return;
+            }
+            itemExistente.cantidad = nuevaCantidad;
+        } else {
+            if (cantidad > producto.stock_disponible) {
+                Swal.fire('Error', 'No hay suficiente stock.', 'error');
+                return;
+            }
+            producto.cantidad = cantidad;
+            carrito.push(producto);
+        }
+        
+        Swal.fire({
+            toast: true, position: 'top-end',
+            icon: 'success', title: 'Producto agregado',
+            showConfirmButton: false, timer: 1500
+        });
+        
+        actualizarCarrito();
     });
-    </script>
+
+    // --- CORRECCIÓN CLAVE 2: Eliminar usando el ID único en lugar del índice ---
+    $('#selectedItems').on('click', '.remove-from-cart', function() {
+        const cartIdToRemove = $(this).data('cart-id');
+        carrito = carrito.filter(item => item.cartId !== cartIdToRemove);
+        actualizarCarrito();
+    });
+});
+</script>
+
 </body>
-
 </html>
-
-<?php }else{ 
-    header('Location: ../error404.php');
- } ?>
-<?php ob_end_flush(); ?>

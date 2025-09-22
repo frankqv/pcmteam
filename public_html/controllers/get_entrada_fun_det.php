@@ -46,26 +46,21 @@ try {
             LEFT JOIN proveedores p ON e.proveedor_id = p.id 
             LEFT JOIN usuarios u ON e.usuario_id = u.id
             WHERE e.id = ?";
-    
     $stmt = $connect->prepare($sql);
     $stmt->execute([$entrada_id]);
     $entrada = $stmt->fetch(PDO::FETCH_ASSOC);
-    
     if (!$entrada) {
         echo json_encode(['success' => false, 'error' => 'Entrada no encontrada']);
         exit;
     }
-    
     // Formatear fecha para mejor visualización
     if ($entrada['fecha_entrada']) {
         $entrada['fecha_entrada'] = date('d/m/Y H:i', strtotime($entrada['fecha_entrada']));
     }
-    
     echo json_encode([
         'success' => true,
         'data' => $entrada
     ]);
-    
 } catch (PDOException $e) {
     error_log("Error en get_entrada_details.php: " . $e->getMessage());
     echo json_encode([
