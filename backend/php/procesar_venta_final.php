@@ -65,7 +65,7 @@ try {
             FROM bodega_inventario 
             WHERE marca = ? AND modelo = ? 
             AND procesador = ? AND ram = ? AND disco = ? 
-            AND precio = ? AND disposicion = 'Para Venta' 
+            AND disposicion = 'Para Venta' 
             AND estado = 'activo'
             ORDER BY id ASC
             LIMIT ?
@@ -77,7 +77,6 @@ try {
             $item_carrito['procesador'] ?? '',
             $item_carrito['ram'] ?? '',
             $item_carrito['disco'] ?? '',
-            $precio_unitario,
             $cantidad_solicitada
         ]);
         
@@ -94,12 +93,12 @@ try {
                 'inventario_id' => $producto['id'],
                 'codigo_g' => $producto['codigo_g'],
                 'serial' => $producto['serial'],
-                'precio_unitario' => floatval($producto['precio']),
+                'precio_unitario' => $precio_unitario,
                 'marca' => $item_carrito['marca'],
                 'modelo' => $item_carrito['modelo']
             ];
             
-            $total_calculado += floatval($producto['precio']);
+            $total_calculado += $precio_unitario;
             $total_items++;
         }
     }
@@ -113,13 +112,12 @@ try {
         throw new Exception('No se encontraron productos válidos para la venta');
     }
     
-    // Crear orden principal en bodega_ordenes
+    // Crear orden principal en bodega_ordenes (uso interno de bodega)
     $stmt = $connect->prepare("
         INSERT INTO bodega_ordenes 
         (cliente_id, responsable, total_items, total_pago, metodo_pago, estado_pago, tipo_doc, creado_por, created_at) 
         VALUES (?, ?, ?, ?, ?, 'Aceptado', 'ticket', ?, NOW())
     ");
-    
     $stmt->execute([
         $cliente_id,
         $usuario_id,
@@ -128,10 +126,34 @@ try {
         $metodo_pago,
         $usuario_id
     ]);
-    
-    $orden_id = $connect->lastInsertId();
+    $orden_id_bodega = $connect->lastInsertId();
+
+    // Crear orden en tabla legacy `orders` para flujo de despacho (pendientes)
+    $responsable_nombre = '';
+    try {
+        $sUsr = $connect->prepare("SELECT nombre FROM usuarios WHERE id = ?");
+        $sUsr->execute([$usuario_id]);
+        $responsable_nombre = ($sUsr->fetch(PDO::FETCH_ASSOC)['nombre'] ?? '') ?: 'Usuario';
+    } catch (Exception $e) { $responsable_nombre = 'Usuario'; }
+
+    $stmt_legacy = $connect->prepare("
+        INSERT INTO orders 
+        (user_id, user_cli, method, total_products, total_price, placed_on, payment_status, tipc, despacho, responsable)
+        VALUES (?, ?, ?, ?, ?, NOW(), 'Aceptado', '0', 'Pendiente', ?)
+    ");
+    $total_products_text = (string)$total_items;
+    $stmt_legacy->execute([
+        $usuario_id,
+        $cliente_id,
+        $metodo_pago,
+        $total_products_text,
+        $total_calculado,
+        $responsable_nombre
+    ]);
+    $orden_id_legacy = $connect->lastInsertId();
     
     // Crear detalles de venta y procesar cada producto
+    // Los detalles de venta deben referenciar `orders.idord` para que Despachos -> Pendientes los encuentre
     $stmt_detalle = $connect->prepare("
         INSERT INTO venta_detalles (orden_id, inventario_id, serial, codigo_g, precio_unitario, fecha_venta) 
         VALUES (?, ?, ?, ?, ?, NOW())
@@ -145,20 +167,20 @@ try {
     
     $stmt_update_inventario = $connect->prepare("
         UPDATE bodega_inventario 
-        SET disposicion = 'vendido', estado = 'vendido', fecha_modificacion = NOW() 
+        SET disposicion = 'Por Alistamiento', fecha_modificacion = NOW() 
         WHERE id = ?
     ");
     
     $stmt_log = $connect->prepare("
         INSERT INTO bodega_log_cambios 
         (inventario_id, usuario_id, campo_modificado, valor_anterior, valor_nuevo, tipo_cambio) 
-        VALUES (?, ?, 'disposicion', 'Para Venta', 'vendido', 'sistema')
+        VALUES (?, ?, 'disposicion', 'Para Venta', 'Por Alistamiento', 'sistema')
     ");
     
     foreach ($productos_vendidos as $producto) {
-        // Insertar detalle de venta
+        // Insertar detalle de venta (apunta a tabla legacy `orders`)
         $stmt_detalle->execute([
-            $orden_id,
+            $orden_id_legacy,
             $producto['inventario_id'],
             $producto['serial'],
             $producto['codigo_g'],
@@ -166,14 +188,14 @@ try {
         ]);
         
         // Crear registro de salida
-        $observaciones = "Venta a {$cliente['nomcli']} {$cliente['apecli']} - Orden #{$orden_id} - {$metodo_pago}";
+        $observaciones = "Venta a {$cliente['nomcli']} {$cliente['apecli']} - Orden #{$orden_id_legacy} - {$metodo_pago}";
         
         $stmt_salida->execute([
             $producto['inventario_id'],
             $cliente_id,
             $usuario_id, // tecnico_id
             $usuario_id, // usuario_id  
-            $orden_id,
+            $orden_id_bodega,
             $producto['precio_unitario'],
             $observaciones
         ]);
@@ -193,7 +215,7 @@ try {
     
     $notas_ingreso = "Venta procesada - {$total_items} productos - Cliente: {$cliente['nomcli']} {$cliente['apecli']}";
     $stmt_ingreso->execute([
-        $orden_id,
+        $orden_id_bodega,
         $total_calculado,
         $metodo_pago,
         $usuario_id,
@@ -204,8 +226,8 @@ try {
     $connect->commit();
     
     // Redirigir con mensaje de éxito
-    $_SESSION['mensaje_exito'] = "Venta procesada exitosamente. Orden #{$orden_id} por $" . number_format($total_calculado, 0, ',', '.');
-    $_SESSION['orden_id'] = $orden_id;
+    $_SESSION['mensaje_exito'] = "Venta procesada exitosamente. Orden #{$orden_id_legacy} por $" . number_format($total_calculado, 0, ',', '.');
+    $_SESSION['orden_id'] = $orden_id_legacy;
     $_SESSION['total_venta'] = $total_calculado;
     $_SESSION['cliente_nombre'] = $cliente['nomcli'] . ' ' . $cliente['apecli'];
     

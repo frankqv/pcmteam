@@ -9,21 +9,58 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])) {
 
 require_once '../../config/ctconex.php';
 
-// Verificar que el usuario existe y obtener su información
-$userInfo = null;
-if (isset($_SESSION['id'])) {
-    $sql = "SELECT nombre, usuario, correo, rol, foto, idsede FROM usuarios WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $_SESSION['id']);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $userInfo = $result->fetch_assoc();
-}
+// --- LÓGICA DE PROCESAMIENTO DE DESPACHO ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orden_id'])) {
+    $ordenId = $_POST['orden_id'];
+    
+    try {
+        $conn->begin_transaction();
 
-if (!$userInfo) {
-    header('Location: ../error404.php');
-    exit();
+        // 1. Obtener los inventario_id de los productos de la orden
+        $sql_detalles = "SELECT inventario_id FROM venta_detalles WHERE orden_id = ?";
+        $stmt_detalles = $conn->prepare($sql_detalles);
+        $stmt_detalles->bind_param("i", $ordenId);
+        $stmt_detalles->execute();
+        $detalles_result = $stmt_detalles->get_result();
+        $inventario_ids = [];
+        while ($row = $detalles_result->fetch_assoc()) {
+            $inventario_ids[] = $row['inventario_id'];
+        }
+        
+        if (empty($inventario_ids)) {
+            throw new Exception("No se encontraron productos para esta orden.");
+        }
+        
+        // 2. Actualizar el estado de los productos en la tabla de inventario
+        // Esta parte es CRUCIAL para que se "descuente del catálogo"
+        $placeholders = implode(',', array_fill(0, count($inventario_ids), '?'));
+        $sql_update_inventario = "UPDATE bodega_inventario SET disposicion = 'Vendida', estado = 'inactivo' WHERE id IN ($placeholders)";
+        $stmt_update_inventario = $conn->prepare($sql_update_inventario);
+        $types = str_repeat('i', count($inventario_ids));
+        $stmt_update_inventario->bind_param($types, ...$inventario_ids);
+        $stmt_update_inventario->execute();
+
+        // 3. Actualizar el estado de la orden a 'Enviado' o 'Despachado'
+        // Esto hace que la orden desaparezca de la lista de pendientes
+        $sql_update_order = "UPDATE orders SET despacho = 'Enviado' WHERE idord = ?";
+        $stmt_update_order = $conn->prepare($sql_update_order);
+        $stmt_update_order->bind_param("i", $ordenId);
+        $stmt_update_order->execute();
+
+        $conn->commit();
+        echo "<script>alert('Despacho procesado con éxito.'); window.location.href='despachos.php';</script>";
+        exit;
+
+    } catch (Exception $e) {
+        $conn->rollback();
+        echo "<script>alert('Error al procesar el despacho: " . $e->getMessage() . "'); window.location.href='despachos.php';</script>";
+        exit;
+    }
 }
+// --- FIN DE LA LÓGICA DE PROCESAMIENTO DE DESPACHO ---
+
+// Resto del código (HTML, JavaScript, etc.) para mostrar la página
+// ...
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -31,11 +68,9 @@ if (!$userInfo) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Despachos Pendientes - PCMARKETTEAM</title>
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/custom.css">
     <link rel="stylesheet" href="../assets/css/loader.css">
-    <!-- Data Tables -->
     <link rel="stylesheet" type="text/css" href="../assets/css/datatable.css">
     <link rel="stylesheet" type="text/css" href="../assets/css/buttonsdataTables.css">
     <link rel="stylesheet" type="text/css" href="../assets/css/font.css">
@@ -60,29 +95,30 @@ if (!$userInfo) {
             border-radius: 4px;
             margin-top: 10px;
         }
-        .status-pendiente {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-        .status-enviado {
-            background-color: #d4edda;
-            color: #155724;
-        }
     </style>
 </head>
 <body>
     <div class="wrapper">
         <div class="body-overlay"></div>
-        <?php include_once '../layouts/nav.php';
+        <?php 
+        $userInfo = [];
+        if (isset($_SESSION['id'])) {
+            $sql = "SELECT nombre, usuario, correo, rol, foto, idsede FROM usuarios WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $_SESSION['id']);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $userInfo = $result->fetch_assoc();
+        }
+        include_once '../layouts/nav.php';
         include_once '../layouts/menu_data.php'; ?>
-        <!-- Sidebar -->
         <nav id="sidebar">
             <div class="sidebar-header">
                 <h3><img src="../assets/img/favicon.webp" class="img-fluid" /><span>PCMARKETTEAM</span></h3>
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-        <!-- Page Content -->
+        
         <div id="content">
             <div class="top-navbar">
                 <nav class="navbar navbar-expand-lg" style="background: #27ae60;">
@@ -91,31 +127,11 @@ if (!$userInfo) {
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
                         <a class="navbar-brand" href="#"> <B>DESPACHOS PENDIENTES</B> </a>
-                        <a class="navbar-brand" href="#"> Gestión de Envíos </a>
                     </div>
-                    <!-- Menú derecho (usuario) -->
-                    <ul class="nav navbar-nav ml-auto">
-                        <li class="dropdown nav-item active">
-                            <a href="#" class="nav-link" data-toggle="dropdown">
-                                <img src="../assets/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
-                                    alt="Foto de perfil"
-                                    style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
-                            </a>
-                            <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
-                                <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong></li>
-                                <li><?php echo htmlspecialchars($userInfo['usuario'] ?? 'usuario'); ?></li>
-                                <li><?php echo htmlspecialchars($userInfo['correo'] ?? 'correo@ejemplo.com'); ?></li>
-                                <li class="mt-2">
-                                    <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi perfil</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
                 </nav>
             </div>
             
             <div class="main-content">
-                <!-- Resumen de Despachos -->
                 <div class="row mb-4">
                     <div class="col-md-4">
                         <div class="card bg-warning text-white">
@@ -158,7 +174,6 @@ if (!$userInfo) {
                     </div>
                 </div>
 
-                <!-- Lista de Órdenes Pendientes -->
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
@@ -167,7 +182,6 @@ if (!$userInfo) {
                             </div>
                             <div class="card-body">
                                 <?php
-                                // Consulta para obtener órdenes pendientes con detalles
                                 $sql_ordenes = "SELECT o.*, c.nomcli, c.apecli, c.celu, c.dircli
                                                 FROM orders o
                                                 INNER JOIN clientes c ON o.user_cli = c.idclie
@@ -179,11 +193,10 @@ if (!$userInfo) {
                                 
                                 if ($result_ordenes && $result_ordenes->num_rows > 0) {
                                     while ($orden = $result_ordenes->fetch_assoc()) {
-                                        // Obtener detalles de la venta (seriales específicos)
-                                        $sql_detalles = "SELECT vd.*, bi.codigo_g, bi.marca, bi.modelo
-                                                        FROM venta_detalles vd
-                                                        INNER JOIN bodega_inventario bi ON vd.inventario_id = bi.id
-                                                        WHERE vd.orden_id = ?";
+                                        $sql_detalles = "SELECT vd.*, bi.codigo_g, bi.marca, bi.modelo, bi.serial
+                                                         FROM venta_detalles vd
+                                                         INNER JOIN bodega_inventario bi ON vd.inventario_id = bi.id
+                                                         WHERE vd.orden_id = ?";
                                         
                                         $stmt_detalles = $conn->prepare($sql_detalles);
                                         $stmt_detalles->bind_param("i", $orden['idord']);
@@ -205,9 +218,7 @@ if (!$userInfo) {
                                         echo "<div class='serial-list'>";
                                         echo "<strong>Seriales a Despachar:</strong><br>";
                                         
-                                        $seriales = [];
                                         while ($detalle = $detalles_result->fetch_assoc()) {
-                                            $seriales[] = $detalle['serial'];
                                             echo "<span class='badge badge-secondary mr-1 mb-1'>" . htmlspecialchars($detalle['serial']) . "</span>";
                                         }
                                         
@@ -215,9 +226,6 @@ if (!$userInfo) {
                                         echo "<div class='mt-3'>";
                                         echo "<button class='btn btn-success btn-sm procesar-despacho' data-orden-id='" . $orden['idord'] . "'>";
                                         echo "<i class='material-icons'>local_shipping</i> Procesar Despacho";
-                                        echo "</button>"; echo "<br/>"; echo"<br/>";
-                                        echo "<button class='btn btn-success btn-sm procesar-despacho' data-orden-id='" . $orden['idord'] . "'>";
-                                        echo "<i href='delicado.php' class='material-icons'>local_shipping</i> Procesar Despacho";
                                         echo "</button>";
                                         echo "</div>";
                                         echo "</div>";
@@ -238,28 +246,7 @@ if (!$userInfo) {
             </div>
         </div>
     </div>
-    <!-- Modal para confirmar despacho -->
-    <div class="modal fade" id="despachoModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirmar Despacho</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>¿Está seguro de marcar esta orden como despachada?</p>
-                    <div id="despachoInfo"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success" id="confirmarDespacho">Confirmar Despacho</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Scripts -->
+
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/popper.min.js"></script>
     <script src="../assets/js/bootstrap.min.js"></script>
@@ -267,45 +254,14 @@ if (!$userInfo) {
     <script src="../assets/js/loader.js"></script>
     <script>
         $(document).ready(function() {
-            // Manejar clic en procesar despacho
             $('.procesar-despacho').click(function() {
                 var ordenId = $(this).data('orden-id');
-                $('#confirmarDespacho').data('orden-id', ordenId);
-                $('#despachoModal').modal('show');
-            });
-            
-            // Confirmar despacho
-            $('#confirmarDespacho').click(function() {
-                var ordenId = $(this).data('orden-id');
-                var button = $(this);
-                
-                button.prop('disabled', true).text('Procesando...');
-                
-                $.ajax({
-                    url: '../../backend/php/procesar_despacho.php',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ orden_id: ordenId }),
-                    success: function(response) {
-                        try {
-                            var result = JSON.parse(response);
-                            if (result.status === 'success') {
-                                alert('Despacho procesado exitosamente!');
-                                location.reload();
-                            } else {
-                                alert('Error: ' + result.message);
-                                button.prop('disabled', false).text('Confirmar Despacho');
-                            }
-                        } catch (e) {
-                            alert('Error al procesar la respuesta del servidor');
-                            button.prop('disabled', false).text('Confirmar Despacho');
-                        }
-                    },
-                    error: function() {
-                        alert('Error de conexión. Intente nuevamente.');
-                        button.prop('disabled', false).text('Confirmar Despacho');
-                    }
-                });
+                // Crear un formulario temporal para enviar el POST
+                var form = $('<form action="despachos.php" method="POST" style="display:none;">' +
+                             '<input type="hidden" name="orden_id" value="' + ordenId + '">' +
+                             '</form>');
+                $('body').append(form);
+                form.submit();
             });
         });
     </script>

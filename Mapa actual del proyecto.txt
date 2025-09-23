@@ -15,150 +15,1654 @@
 ## Estructura Actual del Proyecto
 
 ```
-pcmteam_security/                    # Raíz del proyecto
-├── backend/                         # Lógica de negocio y procesamiento
-│   ├── pdf/                        # Generación de PDFs
-│   │   ├── font/                   # Fuentes para PDFs
-│   │   │   ├── courier.php
-│   │   │   ├── courierb.php
-│   │   │   ├── courierbi.php
-│   │   │   ├── courieri.php
-│   │   │   ├── create_z_file.php
-│   │   │   ├── download_montserrat.php
-│   │   │   ├── helvetica.php
-│   │   │   ├── helveticab.php
-│   │   │   ├── helveticabi.php
-│   │   │   ├── helveticai.php
-│   │   │   ├── Montserrat-Bold.php
-│   │   │   ├── Montserrat-Bold.ttf
-│   │   │   ├── symbol.php
-│   │   │   ├── times.php
-│   │   │   ├── timesb.php
-│   │   │   ├── timesbi.php
-│   │   │   ├── timesi.php
-│   │   │   └── zapfdingbats.php
-│   │   ├── code128.php             # Generación códigos de barras
-│   │   ├── download_fpdf.php       # Descarga de FPDF
-│   │   └── fpdf.php               # Librería FPDF
-│   ├── php/                        # Scripts PHP de backend
-│   │   ├── buscar_equipo_posicion.php
-│   │   ├── ctlogx.php
-│   │   ├── delete_inventario.php
-│   │   ├── download_excel_template.php
-│   │   ├── editar_equipo.php
-│   │   ├── import_excel_equipos.php
-│   │   ├── obtener_diagnostico.php
-│   │   ├── procesar_cambios_equipo.php
-│   │   ├── procesar_mantenimiento.php
-│   │   ├── registro_administrador.php
-│   │   ├── st_addcheck.php
-│   │   ├── st_addcheck_compra.php
-│   │   ├── st_add_cart.php
-│   │   ├── st_add_cart_compra.php
-│   │   ├── st_add_entrada.php
-│   │   ├── st_add_gastos.php
-│   │   ├── st_add_salida.php
-│   │   ├── st_dltcate.php
-│   │   ├── st_dltcompr.php
-│   │   ├── st_dltcusto.php
-│   │   ├── st_dltpln.php
-│   │   ├── st_dltprodc.php
-│   │   ├── st_dltservic.php
-│   │   ├── st_dltvent.php
-│   │   ├── st_ingresar_mantenimiento.php
-│   │   ├── st_mantenimiento.php
-│   │   ├── st_notiservic.php
-│   │   ├── st_stcate.php
-│   │   ├── st_stcusto.php
-│   │   ├── st_stpln.php
-│   │   ├── st_stprodc.php
-│   │   ├── st_stservic.php
-│   │   ├── st_updcart.php
-│   │   ├── st_updcart_compra.php
-│   │   ├── st_updcate.php
-│   │   ├── st_updconfcf.php
-│   │   ├── st_updconfi.php
-│   │   ├── st_updcusto.php
-│   │   ├── st_updpln.php
-│   │   ├── st_updplnft.php
-│   │   ├── st_updpro.php
-│   │   ├── st_updpro2.php
-│   │   ├── st_updprodc.php
-│   │   ├── st_updprodcf.php
-│   │   ├── st_updpropsd.php
-│   │   ├── st_updpropsd2.php
-│   │   ├── st_updservic.php
-│   │   ├── st_upduser.php
-│   │   ├── test_connection.php
-│   │   ├── test_insert.php
-│   │   └── update_inventario.php
-│   ├── fix_autoincrement.php       # Reparación de autoincrement
-│   └── repair_table.php           # Reparación de tablas
+:\laragon\www\pcmteam>tree /f
+Listado de rutas de carpetas
+El número de serie del volumen es 1CFA-2E35
+C:.
+│   composer.json
+│   composer.lock
+│   IMPLEMENTACION_COMPLETA.md
+│   index.php
+│   Mapa actual del proyecto.txt
 │
-├── config/                         # Configuración del sistema
-│   ├── ctconex.php                # Configuración de conexión BD
-│   ├── db_sin_data.sql            # Estructura BD sin datos
-│   └── EstructuraDB.sql           # Estructura completa BD
+├───backend
+│   │   fix_autoincrement.php
+│   │   repair_table.php
+│   │
+│   ├───pdf
+│   │   │   code128.php
+│   │   │   download_fpdf.php
+│   │   │   fpdf.php
+│   │   │
+│   │   └───font
+│   │           courier.php
+│   │           courierb.php
+│   │           courierbi.php
+│   │           courieri.php
+│   │           create_z_file.php
+│   │           download_montserrat.php
+│   │           helvetica.php
+│   │           helveticab.php
+│   │           helveticabi.php
+│   │           helveticai.php
+│   │           Montserrat-Bold.php
+│   │           Montserrat-Bold.ttf
+│   │           symbol.php
+│   │           times.php
+│   │           timesb.php
+│   │           timesbi.php
+│   │           timesi.php
+│   │           zapfdingbats.php
+│   │
+│   └───php
+│           buscar_equipo_posicion.php
+│           ctlogx.php
+│           delete_inventario.php
+│           download_excel_template.php
+│           editar_equipo.php
+│           import_excel_equipos.php
+│           obtener_diagnostico.php
+│           procesar_cambios_equipo.php
+│           procesar_despacho.php
+│           procesar_envio_ventas.php
+│           procesar_mantenimiento.php
+│           procesar_venta_final.php
+│           procesar_venta_inventario.php
+│           registro_administrador.php
+│           st_addcheck.php
+│           st_addcheck_compra.php
+│           st_add_cart.php
+│           st_add_cart_compra.php
+│           st_add_entrada.php
+│           st_add_gastos.php
+│           st_add_salida.php
+│           st_dltcate.php
+│           st_dltcompr.php
+│           st_dltcusto.php
+│           st_dltpln.php
+│           st_dltprodc.php
+│           st_dltservic.php
+│           st_dltvent.php
+│           st_ingresar_mantenimiento.php
+│           st_mantenimiento.php
+│           st_notiservic.php
+│           st_stcate.php
+│           st_stcusto.php
+│           st_stpln.php
+│           st_stprodc.php
+│           st_stservic.php
+│           st_updcart.php
+│           st_updcart_compra.php
+│           st_updcate.php
+│           st_updconfcf.php
+│           st_updconfi.php
+│           st_updcusto.php
+│           st_updpln.php
+│           st_updplnft.php
+│           st_updpro.php
+│           st_updpro2.php
+│           st_updprodc.php
+│           st_updprodcf.php
+│           st_updpropsd.php
+│           st_updpropsd2.php
+│           st_updservic.php
+│           st_upduser.php
+│           test_connection.php
+│           test_insert.php
+│           update_inventario.php
 │
-├── public_html/                    # Carpeta pública (interfaz de usuario)
-│   ├── administrador/             # Panel administrador
-│   ├── assets/                    # Recursos estáticos
-│   ├── bodega/                    # Módulo de bodega
-│   ├── b_room/                    # Sala de juntas
-│   ├── categoria/                 # Gestión de categorías
-│   ├── clientes/                  # Gestión de clientes
-│   ├── comercial/                 # Área comercial
-│   ├── compra/                    # Módulo de compras
-│   ├── contable/                  # Área contable
-│   ├── Controllers/              # Controladores/       # Scripts PHP de backend
-│   │   ├── get_myl_details.php
-│   │   ├── get_entrada_details.php
-│   │   ├── get_ingresar_m.php
-│   │   └── get_inventario_details.php
-│   ├── cuenta/                    # Gestión de cuentas
-│   ├── docs/                      # Documentación
-│   ├── functions/                 # Funciones auxiliares
-│   ├── gastos/                    # Control de gastos
-│   ├── graficos/                  # Reportes gráficos
-│   ├── jtecnico/                  # Jefe técnico
-│   ├── laboratorio/               # Área de laboratorio
-│   ├── layouts/                   # Plantillas de diseño
-│   ├── marketing/                 # Área de marketing
-│   ├── mis_servicios/             # Servicios personales
-│   ├── pedidos_ruta/              # Gestión de rutas y pedidos
-│   ├── plan/                      # Gestión de planes
-│   ├── producto/                  # Gestión de productos
-│   ├── proveedor/                 # Gestión de proveedores
-│   ├── reporte/                   # Generación de reportes
-│   ├── servicio/                  # Gestión de servicios
-│   ├── tecnico/                   # Área técnica
-│   ├── usuario/                   # Gestión de usuarios
-│   ├── util/                      # Utilidades
-│   ├── u_generico/                # Usuario genérico
-│   ├── venta/                     # Módulo de ventas
-│   ├── .htaccess                  # Configuración Apache
-│   ├── debug_login.php            # Debug de login
-│   ├── error404.php               # Página error 404
-│   ├── error500.php               # Página error 500
-│   ├── home.php                   # Página principal
-│   ├── index.php                  # Punto de entrada
-│   ├── info.php                   # Información del sistema
-│   ├── login.php                  # Página de login
-│   ├── registrar.php              # Registro de usuarios
-│   └── salir.php                  # Logout
+├───clear
+│   ├───bodega
+│   │   │   a.php
+│   │   │   bateria.php
+│   │   │   despacho.php
+│   │   │   editar_equipo.php
+│   │   │   editar_equipo_simple.php
+│   │   │   mostrar.php
+│   │   │   orden_nueva.php
+│   │   │   partes.php
+│   │   │   proceso_triage.php
+│   │   │   salidas.php
+│   │   │   test_edicion.php
+│   │   │   ver.php
+│   │   │   ver_triage_2.php
+│   │   │
+│   │   └───HAY COSAS POR IMPLENTAR UNIR CON NUEVO
+│   │           old_estetico.php
+│   │           old_lista_parte.php
+│   │           old_solicitar_parte.php
+│   │
+│   └───Venta
+├───config
+│       ctconex.php
+│       db_sin_data.sql
+│       EstructuraDB.sql
 │
-├── vendor/                         # Dependencias de Composer
-│   ├── composer/                  # Autoloader de Composer
-│   ├── guzzlehttp/               # Cliente HTTP
-│   ├── league/                   # OAuth2 Client
-│   ├── maennchen/                # ZipStream
-│   ├── markbaker/                # Complex numbers
-│   ├── phpoffice/                # PhpSpreadsheet
-│   ├── psr/                      # PSR standards
-│   ├── ralouphie/               # GetAllHeaders
-│   ├── symfony/                  # Symfony components
-│   └── autoload.php             # Autoloader principal
+├───public_html
+│   │   .htaccess
+│   │   debug_login.php
+│   │   error404.php
+│   │   error500.php
+│   │   home.php
+│   │   index.php
+│   │   info.php
+│   │   login.php
+│   │   registrar.php
+│   │   salir.php
+│   │
+│   ├───administrador
+│   │       escritorio.php
+│   │
+│   ├───assets
+│   │   ├───css
+│   │   │       bootstrap.min.css
+│   │   │       buttonsdataTables.css
+│   │   │       custom.css
+│   │   │       custom2.css
+│   │   │       datatable.css
+│   │   │       font.css
+│   │   │       loader.css
+│   │   │       style.css
+│   │   │
+│   │   ├───img
+│   │   │   │   463824.gif
+│   │   │   │   4d.webp
+│   │   │   │   error-500.jpg
+│   │   │   │   evid_ord_1_1758210363.pdf
+│   │   │   │   favicon.webp
+│   │   │   │   img1.svg
+│   │   │   │   img2.svg
+│   │   │   │   logo.webp
+│   │   │   │   noimage.webp
+│   │   │   │   pastel-de-cumple.webp
+│   │   │   │   perfil2.webp
+│   │   │   │   reere.webp
+│   │   │   │   sideimage.webp
+│   │   │   │
+│   │   │   └───subidas
+│   │   │           106707.jpg
+│   │   │           106707.webp
+│   │   │           146882.png
+│   │   │           4d.png
+│   │   │           515419.png
+│   │   │           559608.png
+│   │   │           559797.png
+│   │   │           643826.jpg
+│   │   │           657987.jpg
+│   │   │           734337.jpg
+│   │   │           756730.png
+│   │   │           767524.png
+│   │   │           883579.png
+│   │   │           978937.png
+│   │   │           997554.png
+│   │   │           logo.jpg
+│   │   │           logo.webp
+│   │   │           perfil1.png
+│   │   │           perfil1.webp
+│   │   │           plan1.jpg
+│   │   │           plan2.jpg
+│   │   │           plan3.jpg
+│   │   │           portatil_display.jpeg
+│   │   │
+│   │   └───js
+│   │           bootstrap.min.js
+│   │           buttonshtml5.js
+│   │           buttonsprint.js
+│   │           Chart-prod.js
+│   │           datatable.js
+│   │           datatablebuttons.js
+│   │           example.js
+│   │           jquery-3.3.1.min.js
+│   │           jquery-3.3.1.slim.min.js
+│   │           jszip.js
+│   │           loader.js
+│   │           package-lock.json
+│   │           package.json
+│   │           pdfmake.js
+│   │           piechart.js
+│   │           plan.js
+│   │           popper.min.js
+│   │           reenvio.js
+│   │           sidebarCollapse.js
+│   │           sweetalert.js
+│   │           vfs_fonts.js
+│   │
+│   ├───bodega
+│   │       asignar.php
+│   │       barcode.php
+│   │       editar_equipo.php
+│   │       editar_inventario.php
+│   │       electrico.php
+│   │       entradas.php
+│   │       equipo_historia.php
+│   │       escritorio.php
+│   │       estetico.php
+│   │       inventario.php
+│   │       lista_estetico.php
+│   │       lista_parte.php
+│   │       lista_producto.php
+│   │       lista_triage_2.php
+│   │       nuevo_equipo.php
+│   │       solicitar_parte.php
+│   │       triage2.php
+│   │
+│   ├───b_room
+│   │       editar_inventario.php
+│   │       mostrar.php
+│   │
+│   ├───categoria
+│   │       actualizar.php
+│   │       eliminar.php
+│   │       mostrar.php
+│   │       nuevo.php
+│   │
+│   ├───clientes
+│   │       actualizar.php
+│   │       bodega.php
+│   │       cucuta.php
+│   │       eliminar.php
+│   │       importar.php
+│   │       informacion.php
+│   │       medellin.php
+│   │       mis_clientes.php
+│   │       mostrar.php
+│   │       nuevo.php
+│   │       plantilla_excel.php
+│   │       unilago.php
+│   │
+│   ├───comercial
+│   │       escritorio.php
+│   │
+│   ├───compra
+│   │       cancelar.php
+│   │       compra_compu.php
+│   │       eliminar.php
+│   │       informacion.php
+│   │       limpiar_carrito.php
+│   │       mostrar.php
+│   │       nuevo.php
+│   │       ticket.php
+│   │
+│   ├───contable
+│   │       escritorio.php
+│   │
+│   ├───controllers
+│   │       get_entrada_details.php
+│   │       get_entrada_fun_det.php
+│   │       get_ingresar_m.php
+│   │       get_inventario_details.php
+│   │       get_myl_details.php
+│   │       get_sales_data.php
+│   │       get_triage2_fun.php
+│   │       get_venta_details.php
+│   │       migration_bodega.sql
+│   │       st_add_ingreso.php
+│   │       st_add_order.php
+│   │       update_price.php
+│   │
+│   ├───control_calidad
+│   │       dashboard.php
+│   │       mostrar.php
+│   │       old_dashboard.php
+│   │
+│   ├───cuenta
+│   │       configuracion.php
+│   │       perfil.php
+│   │       salir.php
+│   │
+│   ├───despacho
+│   │       delicado.php
+│   │       historial.php
+│   │       pedientes.php
+│   │       pendientes.php
+│   │
+│   ├───docs
+│   │       GRACIAS POR TU COMPRA.pdf
+│   │       mostrar.php
+│   │       POLITICA_GRANTIA.pdf
+│   │       RUT ACTUALIZADO.pdf
+│   │       RUT AMERICAN SYSTEM.pdf
+│   │       RUT PCMARKETT.pdf
+│   │
+│   ├───functions
+│   │       plan.php
+│   │       total.php
+│   │
+│   ├───gastos
+│   │       mostrar.php
+│   │       nuevo.php
+│   │
+│   ├───graficos
+│   │       mostrar.php
+│   │
+│   ├───jtecnico
+│   │       escritorio.php
+│   │
+│   ├───laboratorio
+│   │       editar_inventario.php
+│   │       ingresar_m.php
+│   │       ingresar_myl.php
+│   │       mostrar.php
+│   │       nuevo.php
+│   │       test_mantenimiento.php
+│   │
+│   ├───layouts
+│   │       menu_data.php
+│   │       nav.php
+│   │       top_navbar.php
+│   │
+│   ├───marketing
+│   │       mostrar.php
+│   │
+│   ├───mis_servicios
+│   │       mostrar.php
+│   │
+│   ├───pedidos_ruta
+│   │       asignar_tecnico.php
+│   │       delicado.php
+│   │       delicado_estilo2.php
+│   │       factura.php
+│   │       factura_iva.php
+│   │       mostrar.php
+│   │       nuevo_pedido.php
+│   │       ver.php
+│   │
+│   ├───plan
+│   │       actualizar.php
+│   │       eliminar.php
+│   │       foto.php
+│   │       informacion.php
+│   │       mostrar.php
+│   │       nuevo.php
+│   │
+│   ├───producto
+│   │       actualizar.php
+│   │       eliminar.php
+│   │       foto.php
+│   │       informacion.php
+│   │       mostrar.php
+│   │       nuevo.php
+│   │
+│   ├───proveedor
+│   │       editar.php
+│   │       importar.php
+│   │       mostrar.php
+│   │       nuevo.php
+│   │       ver.php
+│   │
+│   ├───reporte
+│   │       clientes.php
+│   │       filtro-producto.php
+│   │       filtro-servicio.php
+│   │       productos.php
+│   │       tecnicos.php
+│   │       ventas.php
+│   │
+│   ├───servicio
+│   │       actualizar.php
+│   │       correo.php
+│   │       eliminar.php
+│   │       mostrar.php
+│   │       nuevo.php
+│   │       ticket.php
+│   │       ver.php
+│   │
+│   ├───tecnico
+│   │       escritorio.php
+│   │
+│   ├───usuario
+│   │       actualizar.php
+│   │       eliminar.php
+│   │       mostrar.php
+│   │
+│   ├───util
+│   │       busquedas selecion simpe.php
+│   │       pag_builder.php
+│   │       rutas_descatadas.php
+│   │       tanto.php
+│   │
+│   ├───u_generico
+│   │       escritorio.php
+│   │       plan.php
+│   │       servicio.php
+│   │
+│   └───venta
+│           abcz.php
+│           cancelar.php
+│           catalogo.php
+│           eliminar.php
+│           informacion.php
+│           mostrar.php
+│           nuevo.php
+│           nuevo_actualizado.php
+│           ticket.php
 │
-├── composer.json                   # Dependencias del proyecto
-├── composer.lock                   # Versiones bloqueadas
-└── Mapa actual del proyecto.txt    # Este archivo
+└───vendor
+    │   autoload.php
+    │
+    ├───composer
+    │   │   autoload_classmap.php
+    │   │   autoload_files.php
+    │   │   autoload_namespaces.php
+    │   │   autoload_psr4.php
+    │   │   autoload_real.php
+    │   │   autoload_static.php
+    │   │   ClassLoader.php
+    │   │   installed.json
+    │   │   installed.php
+    │   │   InstalledVersions.php
+    │   │   LICENSE
+    │   │   platform_check.php
+    │   │
+    │   └───pcre
+    │       │   composer.json
+    │       │   extension.neon
+    │       │   LICENSE
+    │       │   README.md
+    │       │
+    │       └───src
+    │           │   MatchAllResult.php
+    │           │   MatchAllStrictGroupsResult.php
+    │           │   MatchAllWithOffsetsResult.php
+    │           │   MatchResult.php
+    │           │   MatchStrictGroupsResult.php
+    │           │   MatchWithOffsetsResult.php
+    │           │   PcreException.php
+    │           │   Preg.php
+    │           │   Regex.php
+    │           │   ReplaceResult.php
+    │           │   UnexpectedNullMatchException.php
+    │           │
+    │           └───PHPStan
+    │                   InvalidRegexPatternRule.php
+    │                   PregMatchFlags.php
+    │                   PregMatchParameterOutTypeExtension.php
+    │                   PregMatchTypeSpecifyingExtension.php
+    │                   PregReplaceCallbackClosureTypeExtension.php
+    │                   UnsafeStrictGroupsCallRule.php
+    │
+    ├───guzzlehttp
+    │   ├───guzzle
+    │   │   │   CHANGELOG.md
+    │   │   │   composer.json
+    │   │   │   LICENSE
+    │   │   │   README.md
+    │   │   │   UPGRADING.md
+    │   │   │
+    │   │   └───src
+    │   │       │   BodySummarizer.php
+    │   │       │   BodySummarizerInterface.php
+    │   │       │   Client.php
+    │   │       │   ClientInterface.php
+    │   │       │   ClientTrait.php
+    │   │       │   functions.php
+    │   │       │   functions_include.php
+    │   │       │   HandlerStack.php
+    │   │       │   MessageFormatter.php
+    │   │       │   MessageFormatterInterface.php
+    │   │       │   Middleware.php
+    │   │       │   Pool.php
+    │   │       │   PrepareBodyMiddleware.php
+    │   │       │   RedirectMiddleware.php
+    │   │       │   RequestOptions.php
+    │   │       │   RetryMiddleware.php
+    │   │       │   TransferStats.php
+    │   │       │   Utils.php
+    │   │       │
+    │   │       ├───Cookie
+    │   │       │       CookieJar.php
+    │   │       │       CookieJarInterface.php
+    │   │       │       FileCookieJar.php
+    │   │       │       SessionCookieJar.php
+    │   │       │       SetCookie.php
+    │   │       │
+    │   │       ├───Exception
+    │   │       │       BadResponseException.php
+    │   │       │       ClientException.php
+    │   │       │       ConnectException.php
+    │   │       │       GuzzleException.php
+    │   │       │       InvalidArgumentException.php
+    │   │       │       RequestException.php
+    │   │       │       ServerException.php
+    │   │       │       TooManyRedirectsException.php
+    │   │       │       TransferException.php
+    │   │       │
+    │   │       └───Handler
+    │   │               CurlFactory.php
+    │   │               CurlFactoryInterface.php
+    │   │               CurlHandler.php
+    │   │               CurlMultiHandler.php
+    │   │               EasyHandle.php
+    │   │               HeaderProcessor.php
+    │   │               MockHandler.php
+    │   │               Proxy.php
+    │   │               StreamHandler.php
+    │   │
+    │   ├───promises
+    │   │   │   CHANGELOG.md
+    │   │   │   composer.json
+    │   │   │   LICENSE
+    │   │   │   README.md
+    │   │   │
+    │   │   └───src
+    │   │           AggregateException.php
+    │   │           CancellationException.php
+    │   │           Coroutine.php
+    │   │           Create.php
+    │   │           Each.php
+    │   │           EachPromise.php
+    │   │           FulfilledPromise.php
+    │   │           Is.php
+    │   │           Promise.php
+    │   │           PromiseInterface.php
+    │   │           PromisorInterface.php
+    │   │           RejectedPromise.php
+    │   │           RejectionException.php
+    │   │           TaskQueue.php
+    │   │           TaskQueueInterface.php
+    │   │           Utils.php
+    │   │
+    │   └───psr7
+    │       │   CHANGELOG.md
+    │       │   composer.json
+    │       │   LICENSE
+    │       │   README.md
+    │       │
+    │       └───src
+    │           │   AppendStream.php
+    │           │   BufferStream.php
+    │           │   CachingStream.php
+    │           │   DroppingStream.php
+    │           │   FnStream.php
+    │           │   Header.php
+    │           │   HttpFactory.php
+    │           │   InflateStream.php
+    │           │   LazyOpenStream.php
+    │           │   LimitStream.php
+    │           │   Message.php
+    │           │   MessageTrait.php
+    │           │   MimeType.php
+    │           │   MultipartStream.php
+    │           │   NoSeekStream.php
+    │           │   PumpStream.php
+    │           │   Query.php
+    │           │   Request.php
+    │           │   Response.php
+    │           │   Rfc7230.php
+    │           │   ServerRequest.php
+    │           │   Stream.php
+    │           │   StreamDecoratorTrait.php
+    │           │   StreamWrapper.php
+    │           │   UploadedFile.php
+    │           │   Uri.php
+    │           │   UriComparator.php
+    │           │   UriNormalizer.php
+    │           │   UriResolver.php
+    │           │   Utils.php
+    │           │
+    │           └───Exception
+    │                   MalformedUriException.php
+    │
+    ├───league
+    │   └───oauth2-client
+    │       │   composer.json
+    │       │   LICENSE
+    │       │   phpunit.xml.dist
+    │       │   README.md
+    │       │
+    │       └───src
+    │           ├───Grant
+    │           │   │   AbstractGrant.php
+    │           │   │   AuthorizationCode.php
+    │           │   │   ClientCredentials.php
+    │           │   │   GrantFactory.php
+    │           │   │   Password.php
+    │           │   │   RefreshToken.php
+    │           │   │
+    │           │   └───Exception
+    │           │           InvalidGrantException.php
+    │           │
+    │           ├───OptionProvider
+    │           │       HttpBasicAuthOptionProvider.php
+    │           │       OptionProviderInterface.php
+    │           │       PostAuthOptionProvider.php
+    │           │
+    │           ├───Provider
+    │           │   │   AbstractProvider.php
+    │           │   │   GenericProvider.php
+    │           │   │   GenericResourceOwner.php
+    │           │   │   ResourceOwnerInterface.php
+    │           │   │
+    │           │   └───Exception
+    │           │           IdentityProviderException.php
+    │           │
+    │           ├───Token
+    │           │       AccessToken.php
+    │           │       AccessTokenInterface.php
+    │           │       ResourceOwnerAccessTokenInterface.php
+    │           │       SettableRefreshTokenInterface.php
+    │           │
+    │           └───Tool
+    │                   ArrayAccessorTrait.php
+    │                   BearerAuthorizationTrait.php
+    │                   GuardedPropertyTrait.php
+    │                   MacAuthorizationTrait.php
+    │                   ProviderRedirectTrait.php
+    │                   QueryBuilderTrait.php
+    │                   RequestFactory.php
+    │                   RequiredParameterTrait.php
+    │
+    ├───maennchen
+    │   └───zipstream-php
+    │       │   .editorconfig
+    │       │   .gitattributes
+    │       │   .gitignore
+    │       │   .php-cs-fixer.dist.php
+    │       │   .tool-versions
+    │       │   composer.json
+    │       │   LICENSE
+    │       │   phpdoc.dist.xml
+    │       │   phpunit.xml.dist
+    │       │   psalm.xml
+    │       │   README.md
+    │       │
+    │       ├───.github
+    │       │   │   CODE_OF_CONDUCT.md
+    │       │   │   CONTRIBUTING.md
+    │       │   │   dependabot.yml
+    │       │   │   FUNDING.yml
+    │       │   │   PULL_REQUEST_TEMPLATE.md
+    │       │   │   scorecard.yml
+    │       │   │   SECURITY.md
+    │       │   │
+    │       │   ├───ISSUE_TEMPLATE
+    │       │   │       BUG.yml
+    │       │   │       FEATURE.yml
+    │       │   │
+    │       │   ├───PULL_REQUEST_TEMPLATE
+    │       │   │       FAILING_TEST.md
+    │       │   │       FIX.md
+    │       │   │       IMPROVEMENT.md
+    │       │   │       NEW_FEATURE.md
+    │       │   │
+    │       │   └───workflows
+    │       │           branch_main.yml
+    │       │           part_dependabot.yml
+    │       │           part_docs.yml
+    │       │           part_release.yml
+    │       │           part_test.yml
+    │       │           pr.yml
+    │       │           scorecard.yml
+    │       │           tag-beta.yml
+    │       │           tag-stable.yml
+    │       │
+    │       ├───.phive
+    │       │       phars.xml
+    │       │
+    │       ├───.phpdoc
+    │       │   └───template
+    │       │           base.html.twig
+    │       │
+    │       ├───guides
+    │       │       ContentLength.rst
+    │       │       FlySystem.rst
+    │       │       index.rst
+    │       │       Nginx.rst
+    │       │       Options.rst
+    │       │       PSR7Streams.rst
+    │       │       StreamOutput.rst
+    │       │       Symfony.rst
+    │       │       Varnish.rst
+    │       │
+    │       ├───src
+    │       │   │   CentralDirectoryFileHeader.php
+    │       │   │   CompressionMethod.php
+    │       │   │   DataDescriptor.php
+    │       │   │   EndOfCentralDirectory.php
+    │       │   │   Exception.php
+    │       │   │   File.php
+    │       │   │   GeneralPurposeBitFlag.php
+    │       │   │   LocalFileHeader.php
+    │       │   │   OperationMode.php
+    │       │   │   PackField.php
+    │       │   │   Time.php
+    │       │   │   Version.php
+    │       │   │   ZipStream.php
+    │       │   │
+    │       │   ├───Exception
+    │       │   │       DosTimeOverflowException.php
+    │       │   │       FileNotFoundException.php
+    │       │   │       FileNotReadableException.php
+    │       │   │       FileSizeIncorrectException.php
+    │       │   │       OverflowException.php
+    │       │   │       ResourceActionException.php
+    │       │   │       SimulationFileUnknownException.php
+    │       │   │       StreamNotReadableException.php
+    │       │   │       StreamNotSeekableException.php
+    │       │   │
+    │       │   ├───Zip64
+    │       │   │       DataDescriptor.php
+    │       │   │       EndOfCentralDirectory.php
+    │       │   │       EndOfCentralDirectoryLocator.php
+    │       │   │       ExtendedInformationExtraField.php
+    │       │   │
+    │       │   └───Zs
+    │       │           ExtendedInformationExtraField.php
+    │       │
+    │       └───test
+    │           │   Assertions.php
+    │           │   bootstrap.php
+    │           │   CentralDirectoryFileHeaderTest.php
+    │           │   DataDescriptorTest.php
+    │           │   EndlessCycleStream.php
+    │           │   EndOfCentralDirectoryTest.php
+    │           │   FaultInjectionResource.php
+    │           │   LocalFileHeaderTest.php
+    │           │   PackFieldTest.php
+    │           │   ResourceStream.php
+    │           │   Tempfile.php
+    │           │   TimeTest.php
+    │           │   Util.php
+    │           │   ZipStreamTest.php
+    │           │
+    │           ├───Zip64
+    │           │       DataDescriptorTest.php
+    │           │       EndOfCentralDirectoryLocatorTest.php
+    │           │       EndOfCentralDirectoryTest.php
+    │           │       ExtendedInformationExtraFieldTest.php
+    │           │
+    │           └───Zs
+    │                   ExtendedInformationExtraFieldTest.php
+    │
+    ├───markbaker
+    │   ├───complex
+    │   │   │   composer.json
+    │   │   │   license.md
+    │   │   │   README.md
+    │   │   │
+    │   │   ├───.github
+    │   │   │   └───workflows
+    │   │   │           main.yml
+    │   │   │
+    │   │   ├───classes
+    │   │   │   └───src
+    │   │   │           Complex.php
+    │   │   │           Exception.php
+    │   │   │           Functions.php
+    │   │   │           Operations.php
+    │   │   │
+    │   │   └───examples
+    │   │           complexTest.php
+    │   │           testFunctions.php
+    │   │           testOperations.php
+    │   │
+    │   └───matrix
+    │       │   buildPhar.php
+    │       │   composer.json
+    │       │   infection.json.dist
+    │       │   license.md
+    │       │   phpstan.neon
+    │       │   README.md
+    │       │
+    │       ├───.github
+    │       │   └───workflows
+    │       │           main.yaml
+    │       │
+    │       ├───classes
+    │       │   └───src
+    │       │       │   Builder.php
+    │       │       │   Div0Exception.php
+    │       │       │   Exception.php
+    │       │       │   Functions.php
+    │       │       │   Matrix.php
+    │       │       │   Operations.php
+    │       │       │
+    │       │       ├───Decomposition
+    │       │       │       Decomposition.php
+    │       │       │       LU.php
+    │       │       │       QR.php
+    │       │       │
+    │       │       └───Operators
+    │       │               Addition.php
+    │       │               DirectSum.php
+    │       │               Division.php
+    │       │               Multiplication.php
+    │       │               Operator.php
+    │       │               Subtraction.php
+    │       │
+    │       └───examples
+    │               test.php
+    │
+    ├───phpoffice
+    │   └───phpspreadsheet
+    │       │   CHANGELOG.md
+    │       │   composer.json
+    │       │   CONTRIBUTING.md
+    │       │   LICENSE
+    │       │   README.md
+    │       │
+    │       └───src
+    │           └───PhpSpreadsheet
+    │               │   CellReferenceHelper.php
+    │               │   Comment.php
+    │               │   DefinedName.php
+    │               │   Exception.php
+    │               │   HashTable.php
+    │               │   IComparable.php
+    │               │   IOFactory.php
+    │               │   NamedFormula.php
+    │               │   NamedRange.php
+    │               │   ReferenceHelper.php
+    │               │   Settings.php
+    │               │   Spreadsheet.php
+    │               │   Theme.php
+    │               │
+    │               ├───Calculation
+    │               │   │   ArrayEnabled.php
+    │               │   │   BinaryComparison.php
+    │               │   │   Calculation.php
+    │               │   │   CalculationBase.php
+    │               │   │   CalculationLocale.php
+    │               │   │   Category.php
+    │               │   │   Exception.php
+    │               │   │   ExceptionHandler.php
+    │               │   │   FormulaParser.php
+    │               │   │   FormulaToken.php
+    │               │   │   FunctionArray.php
+    │               │   │   Functions.php
+    │               │   │
+    │               │   ├───Database
+    │               │   │       DatabaseAbstract.php
+    │               │   │       DAverage.php
+    │               │   │       DCount.php
+    │               │   │       DCountA.php
+    │               │   │       DGet.php
+    │               │   │       DMax.php
+    │               │   │       DMin.php
+    │               │   │       DProduct.php
+    │               │   │       DStDev.php
+    │               │   │       DStDevP.php
+    │               │   │       DSum.php
+    │               │   │       DVar.php
+    │               │   │       DVarP.php
+    │               │   │
+    │               │   ├───DateTimeExcel
+    │               │   │       Constants.php
+    │               │   │       Current.php
+    │               │   │       Date.php
+    │               │   │       DateParts.php
+    │               │   │       DateValue.php
+    │               │   │       Days.php
+    │               │   │       Days360.php
+    │               │   │       Difference.php
+    │               │   │       Helpers.php
+    │               │   │       Month.php
+    │               │   │       NetworkDays.php
+    │               │   │       Time.php
+    │               │   │       TimeParts.php
+    │               │   │       TimeValue.php
+    │               │   │       Week.php
+    │               │   │       WorkDay.php
+    │               │   │       YearFrac.php
+    │               │   │
+    │               │   ├───Engine
+    │               │   │   │   ArrayArgumentHelper.php
+    │               │   │   │   ArrayArgumentProcessor.php
+    │               │   │   │   BranchPruner.php
+    │               │   │   │   CyclicReferenceStack.php
+    │               │   │   │   FormattedNumber.php
+    │               │   │   │   Logger.php
+    │               │   │   │
+    │               │   │   └───Operands
+    │               │   │           Operand.php
+    │               │   │           StructuredReference.php
+    │               │   │
+    │               │   ├───Engineering
+    │               │   │       BesselI.php
+    │               │   │       BesselJ.php
+    │               │   │       BesselK.php
+    │               │   │       BesselY.php
+    │               │   │       BitWise.php
+    │               │   │       Compare.php
+    │               │   │       Complex.php
+    │               │   │       ComplexFunctions.php
+    │               │   │       ComplexOperations.php
+    │               │   │       Constants.php
+    │               │   │       ConvertBase.php
+    │               │   │       ConvertBinary.php
+    │               │   │       ConvertDecimal.php
+    │               │   │       ConvertHex.php
+    │               │   │       ConvertOctal.php
+    │               │   │       ConvertUOM.php
+    │               │   │       EngineeringValidations.php
+    │               │   │       Erf.php
+    │               │   │       ErfC.php
+    │               │   │
+    │               │   ├───Financial
+    │               │   │   │   Amortization.php
+    │               │   │   │   Constants.php
+    │               │   │   │   Coupons.php
+    │               │   │   │   Depreciation.php
+    │               │   │   │   Dollar.php
+    │               │   │   │   FinancialValidations.php
+    │               │   │   │   Helpers.php
+    │               │   │   │   InterestRate.php
+    │               │   │   │   TreasuryBill.php
+    │               │   │   │
+    │               │   │   ├───CashFlow
+    │               │   │   │   │   CashFlowValidations.php
+    │               │   │   │   │   Single.php
+    │               │   │   │   │
+    │               │   │   │   ├───Constant
+    │               │   │   │   │   │   Periodic.php
+    │               │   │   │   │   │
+    │               │   │   │   │   └───Periodic
+    │               │   │   │   │           Cumulative.php
+    │               │   │   │   │           Interest.php
+    │               │   │   │   │           InterestAndPrincipal.php
+    │               │   │   │   │           Payments.php
+    │               │   │   │   │
+    │               │   │   │   └───Variable
+    │               │   │   │           NonPeriodic.php
+    │               │   │   │           Periodic.php
+    │               │   │   │
+    │               │   │   └───Securities
+    │               │   │           AccruedInterest.php
+    │               │   │           Price.php
+    │               │   │           Rates.php
+    │               │   │           SecurityValidations.php
+    │               │   │           Yields.php
+    │               │   │
+    │               │   ├───Information
+    │               │   │       ErrorValue.php
+    │               │   │       ExcelError.php
+    │               │   │       Value.php
+    │               │   │
+    │               │   ├───Internal
+    │               │   │       ExcelArrayPseudoFunctions.php
+    │               │   │       MakeMatrix.php
+    │               │   │       WildcardMatch.php
+    │               │   │
+    │               │   ├───locale
+    │               │   │   │   Translations.xlsx
+    │               │   │   │
+    │               │   │   ├───bg
+    │               │   │   │       config
+    │               │   │   │       functions
+    │               │   │   │
+    │               │   │   ├───cs
+    │               │   │   │       config
+    │               │   │   │       functions
+    │               │   │   │
+    │               │   │   ├───da
+    │               │   │   │       config
+    │               │   │   │       functions
+    │               │   │   │
+    │               │   │   ├───de
+    │               │   │   │       config
+    │               │   │   │       functions
+    │               │   │   │
+    │               │   │   ├───en
+    │               │   │   │   └───uk
+    │               │   │   │           config
+    │               │   │   │
+    │               │   │   ├───es
+    │               │   │   │       config
+    │               │   │   │       functions
+    │               │   │   │
+    │               │   │   ├───fi
+    │               │   │   │       config
+    │               │   │   │       functions
+    │               │   │   │
+    │               │   │   ├───fr
+    │               │   │   │       config
+    │               │   │   │       functions
+    │               │   │   │
+    │               │   │   ├───hu
+    │               │   │   │       config
+    │               │   │   │       functions
+    │               │   │   │
+    │               │   │   ├───it
+    │               │   │   │       config
+    │               │   │   │       functions
+    │               │   │   │
+    │               │   │   ├───nb
+    │               │   │   │       config
+    │               │   │   │       functions
+    │               │   │   │
+    │               │   │   ├───nl
+    │               │   │   │       config
+    │               │   │   │       functions
+    │               │   │   │
+    │               │   │   ├───pl
+    │               │   │   │       config
+    │               │   │   │       functions
+    │               │   │   │
+    │               │   │   ├───pt
+    │               │   │   │   │   config
+    │               │   │   │   │   functions
+    │               │   │   │   │
+    │               │   │   │   └───br
+    │               │   │   │           config
+    │               │   │   │           functions
+    │               │   │   │
+    │               │   │   ├───ru
+    │               │   │   │       config
+    │               │   │   │       functions
+    │               │   │   │
+    │               │   │   ├───sv
+    │               │   │   │       config
+    │               │   │   │       functions
+    │               │   │   │
+    │               │   │   └───tr
+    │               │   │           config
+    │               │   │           functions
+    │               │   │
+    │               │   ├───Logical
+    │               │   │       Boolean.php
+    │               │   │       Conditional.php
+    │               │   │       Operations.php
+    │               │   │
+    │               │   ├───LookupRef
+    │               │   │       Address.php
+    │               │   │       ChooseRowsEtc.php
+    │               │   │       ExcelMatch.php
+    │               │   │       Filter.php
+    │               │   │       Formula.php
+    │               │   │       Helpers.php
+    │               │   │       HLookup.php
+    │               │   │       Hstack.php
+    │               │   │       Hyperlink.php
+    │               │   │       Indirect.php
+    │               │   │       Lookup.php
+    │               │   │       LookupBase.php
+    │               │   │       LookupRefValidations.php
+    │               │   │       Matrix.php
+    │               │   │       Offset.php
+    │               │   │       RowColumnInformation.php
+    │               │   │       Selection.php
+    │               │   │       Sort.php
+    │               │   │       TorowTocol.php
+    │               │   │       Unique.php
+    │               │   │       VLookup.php
+    │               │   │       Vstack.php
+    │               │   │
+    │               │   ├───MathTrig
+    │               │   │   │   Absolute.php
+    │               │   │   │   Angle.php
+    │               │   │   │   Arabic.php
+    │               │   │   │   Base.php
+    │               │   │   │   Ceiling.php
+    │               │   │   │   Combinations.php
+    │               │   │   │   Exp.php
+    │               │   │   │   Factorial.php
+    │               │   │   │   Floor.php
+    │               │   │   │   Gcd.php
+    │               │   │   │   Helpers.php
+    │               │   │   │   IntClass.php
+    │               │   │   │   Lcm.php
+    │               │   │   │   Logarithms.php
+    │               │   │   │   MatrixFunctions.php
+    │               │   │   │   Operations.php
+    │               │   │   │   Random.php
+    │               │   │   │   Roman.php
+    │               │   │   │   Round.php
+    │               │   │   │   SeriesSum.php
+    │               │   │   │   Sign.php
+    │               │   │   │   Sqrt.php
+    │               │   │   │   Subtotal.php
+    │               │   │   │   Sum.php
+    │               │   │   │   SumSquares.php
+    │               │   │   │   Trunc.php
+    │               │   │   │
+    │               │   │   └───Trig
+    │               │   │           Cosecant.php
+    │               │   │           Cosine.php
+    │               │   │           Cotangent.php
+    │               │   │           Secant.php
+    │               │   │           Sine.php
+    │               │   │           Tangent.php
+    │               │   │
+    │               │   ├───Statistical
+    │               │   │   │   AggregateBase.php
+    │               │   │   │   Averages.php
+    │               │   │   │   Conditional.php
+    │               │   │   │   Confidence.php
+    │               │   │   │   Counts.php
+    │               │   │   │   Deviations.php
+    │               │   │   │   Maximum.php
+    │               │   │   │   MaxMinBase.php
+    │               │   │   │   Minimum.php
+    │               │   │   │   Percentiles.php
+    │               │   │   │   Permutations.php
+    │               │   │   │   Size.php
+    │               │   │   │   StandardDeviations.php
+    │               │   │   │   Standardize.php
+    │               │   │   │   StatisticalValidations.php
+    │               │   │   │   Trends.php
+    │               │   │   │   VarianceBase.php
+    │               │   │   │   Variances.php
+    │               │   │   │
+    │               │   │   ├───Averages
+    │               │   │   │       Mean.php
+    │               │   │   │
+    │               │   │   └───Distributions
+    │               │   │           Beta.php
+    │               │   │           Binomial.php
+    │               │   │           ChiSquared.php
+    │               │   │           DistributionValidations.php
+    │               │   │           Exponential.php
+    │               │   │           F.php
+    │               │   │           Fisher.php
+    │               │   │           Gamma.php
+    │               │   │           GammaBase.php
+    │               │   │           HyperGeometric.php
+    │               │   │           LogNormal.php
+    │               │   │           NewtonRaphson.php
+    │               │   │           Normal.php
+    │               │   │           Poisson.php
+    │               │   │           StandardNormal.php
+    │               │   │           StudentT.php
+    │               │   │           Weibull.php
+    │               │   │
+    │               │   ├───TextData
+    │               │   │       CaseConvert.php
+    │               │   │       CharacterConvert.php
+    │               │   │       Concatenate.php
+    │               │   │       Extract.php
+    │               │   │       Format.php
+    │               │   │       Helpers.php
+    │               │   │       Replace.php
+    │               │   │       Search.php
+    │               │   │       Text.php
+    │               │   │       Trim.php
+    │               │   │
+    │               │   ├───Token
+    │               │   │       Stack.php
+    │               │   │
+    │               │   └───Web
+    │               │           Service.php
+    │               │
+    │               ├───Cell
+    │               │       AddressHelper.php
+    │               │       AddressRange.php
+    │               │       AdvancedValueBinder.php
+    │               │       Cell.php
+    │               │       CellAddress.php
+    │               │       CellRange.php
+    │               │       ColumnRange.php
+    │               │       Coordinate.php
+    │               │       DataType.php
+    │               │       DataValidation.php
+    │               │       DataValidator.php
+    │               │       DefaultValueBinder.php
+    │               │       Hyperlink.php
+    │               │       IgnoredErrors.php
+    │               │       IValueBinder.php
+    │               │       RowRange.php
+    │               │       StringValueBinder.php
+    │               │
+    │               ├───Chart
+    │               │   │   Axis.php
+    │               │   │   AxisText.php
+    │               │   │   Chart.php
+    │               │   │   ChartColor.php
+    │               │   │   DataSeries.php
+    │               │   │   DataSeriesValues.php
+    │               │   │   Exception.php
+    │               │   │   GridLines.php
+    │               │   │   Layout.php
+    │               │   │   Legend.php
+    │               │   │   PlotArea.php
+    │               │   │   Properties.php
+    │               │   │   Title.php
+    │               │   │   TrendLine.php
+    │               │   │
+    │               │   └───Renderer
+    │               │           IRenderer.php
+    │               │           JpGraph.php
+    │               │           JpGraphRendererBase.php
+    │               │           MtJpGraphRenderer.php
+    │               │           PHP Charting Libraries.txt
+    │               │
+    │               ├───Collection
+    │               │   │   Cells.php
+    │               │   │   CellsFactory.php
+    │               │   │
+    │               │   └───Memory
+    │               │           SimpleCache1.php
+    │               │           SimpleCache3.php
+    │               │
+    │               ├───Document
+    │               │       Properties.php
+    │               │       Security.php
+    │               │
+    │               ├───Helper
+    │               │       Dimension.php
+    │               │       Downloader.php
+    │               │       Handler.php
+    │               │       Html.php
+    │               │       Sample.php
+    │               │       Size.php
+    │               │       TextGrid.php
+    │               │
+    │               ├───Reader
+    │               │   │   BaseReader.php
+    │               │   │   Csv.php
+    │               │   │   DefaultReadFilter.php
+    │               │   │   Exception.php
+    │               │   │   Gnumeric.php
+    │               │   │   Html.php
+    │               │   │   IReader.php
+    │               │   │   IReadFilter.php
+    │               │   │   Ods.php
+    │               │   │   Slk.php
+    │               │   │   Xls.php
+    │               │   │   XlsBase.php
+    │               │   │   Xlsx.php
+    │               │   │   Xml.php
+    │               │   │
+    │               │   ├───Csv
+    │               │   │       Delimiter.php
+    │               │   │
+    │               │   ├───Gnumeric
+    │               │   │       PageSetup.php
+    │               │   │       Properties.php
+    │               │   │       Styles.php
+    │               │   │
+    │               │   ├───Ods
+    │               │   │       AutoFilter.php
+    │               │   │       BaseLoader.php
+    │               │   │       DefinedNames.php
+    │               │   │       FormulaTranslator.php
+    │               │   │       PageSettings.php
+    │               │   │       Properties.php
+    │               │   │
+    │               │   ├───Security
+    │               │   │       XmlScanner.php
+    │               │   │
+    │               │   ├───Xls
+    │               │   │   │   Biff5.php
+    │               │   │   │   Biff8.php
+    │               │   │   │   Color.php
+    │               │   │   │   ConditionalFormatting.php
+    │               │   │   │   DataValidationHelper.php
+    │               │   │   │   ErrorCode.php
+    │               │   │   │   Escher.php
+    │               │   │   │   ListFunctions.php
+    │               │   │   │   LoadSpreadsheet.php
+    │               │   │   │   Mappings.php
+    │               │   │   │   MD5.php
+    │               │   │   │   RC4.php
+    │               │   │   │
+    │               │   │   ├───Color
+    │               │   │   │       BIFF5.php
+    │               │   │   │       BIFF8.php
+    │               │   │   │       BuiltIn.php
+    │               │   │   │
+    │               │   │   └───Style
+    │               │   │           Border.php
+    │               │   │           CellAlignment.php
+    │               │   │           CellFont.php
+    │               │   │           FillPattern.php
+    │               │   │
+    │               │   ├───Xlsx
+    │               │   │       AutoFilter.php
+    │               │   │       BaseParserClass.php
+    │               │   │       Chart.php
+    │               │   │       ColumnAndRowAttributes.php
+    │               │   │       ConditionalStyles.php
+    │               │   │       DataValidations.php
+    │               │   │       Hyperlinks.php
+    │               │   │       Namespaces.php
+    │               │   │       PageSetup.php
+    │               │   │       Properties.php
+    │               │   │       SharedFormula.php
+    │               │   │       SheetViewOptions.php
+    │               │   │       SheetViews.php
+    │               │   │       Styles.php
+    │               │   │       TableReader.php
+    │               │   │       Theme.php
+    │               │   │       WorkbookView.php
+    │               │   │
+    │               │   └───Xml
+    │               │       │   DataValidations.php
+    │               │       │   PageSettings.php
+    │               │       │   Properties.php
+    │               │       │   Style.php
+    │               │       │
+    │               │       └───Style
+    │               │               Alignment.php
+    │               │               Border.php
+    │               │               Fill.php
+    │               │               Font.php
+    │               │               NumberFormat.php
+    │               │               StyleBase.php
+    │               │
+    │               ├───RichText
+    │               │       ITextElement.php
+    │               │       RichText.php
+    │               │       Run.php
+    │               │       TextElement.php
+    │               │
+    │               ├───Shared
+    │               │   │   CodePage.php
+    │               │   │   Date.php
+    │               │   │   Drawing.php
+    │               │   │   Escher.php
+    │               │   │   File.php
+    │               │   │   Font.php
+    │               │   │   IntOrFloat.php
+    │               │   │   OLE.php
+    │               │   │   OLERead.php
+    │               │   │   PasswordHasher.php
+    │               │   │   StringHelper.php
+    │               │   │   TimeZone.php
+    │               │   │   Xls.php
+    │               │   │   XMLWriter.php
+    │               │   │
+    │               │   ├───Escher
+    │               │   │   │   DgContainer.php
+    │               │   │   │   DggContainer.php
+    │               │   │   │
+    │               │   │   ├───DgContainer
+    │               │   │   │   │   SpgrContainer.php
+    │               │   │   │   │
+    │               │   │   │   └───SpgrContainer
+    │               │   │   │           SpContainer.php
+    │               │   │   │
+    │               │   │   └───DggContainer
+    │               │   │       │   BstoreContainer.php
+    │               │   │       │
+    │               │   │       └───BstoreContainer
+    │               │   │           │   BSE.php
+    │               │   │           │
+    │               │   │           └───BSE
+    │               │   │                   Blip.php
+    │               │   │
+    │               │   ├───OLE
+    │               │   │   │   ChainedBlockStream.php
+    │               │   │   │   PPS.php
+    │               │   │   │
+    │               │   │   └───PPS
+    │               │   │           File.php
+    │               │   │           Root.php
+    │               │   │
+    │               │   └───Trend
+    │               │           BestFit.php
+    │               │           ExponentialBestFit.php
+    │               │           LinearBestFit.php
+    │               │           LogarithmicBestFit.php
+    │               │           PolynomialBestFit.php
+    │               │           PowerBestFit.php
+    │               │           Trend.php
+    │               │
+    │               ├───Style
+    │               │   │   Alignment.php
+    │               │   │   Border.php
+    │               │   │   Borders.php
+    │               │   │   Color.php
+    │               │   │   Conditional.php
+    │               │   │   Fill.php
+    │               │   │   Font.php
+    │               │   │   NumberFormat.php
+    │               │   │   Protection.php
+    │               │   │   RgbTint.php
+    │               │   │   Style.php
+    │               │   │   Supervisor.php
+    │               │   │
+    │               │   ├───ConditionalFormatting
+    │               │   │   │   CellMatcher.php
+    │               │   │   │   CellStyleAssessor.php
+    │               │   │   │   ConditionalColorScale.php
+    │               │   │   │   ConditionalDataBar.php
+    │               │   │   │   ConditionalDataBarExtension.php
+    │               │   │   │   ConditionalFormattingRuleExtension.php
+    │               │   │   │   ConditionalFormatValueObject.php
+    │               │   │   │   StyleMerger.php
+    │               │   │   │   Wizard.php
+    │               │   │   │
+    │               │   │   └───Wizard
+    │               │   │           Blanks.php
+    │               │   │           CellValue.php
+    │               │   │           DateValue.php
+    │               │   │           Duplicates.php
+    │               │   │           Errors.php
+    │               │   │           Expression.php
+    │               │   │           TextValue.php
+    │               │   │           WizardAbstract.php
+    │               │   │           WizardInterface.php
+    │               │   │
+    │               │   └───NumberFormat
+    │               │       │   BaseFormatter.php
+    │               │       │   DateFormatter.php
+    │               │       │   Formatter.php
+    │               │       │   FractionFormatter.php
+    │               │       │   NumberFormatter.php
+    │               │       │   PercentageFormatter.php
+    │               │       │
+    │               │       └───Wizard
+    │               │               Accounting.php
+    │               │               Currency.php
+    │               │               CurrencyBase.php
+    │               │               CurrencyNegative.php
+    │               │               Date.php
+    │               │               DateTime.php
+    │               │               DateTimeWizard.php
+    │               │               Duration.php
+    │               │               Locale.php
+    │               │               Number.php
+    │               │               NumberBase.php
+    │               │               Percentage.php
+    │               │               Scientific.php
+    │               │               Time.php
+    │               │               Wizard.php
+    │               │
+    │               ├───Worksheet
+    │               │   │   AutoFilter.php
+    │               │   │   AutoFit.php
+    │               │   │   BaseDrawing.php
+    │               │   │   CellIterator.php
+    │               │   │   Column.php
+    │               │   │   ColumnCellIterator.php
+    │               │   │   ColumnDimension.php
+    │               │   │   ColumnIterator.php
+    │               │   │   Dimension.php
+    │               │   │   Drawing.php
+    │               │   │   HeaderFooter.php
+    │               │   │   HeaderFooterDrawing.php
+    │               │   │   Iterator.php
+    │               │   │   MemoryDrawing.php
+    │               │   │   PageBreak.php
+    │               │   │   PageMargins.php
+    │               │   │   PageSetup.php
+    │               │   │   Pane.php
+    │               │   │   ProtectedRange.php
+    │               │   │   Protection.php
+    │               │   │   Row.php
+    │               │   │   RowCellIterator.php
+    │               │   │   RowDimension.php
+    │               │   │   RowIterator.php
+    │               │   │   SheetView.php
+    │               │   │   Table.php
+    │               │   │   Validations.php
+    │               │   │   Worksheet.php
+    │               │   │
+    │               │   ├───AutoFilter
+    │               │   │   │   Column.php
+    │               │   │   │
+    │               │   │   └───Column
+    │               │   │           Rule.php
+    │               │   │
+    │               │   ├───Drawing
+    │               │   │       Shadow.php
+    │               │   │
+    │               │   └───Table
+    │               │           Column.php
+    │               │           TableDxfsStyle.php
+    │               │           TableStyle.php
+    │               │
+    │               └───Writer
+    │                   │   BaseWriter.php
+    │                   │   Csv.php
+    │                   │   Exception.php
+    │                   │   Html.php
+    │                   │   IWriter.php
+    │                   │   Ods.php
+    │                   │   Pdf.php
+    │                   │   Xls.php
+    │                   │   Xlsx.php
+    │                   │   ZipStream0.php
+    │                   │   ZipStream2.php
+    │                   │   ZipStream3.php
+    │                   │
+    │                   ├───Ods
+    │                   │   │   AutoFilters.php
+    │                   │   │   Content.php
+    │                   │   │   Formula.php
+    │                   │   │   Meta.php
+    │                   │   │   MetaInf.php
+    │                   │   │   Mimetype.php
+    │                   │   │   NamedExpressions.php
+    │                   │   │   Settings.php
+    │                   │   │   Styles.php
+    │                   │   │   Thumbnails.php
+    │                   │   │   WriterPart.php
+    │                   │   │
+    │                   │   └───Cell
+    │                   │           Comment.php
+    │                   │           Style.php
+    │                   │
+    │                   ├───Pdf
+    │                   │       Dompdf.php
+    │                   │       Mpdf.php
+    │                   │       Tcpdf.php
+    │                   │
+    │                   ├───Xls
+    │                   │   │   BIFFwriter.php
+    │                   │   │   CellDataValidation.php
+    │                   │   │   ConditionalHelper.php
+    │                   │   │   ErrorCode.php
+    │                   │   │   Escher.php
+    │                   │   │   Font.php
+    │                   │   │   Parser.php
+    │                   │   │   Workbook.php
+    │                   │   │   Worksheet.php
+    │                   │   │   Xf.php
+    │                   │   │
+    │                   │   └───Style
+    │                   │           CellAlignment.php
+    │                   │           CellBorder.php
+    │                   │           CellFill.php
+    │                   │
+    │                   └───Xlsx
+    │                           AutoFilter.php
+    │                           Chart.php
+    │                           Comments.php
+    │                           ContentTypes.php
+    │                           DefinedNames.php
+    │                           DocProps.php
+    │                           Drawing.php
+    │                           FunctionPrefix.php
+    │                           Metadata.php
+    │                           Rels.php
+    │                           RelsRibbon.php
+    │                           RelsVBA.php
+    │                           StringTable.php
+    │                           Style.php
+    │                           Table.php
+    │                           Theme.php
+    │                           Workbook.php
+    │                           Worksheet.php
+    │                           WriterPart.php
+    │
+    ├───psr
+    │   ├───http-client
+    │   │   │   CHANGELOG.md
+    │   │   │   composer.json
+    │   │   │   LICENSE
+    │   │   │   README.md
+    │   │   │
+    │   │   └───src
+    │   │           ClientExceptionInterface.php
+    │   │           ClientInterface.php
+    │   │           NetworkExceptionInterface.php
+    │   │           RequestExceptionInterface.php
+    │   │
+    │   ├───http-factory
+    │   │   │   composer.json
+    │   │   │   LICENSE
+    │   │   │   README.md
+    │   │   │
+    │   │   └───src
+    │   │           RequestFactoryInterface.php
+    │   │           ResponseFactoryInterface.php
+    │   │           ServerRequestFactoryInterface.php
+    │   │           StreamFactoryInterface.php
+    │   │           UploadedFileFactoryInterface.php
+    │   │           UriFactoryInterface.php
+    │   │
+    │   ├───http-message
+    │   │   │   CHANGELOG.md
+    │   │   │   composer.json
+    │   │   │   LICENSE
+    │   │   │   README.md
+    │   │   │
+    │   │   ├───docs
+    │   │   │       PSR7-Interfaces.md
+    │   │   │       PSR7-Usage.md
+    │   │   │
+    │   │   └───src
+    │   │           MessageInterface.php
+    │   │           RequestInterface.php
+    │   │           ResponseInterface.php
+    │   │           ServerRequestInterface.php
+    │   │           StreamInterface.php
+    │   │           UploadedFileInterface.php
+    │   │           UriInterface.php
+    │   │
+    │   ├───log
+    │   │   │   composer.json
+    │   │   │   LICENSE
+    │   │   │   README.md
+    │   │   │
+    │   │   └───src
+    │   │           AbstractLogger.php
+    │   │           InvalidArgumentException.php
+    │   │           LoggerAwareInterface.php
+    │   │           LoggerAwareTrait.php
+    │   │           LoggerInterface.php
+    │   │           LoggerTrait.php
+    │   │           LogLevel.php
+    │   │           NullLogger.php
+    │   │
+    │   └───simple-cache
+    │       │   .editorconfig
+    │       │   composer.json
+    │       │   LICENSE.md
+    │       │   README.md
+    │       │
+    │       └───src
+    │               CacheException.php
+    │               CacheInterface.php
+    │               InvalidArgumentException.php
+    │
+    ├───ralouphie
+    │   └───getallheaders
+    │       │   composer.json
+    │       │   LICENSE
+    │       │   README.md
+    │       │
+    │       └───src
+    │               getallheaders.php
+    │
+    └───symfony
+        └───deprecation-contracts
+                CHANGELOG.md
+                composer.json
+                function.php
+                LICENSE
+                README.md
+
+
+C:\laragon\www\pcmteam>^

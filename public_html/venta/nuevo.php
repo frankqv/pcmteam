@@ -6,27 +6,98 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4])) {
     exit;
 }
 require_once('../../config/ctconex.php');
-// --- CÓDIGO AÑADIDO PARA LA BARRA DE NAVEGACIÓN ---
-$userInfo = []; 
+
+// --- LÓGICA DE PROCESAMIENTO DE VENTA ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $cliente_id = $_POST['cliente_id'] ?? null;
+    $metodo_pago = $_POST['metodo_pago'] ?? null;
+    $carrito_json = $_POST['carrito_json'] ?? null;
+    $total_venta = $_POST['total_venta'] ?? 0;
+    $vendedor_id = $_SESSION['id'] ?? null;
+
+    if (empty($cliente_id) || empty($metodo_pago) || empty($carrito_json) || $total_venta <= 0) {
+        $_SESSION['mensaje_error'] = 'Error: Faltan datos requeridos para procesar la venta. Asegúrate de seleccionar un cliente, un método de pago y agregar productos.';
+        header('Location: nueva.php');
+        exit;
+    }
+
+    $carrito = json_decode($carrito_json, true);
+
+    try {
+        $connect->beginTransaction();
+
+        // 1. Crear la orden de venta principal
+        $sql_order = "INSERT INTO orders (user_cli, total_price, metodo_pago, placed_on, payment_status, despacho) VALUES (?, ?, ?, NOW(), 'Aceptado', 'Pendiente')";
+        $stmt_order = $connect->prepare($sql_order);
+        $stmt_order->execute([$cliente_id, $total_venta, $metodo_pago]);
+        $order_id = $connect->lastInsertId();
+
+        if (!$order_id) {
+            throw new Exception("Error al crear la orden de venta.");
+        }
+
+        // 2. Procesar cada producto del carrito
+        foreach ($carrito as $item) {
+            $cantidad_vendida = $item['cantidad'] ?? 0;
+            $precio_unitario = $item['precio'] ?? 0;
+            
+            // a. Encontrar los IDs de inventario disponibles
+            $sql_inventario_ids = "SELECT id, serial, codigo_g FROM bodega_inventario 
+                                   WHERE marca = ? AND modelo = ? AND procesador = ? AND ram = ? AND disco = ? AND grado = ? 
+                                   AND disposicion = 'Para Venta' AND estado = 'activo'
+                                   LIMIT ?";
+            $stmt_inventario_ids = $connect->prepare($sql_inventario_ids);
+            $stmt_inventario_ids->execute([$item['marca'], $item['modelo'], $item['procesador'], $item['ram'], $item['disco'], $item['grado'], $cantidad_vendida]);
+            $inventario_disponibles = $stmt_inventario_ids->fetchAll(PDO::FETCH_ASSOC);
+
+            if (count($inventario_disponibles) < $cantidad_vendida) {
+                throw new Exception("No hay suficiente stock para " . $item['marca'] . " " . $item['modelo']);
+            }
+
+            // b. Insertar en `venta_detalles` y actualizar inventario
+            foreach ($inventario_disponibles as $inventario_item) {
+                $sql_detalle = "INSERT INTO venta_detalles (orden_id, inventario_id, serial, codigo_g, precio_unitario, fecha_venta, vendedor_id) VALUES (?, ?, ?, ?, ?, NOW(), ?)";
+                $stmt_detalle = $connect->prepare($sql_detalle);
+                $stmt_detalle->execute([$order_id, $inventario_item['id'], $inventario_item['serial'], $inventario_item['codigo_g'], $precio_unitario, $vendedor_id]);
+                
+                $sql_update_inventario = "UPDATE bodega_inventario SET disposicion = 'Por Alistamiento', estado = 'inactivo' WHERE id = ?";
+                $stmt_update_inventario = $connect->prepare($sql_update_inventario);
+                $stmt_update_inventario->execute([$inventario_item['id']]);
+            }
+        }
+        
+        $connect->commit();
+        $_SESSION['mensaje_exito'] = "Venta procesada con éxito. Orden ID: $order_id";
+        header('Location: mostrar.php');
+        exit;
+
+    } catch (Exception $e) {
+        $connect->rollBack();
+        $_SESSION['mensaje_error'] = "Error al procesar la venta: " . $e->getMessage();
+        header('Location: nueva.php');
+        exit;
+    }
+}
+// --- FIN DE LA LÓGICA DE PROCESAMIENTO DE VENTA ---
+
+// --- CÓDIGO PARA MOSTRAR LA INTERFAZ ---
+$userInfo = [];
 if (isset($_SESSION['id'])) {
     $userId = $_SESSION['id'];
     try {
-        $sqlUser = "SELECT nombre, usuario, correo, foto, idsede FROM usuarios WHERE id = :id";
+        $sqlUser = "SELECT nombre, usuario, correo, foto, idsede FROM usuarios WHERE id = ?";
         $stmtUser = $connect->prepare($sqlUser);
-        $stmtUser->bindParam(':id', $userId, PDO::PARAM_INT);
-        $stmtUser->execute();
+        $stmtUser->execute([$userId]);
         $userInfo = $stmtUser->fetch(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
-        // En caso de error, $userInfo quedará vacío y el menú mostrará valores por defecto
         $userInfo = [];
     }
 }
-// Consulta para obtener los productos disponibles del inventario
+
 $sql_inventario = "
     SELECT 
         marca, modelo, procesador, ram, disco, grado, precio, 
-        COUNT(id) as stock_disponible,
-        GROUP_CONCAT(id) as ids_disponibles 
+        COUNT(id) as stock_disponible
     FROM bodega_inventario 
     WHERE disposicion = 'Para Venta' 
       AND precio IS NOT NULL AND precio > 0 AND estado = 'activo'
@@ -36,11 +107,11 @@ $stmt_inventario = $connect->prepare($sql_inventario);
 $stmt_inventario->execute();
 $productos_inventario = $stmt_inventario->fetchAll(PDO::FETCH_ASSOC);
 
-// Consulta para obtener los clientes activos
 $stmt_clientes = $connect->prepare("SELECT idclie, nomcli, apecli FROM clientes WHERE estad='Activo' ORDER BY nomcli ASC");
 $stmt_clientes->execute();
 $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -118,7 +189,7 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
                                     </div>
                                 </div>
 
-                                <form id="ventaForm" action="../../backend/php/procesar_venta_final.php" method="POST">
+                                <form id="ventaForm" action="nueva.php" method="POST">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -192,12 +263,9 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
 <script src="../assets/js/jquery-3.3.1.min.js"></script>
 <script src="../assets/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
 $(document).ready(function() {
     let carrito = [];
-
-    // --- CORRECCIÓN CLAVE 1: Usar un ID único para cada tipo de producto ---
     function generarCartId(producto) {
         return `prod_${producto.marca}_${producto.modelo}_${producto.procesador}_${producto.ram}_${producto.disco}_${producto.precio}`.replace(/\s+/g, '');
     }
@@ -237,11 +305,22 @@ $(document).ready(function() {
         $('#procesarVentaBtn').prop('disabled', false);
     }
 
+    // Muestra los mensajes de error o éxito si existen
+    const mensajeError = "<?php echo isset($_SESSION['mensaje_error']) ? $_SESSION['mensaje_error'] : ''; unset($_SESSION['mensaje_error']); ?>";
+    const mensajeExito = "<?php echo isset($_SESSION['mensaje_exito']) ? $_SESSION['mensaje_exito'] : ''; unset($_SESSION['mensaje_exito']); ?>";
+    
+    if (mensajeError) {
+        Swal.fire('Error', mensajeError, 'error');
+    }
+    if (mensajeExito) {
+        Swal.fire('Éxito', mensajeExito, 'success');
+    }
+
     $('.add-to-cart-btn').on('click', function() {
         const card = $(this).closest('.product-card');
         let producto = card.data('producto-json');
         const cantidad = parseInt(card.find('.cantidad-input').val());
-        producto.cartId = generarCartId(producto); // Asignar ID único
+        producto.cartId = generarCartId(producto);
 
         const itemExistente = carrito.find(p => p.cartId === producto.cartId);
         
@@ -270,7 +349,6 @@ $(document).ready(function() {
         actualizarCarrito();
     });
 
-    // --- CORRECCIÓN CLAVE 2: Eliminar usando el ID único en lugar del índice ---
     $('#selectedItems').on('click', '.remove-from-cart', function() {
         const cartIdToRemove = $(this).data('cart-id');
         carrito = carrito.filter(item => item.cartId !== cartIdToRemove);
@@ -278,6 +356,6 @@ $(document).ready(function() {
     });
 });
 </script>
-
 </body>
 </html>
+<?php ob_end_flush(); ?>
