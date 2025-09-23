@@ -42,15 +42,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -60,7 +53,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="icon" type="image/png" href="assets/img/favicon.webp" />
 
 </head>
-
 <body>
     <div class="register-wrapper">
         <div class="register-form">
@@ -84,15 +76,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="actions">
                     <input type="submit" value="Registrarse" class="btn-submit">
-                    <button onclick="window.location.href='../home.php'" class="btn-submit">Home</button>
+                    <button onclick="window.location.href='home.php'" class="btn-submit">Home</button>
                 </div>
             </form>
        </div>
     </div>
-
 </body>
-
 </html>
-
 <script src="assets/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="assets/js/reenvio.js"></script>

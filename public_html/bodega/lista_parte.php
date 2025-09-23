@@ -290,19 +290,28 @@ function condicionBadgeClass(string $condicion): string
             color: white;
         }
     </style>
-</head><body>
+</head>
+<body>
     <!-- Top Navbar -->
-    <?php
-    include_once '../layouts/nav.php';
-    include_once '../layouts/menu_data.php';
-    ?>
-    <nav id="sidebar">
-        <div class="sidebar-header">
-            <h3><img src="../assets/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
-        </div>
-        <?php renderMenu($menu); ?>
-    </nav>
-    <div class="main-container">
+
+<body>
+    <div class="wrapper">
+        <div class="body-overlay"></div>
+        <?php include_once '../layouts/nav.php';
+        include_once '../layouts/menu_data.php'; ?>
+        
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h3><img src="../assets/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
+            </div>
+            <?php if (function_exists('renderMenu')) {
+                renderMenu($menu);
+            } ?>
+        </nav>
+
+        <div class="main-container">
+            ```
+
         <!-- Top Navbar -->
         <div class="top-navbar">
             <div class="container-fluid">
@@ -543,6 +552,7 @@ function condicionBadgeClass(string $condicion): string
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <!-- Scripts -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>

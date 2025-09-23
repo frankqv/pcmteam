@@ -1,7 +1,6 @@
-   .loading-gif {
+.loading-gif {
             max-width: 500px;
         }
-
         .pre-loader {
             position: fixed;
             z-index: 100; /** make sure this is the highest value compared to all other divs **/
@@ -14,12 +13,10 @@
             height: 100%;
             width: 100%;
         }
-
         .pre-loader.hidden {
             animation: fadeOut 2s; /** change to 1s */
             animation-fill-mode: forwards;
         }
-
         @keyframes fadeOut {
             100% {
                 opacity: 0;

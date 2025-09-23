@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // --- FIN DE LA LÓGICA DE PROCESAMIENTO DE VENTA ---
 
 // --- CÓDIGO PARA MOSTRAR LA INTERFAZ ---
-$userInfo = [];
+$userInfo = []; 
 if (isset($_SESSION['id'])) {
     $userId = $_SESSION['id'];
     try {
