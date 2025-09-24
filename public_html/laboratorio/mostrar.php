@@ -7,7 +7,7 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5, 6, 7])) {
 }
 require_once '../../config/ctconex.php';
 $tecnicos = [];
-$resultTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN ('5','6','7')");
+$resultTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN ('1','5','6','7')");
 while ($rowTec = $resultTec->fetch_assoc()) {
     $tecnicos[] = $rowTec;
 }

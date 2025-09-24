@@ -5,7 +5,7 @@
 $possible_paths = [
 
     __DIR__ . '/config/ctconex.php',
-    __DIR__ . '../../../config/ctconex.php',
+    __DIR__ . '../../config/ctconex.php',
     __DIR__ . '/../../../config/ctconex.php'
 ];
 $conn_included = false;
