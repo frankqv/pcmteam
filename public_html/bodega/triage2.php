@@ -1,6 +1,7 @@
 <?php
 ob_start();
 session_start();
+date_default_timezone_set('America/Bogota');
 /* -------------------- Seguridad -------------------- */
 if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], [1, 2, 7, 6])) {
     header('location: ../error404.php');
@@ -8,8 +9,8 @@ if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], [1, 2, 7, 6]))
 }
 /* -------------------- Conexión (normaliza PDO / MySQLi / fallback) -------------------- */
 /* Nota: Reemplaza la sección antigua por esta. Busca ctconex.php en varias rutas,
-   detecta conexiones ya creadas y, si no hay, intenta crear una PDO usando
-   constantes/variables o variables de entorno. */
+detecta conexiones ya creadas y, si no hay, intenta crear una PDO usando
+  constantes/variables o variables de entorno. */
 $pdo = null;
 $mysqli = null;
 $db_type = null; // 'pdo' o 'mysqli'
@@ -100,6 +101,8 @@ if (!$db_type) {
 // Si detectamos mysqli, aseguramos charset
 if ($db_type === 'mysqli' && $mysqli instanceof mysqli) {
     $mysqli->set_charset('utf8mb4');
+    // Setear time_zone para la sesión mysqli
+    @$mysqli->query("SET time_zone = '-05:00'");
 }
 /* Helper: fetchAll para PDO o MySQLi */
 function db_fetch_all($sql, $params = [])
@@ -107,7 +110,7 @@ function db_fetch_all($sql, $params = [])
     global $db_type, $pdo, $mysqli;
     if ($db_type === 'pdo' && $pdo instanceof PDO) {
         $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
+        ensure_execute($stmt, $params);
         return $stmt->fetchAll();
     } elseif ($db_type === 'mysqli' && $mysqli instanceof mysqli) {
         $stmt = $mysqli->prepare($sql);
@@ -122,7 +125,7 @@ function db_fetch_all($sql, $params = [])
             }
             $stmt->bind_param($types, ...$refs);
         }
-        $stmt->execute();
+        ensure_execute($stmt);
         $res = $stmt->get_result();
         $rows = $res->fetch_all(MYSQLI_ASSOC);
         $stmt->close();
@@ -136,7 +139,7 @@ function db_execute($sql, $params = [])
     global $db_type, $pdo, $mysqli;
     if ($db_type === 'pdo' && $pdo instanceof PDO) {
         $stmt = $pdo->prepare($sql);
-        return $stmt->execute($params);
+        return ensure_execute($stmt, $params);
     } elseif ($db_type === 'mysqli' && $mysqli instanceof mysqli) {
         $stmt = $mysqli->prepare($sql);
         if ($stmt === false)
@@ -150,7 +153,7 @@ function db_execute($sql, $params = [])
             }
             $stmt->bind_param($types, ...$refs);
         }
-        $ok = $stmt->execute();
+        $ok = ensure_execute($stmt);
         $stmt->close();
         return $ok;
     }
@@ -273,15 +276,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar'])) {
         
         // SQL MODIFICADO para incluir los nuevos campos
         $sqlInsert = "INSERT INTO bodega_diagnosticos
-                (inventario_id, tecnico_id, camara, teclado, parlantes, bateria, microfono, pantalla, puertos, disco, estado_reparacion, observaciones, falla_electrica, detalle_falla_electrica, falla_estetica, detalle_falla_estetica)
-                VALUES (:inventario_id, :tecnico_id, :camara, :teclado, :parlantes, :bateria, :microfono, :pantalla, :puertos, :disco, :estado_reparacion, :observaciones, :falla_electrica, :detalle_falla_electrica, :falla_estetica, :detalle_falla_estetica)";
-        
+            (inventario_id, tecnico_id, fecha_diagnostico, camara, teclado, parlantes, bateria, microfono, pantalla, puertos, disco, estado_reparacion, observaciones, falla_electrica, detalle_falla_electrica, falla_estetica, detalle_falla_estetica)
+            VALUES (:inventario_id, :tecnico_id, :fecha_diagnostico, :camara, :teclado, :parlantes, :bateria, :microfono, :pantalla, :puertos, :disco, :estado_reparacion, :observaciones, :falla_electrica, :detalle_falla_electrica, :falla_estetica, :detalle_falla_estetica)";
+        // timestamp que usaremos para todos los inserts (hora de Bogota)
+        $now = (new DateTime('now', new DateTimeZone('America/Bogota')))->format('Y-m-d H:i:s');
         foreach ($targets as $inv_id) {
             if ($db_type === 'pdo') {
                 $stmt = $pdo->prepare($sqlInsert);
-                $ok = $stmt->execute([
+                $ok = ensure_execute($stmt, [
                     ':inventario_id' => $inv_id,
                     ':tecnico_id' => $tecnico_id,
+                    ':fecha_diagnostico' => $now, // <-- PARÁMETRO AÑADIDO
                     ':camara' => $camara,
                     ':teclado' => $teclado,
                     ':parlantes' => $parlantes,
@@ -315,7 +320,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar'])) {
                     $refs[$key] = &$params[$key];
                 }
                 $stmt->bind_param($types, ...$refs);
-                $ok = $stmt->execute();
+                $ok = ensure_execute($stmt);
                 $stmt->close();
                 if ($ok)
                     $inserted[] = $inv_id;
@@ -371,6 +376,23 @@ if (!empty($ids_equipo) && $inventarioInfo === null) {
         if (!empty($rows))
             $inventarioInfo = $rows[0];
     } catch (Throwable $e) {
+    }
+}
+$userInfo = null;
+if (isset($_SESSION['id'])) {
+    try {
+        $stmt = $connect->prepare("SELECT id, nombre, usuario, correo, foto, idsede FROM usuarios WHERE id = ?");
+        $stmt->execute([$_SESSION['id']]);
+        $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error obteniendo información del usuario: " . $e->getMessage());
+        $userInfo = [
+            'nombre' => 'PCUsuario',
+            'usuario' => 'pc_usuario',
+            'correo' => 'correo@pcmarkett.co',
+            'foto' => 'reere.webp',
+            'idsede' => 'Sede sin definir'
+        ];
     }
 }
 /* -------------------- Render HTML -------------------- */

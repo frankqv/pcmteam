@@ -1,15 +1,13 @@
 <?php
+// selecion de un producto del catalogo
 ob_start();
 session_start();
-
 if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4])){
     header('location: ../error404.php');
 }
-
 // Verificar si viene desde el catálogo
 $from_catalog = isset($_GET['marca']) && isset($_GET['modelo']);
 $producto_data = null;
-
 if ($from_catalog) {
     $producto_data = [
         'marca' => $_GET['marca'] ?? '',
@@ -24,7 +22,6 @@ if ($from_catalog) {
 }
 ?>
 <?php if(isset($_SESSION['id'])) { ?>
-
 <!doctype html>
 <html lang="es">
 <head>
@@ -149,7 +146,6 @@ if ($from_catalog) {
                     </div>
                 </div>
                 <?php endif; ?>
-
                 <?php if (!$from_catalog): ?>
                 <!-- Solo mostrar esta sección si NO viene desde el catálogo -->
                 <div class="row">
@@ -164,7 +160,6 @@ if ($from_catalog) {
                     </div>
                 </div>
                 <?php endif; ?>
-
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
                         <div class="card" style="min-height: 485px">
@@ -324,7 +319,6 @@ if ($from_catalog) {
             mes = '0' + mes //agrega cero si el menor de 10
         document.getElementById('fechaActual').value = ano + "-" + mes + "-" + dia;
     }
-
     // Manejar ventas desde catálogo
     $(document).ready(function() {
         $('#procesarVentaCatalogo').click(function() {
@@ -381,7 +375,6 @@ if ($from_catalog) {
     </script>
 </body>
 </html>
-
 <?php }else{ 
     header('Location: ../error404.php');
  } ?>

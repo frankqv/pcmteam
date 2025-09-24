@@ -6,7 +6,7 @@ if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], [1, 2, 5, 6, 7
     exit;
 }
 require_once '../../config/ctconex.php';
-
+date_default_timezone_set('America/Bogota');
 // Obtener técnicos para filtros o mostrar nombre
 $tecnicos = [];
 $resTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN (1,5,6,7) ORDER BY nombre");

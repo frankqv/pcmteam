@@ -1,10 +1,39 @@
+<?php
+// timezone-check.php
+require_once '../config/ctconex.php';
+
+echo "PHP timezone: " . date_default_timezone_get() . "<br>";
+echo "Hora PHP: " . date("Y-m-d H:i:s") . "<br><br>";
+
+try {
+    $stmt = $connect->query("SELECT @@session.time_zone AS session_tz, @@global.time_zone AS global_tz");
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    echo "MySQL (PDO) session.time_zone: " . ($row['session_tz'] ?? 'NULL') . "<br>";
+    echo "MySQL (PDO) global.time_zone: " . ($row['global_tz'] ?? 'NULL') . "<br>";
+} catch (Exception $e) {
+    echo "No se pudo leer time_zone con PDO: " . $e->getMessage() . "<br>";
+}
+
+if (isset($conn)) {
+    $res = $conn->query("SELECT @@session.time_zone AS session_tz, @@global.time_zone AS global_tz");
+    if ($res) {
+        $r = $res->fetch_assoc();
+        echo "MySQL (mysqli) session.time_zone: " . ($r['session_tz'] ?? 'NULL') . "<br>";
+        echo "MySQL (mysqli) global.time_zone: " . ($r['global_tz'] ?? 'NULL') . "<br>";
+        $res->free();
+    } else {
+        echo "No se pudo leer time_zone con mysqli: " . $conn->error . "<br>";
+    }
+}
+?>
+
+
+
 
 <?php
+echo "PHP timezone: " . date_default_timezone_get() . "<br>";
+echo "Hora PHP: " . date("Y-m-d H:i:s") . "<br><br>";
 // Datos de conexión a MySQL
-define('dbhost', 'localhost');
-define('dbuser', 'u171145084_pcmteam');
-define('dbpass', 'PCcomercial2025*');
-define('dbname', 'u171145084_pcmteam');
 
 echo "<h2>Prueba de conexión a la base de datos</h2>";
 
@@ -96,7 +125,7 @@ if (file_put_contents($testFile, 'Test de escritura')) {
     echo "❌ Problema con escritura de archivos<br>";
 }
 
-echo "<br><a href='public_html/login.php'>Ir al login</a>";
-echo "<br><a href='test_conexion.php'>Probar conexión a BD</a>";
+echo "<br><a href='public_html/login.php'>◖Ir al login</a>";
+echo "<br><a href='home.php'>◖Ir inicio</a>";
 ?> 
 

@@ -7,7 +7,7 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])) {
 }
 require_once '../../config/ctconex.php';
 $tecnicos = [];
-$resultTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN ('5','6','7')");
+$resultTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN ('1','5','6','7')");
 while ($rowTec = $resultTec->fetch_assoc()) {
     $tecnicos[] = $rowTec;
 }
@@ -391,7 +391,7 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
                                                         <a href='javascript:void(0)' class='btn btn-info btn-sm view-btn' data-id='" . $row['id'] . "'><i class='material-icons'>visibility</i></a>
                                                         <a href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "'><i class='material-icons'>edit</i></a>
                                                         <a href='javascript:void(0)' class='btn btn-danger btn-sm delete-btn' data-id='" . $row['id'] . "'><i class='material-icons'>delete</i></a>
-                                                      </td>";
+                                                        </td>";
                                                     echo "</tr>";
                                                 }
                                                 ?>
@@ -535,7 +535,6 @@ $('#applyFilters').click(function () {
             });
         </script>
     </body>
-
     </html>
 <?php } else {
     header('Location: ../error404.php');

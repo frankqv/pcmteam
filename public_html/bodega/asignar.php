@@ -108,13 +108,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                     FROM bodega_inventario 
                     WHERE (tecnico_id IS NULL OR tecnico_id = 0) AND estado = 'activo'
                     ORDER BY fecha_ingreso DESC 
-                    LIMIT 20";
+                    LIMIT 200";
             } else {
                 $sqlEquipos = "SELECT id, codigo_g, producto, marca, modelo 
                     FROM bodega_inventario 
                     WHERE disposicion IN ('en_diagnostico', 'Business Room') 
                     ORDER BY fecha_modificacion DESC 
-                    LIMIT 20";
+                    LIMIT 200";
             }
             $resultEquipos = $conn->query($sqlEquipos);
             if ($resultEquipos) {
@@ -159,7 +159,7 @@ $sqlEquipos = "SELECT id, codigo_g, producto, marca, modelo
         FROM bodega_inventario 
         WHERE (tecnico_id IS NULL OR tecnico_id = 0) AND estado = 'activo'
         ORDER BY fecha_ingreso DESC 
-        LIMIT 20";
+        LIMIT 200";
 $resultEquipos = $conn->query($sqlEquipos);
 if ($resultEquipos) {
     while ($rowEquipo = $resultEquipos->fetch_assoc()) {
@@ -600,7 +600,7 @@ if ($resultEquipos) {
                                                 FROM bodega_inventario 
                                                 WHERE disposicion IN ('en_diagnostico', 'Business Room') 
                                                 ORDER BY fecha_modificacion DESC 
-                                                LIMIT 20";
+                                                LIMIT 200";
                                             $resultProceso = $conn->query($sqlProceso);
                                             if ($resultProceso) {
                                                 while ($equipoProceso = $resultProceso->fetch_assoc()): ?>

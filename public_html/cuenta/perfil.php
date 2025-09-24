@@ -127,7 +127,6 @@ while ($r = $sentencia->fetchObject()) {
 <?php if (count($data) > 0): ?>
 <?php foreach ($data as $d): ?>
     <form enctype="multipart/form-data" method="POST" autocomplete="off">
-
         <!-- Sección de Foto de Perfil -->
         <div class="photo-upload-container">
             <div class="form-group">
