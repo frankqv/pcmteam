@@ -4,16 +4,14 @@ ob_start();
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
-
-require_once dirname(__DIR__, 2) . '/config/ctconex.php';
-
+require_once '../../config/ctconex.php';
+date_default_timezone_set('America/Bogota');
 // Validación de roles
 $allowedRoles = [1, 2, 5, 6, 7];
 if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], $allowedRoles, true)) {
   header('Location: ../error404.php');
   exit;
 }
-
 // Variables globales
 $inventario_id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 $mensaje = '';
@@ -25,7 +23,6 @@ $partesDisponibles = [];
 $marcasUnicas = [];
 $productosUnicos = [];
 $ubicacionUnicos = [];
-
 // Obtener información del usuario para navbar
 $userInfo = null;
 try {
@@ -44,7 +41,6 @@ try {
     'idsede' => 'Sede sin definir'
   ];
 }
-
 // Cargar datos iniciales
 try {
   if ($inventario_id > 0) {
@@ -83,7 +79,6 @@ try {
   error_log("Error carga inicial: " . $e->getMessage());
   $mensaje .= "<div class='alert alert-warning'>Error al cargar datos: " . htmlspecialchars($e->getMessage()) . "</div>";
 }
-
 // Procesamiento del formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   try {
@@ -253,7 +248,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mensaje .= "<div class='alert alert-danger'>❌ Error: " . htmlspecialchars($e->getMessage()) . "</div>";
   }
 }
-
 // Helper function for status badges
 function badgeClass(string $v): string
 {
@@ -264,7 +258,6 @@ function badgeClass(string $v): string
     return 'status-malo';
   return 'status-nd';
 }
-
 // Obtener técnico responsable del último diagnóstico
 $tecnicoResponsable = 'No asignado';
 if (!empty($diagnostico_ultimo['tecnico_id'])) {
@@ -276,10 +269,8 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
   }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -297,7 +288,6 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-
     .section-title {
       background: #f2f2f2;
       display: flex;
@@ -306,18 +296,15 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
       padding-bottom: 10px;
       border-bottom: 2px solid #f0f0f0;
     }
-
     .card-icon {
       font-size: 24px;
       margin-right: 10px;
     }
-
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 15px;
     }
-
     .hidden {
       display: none;
       max-height: 0;
@@ -325,7 +312,6 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
       overflow: hidden;
       transition: max-height .32s ease, opacity .32s ease, transform .32s ease;
     }
-
     .activo123 {
       display: block;
       max-height: 2000px;
@@ -339,54 +325,45 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
       box-shadow: 0 6px 18px rgba(102, 126, 234, 0.06);
       transition: max-height .32s ease, opacity .32s ease, transform .32s ease;
     }
-
     .alert {
       padding: 12px 15px;
       margin-bottom: 15px;
       border-radius: 4px;
       border: 1px solid transparent;
     }
-
     .alert-success {
       background-color: #d4edda;
       border-color: #c3e6cb;
       color: #155724;
     }
-
     .alert-danger {
       background-color: #f8d7da;
       border-color: #f5c6cb;
       color: #721c24;
     }
-
     .alert-warning {
       background-color: #fff3cd;
       border-color: #ffeaa7;
       color: #856404;
     }
-
     .status-badge {
       padding: 4px 8px;
       border-radius: 4px;
       font-size: 0.875em;
       font-weight: 500;
     }
-
     .status-bueno {
       background-color: #d4edda;
       color: #155724;
     }
-
     .status-malo {
       background-color: #f8d7da;
       color: #721c24;
     }
-
     .status-nd {
       background-color: #e2e3e5;
       color: #495057;
     }
-
     .diagnosis-panel {
       background: #f8f9fa;
       border: 1px solid #dee2e6;
@@ -394,7 +371,6 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
       padding: 20px;
       margin-bottom: 20px;
     }
-
     .diagnosis-item {
       display: flex;
       justify-content: space-between;
@@ -402,19 +378,16 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
       padding: 8px 0;
       border-bottom: 1px solid #eee;
     }
-
     .diagnosis-label {
       font-weight: 500;
       color: #495057;
     }
-
     .btn-container {
       display: flex;
       gap: 10px;
       margin-top: 20px;
       justify-content: center;
     }
-
     .btn {
       padding: 10px 20px;
       border: none;
@@ -426,59 +399,48 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
       display: inline-block;
       text-align: center;
     }
-
     .btn-primary {
       background: #007bff;
       color: white;
     }
-
     .btn-secondary {
       background: #6c757d;
       color: white;
     }
-
     .btn-success {
       background: #28a745;
       color: white;
     }
-
     .btn:hover {
       opacity: 0.9;
       transform: translateY(-1px);
     }
-
     .equipment-info {
-
       background: linear-gradient(135deg, #e0ffcd 0%, rgb(197, 228, 177) 100%);
       padding: 15px;
       border-radius: 8px;
       margin-bottom: 20px;
     }
-
     .equipment-code {
       font-size: 24px;
       font-weight: bold;
       color: #495057;
       margin-bottom: 5px;
     }
-
     .equipment-description {
       font-size: 16px;
       color: #6c757d;
       margin-bottom: 15px;
     }
-
     .equipment-details {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 10px;
     }
-
     .detail-item {
       display: flex;
       flex-direction: column;
     }
-
     .detail-label {
       font-size: 12px;
       font-weight: 500;
@@ -486,45 +448,38 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-
     .detail-value {
       font-size: 14px;
       color: #495057;
       font-weight: 500;
     }
-
     .main-container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 20px;
     }
-
     .top-navbar {
       background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
       padding: 10px 20px;
       margin-bottom: 20px;
       border-radius: 8px;
     }
-
     .navbar-brand {
       color: white !important;
       font-weight: bold;
       text-decoration: none;
     }
-
     .partes-table {
       max-height: 400px;
       overflow-y: auto;
       border: 1px solid #ddd;
       border-radius: 4px;
     }
-
     .table-sm th,
     .table-sm td {
       padding: 8px;
       font-size: 0.875em;
     }
-
     .filtros-container {
       background-color: #f8f9fa;
       padding: 15px;
@@ -532,14 +487,12 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
       margin-bottom: 15px;
       border: 1px solid #dee2e6;
     }
-
     .filtros-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 15px;
       align-items: end;
     }
-
     .filtro-grupo label {
       display: block;
       font-weight: 500;
@@ -549,23 +502,18 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
     }
   </style>
 </head>
-
 <body>
   <!-- Top Navbar -->
   <?php
   include_once '../layouts/nav.php';
   include_once '../layouts/menu_data.php';
   ?>
-
-
-
   <nav id="sidebar">
     <div class="sidebar-header">
       <h3><img src="../assets/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
     </div>
     <?php renderMenu($menu); ?>
   </nav>
-
   <div class="main-container">
     <!--top-navbar-->
     <div class="top-navbar">
@@ -576,7 +524,6 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
         </a>
       </div>
     </div>
-
     <!-- Mensajes de alerta -->
     <?php if (!empty($mensaje)): ?>
       <?php echo $mensaje; ?>
@@ -606,19 +553,19 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
           <span><?= htmlspecialchars(isset($diagnostico_ultimo['fecha_diagnostico']) ? (new DateTime($diagnostico_ultimo['fecha_diagnostico']))->format('d/m/Y H:i') : 'N/D') ?></span>
         </div>
         <?php
-        $fields = [
-          'Cámara' => $diagnostico_ultimo['camara'] ?? 'N/D',
-          'Teclado' => $diagnostico_ultimo['teclado'] ?? 'N/D',
-          'Parlantes' => $diagnostico_ultimo['parlantes'] ?? 'N/D',
-          'Batería' => $diagnostico_ultimo['bateria'] ?? 'N/D',
-          'Micrófono' => $diagnostico_ultimo['microfono'] ?? 'N/D',
-          'Pantalla' => $diagnostico_ultimo['pantalla'] ?? 'N/D'
-        ];
-        foreach ($fields as $label => $val) {
-          $cls = badgeClass((string) $val);
-          echo "<div class='diagnosis-item'><span class='diagnosis-label'>{$label}</span><span class='status-badge {$cls}'>" . htmlspecialchars(strtoupper($val)) . "</span></div>";
-        }
-        $estado = $diagnostico_ultimo['estado_reparacion'] ?? 'N/D';
+                $fields = [
+                  'Cámara' => $diagnostico_ultimo['camara'] ?? 'N/D',
+                  'Teclado' => $diagnostico_ultimo['teclado'] ?? 'N/D',
+                  'Parlantes' => $diagnostico_ultimo['parlantes'] ?? 'N/D',
+                  'Batería' => $diagnostico_ultimo['bateria'] ?? 'N/D',
+                  'Micrófono' => $diagnostico_ultimo['microfono'] ?? 'N/D',
+                  'Pantalla' => $diagnostico_ultimo['pantalla'] ?? 'N/D'
+                ];
+                foreach ($fields as $label => $val) {
+                  $cls = badgeClass((string) $val);
+                  echo "<div class='diagnosis-item'><span class='diagnosis-label'>{$label}</span><span class='status-badge {$cls}'>" . htmlspecialchars(strtoupper($val)) . "</span></div>";
+                }
+                $estado = $diagnostico_ultimo['estado_reparacion'] ?? 'N/D';
         ?>
         <div class="diagnosis-item">
           <span class="diagnosis-label">Estado</span>
@@ -627,6 +574,11 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
         <div class="diagnosis-item">
           <span class="diagnosis-label">Responsable Último TRIAGE</span>
           <span class="status-badge status-nd"><?= htmlspecialchars($tecnicoResponsable) ?></span>
+        </div>
+        <!-- Observaciones Proceso anterior -->
+        <div class="diagnosis-item">
+          <span class="diagnosis-label">Observaciones</span>
+          <span class="status-badge status-nd"><?php echo htmlspecialchars($diagnostico_ultimo['observaciones'] ?? 'N/D') ?> </span>
         </div>
       </div> <!-- Información del Equipo -->
       <div class="equipment-info">
@@ -720,8 +672,8 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
           <h5>Componentes (Portátil)</h5>
           <div class="form-grid">
             <?php
-            $componentes_portatil = ['Camara', 'Teclado', 'Parlantes', 'Bateria', 'Microfono', 'Pantalla'];
-            foreach ($componentes_portatil as $comp): ?>
+                      $componentes_portatil = ['Camara', 'Teclado', 'Parlantes', 'Bateria', 'Microfono', 'Pantalla'];
+                      foreach ($componentes_portatil as $comp): ?>
               <div class="form-group">
                 <label><?= htmlspecialchars($comp) ?></label>
                 <select name="componentes_portatil[<?= htmlspecialchars($comp) ?>]" class="form-control">
@@ -763,8 +715,8 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
           <h5>Puertos (Computador de Mesa)</h5>
           <div class="form-grid">
             <?php
-            $componentes_computador = ['VGA', 'DVI', 'HDMI', 'USB', 'Red'];
-            foreach ($componentes_computador as $comp): ?>
+                      $componentes_computador = ['VGA', 'DVI', 'HDMI', 'USB', 'Red'];
+                      foreach ($componentes_computador as $comp): ?>
               <div class="form-group">
                 <label><?= htmlspecialchars($comp) ?></label>
                 <select name="componentes_computador[<?= htmlspecialchars($comp) ?>]" class="form-control">
@@ -1029,7 +981,6 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
             <textarea id="observaciones_globales" name="observaciones_globales" rows="4" class="form-control"
               placeholder="Observaciones generales del proceso de limpieza y mantenimiento"></textarea>
           </div>
-
           <!-- Remisión a otra área -->
           <div class="form-group">
             <label for="remite_otra_area">¿Remite a Otra Área?</label>
@@ -1048,7 +999,6 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
               </select>
             </div>
           </div>
-
           <div class="btn-container">
             <button type="submit" name="guardar_mantenimiento" class="btn btn-success">
               Guardar Limpieza y Mantenimiento
@@ -1065,8 +1015,7 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
   <script src="../assets/js/jquery-3.3.1.min.js"></script>
   <script src="../assets/js/bootstrap.min.js"></script>
   <script>
-
-    $(document).ready(function () {
+    $(document).ready(function() {
       // Manejo del disco y vida útil
       const input = $('#vida_util_disco');
       const select = $('#select-Disco');
@@ -1084,13 +1033,20 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
           return;
         }
         let n = Math.max(0, Math.min(100, parseInt(val, 10)));
-        if (n >= 70) { select.val('BUENO'); setIndicator('good'); }
-        else if (n >= 50) { select.val('REGULAR'); setIndicator('regular'); }
-        else { select.val('MALO'); setIndicator('bad'); }
+        if (n >= 70) {
+          select.val('BUENO');
+          setIndicator('good');
+        } else if (n >= 50) {
+          select.val('REGULAR');
+          setIndicator('regular');
+        } else {
+          select.val('MALO');
+          setIndicator('bad');
+        }
       }
       // Inicializar
       updateFromValue(input.val());
-      input.on('input', function () {
+      input.on('input', function() {
         this.value = this.value.toString().replace(/\D/g, '').slice(0, 3);
         if (this.value !== '' && parseInt(this.value, 10) > 100) this.value = '100';
         updateFromValue(this.value);
@@ -1101,45 +1057,37 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
         target.removeClass(showClass + ' ' + hideClass)
           .addClass(element.value === 'realizada' || element.value === 'si' ? showClass : hideClass);
       }
-
       // Mostrar/ocultar campos condicionales
-      $('#limpieza_electronico').on('change', function () {
+      $('#limpieza_electronico').on('change', function() {
         toggleField(this, 'obs_limpieza_block');
       });
-
-      $('#mantenimiento_crema').on('change', function () {
+      $('#mantenimiento_crema').on('change', function() {
         toggleField(this, 'obs_crema_block');
       });
-
-      $('#cambio_piezas').on('change', function () {
+      $('#cambio_piezas').on('change', function() {
         toggleField(this, 'piezas_block');
       });
-
-      $('#proceso_reconstruccion').on('change', function () {
+      $('#proceso_reconstruccion').on('change', function() {
         toggleField(this, 'parte_block');
       });
-
-      $('#remite_otra_area').on('change', function () {
+      $('#remite_otra_area').on('change', function() {
         toggleField(this, 'area_block');
       });
-
-      $('#falla_electrica').on('change', function () {
+      $('#falla_electrica').on('change', function() {
         toggleField(this, 'detalle_falla_electrica_block');
       });
-
-      $('#falla_estetica').on('change', function () {
+      $('#falla_estetica').on('change', function() {
         toggleField(this, 'falla_estetica_block');
       });
-
       // Listado de partes disponibles
-      $('#lista_partes_bodega').on('change', function () {
+      $('#lista_partes_bodega').on('change', function() {
         toggleField(this, 'partes_disponibles_container');
       });
       // Filtros de partes
-      $('#filtro_marca, #filtro_producto, #filtro_busqueda').on('change keyup', function () {
+      $('#filtro_marca, #filtro_producto, #filtro_busqueda').on('change keyup', function() {
         filtrarPartes();
       });
-      $('#btn_limpiar_filtros').on('click', function () {
+      $('#btn_limpiar_filtros').on('click', function() {
         $('#filtro_marca').val('');
         $('#filtro_producto').val('');
         $('#filtro_busqueda').val('');
@@ -1149,7 +1097,7 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
         const filtroMarca = $('#filtro_marca').val().toLowerCase();
         const filtroProducto = $('#filtro_producto').val().toLowerCase();
         const filtroBusqueda = $('#filtro_busqueda').val().toLowerCase();
-        $('#tabla_partes_body tr').each(function () {
+        $('#tabla_partes_body tr').each(function() {
           const fila = $(this);
           const marca = fila.find('[data-marca]').data('marca').toLowerCase();
           const producto = fila.find('[data-producto]').data('producto').toLowerCase();
@@ -1192,5 +1140,4 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
     }
   </script>
 </body>
-
 </html>

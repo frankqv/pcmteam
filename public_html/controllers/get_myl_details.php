@@ -23,6 +23,7 @@ if (!isset($conn) || !($conn instanceof mysqli)) {
     echo "<h3>Error: la conexión (\$conn) no está definida o no es mysqli. Revisa ctconex.php</h3>";
     exit;
 }
+date_default_timezone_set('America/Bogota');
 $conn->set_charset('utf8mb4');
 // --- Obtener inventario_id (GET, POST, JSON) ---
 // Aceptamos inventario_id o id (compatibilidad)
@@ -95,11 +96,31 @@ if (is_array($triage) && isset($triage['error']) && $triage['error']) {
     echo "Error en consulta TRIAGE: " . htmlspecialchars($triage['msg'] ?? '');
     exit;
 }
+// --- Validación previa (asegúrate que $inventario_id esté correcto) ---
+$inventario_id = intval($inventario_id);
+if ($inventario_id <= 0) {
+    header('HTTP/1.1 400 Bad Request');
+    echo '<h3>Error: inventario_id inválido o no proporcionado. Usa ?inventario_id=123</h3>';
+    exit;
+}
 // --- 2) MANTENIMIENTO (bodega_mantenimiento) ---
-$m_sql = "SELECT id, fecha_registro, tecnico_id, usuario_registro, estado, tipo_proceso, observaciones, partes_solicitadas, referencia_externa
-            FROM bodega_mantenimiento
-            WHERE inventario_id = ?
-            ORDER BY fecha_registro DESC";
+// Selección explícita de todas las columnas que pediste + nombres legibles para técnico y usuario
+$m_sql = "SELECT
+            m.id, m.inventario_id, m.fecha_registro, m.tecnico_id, t.nombre AS tecnico_nombre,
+            m.usuario_registro, u.nombre AS usuario_registro_nombre,
+            m.estado, m.tipo_proceso, m.observaciones, m.falla_electrica, m.detalle_falla_electrica,
+            m.falla_estetica, m.detalle_falla_estetica, m.partes_solicitadas, m.referencia_externa,
+            m.tecnico_diagnostico, m.limpieza_electronico, m.observaciones_limpieza_electronico,
+            m.mantenimiento_crema_disciplinaria, m.observaciones_mantenimiento_crema,
+            m.mantenimiento_partes, m.cambio_piezas, m.piezas_solicitadas_cambiadas,
+            m.proceso_reconstruccion, m.parte_reconstruida, m.limpieza_general,
+            m.remite_otra_area, m.area_remite, m.proceso_electronico, m.observaciones_globales
+          FROM bodega_mantenimiento m
+          LEFT JOIN usuarios t ON m.tecnico_id = t.id
+          LEFT JOIN usuarios u ON m.usuario_registro = u.id
+         WHERE m.inventario_id = ?
+         ORDER BY m.fecha_registro DESC
+         LIMIT 200"; // opcional: límite para proteger contra consultas gigantes
 $mantenimiento = fetch_all_ps($conn, $m_sql, 'i', [$inventario_id]);
 if (is_array($mantenimiento) && isset($mantenimiento['error']) && $mantenimiento['error']) {
     header('HTTP/1.1 500 Internal Server Error');
@@ -156,17 +177,17 @@ if (!empty($mantenimiento) && is_array($mantenimiento)) {
         <div style="flex:1;">
             <h4 style="margin:0 0 6px 0;"><?= htmlspecialchars($inventario['producto'] ?? 'Equipo') ?> — <?= htmlspecialchars($inventario['codigo_g'] ?? '') ?></h4>
             <div><strong>Marca:</strong> <?= htmlspecialchars($inventario['marca'] ?? '') ?> |
-                 <strong>Modelo:</strong> <?= htmlspecialchars($inventario['modelo'] ?? '') ?> |
-                 <strong>Serial:</strong> <?= htmlspecialchars($inventario['serial'] ?? '') ?></div>
+                <strong>Modelo:</strong> <?= htmlspecialchars($inventario['modelo'] ?? '') ?> |
+                <strong>Serial:</strong> <?= htmlspecialchars($inventario['serial'] ?? '') ?></div>
             <div><strong>Ubicación:</strong> <?= htmlspecialchars($inventario['ubicacion'] ?? '') ?> |
-                 <strong>Posición:</strong> <?= htmlspecialchars($inventario['posicion'] ?? '') ?> |
-                 <strong>Lote:</strong> <?= htmlspecialchars($inventario['lote'] ?? '') ?></div>
+                <strong>Posición:</strong> <?= htmlspecialchars($inventario['posicion'] ?? '') ?> |
+                <strong>Lote:</strong> <?= htmlspecialchars($inventario['lote'] ?? '') ?></div>
             <div><strong>Grado:</strong> <?= htmlspecialchars($inventario['grado'] ?? '') ?> |
-                 <strong>Disposición:</strong> <?= htmlspecialchars($inventario['disposicion'] ?? '') ?> |
-                 <strong>Estado:</strong> <?= htmlspecialchars($inventario['estado'] ?? '') ?></div>
+                <strong>Disposición:</strong> <?= htmlspecialchars($inventario['disposicion'] ?? '') ?> |
+                <strong>Estado:</strong> <?= htmlspecialchars($inventario['estado'] ?? '') ?></div>
             <div><strong>Técnico asignado:</strong> <?= htmlspecialchars($inventario['tecnico_nombre'] ?? $inventario['tecnico_id'] ?? '') ?> |
-                 <strong>Fecha ingreso:</strong> <?= htmlspecialchars($inventario['fecha_ingreso'] ?? '') ?> |
-                 <strong>Última modificación:</strong> <?= htmlspecialchars($inventario['fecha_modificacion'] ?? '') ?></div>
+                <strong>Fecha ingreso:</strong> <?= htmlspecialchars($inventario['fecha_ingreso'] ?? '') ?> |
+                <strong>Última modificación:</strong> <?= htmlspecialchars($inventario['fecha_modificacion'] ?? '') ?></div>
         </div>
         <div style="min-width:240px;">
             <h5 style="margin:0 0 6px 0;">Especificaciones</h5>
@@ -185,8 +206,9 @@ if (!empty($mantenimiento) && is_array($mantenimiento)) {
             <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($inventario['observaciones'] ?? '') ?></pre>
         </div>
     <?php endif; ?>
+    
     <!-- TRIAGE -->
-    <h4 style="margin-top:0; border-bottom:1px solid #eee; padding-bottom:6px;">=== OBSERVACIONES TRIAGE 2 (PRIORITIZADO) ===</h4>
+    <h4 style="margin-top:0; border-bottom:1px solid #eee; padding-bottom:6px;">=== OBSERVACIONES TRIAGE (DIAGNÓSTICO INICIAL) ===</h4>
     <?php if (empty($triage)): ?>
         <p>No hay registros de triage para este inventario.</p>
     <?php else: ?>
@@ -201,25 +223,56 @@ if (!empty($mantenimiento) && is_array($mantenimiento)) {
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
+
     <!-- MANTENIMIENTO -->
-    <h4 style="border-bottom:1px solid #eee; padding-bottom:6px;">=== MANTENIMIENTO Y LIMPIEZA ===</h4>
+    <h4 style="border-bottom:1px solid #eee; padding-bottom:6px; background: #abfdecff;">=== MANTENIMIENTO Y LIMPIEZA (DETALLE COMPLETO) ===</h4>
     <?php if (empty($mantenimiento)): ?>
         <p>No hay registros de mantenimiento para este inventario.</p>
     <?php else: ?>
         <?php foreach ($mantenimiento as $m): ?>
-            <div style="padding:8px; border-bottom:1px solid #f7f7f7; margin-bottom:6px;">
-                <div><strong>Fecha registro:</strong> <?= htmlspecialchars($m['fecha_registro'] ?? '') ?> |
-                     <strong>Estado:</strong> <?= htmlspecialchars($m['estado'] ?? '') ?> |
-                     <strong>Tipo proceso:</strong> <?= htmlspecialchars($m['tipo_proceso'] ?? '') ?></div>
-                <div style="margin-top:6px;"><strong>Observaciones:</strong>
-                    <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($m['observaciones'] ?? '') ?></pre>
+            <div style="padding:10px; border:1px solid #f0f0f0; border-radius:6px; margin-bottom:10px; background:#fff;">
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                    <div style="min-width:220px;">
+                        <strong>ID:</strong> <?= htmlspecialchars($m['id'] ?? '') ?><br>
+                        <strong>Inventario ID:</strong> <?= htmlspecialchars($m['inventario_id'] ?? '') ?><br>
+                        <strong>Fecha registro:</strong> <?= htmlspecialchars($m['fecha_registro'] ?? '') ?><br>
+                        <strong>Técnico (id):</strong> <?= htmlspecialchars($m['tecnico_id'] ?? '') ?> |
+                        <strong>Técnico (nombre):</strong> <?= htmlspecialchars($m['tecnico_nombre'] ?? '') ?><br>
+                        <strong>Registrado por (id):</strong> <?= htmlspecialchars($m['usuario_registro'] ?? '') ?> |
+                        <strong>Registrado por (nombre):</strong> <?= htmlspecialchars($m['usuario_registro_nombre'] ?? '') ?><br>
+                        <strong>Estado:</strong> <?= htmlspecialchars($m['estado'] ?? '') ?><br>
+                        <strong>Tipo proceso:</strong> <?= htmlspecialchars($m['tipo_proceso'] ?? '') ?><br>
+                    </div>
+                    <div style="flex:1; min-width:300px;">
+                        <strong>Observaciones (generales):</strong>
+                        <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($m['observaciones'] ?? '') ?></pre>
+                        <strong>Observaciones globales:</strong>
+                        <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($m['observaciones_globales'] ?? '') ?></pre>
+                    </div>
                 </div>
-                <?php if (!empty($m['partes_solicitadas'])): ?>
-                    <div style="margin-top:6px;"><strong>Partes solicitadas (texto):</strong> <?= htmlspecialchars($m['partes_solicitadas'] ?? '') ?></div>
-                <?php endif; ?>
-                <?php if (!empty($m['referencia_externa'])): ?>
-                    <div><strong>Referencia externa:</strong> <?= htmlspecialchars($m['referencia_externa'] ?? '') ?></div>
-                <?php endif; ?>
+                <hr style="border:none;border-top:1px dashed #eee;margin:8px 0;">
+                <div style="display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:8px;">
+                    <div><strong>Falla eléctrica:</strong><br><?= htmlspecialchars($m['falla_electrica'] ?? '') ?></div>
+                    <div><strong>Detalle falla eléctrica:</strong><br><?= htmlspecialchars($m['detalle_falla_electrica'] ?? '') ?></div>
+                    <div><strong>Falla estética:</strong><br><?= htmlspecialchars($m['falla_estetica'] ?? '') ?></div>
+                    <div><strong>Detalle falla estética:</strong><br><?= htmlspecialchars($m['detalle_falla_estetica'] ?? '') ?></div>
+                    <div><strong>Partes solicitadas (texto):</strong><br><pre style="white-space:pre-wrap;"><?= htmlspecialchars($m['partes_solicitadas'] ?? '') ?></pre></div>
+                    <div><strong>Referencia externa:</strong><br><?= htmlspecialchars($m['referencia_externa'] ?? '') ?></div>
+                    <div><strong>Técnico diagnóstico:</strong><br><?= htmlspecialchars($m['tecnico_diagnostico'] ?? '') ?></div>
+                    <div><strong>Limpieza electrónico:</strong><br><?= htmlspecialchars($m['limpieza_electronico'] ?? '') ?></div>
+                    <div><strong>Observaciones limpieza electrónico:</strong><br><pre style="white-space:pre-wrap;"><?= htmlspecialchars($m['observaciones_limpieza_electronico'] ?? '') ?></pre></div>
+                    <div><strong>Mantenimiento crema disciplinaria:</strong><br><?= htmlspecialchars($m['mantenimiento_crema_disciplinaria'] ?? '') ?></div>
+                    <div><strong>Observaciones mantenimiento crema:</strong><br><pre style="white-space:pre-wrap;"><?= htmlspecialchars($m['observaciones_mantenimiento_crema'] ?? '') ?></pre></div>
+                    <div><strong>Mantenimiento partes:</strong><br><?= htmlspecialchars($m['mantenimiento_partes'] ?? '') ?></div>
+                    <div><strong>Cambio piezas:</strong><br><?= htmlspecialchars($m['cambio_piezas'] ?? '') ?></div>
+                    <div><strong>Piezas solicitadas cambiadas:</strong><br><?= htmlspecialchars($m['piezas_solicitadas_cambiadas'] ?? '') ?></div>
+                    <div><strong>Proceso reconstrucción:</strong><br><?= htmlspecialchars($m['proceso_reconstruccion'] ?? '') ?></div>
+                    <div><strong>Parte reconstruida:</strong><br><?= htmlspecialchars($m['parte_reconstruida'] ?? '') ?></div>
+                    <div><strong>Limpieza general:</strong><br><?= htmlspecialchars($m['limpieza_general'] ?? '') ?></div>
+                    <div><strong>Remite otra área:</strong><br><?= htmlspecialchars($m['remite_otra_area'] ?? '') ?></div>
+                    <div><strong>Área remite:</strong><br><?= htmlspecialchars($m['area_remite'] ?? '') ?></div>
+                    <div><strong>Proceso electrónico:</strong><br><?= htmlspecialchars($m['proceso_electronico'] ?? '') ?></div>
+                </div>
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
@@ -231,9 +284,9 @@ if (!empty($mantenimiento) && is_array($mantenimiento)) {
         <?php foreach ($control_calidad as $c): ?>
             <div style="padding:8px; border-bottom:1px solid #f7f7f7; margin-bottom:6px;">
                 <div><strong>Fecha control:</strong> <?= htmlspecialchars($c['fecha_control'] ?? '') ?> |
-                     <strong>Técnico ID:</strong> <?= htmlspecialchars($c['tecnico_id'] ?? '') ?></div>
+                    <strong>Técnico ID:</strong> <?= htmlspecialchars($c['tecnico_id'] ?? '') ?></div>
                 <div><strong>Estado final:</strong> <?= htmlspecialchars($c['estado_final'] ?? '') ?> |
-                     <strong>Categoria REC:</strong> <?= htmlspecialchars($c['categoria_rec'] ?? '') ?></div>
+                    <strong>Categoria REC:</strong> <?= htmlspecialchars($c['categoria_rec'] ?? '') ?></div>
                 <div style="margin-top:6px;"><strong>Burning Test:</strong>
                     <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($c['burning_test'] ?? '') ?></pre>
                 </div>
@@ -273,6 +326,6 @@ if (!empty($mantenimiento) && is_array($mantenimiento)) {
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
-</div>
+</div> <!-- Cierre del div principal -->
 <?php
 // fin del archivo

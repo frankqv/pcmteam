@@ -107,14 +107,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 $sqlEquipos = "SELECT id, codigo_g, producto, marca, modelo 
                     FROM bodega_inventario 
                     WHERE (tecnico_id IS NULL OR tecnico_id = 0) AND estado = 'activo'
-                    ORDER BY fecha_ingreso DESC 
-                    LIMIT 200";
+                    ORDER BY fecha_ingreso";
             } else {
                 $sqlEquipos = "SELECT id, codigo_g, producto, marca, modelo 
                     FROM bodega_inventario 
                     WHERE disposicion IN ('en_diagnostico', 'Business Room') 
-                    ORDER BY fecha_modificacion DESC 
-                    LIMIT 200";
+                    ORDER BY fecha_modificacion";
             }
             $resultEquipos = $conn->query($sqlEquipos);
             if ($resultEquipos) {
@@ -158,8 +156,7 @@ $equiposDisponibles = [];
 $sqlEquipos = "SELECT id, codigo_g, producto, marca, modelo 
         FROM bodega_inventario 
         WHERE (tecnico_id IS NULL OR tecnico_id = 0) AND estado = 'activo'
-        ORDER BY fecha_ingreso DESC 
-        LIMIT 200";
+        ORDER BY fecha_ingreso";
 $resultEquipos = $conn->query($sqlEquipos);
 if ($resultEquipos) {
     while ($rowEquipo = $resultEquipos->fetch_assoc()) {
@@ -599,8 +596,7 @@ if ($resultEquipos) {
                                             $sqlProceso = "SELECT id, codigo_g, producto, marca, modelo 
                                                 FROM bodega_inventario 
                                                 WHERE disposicion IN ('en_diagnostico', 'Business Room') 
-                                                ORDER BY fecha_modificacion DESC 
-                                                LIMIT 200";
+                                                ORDER BY fecha_modificacion";
                                             $resultProceso = $conn->query($sqlProceso);
                                             if ($resultProceso) {
                                                 while ($equipoProceso = $resultProceso->fetch_assoc()): ?>
