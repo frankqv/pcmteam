@@ -6,6 +6,13 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])) {
     header('location: ../error404.php');
 }
 require_once '../../config/ctconex.php';
+
+// Helper para escapar valores (evita warnings cuando llegan null)
+function e($v){
+    // garantizamos string y manejamos null con ''
+    return htmlspecialchars((string)($v ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+
 $tecnicos = [];
 $resultTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN ('1','5','6','7')");
 while ($rowTec = $resultTec->fetch_assoc()) {
@@ -100,22 +107,22 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
         <!-- Branding -->
         <a class="navbar-brand" href="#" style="color: #fff;">
         <i class="fas fa-tools" style="margin-right: 8px; color: #f39c12;"></i>
-        <b>BODEGA | INVENTARIO TRIAGE | </b><?php echo htmlspecialchars($titulo); ?> 
+        <b>BODEGA | INVENTARIO TRIAGE | </b><?php echo e($titulo); ?> 
         </a>
         <!-- Menú derecho (usuario) -->
         <ul class="nav navbar-nav ml-auto">
         <li class="dropdown nav-item active">
         <a href="#" class="nav-link" data-toggle="dropdown">
-        <img src="../assets/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
+        <img src="../assets/img/<?php echo e($userInfo['foto'] ?? 'reere.webp'); ?>"
             alt="Foto de perfil"
             style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
         </a>
         <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
-        <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong></li>
-        <li><?php echo htmlspecialchars($userInfo['usuario'] ?? 'usuario'); ?></li>
-        <li><?php echo htmlspecialchars($userInfo['correo'] ?? 'correo@ejemplo.com'); ?></li>
+        <li><strong><?php echo e($userInfo['nombre'] ?? 'Usuario'); ?></strong></li>
+        <li><?php echo e($userInfo['usuario'] ?? 'usuario'); ?></li>
+        <li><?php echo e($userInfo['correo'] ?? 'correo@ejemplo.com'); ?></li>
         <li>
-            <?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?>
+            <?php echo e(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?>
         </li>
         <li class="mt-2">
             <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi
@@ -144,7 +151,7 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
                                     $result = $conn->query($sql);
                                     $row = $result->fetch_assoc();
                                     ?>
-                                    <h4 class="mb-0"><?php echo $row['total']; ?></h4>
+                                    <h4 class="mb-0"><?php echo e($row['total']); ?></h4>
                                     <div class="text-white-50">Total Equipos</div>
                                 </div>
                             </div>
@@ -158,7 +165,7 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
                                     $result = $conn->query($sql);
                                     $row = $result->fetch_assoc();
                                     ?>
-                                    <h4 class="mb-0"><?php echo $row['disponibles']; ?></h4>
+                                    <h4 class="mb-0"><?php echo e($row['disponibles']); ?></h4>
                                     <div class="text-white-50">Disponibles</div>
                                 </div>
                             </div>
@@ -171,7 +178,7 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
                                     $result = $conn->query($sql);
                                     $row = $result->fetch_assoc();
                                     ?>
-                                    <h4 class="mb-0"><?php echo $row['en_proceso']; ?></h4>
+                                    <h4 class="mb-0"><?php echo e($row['en_proceso']); ?></h4>
                                     <div class="text-white-50">En Proceso</div>
                                 </div>
                             </div>
@@ -185,7 +192,7 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
                                     $result = $conn->query($sql);
                                     $row = $result->fetch_assoc();
                                     ?>
-                                    <h4 class="mb-0"><?php echo $row['business']; ?></h4>
+                                    <h4 class="mb-0"><?php echo e($row['business']); ?></h4>
                                     <div class="text-white-50">Business Room</div>
                                 </div>
                             </div>
@@ -212,8 +219,8 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
                                                     $sedes = $result_sedes->fetchAll(PDO::FETCH_ASSOC);
                                                     foreach ($sedes as $sede) {
                                                         $selected = (isset($f->producto) && $f->producto == $sede['producto']) ? 'selected' : '';
-                                                        echo '<option value="' . htmlspecialchars($sede['producto']) . '" ' . $selected . '>';
-                                                        echo htmlspecialchars($sede['producto']);
+                                                        echo '<option value="' . e($sede['producto']) . '" ' . $selected . '>';
+                                                        echo e($sede['producto']);
                                                         echo '</option>';
                                                     }
                                                     ?>
@@ -232,8 +239,8 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
                                                     $sedes = $result_sedes->fetchAll(PDO::FETCH_ASSOC);
                                                     foreach ($sedes as $sede) {
                                                         $selected = (isset($f->grado) && $f->grado == $sede['grado']) ? 'selected' : '';
-                                                        echo '<option value="' . htmlspecialchars($sede['grado']) . '" ' . $selected . '>';
-                                                        echo htmlspecialchars($sede['grado']);
+                                                        echo '<option value="' . e($sede['grado']) . '" ' . $selected . '>';
+                                                        echo e($sede['grado']);
                                                         echo '</option>';
                                                     }
                                                     ?>
@@ -253,8 +260,8 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
                                                     $sedes = $result_sedes->fetchAll(PDO::FETCH_ASSOC);
                                                     foreach ($sedes as $sede) {
                                                         $selected = (isset($f->ubicacion) && $f->ubicacion == $sede['ubicacion']) ? 'selected' : '';
-                                                        echo '<option value="' . htmlspecialchars($sede['ubicacion']) . '" ' . $selected . '>';
-                                                        echo htmlspecialchars($sede['ubicacion']);
+                                                        echo '<option value="' . e($sede['ubicacion']) . '" ' . $selected . '>';
+                                                        echo e($sede['ubicacion']);
                                                         echo '</option>';
                                                     }
                                                     ?>
@@ -273,8 +280,8 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
                                                     $sedes = $result_sedes->fetchAll(PDO::FETCH_ASSOC);
                                                     foreach ($sedes as $sede) {
                                                         $selected = (isset($f->posicion) && $f->posicion == $sede['posicion']) ? 'selected' : '';
-                                                        echo '<option value="' . htmlspecialchars($sede['posicion']) . '" ' . $selected . '>';
-                                                        echo htmlspecialchars($sede['posicion']);
+                                                        echo '<option value="' . e($sede['posicion']) . '" ' . $selected . '>';
+                                                        echo e($sede['posicion']);
                                                         echo '</option>';
                                                     }
                                                     ?>
@@ -364,33 +371,33 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
                                                 $result = $conn->query($sql);
                                                 while ($row = $result->fetch_assoc()) {
                                                     echo "<tr>";
-                                                    echo "<td>" . htmlspecialchars($row['codigo_g']) . "</td>";
-                                                    echo "<td>" . htmlspecialchars($row['producto']) . "</td>";
-                                                    echo "<td>" . htmlspecialchars($row['marca']) . "</td>";
-                                                    echo "<td>" . htmlspecialchars($row['modelo']) . "</td>";
-                                                    echo "<td>" . htmlspecialchars($row['serial']) . "</td>";
-                                                    echo "<td>" . htmlspecialchars($row['ubicacion']) . "</td>";
-                                                    echo "<td>" . htmlspecialchars($row['posicion']) . "</td>";
-                                                    echo "<td>" . htmlspecialchars($row['grado']) . "</td>";
-                                                    echo "<td>" . htmlspecialchars($row['disposicion']) . "</td>";
-                                                    echo "<td>" . htmlspecialchars($row['estado']) . "</td>";
+                                                    echo "<td>" . e($row['codigo_g']) . "</td>";
+                                                    echo "<td>" . e($row['producto']) . "</td>";
+                                                    echo "<td>" . e($row['marca']) . "</td>";
+                                                    echo "<td>" . e($row['modelo']) . "</td>";
+                                                    echo "<td>" . e($row['serial']) . "</td>";
+                                                    echo "<td>" . e($row['ubicacion']) . "</td>";
+                                                    echo "<td>" . e($row['posicion']) . "</td>";
+                                                    echo "<td>" . e($row['grado']) . "</td>";
+                                                    echo "<td>" . e($row['disposicion']) . "</td>";
+                                                    echo "<td>" . e($row['estado']) . "</td>";
                                                     echo "<td>
             <form method='post' style='margin:0;'>
-                <input type='hidden' name='equipo_id' value='" . $row['id'] . "'>
+                <input type='hidden' name='equipo_id' value='" . (int)$row['id'] . "'>
                 <select name='tecnico_id' class='form-control form-control-sm' onchange='this.form.submit()'>
                     <option value=''>Seleccionar</option>";
                                                     foreach ($tecnicos as $tec) {
                                                         $selected = ($row['tecnico_id'] == $tec['id']) ? "selected" : "";
-                                                        echo "<option value='" . $tec['id'] . "' $selected>" . htmlspecialchars($tec['nombre']) . "</option>";
+                                                        echo "<option value='" . (int)$tec['id'] . "' $selected>" . e($tec['nombre']) . "</option>";
                                                     }
                                                     echo "  </select>
                                                         </form>
                                                     </td>";
-                                                    echo "<td>" . htmlspecialchars($row['fecha_modificacion']) . "</td>";
+                                                    echo "<td>" . e($row['fecha_modificacion']) . "</td>";
                                                     echo "<td class='text-center'>
-                                                        <a href='javascript:void(0)' class='btn btn-info btn-sm view-btn' data-id='" . $row['id'] . "'><i class='material-icons'>visibility</i></a>
-                                                        <a href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "'><i class='material-icons'>edit</i></a>
-                                                        <a href='javascript:void(0)' class='btn btn-danger btn-sm delete-btn' data-id='" . $row['id'] . "'><i class='material-icons'>delete</i></a>
+                                                        <a href='javascript:void(0)' class='btn btn-info btn-sm view-btn' data-id='" . (int)$row['id'] . "'><i class='material-icons'>visibility</i></a>
+                                                        <a href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . (int)$row['id'] . "'><i class='material-icons'>edit</i></a>
+                                                        <a href='javascript:void(0)' class='btn btn-danger btn-sm delete-btn' data-id='" . (int)$row['id'] . "'><i class='material-icons'>delete</i></a>
                                                         </td>";
                                                     echo "</tr>";
                                                 }

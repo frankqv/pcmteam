@@ -1,5 +1,6 @@
 <!-- Asignar Tecnico para el triage -->
 <!--public_html/bodega/asignar.php -->
+<!-- Mientras tanto, btn linea 85 | WHERE u.rol IN ('1','6',) AND u.estado = '1' -->
 <?php
 ob_start();
 session_start();
@@ -81,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             $sqlStats = "SELECT u.nombre, COUNT(bi.id) as total_equipos 
                         FROM usuarios u 
                         LEFT JOIN bodega_inventario bi ON u.id = bi.tecnico_id 
-                        WHERE u.rol IN ('1','5','6','7') AND u.estado = '1'
+                        WHERE u.rol IN ('1','6',) AND u.estado = '1'
                         GROUP BY u.id, u.nombre 
                         ORDER BY total_equipos DESC";
             $resultStats = $conn->query($sqlStats);
