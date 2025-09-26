@@ -280,8 +280,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                     LEFT JOIN usuarios u ON i.tecnico_id = u.id
                                                     WHERE i.estado = 'activo' AND i.tecnico_id = '" . $_SESSION['id'] . "' 
                                                     ORDER BY i.fecha_modificacion DESC";
-                                                
-                                                $result = $conn->query($sql);
+                                                    $result = $conn->query($sql);
                                                 if ($result) {
                                                     while ($row = $result->fetch_assoc()) {
                                                         // Detectar si tiene mantenimiento (viene como '1' o 1)
@@ -366,7 +365,6 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                         url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
                     }
                 });
-                
                 // Aplicar filtros
                 $('#applyFilters').click(function () {
                     var estado = $('#filterEstado').val();
@@ -377,7 +375,6 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                     table.columns(6).search(grado); // Grado
                     table.draw();
                 });
-                
                 // Ver detalles - Corregido el parámetro
                 $(document).on('click', '.view-btn', function () {
                     var id = $(this).data('id');
@@ -397,20 +394,17 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                             $('#viewModal').modal('show');
                         }
                     });
-                });             
-                
+                });
                 // Editar mantenimiento
                 $('.mantenimiento-btn').click(function () {
                     var id = $(this).data('id');
                     window.location.href = 'ingresar_m.php?id=' + id;
                 });
-                
                 // Editar equipo
                 $('.edit-btn').click(function () {
                     var id = $(this).data('id');
                     window.location.href = 'editar_inventario.php?id=' + id;
                 });
-                
                 // Eliminar equipo
                 $('.delete-btn').click(function () {
                     if (confirm('¿Está seguro de que desea eliminar este equipo?')) {

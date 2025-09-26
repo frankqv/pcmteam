@@ -83,6 +83,7 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
                     ['label' => '◖LISTADO EQUIPOS', 'url' => '../laboratorio/mostrar.php'],
                     ['label' => '◖LISTA PARTES', 'url' => '../bodega/lista_parte.php'],
                     ['label' => '◖SOLICITUD PARTE', 'url' => '../bodega/solicitar_parte.php'],
+                    ['label' => '● HISTORIAL MANTENIMIENTO', 'url' => '../laboratorio/historial_lab.php'],
                 ]
             ],
             [

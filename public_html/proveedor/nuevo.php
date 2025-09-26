@@ -189,7 +189,7 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])) {
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label class="bmd-label-floating">Dirección</label>
-                                                    <input type="text" name="direccion" class="form-control" maxlength="30">
+                                                    <input type="text" name="direccion" class="form-control" maxlength="250">
                                                 </div>
                                             </div>
                                         </div>
@@ -220,15 +220,15 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 7])) {
                 </div>
             </div>
         </div>
-       <!-- Optional JavaScript -->
+        <!-- Optional JavaScript -->
         <script src="../assets/js/jquery-3.3.1.slim.min.js"></script>
         <script src="../assets/js/popper.min.js"></script>
         <script src="../assets/js/bootstrap.min.js"></script>
         <script src="../assets/js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="../assets/js/sidebarCollapse.js"></script>
         <script type="text/javascript" src="../assets/js/loader.js"></script>
-   </body>
-   </html>
+    </body>
+    </html>
 <?php } else {
     header('Location: ../error404.php');
 } ?>
