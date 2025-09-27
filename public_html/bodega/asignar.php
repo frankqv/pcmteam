@@ -1326,8 +1326,8 @@ if ($resultEquipos) {
                         triageSearchInput?.setAttribute('title', 'Presiona Escape para limpiar la búsqueda');
                         processSearchInput?.setAttribute('title', 'Presiona Escape para limpiar la búsqueda');
                     });
-                    // Actualizar estadísticas cada 30 segundos
-                    setInterval(updateStats, 30000);
+                    // Actualizar estadísticas cada 20 minutos
+                    setInterval(updateStats, 1200000);
                 </script>
             </div>
             <!---  Contenido de MAIN -->
