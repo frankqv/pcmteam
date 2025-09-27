@@ -206,7 +206,6 @@ if (!empty($mantenimiento) && is_array($mantenimiento)) {
             <pre style="white-space:pre-wrap; background:#fafafa; padding:8px; border-radius:4px;"><?= htmlspecialchars($inventario['observaciones'] ?? '') ?></pre>
         </div>
     <?php endif; ?>
-    
     <!-- TRIAGE -->
     <h4 style="margin-top:0; border-bottom:1px solid #eee; padding-bottom:6px;">=== OBSERVACIONES TRIAGE (DIAGNÓSTICO INICIAL) ===</h4>
     <?php if (empty($triage)): ?>
@@ -223,7 +222,6 @@ if (!empty($mantenimiento) && is_array($mantenimiento)) {
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
-
     <!-- MANTENIMIENTO -->
     <h4 style="border-bottom:1px solid #eee; padding-bottom:6px; background: #abfdecff;">=== MANTENIMIENTO Y LIMPIEZA (DETALLE COMPLETO) ===</h4>
     <?php if (empty($mantenimiento)): ?>

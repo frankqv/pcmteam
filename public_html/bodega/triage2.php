@@ -1,3 +1,4 @@
+<!-- base este archivo mira como hace la gestion de multi selecion al asi haz par ael otro archivo, -->
 <?php
 ob_start();
 session_start();

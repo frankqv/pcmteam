@@ -13,7 +13,6 @@ $resTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN (1,5,6,7) O
 while ($r = $resTec->fetch_assoc()) {
     $tecnicos[$r['id']] = $r['nombre'];
 }
-
 // --- DETECCIÓN: si existe bodega_triages o bodega_diagnosticos usamos la que haya ---
 function table_exists($conn, $table)
 {
@@ -21,7 +20,6 @@ function table_exists($conn, $table)
     $res = $conn->query("SHOW TABLES LIKE '{$safe}'");
     return ($res && $res->num_rows > 0);
 }
-
 $use_triages = table_exists($conn, 'bodega_triages');
 $use_diagnos = table_exists($conn, 'bodega_diagnosticos');
 

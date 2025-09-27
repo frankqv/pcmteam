@@ -1,6 +1,3 @@
-<!-- Asignar Tecnico para el triage -->
-<!--public_html/bodega/asignar.php -->
-<!-- Mientras tanto, btn linea 85 | WHERE u.rol IN ('1','6',) AND u.estado = '1' -->
 <?php
 ob_start();
 session_start();
@@ -9,20 +6,29 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5, 6, 7])) {
     exit();
 }
 require_once __DIR__ . '../../../config/ctconex.php';
-// Procesar asignación AJAX
+// Procesar asignación AJAX - MODIFICADO para soportar múltiples equipos
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     header('Content-Type: application/json; charset=utf-8');
-    // Solo para AJAX: podemos verificar header X-Requested-With si lo deseas
     if ($_POST['action'] == 'assign_equipment') {
-        // Evitar que cualquier salida previa rompa JSON
         while (ob_get_level()) {
             ob_end_clean();
         }
-        $equipoId = intval($_POST['equipo_id'] ?? 0);
+        // CAMBIO PRINCIPAL: Soportar array de equipos
+        $equipoIds = [];
+        if (isset($_POST['equipo_ids']) && is_array($_POST['equipo_ids'])) {
+            // Modo múltiple
+            $equipoIds = array_map('intval', $_POST['equipo_ids']);
+            $equipoIds = array_filter($equipoIds, function ($id) {
+                return $id > 0;
+            });
+        } elseif (isset($_POST['equipo_id']) && $_POST['equipo_id'] > 0) {
+            // Modo individual (compatibilidad hacia atrás)
+            $equipoIds = [intval($_POST['equipo_id'])];
+        }
         $tecnicoId = intval($_POST['tecnico_id'] ?? 0);
         $tipo = trim($_POST['tipo'] ?? 'triage');
         $usuarioId = isset($_SESSION['id']) ? (int) $_SESSION['id'] : 0;
-        if ($equipoId <= 0 || $tecnicoId <= 0 || $usuarioId <= 0) {
+        if (empty($equipoIds) || $tecnicoId <= 0 || $usuarioId <= 0) {
             http_response_code(400);
             echo json_encode(['success' => false, 'message' => 'Parámetros inválidos (equipo/tecnico/sesión).']);
             exit();
@@ -31,45 +37,66 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         try {
             $conn->begin_transaction();
             $disposicion = ($tipo === 'triage' || $tipo === 'triage') ? 'en_diagnostico' : 'en_proceso';
-            // UPDATE inventario
-            $stmt = $conn->prepare("UPDATE bodega_inventario SET tecnico_id = ?, disposicion = ?, fecha_modificacion = NOW() WHERE id = ?");
-            $stmt->bind_param("isi", $tecnicoId, $disposicion, $equipoId);
-            $stmt->execute();
-            $affected = $stmt->affected_rows;
-            $stmt->close();
-            if ($affected <= 0) {
-                throw new Exception('No se pudo actualizar el inventario. Verifique que el equipo existe.');
+            $equiposAsignados = [];
+            $equiposFallidos = [];
+            // Procesar cada equipo
+            foreach ($equipoIds as $equipoId) {
+                try {
+                    // UPDATE inventario
+                    $stmt = $conn->prepare("UPDATE bodega_inventario SET tecnico_id = ?, disposicion = ?, fecha_modificacion = NOW() WHERE id = ?");
+                    $stmt->bind_param("isi", $tecnicoId, $disposicion, $equipoId);
+                    $stmt->execute();
+                    $affected = $stmt->affected_rows;
+                    $stmt->close();
+                    if ($affected <= 0) {
+                        throw new Exception("No se pudo actualizar el inventario ID: {$equipoId}");
+                    }
+                    // INSERT en bodega_salidas (log)
+                    $stmt2 = $conn->prepare("INSERT INTO bodega_salidas (inventario_id, tecnico_id, usuario_id, razon_salida, observaciones) VALUES (?, ?, ?, ?, ?)");
+                    $razon = "Asignación para " . $tipo;
+                    $observaciones = "Asignado desde dashboard por usuario ID: " . $usuarioId;
+                    $stmt2->bind_param("iiiss", $equipoId, $tecnicoId, $usuarioId, $razon, $observaciones);
+                    $stmt2->execute();
+                    $stmt2->close();
+                    $equiposAsignados[] = $equipoId;
+                } catch (Exception $e) {
+                    $equiposFallidos[] = $equipoId;
+                    error_log("Error asignando equipo {$equipoId}: " . $e->getMessage());
+                }
             }
-            // INSERT en bodega_salidas (log)
-            $stmt2 = $conn->prepare("INSERT INTO bodega_salidas (inventario_id, tecnico_id, usuario_id, razon_salida, observaciones) VALUES (?, ?, ?, ?, ?)");
-            $razon = "Asignación para " . $tipo;
-            $observaciones = "Asignado desde dashboard por usuario ID: " . $usuarioId;
-            $stmt2->bind_param("iiiss", $equipoId, $tecnicoId, $usuarioId, $razon, $observaciones);
-            $stmt2->execute();
-            $stmt2->close();
             $conn->commit();
-            // Responder JSON limpio y código 200
-            http_response_code(200);
-            echo json_encode(['success' => true, 'message' => 'DATOS REGISTRADOS CORRECTAMENTE']);
+            // Preparar respuesta
+            $totalAsignados = count($equiposAsignados);
+            $totalFallidos = count($equiposFallidos);
+            if ($totalAsignados > 0 && $totalFallidos == 0) {
+                // Todos exitosos
+                $message = "DATOS REGISTRADOS CORRECTAMENTE. Equipos asignados: " . implode(', ', $equiposAsignados);
+                http_response_code(200);
+                echo json_encode(['success' => true, 'message' => $message]);
+            } elseif ($totalAsignados > 0 && $totalFallidos > 0) {
+                // Parcialmente exitoso
+                $message = "Asignados: " . implode(', ', $equiposAsignados) . ". Fallaron: " . implode(', ', $equiposFallidos);
+                http_response_code(200);
+                echo json_encode(['success' => true, 'message' => $message, 'partial' => true]);
+            } else {
+                // Todos fallaron
+                throw new Exception('No se pudo asignar ningún equipo.');
+            }
             exit();
         } catch (Throwable $e) {
-            // Intentar rollback si es posible
             try {
                 if ($conn && $conn->connect_errno === 0)
                     $conn->rollback();
             } catch (Throwable $_e) {
                 error_log('Rollback falló: ' . $_e->getMessage());
             }
-            // Registrar error en log del servidor
-            error_log("Asignar equipo error: " . $e->getMessage() . " | equipoId={$equipoId}, tecnicoId={$tecnicoId}, usuarioId={$usuarioId}");
-            // Preparar mensaje para el cliente
-            $errorMessage = 'Error al asignar equipo. Intente nuevamente.';
+            error_log("Asignar equipos error: " . $e->getMessage());
+            $errorMessage = 'Error al asignar equipos. Intente nuevamente.';
             if (stripos($e->getMessage(), 'Duplicate entry') !== false) {
-                $errorMessage = 'El equipo ya está asignado a este técnico.';
+                $errorMessage = 'Uno o más equipos ya están asignados a este técnico.';
             } elseif (stripos($e->getMessage(), 'foreign key') !== false) {
-                $errorMessage = 'Error de referencia. Verifique que el técnico y equipo existan.';
+                $errorMessage = 'Error de referencia. Verifique que el técnico y equipos existan.';
             }
-            // Responder JSON aun si ocurre error (evita salida HTML/stacktrace en la respuesta)
             http_response_code(500);
             echo json_encode(['success' => false, 'message' => $errorMessage]);
             exit();
@@ -250,6 +277,128 @@ if ($resultEquipos) {
             }
             .equipment-section {
                 margin-bottom: 25px;
+            }
+            /* NUEVOS ESTILOS PARA SELECCIÓN MÚLTIPLE */
+            .equipment-list {
+                max-height: 300px;
+                overflow-y: auto;
+                border: 1px solid #555;
+                border-radius: 8px;
+                background: #3a3a3a;
+                padding: 10px;
+                margin-bottom: 15px;
+            }
+            .equipment-item {
+                display: flex;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px solid #555;
+                font-size: 14px;
+            }
+            .equipment-item:last-child {
+                border-bottom: none;
+            }
+            .equipment-item input[type="checkbox"] {
+                margin-right: 10px;
+                transform: scale(1.2);
+            }
+            .equipment-item label {
+                margin: 0;
+                cursor: pointer;
+                flex: 1;
+            }
+            .selection-controls {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+            .selection-controls button {
+                padding: 5px 10px;
+                background: #555;
+                border: none;
+                border-radius: 4px;
+                color: white;
+                font-size: 12px;
+                cursor: pointer;
+            }
+            .selection-controls button:hover {
+                background: #666;
+            }
+            /* Estilos para la barra de búsqueda */
+            .search-container {
+                margin-bottom: 15px;
+                position: relative;
+            }
+            .search-input {
+                width: 100%;
+                padding: 8px 35px 8px 12px;
+                /* Espacio extra a la derecha para el botón */
+                background: #3a3a3a;
+                border: 1px solid #555;
+                border-radius: 6px;
+                color: white;
+                font-size: 13px;
+                transition: all 0.3s;
+            }
+            .search-input:focus {
+                outline: none;
+                border-color: #FFA500;
+                box-shadow: 0 0 0 2px rgba(255, 165, 0, 0.2);
+            }
+            .search-input::placeholder {
+                color: #999;
+                font-style: italic;
+            }
+            /* Botón de limpiar búsqueda */
+            .search-clear-btn {
+                position: absolute;
+                right: 8px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                color: #999;
+                cursor: pointer;
+                font-size: 16px;
+                padding: 4px;
+                border-radius: 3px;
+                transition: all 0.2s;
+                display: none;
+                /* Oculto por defecto */
+                z-index: 1;
+            }
+            .search-clear-btn:hover {
+                color: #fff;
+                background: rgba(255, 255, 255, 0.1);
+            }
+            .search-clear-btn:active {
+                transform: translateY(-50%) scale(0.95);
+            }
+            /* Mostrar botón cuando hay texto */
+            .search-container.has-text .search-clear-btn {
+                display: block;
+            }
+            .search-results-info {
+                font-size: 11px;
+                color: #999;
+                margin-bottom: 8px;
+                display: none;
+            }
+            .equipment-item.hidden {
+                display: none;
+            }
+            .no-results {
+                text-align: center;
+                color: #999;
+                font-style: italic;
+                padding: 20px;
+                display: none;
+            }
+            .selected-count {
+                color: #FFA500;
+                font-weight: bold;
+                margin-bottom: 10px;
+                font-size: 14px;
             }
             .equipment-input,
             .tech-select {
@@ -467,8 +616,8 @@ if ($resultEquipos) {
             $id_usuario = $_SESSION['id'];
             // Consultar datos del usuario
             $stmt = $connect->prepare("SELECT nombre, usuario, correo, foto, idsede, rol 
-                FROM usuarios 
-                WHERE id = ?");
+            FROM usuarios 
+            WHERE id = ?");
             $stmt->execute([$id_usuario]);
             $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
             // Si no se encuentra el usuario, redirigir
@@ -510,8 +659,7 @@ if ($resultEquipos) {
                                 <li><strong><?php echo htmlspecialchars($userInfo['nombre']); ?></strong></li>
                                 <li><?php echo htmlspecialchars($userInfo['usuario']); ?></li>
                                 <li><?php echo htmlspecialchars($userInfo['correo']); ?></li>
-                                <li><?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?>
-                                </li>
+                                <li><?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?></li>
                                 <li class="mt-2">
                                     <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary">Mi perfil</a>
                                 </li>
@@ -537,14 +685,47 @@ if ($resultEquipos) {
                             <div class="panel-content">
                                 <form id="triageForm">
                                     <div class="equipment-section">
-                                        <select class="equipment-input" id="equipmentSelect" required>
-                                            <option value="">Seleccionar Equipo</option>
+                                        <!-- Barra de búsqueda -->
+                                        <div class="search-container" id="triageSearchContainer">
+                                            <input type="text"
+                                                class="search-input"
+                                                id="triageSearchInput"
+                                                placeholder="🔍 Buscar equipos por código, producto o marca..."
+                                                oninput="handleSearchInput('triage')">
+                                            <button type="button" class="search-clear-btn" id="triageSearchClear"
+                                                onclick="clearSearch('triage')" title="Limpiar búsqueda" style="color:#FFA500">
+                                                Limpiar
+                                            </button>
+                                            <div class="search-results-info" id="triageSearchInfo"></div>
+                                        </div>
+                                        <!-- Controles de selección -->
+                                        <div class="selection-controls">
+                                            <button type="button" onclick="selectAllEquipment('triage')">Seleccionar Todos</button>
+                                            <button type="button" onclick="selectVisibleEquipment('triage')">Seleccionar Visibles</button>
+                                            <button type="button" onclick="clearSelectionEquipment('triage')">Limpiar Selección</button>
+                                        </div>
+                                        <!-- Contador de seleccionados -->
+                                        <div class="selected-count" id="triageSelectedCount">
+                                            Equipos seleccionados: 0
+                                        </div>
+                                        <!-- Lista de equipos con checkboxes -->
+                                        <div class="equipment-list" id="triageEquipmentList">
                                             <?php foreach ($equiposDisponibles as $equipo): ?>
-                                                <option value="<?php echo $equipo['id']; ?>">
-                                                    <?php echo htmlspecialchars($equipo['codigo_g'] . ' - ' . $equipo['producto'] . ' ' . $equipo['marca']); ?>
-                                                </option>
+                                                <div class="equipment-item" data-search="<?php echo strtolower($equipo['codigo_g'] . ' ' . $equipo['producto'] . ' ' . $equipo['marca'] . ' ' . $equipo['modelo']); ?>">
+                                                    <input type="checkbox"
+                                                        name="triage_equipos[]"
+                                                        value="<?php echo $equipo['id']; ?>"
+                                                        id="triage_equipo_<?php echo $equipo['id']; ?>"
+                                                        onchange="updateSelectedCount('triage')">
+                                                    <label for="triage_equipo_<?php echo $equipo['id']; ?>">
+                                                        <?php echo htmlspecialchars($equipo['codigo_g'] . ' - ' . $equipo['producto'] . ' ' . $equipo['marca']); ?>
+                                                    </label>
+                                                </div>
                                             <?php endforeach; ?>
-                                        </select>
+                                            <div class="no-results" id="triageNoResults">
+                                                No se encontraron equipos que coincidan con la búsqueda
+                                            </div>
+                                        </div>
                                         <select class="tech-select" id="technicianSelect" required>
                                             <option value="">TÉCNICO</option>
                                             <?php foreach ($tecnicos as $tecnico): ?>
@@ -575,8 +756,7 @@ if ($resultEquipos) {
                             <div class="tech-stats" id="techStats">
                                 <?php foreach ($techStats as $stat): ?>
                                     <div class="tech-row">
-                                        <span
-                                            class="tech-name"><?php echo strtoupper(htmlspecialchars($stat['nombre'])); ?></span>
+                                        <span class="tech-name"><?php echo strtoupper(htmlspecialchars($stat['nombre'])); ?></span>
                                         <span class="tech-count"><?php echo $stat['total_equipos']; ?></span>
                                     </div>
                                 <?php endforeach; ?>
@@ -590,23 +770,56 @@ if ($resultEquipos) {
                             <div class="panel-content">
                                 <form id="processForm">
                                     <div class="equipment-section">
-                                        <select class="equipment-input" id="processEquipmentSelect" required>
-                                            <option value="">Seleccionar Equipo</option>
+                                        <!-- Barra de búsqueda para proceso -->
+                                        <div class="search-container" id="processSearchContainer">
+                                            <input type="text"
+                                                class="search-input"
+                                                id="processSearchInput"
+                                                placeholder="🔍 Buscar equipos por código, producto o marca..."
+                                                oninput="handleSearchInput('process')">
+                                            <button type="button" class="search-clear-btn" id="processSearchClear"
+                                                onclick="clearSearch('process')" title="Limpiar búsqueda" style="color:#00CC00">
+                                                Limpiar
+                                            </button>
+                                            <div class="search-results-info" id="processSearchInfo"></div>
+                                        </div>
+                                        <!-- Controles de selección para proceso -->
+                                        <div class="selection-controls">
+                                            <button type="button" onclick="selectAllEquipment('process')">Seleccionar Todos</button>
+                                            <button type="button" onclick="selectVisibleEquipment('process')">Seleccionar Visibles</button>
+                                            <button type="button" onclick="clearSelectionEquipment('process')">Limpiar Selección</button>
+                                        </div>
+                                        <!-- Contador de seleccionados para proceso -->
+                                        <div class="selected-count" id="processSelectedCount">
+                                            Equipos seleccionados: 0
+                                        </div>
+                                        <!-- Lista de equipos para proceso -->
+                                        <div class="equipment-list" id="processEquipmentList">
                                             <?php
                                             // Equipos en diagnóstico para proceso
                                             $sqlProceso = "SELECT id, codigo_g, producto, marca, modelo 
-                                                FROM bodega_inventario 
-                                                WHERE disposicion IN ('en_diagnostico', 'Business Room') 
-                                                ORDER BY fecha_modificacion";
+                                            FROM bodega_inventario 
+                                            WHERE disposicion IN ('en_diagnostico', 'Business Room') 
+                                            ORDER BY fecha_modificacion";
                                             $resultProceso = $conn->query($sqlProceso);
                                             if ($resultProceso) {
                                                 while ($equipoProceso = $resultProceso->fetch_assoc()): ?>
-                                                    <option value="<?php echo $equipoProceso['id']; ?>">
-                                                        <?php echo htmlspecialchars($equipoProceso['codigo_g'] . ' - ' . $equipoProceso['producto'] . ' ' . $equipoProceso['marca']); ?>
-                                                    </option>
-                                                <?php endwhile;
+                                                    <div class="equipment-item" data-search="<?php echo strtolower($equipoProceso['codigo_g'] . ' ' . $equipoProceso['producto'] . ' ' . $equipoProceso['marca'] . ' ' . $equipoProceso['modelo']); ?>">
+                                                        <input type="checkbox"
+                                                            name="process_equipos[]"
+                                                            value="<?php echo $equipoProceso['id']; ?>"
+                                                            id="process_equipo_<?php echo $equipoProceso['id']; ?>"
+                                                            onchange="updateSelectedCount('process')">
+                                                        <label for="process_equipo_<?php echo $equipoProceso['id']; ?>">
+                                                            <?php echo htmlspecialchars($equipoProceso['codigo_g'] . ' - ' . $equipoProceso['producto'] . ' ' . $equipoProceso['marca']); ?>
+                                                        </label>
+                                                    </div>
+                                            <?php endwhile;
                                             } ?>
-                                        </select>
+                                            <div class="no-results" id="processNoResults">
+                                                No se encontraron equipos que coincidan con la búsqueda
+                                            </div>
+                                        </div>
                                         <select class="tech-select" id="processTechnicianSelect" required>
                                             <option value="">TÉCNICO</option>
                                             <?php foreach ($tecnicos as $tecnico): ?>
@@ -653,6 +866,125 @@ if ($resultEquipos) {
                     <?php foreach ($techStats as $stat): ?>
                         technicianData['<?php echo addslashes($stat['nombre']); ?>'] = <?php echo $stat['total_equipos']; ?>;
                     <?php endforeach; ?>
+                    // FUNCIONES PARA SELECCIÓN MÚLTIPLE
+                    function selectAllEquipment(type) {
+                        const checkboxes = document.querySelectorAll(`input[name="${type}_equipos[]"]`);
+                        checkboxes.forEach(checkbox => {
+                            checkbox.checked = true;
+                        });
+                        updateSelectedCount(type);
+                    }
+                    // Nueva función para seleccionar solo equipos visibles
+                    function selectVisibleEquipment(type) {
+                        const checkboxes = document.querySelectorAll(`input[name="${type}_equipos[]"]`);
+                        checkboxes.forEach(checkbox => {
+                            const equipmentItem = checkbox.closest('.equipment-item');
+                            if (equipmentItem && !equipmentItem.classList.contains('hidden')) {
+                                checkbox.checked = true;
+                            }
+                        });
+                        updateSelectedCount(type);
+                    }
+                    function clearSelectionEquipment(type) {
+                        const checkboxes = document.querySelectorAll(`input[name="${type}_equipos[]"]`);
+                        checkboxes.forEach(checkbox => {
+                            checkbox.checked = false;
+                        });
+                        updateSelectedCount(type);
+                    }
+                    // FUNCIÓN DE FILTRADO DE EQUIPOS - MODIFICADA para manejar el botón de limpiar
+                    function filterEquipment(type) {
+                        const searchInput = document.getElementById(`${type}SearchInput`);
+                        const searchTerm = searchInput.value.toLowerCase().trim();
+                        const equipmentItems = document.querySelectorAll(`#${type}EquipmentList .equipment-item[data-search]`);
+                        const noResultsElement = document.getElementById(`${type}NoResults`);
+                        const searchInfo = document.getElementById(`${type}SearchInfo`);
+                        const searchContainer = document.getElementById(`${type}SearchContainer`);
+                        let visibleCount = 0;
+                        let totalCount = equipmentItems.length;
+                        // Mostrar/ocultar botón de limpiar según si hay texto
+                        if (searchTerm !== '') {
+                            searchContainer.classList.add('has-text');
+                        } else {
+                            searchContainer.classList.remove('has-text');
+                        }
+                        equipmentItems.forEach(item => {
+                            const searchData = item.getAttribute('data-search') || '';
+                            const matches = searchData.includes(searchTerm);
+                            if (matches) {
+                                item.classList.remove('hidden');
+                                visibleCount++;
+                            } else {
+                                item.classList.add('hidden');
+                            }
+                        });
+                        // Mostrar/ocultar mensaje "sin resultados"
+                        if (visibleCount === 0 && searchTerm !== '') {
+                            noResultsElement.style.display = 'block';
+                        } else {
+                            noResultsElement.style.display = 'none';
+                        }
+                        // Mostrar información de búsqueda
+                        if (searchTerm !== '') {
+                            searchInfo.style.display = 'block';
+                            searchInfo.textContent = `Mostrando ${visibleCount} de ${totalCount} equipos`;
+                            // Cambiar color según resultados
+                            if (visibleCount === 0) {
+                                searchInfo.style.color = '#dc3545';
+                            } else if (visibleCount < totalCount) {
+                                searchInfo.style.color = '#ffc107';
+                            } else {
+                                searchInfo.style.color = '#28a745';
+                            }
+                        } else {
+                            searchInfo.style.display = 'none';
+                        }
+                        // Actualizar contador después del filtrado
+                        updateSelectedCount(type);
+                    }
+                    // Nueva función para manejar el input y mostrar/ocultar el botón X
+                    function handleSearchInput(type) {
+                        filterEquipment(type);
+                    }
+                    // Función para limpiar búsqueda - MEJORADA
+                    function clearSearch(type) {
+                        const searchInput = document.getElementById(`${type}SearchInput`);
+                        const searchContainer = document.getElementById(`${type}SearchContainer`);
+                        searchInput.value = '';
+                        searchContainer.classList.remove('has-text');
+                        filterEquipment(type);
+                        // Enfocar el input después de limpiar para mejor UX
+                        searchInput.focus();
+                    }
+                    function updateSelectedCount(type) {
+                        const checkboxes = document.querySelectorAll(`input[name="${type}_equipos[]"]:checked`);
+                        const count = checkboxes.length;
+                        const countElement = document.getElementById(`${type}SelectedCount`);
+                        if (countElement) {
+                            // Contar también cuántos están visibles
+                            const visibleSelected = Array.from(checkboxes).filter(cb => {
+                                const item = cb.closest('.equipment-item');
+                                return item && !item.classList.contains('hidden');
+                            }).length;
+                            let displayText = `Equipos seleccionados: ${count}`;
+                            // Si hay filtro activo, mostrar información adicional
+                            const searchInput = document.getElementById(`${type}SearchInput`);
+                            if (searchInput && searchInput.value.trim() !== '') {
+                                displayText += ` (${visibleSelected} visibles)`;
+                            }
+                            countElement.textContent = displayText;
+                            // Cambiar color según cantidad
+                            if (count === 0) {
+                                countElement.style.color = '#999';
+                            } else {
+                                countElement.style.color = type === 'triage' ? '#FFA500' : '#00FF00';
+                            }
+                        }
+                    }
+                    function getSelectedEquipment(type) {
+                        const checkboxes = document.querySelectorAll(`input[name="${type}_equipos[]"]:checked`);
+                        return Array.from(checkboxes).map(cb => cb.value);
+                    }
                     // Función mejorada para mostrar alertas
                     function showAlert(message, type = 'success') {
                         const alertContainer = document.getElementById('alertContainer');
@@ -662,10 +994,10 @@ if ($resultEquipos) {
                         const alert = document.createElement('div');
                         alert.className = `alert alert-${type}`;
                         alert.innerHTML = `
-                            ${message}
-                            <button type="button" class="close" onclick="this.parentElement.remove()">
-                                <span>&times;</span>
-                            </button>`;
+                        ${message}
+                        <button type="button" class="close" onclick="this.parentElement.remove()">
+                            <span>&times;</span>
+                        </button>`;
                         alertContainer.appendChild(alert);
                         // Auto-remover después de 5 segundos
                         setTimeout(() => {
@@ -720,8 +1052,8 @@ if ($resultEquipos) {
                             btn.innerHTML = '<div class="robot-icon"></div>ASIGNAR';
                         }
                     }
-                    // Función para actualizar lista de equipos
-                    function updateEquipmentList(selectId, tipo = 'disponibles') {
+                    // Función para actualizar lista de equipos - MODIFICADA para soportar búsqueda
+                    function updateEquipmentList(tipo = 'disponibles') {
                         $.ajax({
                             url: window.location.href,
                             method: 'POST',
@@ -730,35 +1062,63 @@ if ($resultEquipos) {
                                 tipo: tipo
                             },
                             dataType: 'json',
-                            success: function (equipos) {
-                                const select = document.getElementById(selectId);
-                                const currentValue = select.value;
-                                // Limpiar opciones actuales excepto la primera
-                                select.innerHTML = '<option value="">Seleccionar Equipo</option>';
-                                // Agregar nuevos equipos
-                                equipos.forEach(function (equipo) {
-                                    const option = document.createElement('option');
-                                    option.value = equipo.id;
-                                    option.textContent = equipo.codigo_g + ' - ' + equipo.producto + ' ' + equipo.marca;
-                                    select.appendChild(option);
-                                });
+                            success: function(equipos) {
+                                const listId = tipo === 'disponibles' ? 'triageEquipmentList' : 'processEquipmentList';
+                                const namePrefix = tipo === 'disponibles' ? 'triage' : 'process';
+                                const list = document.getElementById(listId);
+                                if (list) {
+                                    // Preservar el elemento "no-results"
+                                    const noResults = list.querySelector('.no-results');
+                                    list.innerHTML = '';
+                                    equipos.forEach(function(equipo) {
+                                        const searchData = (equipo.codigo_g + ' ' + equipo.producto + ' ' + equipo.marca + ' ' + (equipo.modelo || '')).toLowerCase();
+                                        const item = document.createElement('div');
+                                        item.className = 'equipment-item';
+                                        item.setAttribute('data-search', searchData);
+                                        item.innerHTML = `
+                                        <input type="checkbox" 
+                                               name="${namePrefix}_equipos[]" 
+                                               value="${equipo.id}"
+                                               id="${namePrefix}_equipo_${equipo.id}"
+                                               onchange="updateSelectedCount('${namePrefix}')">
+                                        <label for="${namePrefix}_equipo_${equipo.id}">
+                                            ${equipo.codigo_g} - ${equipo.producto} ${equipo.marca}
+                                        </label>
+                                    `;
+                                        list.appendChild(item);
+                                    });
+                                    // Restaurar el elemento "no-results"
+                                    if (noResults) {
+                                        list.appendChild(noResults);
+                                    }
+                                    // Reaplica el filtro si hay búsqueda activa
+                                    const searchInput = document.getElementById(`${namePrefix}SearchInput`);
+                                    if (searchInput && searchInput.value.trim() !== '') {
+                                        filterEquipment(namePrefix);
+                                    }
+                                    // Actualizar contador
+                                    updateSelectedCount(namePrefix);
+                                }
                             },
-                            error: function () {
+                            error: function() {
                                 console.warn('No se pudo actualizar la lista de equipos');
                             }
                         });
                     }
-                    // Manejo del formulario de Triage
                     // Util: intenta parsear JSON limpio desde responseText (tolerante)
                     function safeParseJSON(text) {
                         if (!text) return null;
                         // Intento directo
-                        try { return JSON.parse(text); } catch (e) { }
+                        try {
+                            return JSON.parse(text);
+                        } catch (e) {}
                         // Si hay contenido antes, buscar primer { ... } válido
                         const first = text.indexOf('{');
                         const last = text.lastIndexOf('}');
                         if (first !== -1 && last !== -1 && last > first) {
-                            try { return JSON.parse(text.slice(first, last + 1)); } catch (e) { }
+                            try {
+                                return JSON.parse(text.slice(first, last + 1));
+                            } catch (e) {}
                         }
                         return null;
                     }
@@ -771,7 +1131,8 @@ if ($resultEquipos) {
                             if (parsed) data = parsed;
                         }
                         if (data && data.success) {
-                            showAlert('✅ DATOS REGISTRADOS CORRECTAMENTE', 'success');
+                            const alertType = data.partial ? 'warning' : 'success';
+                            showAlert('✅ ' + data.message, alertType);
                             document.getElementById(formId).reset();
                             if (typeof onSuccessCallback === 'function') onSuccessCallback();
                         } else {
@@ -780,13 +1141,17 @@ if ($resultEquipos) {
                         }
                         toggleButton(successButtonId, false);
                     }
-                    // TRIAGE form
-                    document.getElementById('triageForm').addEventListener('submit', function (e) {
+                    // TRIAGE form - MODIFICADO para selección múltiple
+                    document.getElementById('triageForm').addEventListener('submit', function(e) {
                         e.preventDefault();
-                        const equipoId = document.getElementById('equipmentSelect').value;
+                        const selectedEquipos = getSelectedEquipment('triage');
                         const tecnicoId = document.getElementById('technicianSelect').value;
-                        if (!equipoId || !tecnicoId) {
-                            showAlert('Por favor seleccione un equipo y un técnico', 'warning');
+                        if (selectedEquipos.length === 0) {
+                            showAlert('Por favor seleccione al menos un equipo', 'warning');
+                            return;
+                        }
+                        if (!tecnicoId) {
+                            showAlert('Por favor seleccione un técnico', 'warning');
                             return;
                         }
                         toggleButton('triageBtn', true);
@@ -795,40 +1160,48 @@ if ($resultEquipos) {
                             method: 'POST',
                             data: {
                                 action: 'assign_equipment',
-                                equipo_id: equipoId,
+                                equipo_ids: selectedEquipos, // Enviar array de IDs
                                 tecnico_id: tecnicoId,
                                 tipo: 'triage'
                             },
                             dataType: 'json',
                             timeout: 10000,
                             cache: false,
-                            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                            success: function (response) {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            success: function(response) {
                                 console.log('Respuesta triage (success):', response);
-                                handleAssignResponse(response, 'triageForm', 'triageBtn', function () {
+                                handleAssignResponse(response, 'triageForm', 'triageBtn', function() {
                                     updateStats();
-                                    updateEquipmentList('equipmentSelect', 'disponibles');
-                                    updateEquipmentList('processEquipmentSelect', 'proceso');
+                                    updateEquipmentList('disponibles');
+                                    updateEquipmentList('proceso');
+                                    // Limpiar selección después de asignar
+                                    clearSelectionEquipment('triage');
                                 });
                             },
-                            error: function (xhr, status, error) {
+                            error: function(xhr, status, error) {
                                 console.error('Error AJAX triage:', status, error, xhr.status);
-                                // Intentar leer JSON dentro de responseText por si hubo warnings antes del JSON
-                                handleAssignResponse(xhr, 'triageForm', 'triageBtn', function () {
+                                handleAssignResponse(xhr, 'triageForm', 'triageBtn', function() {
                                     updateStats();
-                                    updateEquipmentList('equipmentSelect', 'disponibles');
-                                    updateEquipmentList('processEquipmentSelect', 'proceso');
+                                    updateEquipmentList('disponibles');
+                                    updateEquipmentList('proceso');
+                                    clearSelectionEquipment('triage');
                                 });
                             }
                         });
                     });
-                    // PROCESS form (similar)
-                    document.getElementById('processForm').addEventListener('submit', function (e) {
+                    // PROCESS form - MODIFICADO para selección múltiple
+                    document.getElementById('processForm').addEventListener('submit', function(e) {
                         e.preventDefault();
-                        const equipoId = document.getElementById('processEquipmentSelect').value;
+                        const selectedEquipos = getSelectedEquipment('process');
                         const tecnicoId = document.getElementById('processTechnicianSelect').value;
-                        if (!equipoId || !tecnicoId) {
-                            showAlert('Por favor seleccione un equipo y un técnico', 'warning');
+                        if (selectedEquipos.length === 0) {
+                            showAlert('Por favor seleccione al menos un equipo', 'warning');
+                            return;
+                        }
+                        if (!tecnicoId) {
+                            showAlert('Por favor seleccione un técnico', 'warning');
                             return;
                         }
                         toggleButton('processBtn', true);
@@ -837,28 +1210,33 @@ if ($resultEquipos) {
                             method: 'POST',
                             data: {
                                 action: 'assign_equipment',
-                                equipo_id: equipoId,
+                                equipo_ids: selectedEquipos, // Enviar array de IDs
                                 tecnico_id: tecnicoId,
                                 tipo: 'process'
                             },
                             dataType: 'json',
                             timeout: 10000,
                             cache: false,
-                            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                            success: function (response) {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            success: function(response) {
                                 console.log('Respuesta proceso (success):', response);
-                                handleAssignResponse(response, 'processForm', 'processBtn', function () {
+                                handleAssignResponse(response, 'processForm', 'processBtn', function() {
                                     updateStats();
-                                    updateEquipmentList('processEquipmentSelect', 'proceso');
-                                    updateEquipmentList('equipmentSelect', 'disponibles');
+                                    updateEquipmentList('proceso');
+                                    updateEquipmentList('disponibles');
+                                    // Limpiar selección después de asignar
+                                    clearSelectionEquipment('process');
                                 });
                             },
-                            error: function (xhr, status, error) {
+                            error: function(xhr, status, error) {
                                 console.error('Error AJAX proceso:', status, error, xhr.status);
-                                handleAssignResponse(xhr, 'processForm', 'processBtn', function () {
+                                handleAssignResponse(xhr, 'processForm', 'processBtn', function() {
                                     updateStats();
-                                    updateEquipmentList('processEquipmentSelect', 'proceso');
-                                    updateEquipmentList('equipmentSelect', 'disponibles');
+                                    updateEquipmentList('proceso');
+                                    updateEquipmentList('disponibles');
+                                    clearSelectionEquipment('process');
                                 });
                             }
                         });
@@ -872,11 +1250,11 @@ if ($resultEquipos) {
                                 action: 'get_stats'
                             },
                             dataType: 'json',
-                            success: function (stats) {
+                            success: function(stats) {
                                 console.log('Estadísticas actualizadas:', stats);
                                 // Actualizar datos del gráfico
                                 technicianData = {};
-                                stats.forEach(function (stat) {
+                                stats.forEach(function(stat) {
                                     technicianData[stat.nombre] = parseInt(stat.total_equipos);
                                 });
                                 // Actualizar gráfico
@@ -886,27 +1264,70 @@ if ($resultEquipos) {
                                 // Actualizar tabla de estadísticas
                                 const statsContainer = document.getElementById('techStats');
                                 statsContainer.innerHTML = '';
-                                stats.forEach(function (stat) {
+                                stats.forEach(function(stat) {
                                     const row = document.createElement('div');
                                     row.className = 'tech-row';
                                     row.innerHTML = `
-                                        <span class="tech-name">${stat.nombre.toUpperCase()}</span>
-                                        <span class="tech-count">${stat.total_equipos}</span>`;
+                                    <span class="tech-name">${stat.nombre.toUpperCase()}</span>
+                                    <span class="tech-count">${stat.total_equipos}</span>`;
                                     statsContainer.appendChild(row);
                                 });
                             },
-                            error: function () {
+                            error: function() {
                                 console.warn('Error actualizando estadísticas');
                             }
                         });
                     }
-                    // Actualizar estadísticas cada 30 segundos
-                    setInterval(updateStats, 30000);
                     // Inicialización
-                    $(document).ready(function () {
+                    $(document).ready(function() {
                         console.log('Dashboard cargado correctamente');
                         console.log('Datos iniciales de técnicos:', technicianData);
+                        // Inicializar contadores
+                        updateSelectedCount('triage');
+                        updateSelectedCount('process');
+                        // Agregar funcionalidad de búsqueda en tiempo real con debounce
+                        let searchTimeout;
+                        // Función de debounce para optimizar búsqueda
+                        function debounceSearch(func, delay) {
+                            return function(...args) {
+                                clearTimeout(searchTimeout);
+                                searchTimeout = setTimeout(() => func.apply(this, args), delay);
+                            };
+                        }
+                        // Aplicar debounce a las funciones de filtrado
+                        const debouncedTriageFilter = debounceSearch(() => filterEquipment('triage'), 300);
+                        const debouncedProcessFilter = debounceSearch(() => filterEquipment('process'), 300);
+                        // Agregar eventos de teclado para mejor UX
+                        const triageSearchInput = document.getElementById('triageSearchInput');
+                        const processSearchInput = document.getElementById('processSearchInput');
+                        if (triageSearchInput) {
+                            triageSearchInput.addEventListener('input', debouncedTriageFilter);
+                            // Limpiar búsqueda con Escape
+                            triageSearchInput.addEventListener('keydown', function(e) {
+                                if (e.key === 'Escape') {
+                                    this.value = '';
+                                    filterEquipment('triage');
+                                    this.blur();
+                                }
+                            });
+                        }
+                        if (processSearchInput) {
+                            processSearchInput.addEventListener('input', debouncedProcessFilter);
+                            // Limpiar búsqueda con Escape
+                            processSearchInput.addEventListener('keydown', function(e) {
+                                if (e.key === 'Escape') {
+                                    this.value = '';
+                                    filterEquipment('process');
+                                    this.blur();
+                                }
+                            });
+                        }
+                        // Agregar tooltips informativos
+                        triageSearchInput?.setAttribute('title', 'Presiona Escape para limpiar la búsqueda');
+                        processSearchInput?.setAttribute('title', 'Presiona Escape para limpiar la búsqueda');
                     });
+                    // Actualizar estadísticas cada 30 segundos
+                    setInterval(updateStats, 30000);
                 </script>
             </div>
             <!---  Contenido de MAIN -->

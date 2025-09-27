@@ -47,7 +47,6 @@ while ($rowTec = $resultTec->fetch_assoc()) {
             border-radius: 50%;
             margin-left: 5px;
             vertical-align: middle;
-            title: "Este equipo tiene registros de mantenimiento";
         }
         </style>
     </head>
@@ -362,7 +361,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                         'copy', 'csv', 'excel', 'pdf', 'print'
                     ],
                     language: {
-                        url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
+                        url: 'https://cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
                     }
                 });
                 // Aplicar filtros
