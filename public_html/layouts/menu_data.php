@@ -88,8 +88,11 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
             ],
             [
                 'label' => 'ELECTRICO', 
-                'url' => '../bodega/electrico.php',
-                'class' => 'style-electrico'
+                'class' => 'style-electrico',
+                'children' => [
+                    ['label' => '◖REPARAR', 'url' => '../bodega/electrico.php',],
+                    ['label' => '● HISTORIAL', 'url' => '../bodega/historial_electrico.php'],
+                ]
             ],
             [
                 'label' => 'ESTETICO',
@@ -97,6 +100,7 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
                 'children' => [
                     ['label' => '◖REPARAR', 'url' => '../bodega/estetico.php',],
                     ['label' => '◖LISTADO', 'url' => '../bodega/lista_estetico.php'],
+                    ['label' => '● HISTORIAL', 'url' => '../bodega/historial_estetico.php'],
                 ]
             ],            
             [

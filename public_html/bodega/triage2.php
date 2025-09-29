@@ -822,20 +822,20 @@ if (isset($_SESSION['id'])) {
                                 <!-- Sección de Fallas Eléctricas -->
 <div class="row mt-3">
     <div class="col-md-12">
-        <h5>Fallas Eléctricas</h5>
+        <h5>Fallo Eléctronico</h5>
         <div class="row">
             <div class="col-md-3">
-                <label>¿Presenta falla eléctrica?</label>
+                <label>¿Presenta fallo Eléctronico?</label>
                 <select name="falla_electrica" id="falla_electrica" class="form-control">
                     <option value="no" <?= $resultadoTriage['falla_electrica'] === 'no' ? 'selected' : '' ?>>No</option>
                     <option value="si" <?= $resultadoTriage['falla_electrica'] === 'si' ? 'selected' : '' ?>>Sí</option>
                 </select>
             </div>
             <div class="col-md-9">
-                <label>Detalle de la falla eléctrica</label>
+                <label>Detalle de el fallo Electronico</label>
                 <textarea name="detalle_falla_electrica" id="detalle_falla_electrica" rows="3" 
                     class="form-control" 
-                    placeholder="Describa el detalle de la falla eléctrica (solo si seleccionó 'Sí')"><?= htmlspecialchars($resultadoTriage['detalle_falla_electrica']) ?></textarea>
+                    placeholder="Describa el detalle de el fallo eléctronico (solo si seleccionó 'Sí')"><?= htmlspecialchars($resultadoTriage['detalle_falla_electrica']) ?></textarea>
             </div>
         </div>
     </div>

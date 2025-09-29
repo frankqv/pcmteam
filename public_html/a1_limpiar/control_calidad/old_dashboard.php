@@ -4,22 +4,18 @@ ob_start();
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
-
 require_once dirname(__DIR__, 2) . '/config/ctconex.php';
-
 // Validación de roles
 $allowedRoles = [1, 2, 5, 6, 7];
 if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], $allowedRoles, true)) {
   header('Location: ../error404.php');
   exit;
 }
-
 // Variables globales
 $mensaje = '';
 $equipos_pendientes = [];
 $equipos_aprobados = [];
 $equipos_rechazados = [];
-
 // Obtener información del usuario para navbar
 $userInfo = null;
 try {
@@ -38,7 +34,6 @@ try {
     'idsede' => 'Sede sin definir'
   ];
 }
-
 // Cargar datos iniciales
 try {
   // Equipos pendientes de control de calidad
@@ -89,7 +84,6 @@ try {
   error_log("Error carga inicial: " . $e->getMessage());
   $mensaje .= "<div class='alert alert-warning'>Error al cargar datos: " . htmlspecialchars($e->getMessage()) . "</div>";
 }
-
 // Procesamiento del formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   try {
@@ -187,7 +181,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mensaje .= "<div class='alert alert-danger'>❌ Error: " . htmlspecialchars($e->getMessage()) . "</div>";
   }
 }
-
 // Helper function for status badges
 function badgeClass(string $v): string {
   $v = strtoupper(trim($v ?? ''));
@@ -195,7 +188,6 @@ function badgeClass(string $v): string {
   if ($v === 'MALO' || $v === 'RECHAZADO') return 'status-malo';
   return 'status-nd';
 }
-
 // Helper function for grado badges
 function gradoBadgeClass(string $grado): string {
   $grado = strtoupper(trim($grado ?? ''));
@@ -208,7 +200,6 @@ function gradoBadgeClass(string $grado): string {
   }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -290,7 +281,6 @@ function gradoBadgeClass(string $grado): string {
         <?php include '../layouts/nav.php'; ?>
         <?php include '../layouts/menu_data.php'; ?>
       </nav>
-
       <!-- Main content -->
       <main role="main" class="col-md-10 ml-sm-auto px-4">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -306,9 +296,7 @@ function gradoBadgeClass(string $grado): string {
             </div>
           </div>
         </div>
-
         <?php echo $mensaje; ?>
-
         <!-- Estadísticas -->
         <div class="row mb-4">
           <div class="col-md-3">
@@ -336,7 +324,6 @@ function gradoBadgeClass(string $grado): string {
             </div>
           </div>
         </div>
-
         <div class="row">
           <!-- Lista de equipos pendientes -->
           <div class="col-md-6">
@@ -377,7 +364,6 @@ function gradoBadgeClass(string $grado): string {
               <?php endif; ?>
             </div>
           </div>
-
           <!-- Formulario de control de calidad -->
           <div class="col-md-6">
             <div class="form-section">
@@ -394,7 +380,6 @@ function gradoBadgeClass(string $grado): string {
             </div>
           </div>
         </div>
-
         <!-- Equipos aprobados y rechazados -->
         <div class="row">
           <div class="col-md-6">
@@ -434,7 +419,6 @@ function gradoBadgeClass(string $grado): string {
               <?php endif; ?>
             </div>
           </div>
-
           <div class="col-md-6">
             <div class="form-section">
               <div class="section-title">
@@ -483,7 +467,6 @@ function gradoBadgeClass(string $grado): string {
       </main>
     </div>
   </div>
-
   <!-- Modal para control de calidad -->
   <div class="modal fade" id="controlModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -503,13 +486,11 @@ function gradoBadgeClass(string $grado): string {
               <textarea class="form-control" id="burning_test" name="burning_test" rows="3" 
                         placeholder="Resultado de la prueba de estrés térmico..." required></textarea>
             </div>
-
             <div class="form-group">
               <label for="sentinel_test">Sentinel Test</label>
               <textarea class="form-control" id="sentinel_test" name="sentinel_test" rows="3" 
                         placeholder="Resultado de la prueba de seguridad..." required></textarea>
             </div>
-
             <div class="form-group">
               <label for="categoria_rec">Categoría REC</label>
               <select class="form-control" id="categoria_rec" name="categoria_rec" required>
@@ -519,7 +500,6 @@ function gradoBadgeClass(string $grado): string {
                 <option value="REC-SCRAP">REC-SCRAP - No reparable</option>
               </select>
             </div>
-
             <div class="form-group">
               <label for="estado_final">Estado Final</label>
               <select class="form-control" id="estado_final" name="estado_final" required>
@@ -527,13 +507,11 @@ function gradoBadgeClass(string $grado): string {
                 <option value="rechazado">Rechazado</option>
               </select>
             </div>
-
             <div class="form-group">
               <label for="observaciones">Observaciones</label>
               <textarea class="form-control" id="observaciones" name="observaciones" rows="3" 
                         placeholder="Observaciones adicionales..."></textarea>
             </div>
-
             <div class="form-group">
               <button type="submit" name="guardar_control_calidad" class="btn btn-primary">
                 <i class="material-icons">save</i> Guardar Control
@@ -547,7 +525,6 @@ function gradoBadgeClass(string $grado): string {
       </div>
     </div>
   </div>
-
   <script src="../assets/js/jquery.min.js"></script>
   <script src="../assets/js/bootstrap.bundle.min.js"></script>
   <script>

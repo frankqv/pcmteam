@@ -1077,10 +1077,10 @@ if ($resultEquipos) {
                                         item.setAttribute('data-search', searchData);
                                         item.innerHTML = `
                                         <input type="checkbox" 
-                                               name="${namePrefix}_equipos[]" 
-                                               value="${equipo.id}"
-                                               id="${namePrefix}_equipo_${equipo.id}"
-                                               onchange="updateSelectedCount('${namePrefix}')">
+                                            name="${namePrefix}_equipos[]" 
+                                            value="${equipo.id}"
+                                            id="${namePrefix}_equipo_${equipo.id}"
+                                            onchange="updateSelectedCount('${namePrefix}')">
                                         <label for="${namePrefix}_equipo_${equipo.id}">
                                             ${equipo.codigo_g} - ${equipo.producto} ${equipo.marca}
                                         </label>

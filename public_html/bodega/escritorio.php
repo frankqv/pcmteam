@@ -43,68 +43,82 @@ while ($rowTec = $resultTec->fetch_assoc()) {
             </nav>
             <!-- Page Content -->
             <div id="content">
-                <div class="top-navbar" style="background: #000000;">
-                    <nav class="navbar navbar-expand-lg">
-                        <div class="container-fluid">
-                            <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
-                                <span class="material-icons">arrow_back_ios</span>
-                            </button>
-                            <?php
-                            $titulo = "";
-                            if ($_SESSION['rol'] == 1) {
-                                $titulo = "ADMINISTRADOR";
-                            } elseif ($_SESSION['rol'] == 2) {
-                                $titulo = "DEFAULT";
-                            } elseif ($_SESSION['rol'] == 3) {
-                                $titulo = "CONTABLE";
-                            } elseif ($_SESSION['rol'] == 4) {
-                                $titulo = "COMERCIAL";
-                            } elseif ($_SESSION['rol'] == 5) {
-                                $titulo = "JEFE TÉCNICO";
-                            } elseif ($_SESSION['rol'] == 6) {
-                                $titulo = "TÉCNICO";
-                            } elseif ($_SESSION['rol'] == 7) {
-                                $titulo = "BOGDEGA";
-                            } else {
-                                // Obtener el nombre del usuario actual
-                                $sql = "SELECT nombre FROM usuarios WHERE id = '" . $_SESSION['id'] . "'";
-                                $result = $conn->query($sql);
-                                $user = $result->fetch_assoc();
-                                $titulo = $user['nombre'];
+            <!-- begin:: top-navbar -->
+            <div class="top-navbar">
+                <nav class="navbar navbar-expand-lg" style="background: #2B6B5D;">
+                    <div class="container-fluid">
+                        <!-- Botón Sidebar -->
+                        <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-none d-none">
+                            <span class="material-icons">arrow_back_ios</span>
+                        </button>
+                        
+                        <!-- Título dinámico -->
+                        <?php
+                        $titulo = "";
+                        switch ($_SESSION['rol']) {
+                            case 1: $titulo = "ADMINISTRADOR"; break;
+                            case 2: $titulo = "DEFAULT"; break;
+                            case 3: $titulo = "CONTABLE"; break;
+                            case 4: $titulo = "COMERCIAL"; break;
+                            case 5: $titulo = "JEFE TÉCNICO"; break;
+                            case 6: $titulo = "TÉCNICO"; break;
+                            case 7: $titulo = "BODEGA"; break;
+                            default: $titulo = $userInfo['nombre'] ?? 'USUARIO'; break;
+                        }
+                        ?>
+                        
+                        <!-- Branding -->
+                        <a class="navbar-brand" href="#" style="color: #fff; font-weight: bold;">
+                            <i class="material-icons" style="margin-right: 8px;">shelves</i>
+                            <b>INVENTARIO GENERAL</b>
+                        </a>
+                        <a class="navbar-brand" href="#"> <?php echo htmlspecialchars($titulo); ?> </a>
+                        <?php
+                            require_once __DIR__ . '/../../config/ctconex.php';
+                            $userInfo = [];
+                            if (isset($_SESSION['id'])) {
+                                $userId = $_SESSION['id'];
+                                try {
+                                    $sql_user = "SELECT  id, nombre, usuario, correo, rol, foto, idsede, cumple FROM usuarios WHERE id = :id";
+                                    $stmt = $connect->prepare($sql_user);
+                                    $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+                                    $stmt->execute();
+                                    $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+                                } catch (PDOException $e) { 
+                                    $userInfo = []; 
+                                } 
                             }
-                            ?>
-                            <a class="navbar-brand" href="#"> <?php echo htmlspecialchars($titulo); ?> </a>
-                            <a class="navbar-brand" href="#"> Inventario </a>
-                        </div>
+                        ?>
+                        <!-- Menú derecho (usuario) -->
                         <ul class="nav navbar-nav ml-auto">
                             <li class="dropdown nav-item active">
                                 <a href="#" class="nav-link" data-toggle="dropdown">
-                                    <img src="../assets/img/reere.webp">
-                                    <img src="../assets/img/<?php echo htmlspecialchars($user['foto']); ?>"
-                                        alt="Foto de perfil" style="width: 30px; height: 30px; border-radius: 50%;">
+                                    <img src="../assets/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
+                                        alt="Foto de perfil"
+                                        style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
                                 </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <?php
-                                        // Obtener información completa del usuario para el dropdown
-                                        $sql = "SELECT nombre, usuario, correo, rol, foto, idsede FROM usuarios WHERE id = '" . $_SESSION['id'] . "'";
-                                        $result = $conn->query($sql);
-                                        $user = $result->fetch_assoc();
-                                        ?>
-                                        <strong><a href="#"><?php echo htmlspecialchars($user['nombre']); ?></a></strong>
-                                        <a href="#"><?php echo htmlspecialchars($user['usuario']); ?></a>
-                                        <a href="#"><?php echo htmlspecialchars($user['correo']); ?></a>
-                                        <a href="#"><?php echo htmlspecialchars($user['idsede']) ?> </a>
+                                <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
+                                    <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong></li>
+                                    <li><?php echo htmlspecialchars($userInfo['usuario'] ?? 'usuario'); ?></li>
+                                    <li><?php echo htmlspecialchars($userInfo['correo'] ?? 'correo@ejemplo.com'); ?></li>
+                                    <li><?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?></li>
+                                    <li class="mt-2">
+                                        <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi perfil</a>
                                     </li>
-                                    <li>
-                                        <a href="../cuenta/perfil.php">Mi perfil</a>
-                                    </li>
-                                    <!-- <li> <a href="../cuenta/salir.php">Salir</a> </li> -->
                                 </ul>
                             </li>
                         </ul>
-                    </nav>
-                </div>
+                    </div>
+<select> <option>SI</option> <option>NO</option> </select>
+                    TÁCTIL: SI, NO
+                    <button class="d-inline-block d-lg-none ml-auto more-button" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="material-icons">more_vert</span>
+                    </button>
+                </nav>
+            </div>
+            <!-- end:: top_navbar -->
                 <div class="main-content">
                     <!-- Resumen de Inventario -->
                     <div class="row">

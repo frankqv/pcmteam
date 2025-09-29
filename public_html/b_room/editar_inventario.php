@@ -1,21 +1,16 @@
 <?php
 ob_start();
 session_start();
-
 if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
     header('location: ../error404.php');
 }
-
 require_once '../../config/ctconex.php';
-
 // Obtener el ID del equipo a editar
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-
 if ($id <= 0) {
     header('location: inventario.php');
     exit;
 }
-
 // Obtener datos del equipo
 try {
     $stmt = $connect->prepare("SELECT * FROM bodega_inventario WHERE id = ?");

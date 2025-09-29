@@ -144,7 +144,8 @@ function getBirthdayEmployees($connect)
 function calculateAge($birthdate)
 {
     if (!$birthdate)
-        return null;    $today = new DateTime();
+        return null;
+    $today = new DateTime();
     $birth = new DateTime($birthdate);
     return $today->diff($birth)->y;
 }
@@ -159,6 +160,7 @@ $birthdayEmployees = getBirthdayEmployees($connect);
 ?>
 <!doctype html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -179,41 +181,64 @@ $birthdayEmployees = getBirthdayEmployees($connect);
     <style>
         .dashboard-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        } .dashboard-card:hover {
+        }
+
+        .dashboard-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        } .stat-icon {
+        }
+
+        .stat-icon {
             font-size: 2.5rem;
             opacity: 0.8;
-        } .chart-container {
+        }
+
+        .chart-container {
             min-height: 400px;
             display: flex;
             align-items: center;
             justify-content: center;
-        } .birthday-card {
+        }
+
+        .birthday-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-        } .birthday-item {
+        }
+
+        .birthday-item {
             transition: transform 0.3s ease;
-        } .birthday-item:hover {
+        }
+
+        .birthday-item:hover {
             transform: translateY(-2px);
             background-color: rgba(255, 255, 255, 0.2) !important;
-        } .stock-badge {
+        }
+
+        .stock-badge {
             font-size: 0.85rem;
-        } .table-responsive {
+        }
+
+        .table-responsive {
             border-radius: 8px;
             overflow: hidden;
-        } .alert-custom {
+        }
+
+        .alert-custom {
             border-radius: 8px;
             border: none;
-        } .text-white-75 {
+        }
+
+        .text-white-75 {
             color: rgba(0, 0, 0, 0.75) !important;
-        } .text-white-50 {
+        }
+
+        .text-white-50 {
             color: rgba(255, 255, 255, 0.5) !important;
         }
     </style>
 </head>
+
 <body>
     <div class="wrapper">
         <div class="body-overlay"></div>
@@ -248,6 +273,23 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                         </button>
                         <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
                             id="navbarSupportedContent">
+                            <?php
+                            require_once __DIR__ . '/../../config/ctconex.php';
+                            $userInfo = [];
+                            if (isset($_SESSION['id'])) {
+                                $userId = $_SESSION['id'];
+                                try {
+                                    $sql_user = "SELECT  id, nombre, usuario, correo, rol, foto, idsede, cumple FROM usuarios WHERE id = :id";
+                                    $stmt = $connect->prepare($sql_user);
+                                    $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+                                    $stmt->execute();
+                                    $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+                                } catch (PDOException $e) {
+                                    $userInfo = [];
+                                }
+                            }
+                            ?>
+                            <!-- Menú derecho (usuario) -->
                             <ul class="nav navbar-nav ml-auto">
                                 <li class="nav-item">
                                     <a class="nav-link" href="../cuenta/configuracion.php">
@@ -256,11 +298,19 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                                 </li>
                                 <li class="dropdown nav-item active">
                                     <a href="#" class="nav-link" data-toggle="dropdown">
-                                        <img src="../assets/img/reere.webp" alt="Usuario">
+                                        <img src="../assets/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
+                                            alt="Foto de perfil"
+                                            style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
                                     </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="../cuenta/perfil.php">Mi perfil</a></li>
-                                        <li><a href="../cuenta/salir.php">Salir</a></li>
+                                    <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
+                                        <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong></li>
+                                        <li><?php echo htmlspecialchars($userInfo['usuario'] ?? 'usuario'); ?></li>
+                                        <li><?php echo htmlspecialchars($userInfo['correo'] ?? 'correo@ejemplo.com'); ?></li>
+                                        <li><?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?></li>
+                                        <li class="mt-2">
+                                            <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi perfil</a>
+                                        </li>
+                                        <li class="mt-2" style="background: #EBEBEB;"><a href="../cuenta/salir.php">Salir</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -464,7 +514,7 @@ $birthdayEmployees = getBirthdayEmployees($connect);
                                 <div id="piechart" class="chart-container"></div>
                             </div>
                         </div>
-                    </div>                    <!-- Birthday Employees -->
+                    </div> <!-- Birthday Employees -->
                     <div class="col-lg-4 col-md-12 mb-4">
                         <div class="card dashboard-card birthday-card" style="min-height: 485px">
                             <div class="card-header card-header-text">
@@ -572,7 +622,7 @@ $birthdayEmployees = getBirthdayEmployees($connect);
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
         // Initialize DataTables
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#clientsTable').DataTable({
                 "pageLength": 5,
                 "ordering": false,
@@ -593,6 +643,7 @@ $birthdayEmployees = getBirthdayEmployees($connect);
             'packages': ['corechart']
         });
         google.charts.setOnLoadCallback(drawPieChart);
+
         function drawPieChart() {
             var data = google.visualization.arrayToDataTable([
                 ['Producto', 'Stock'],
@@ -626,6 +677,7 @@ $birthdayEmployees = getBirthdayEmployees($connect);
         }
         // Sales Line Chart
         google.charts.setOnLoadCallback(drawSalesChart);
+
         function drawSalesChart() {
             var data = google.visualization.arrayToDataTable([
                 ['Fecha', 'Ventas'],
@@ -657,7 +709,7 @@ $birthdayEmployees = getBirthdayEmployees($connect);
             chart.draw(data, options);
         }
         // Responsive charts
-        window.addEventListener('resize', function () {
+        window.addEventListener('resize', function() {
             drawPieChart();
             drawSalesChart();
         });
@@ -668,6 +720,7 @@ $birthdayEmployees = getBirthdayEmployees($connect);
             'packages': ['corechart']
         });
         google.charts.setOnLoadCallback(drawChart);
+
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
                 ['Articulo', 'Stock'],
@@ -693,16 +746,17 @@ $birthdayEmployees = getBirthdayEmployees($connect);
             'packages': ['corechart']
         });
         google.charts.setOnLoadCallback(drawChart);
+
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
-                ['Articulo', 'Stock'],                <?php
-                $stmt = $connect->prepare("SELECT * FROM clientes");
-                $stmt->setFetchMode(PDO::FETCH_ASSOC);
-                $stmt->execute();
-                while ($row = $stmt->fetch()) {
-                    echo "['" . $row['apecli'] . "', " . $row['idclie'] . "],";
-                }
-                ?>
+                ['Articulo', 'Stock'], <?php
+                                        $stmt = $connect->prepare("SELECT * FROM clientes");
+                                        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+                                        $stmt->execute();
+                                        while ($row = $stmt->fetch()) {
+                                            echo "['" . $row['apecli'] . "', " . $row['idclie'] . "],";
+                                        }
+                                        ?>
             ]);
             var options = {
                 //is3D:true,  
@@ -717,6 +771,7 @@ $birthdayEmployees = getBirthdayEmployees($connect);
             'packages': ['bar']
         });
         google.charts.setOnLoadCallback(drawStuff);
+
         function drawStuff() {
             var data = new google.visualization.arrayToDataTable([
                 ['Fecha', 'Monto'],
@@ -761,6 +816,7 @@ $birthdayEmployees = getBirthdayEmployees($connect);
             'packages': ['bar']
         });
         google.charts.setOnLoadCallback(drawStuff);
+
         function drawStuff() {
             var data = new google.visualization.arrayToDataTable([
                 ['Fecha', 'Monto'],
@@ -805,6 +861,7 @@ $birthdayEmployees = getBirthdayEmployees($connect);
             'packages': ['bar']
         });
         google.charts.setOnLoadCallback(drawStuff);
+
         function drawStuff() {
             var data = new google.visualization.arrayToDataTable([
                 ['Fecha', 'Monto'],
@@ -849,6 +906,7 @@ $birthdayEmployees = getBirthdayEmployees($connect);
             'packages': ['bar']
         });
         google.charts.setOnLoadCallback(drawStuff);
+
         function drawStuff() {
             var data = new google.visualization.arrayToDataTable([
                 ['Fecha', 'Monto'],
@@ -889,5 +947,6 @@ $birthdayEmployees = getBirthdayEmployees($connect);
         };
     </script>
 </body>
+
 </html>
 <?php ob_end_flush(); ?>

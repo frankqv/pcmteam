@@ -343,7 +343,7 @@ function faultBadgeClass(string $v): string {
       padding: 20px;
     }
     .top-navbar {
-      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      background: #3498db;
       padding: 15px 20px;
       margin-bottom: 20px;
       border-radius: 8px;
@@ -645,7 +645,7 @@ function faultBadgeClass(string $v): string {
           <i class="material-icons" style="margin-right: 8px;">list</i>
           Ver Todos los Equipos
         </a>
-        <a href="../bodega/mostrar.php" class="btn btn-primary">
+        <a href="../bodega/historial_electrico.php" class="btn btn-primary">
           <i class="material-icons" style="margin-right: 8px;">dashboard</i>
           Volver al Dashboard
         </a>
