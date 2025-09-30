@@ -15,7 +15,7 @@
 ## Estructura Actual del Proyecto
 
 ```
-:\laragon\www\pcmteam>tree /f
+C:\laragon\www\pcmteam> tree /f
 Listado de rutas de carpetas
 El número de serie del volumen es 1CFA-2E35
 C:.
@@ -111,28 +111,6 @@ C:.
 │           test_insert.php
 │           update_inventario.php
 │
-├───clear
-│   ├───bodega
-│   │   │   a.php
-│   │   │   bateria.php
-│   │   │   despacho.php
-│   │   │   editar_equipo.php
-│   │   │   editar_equipo_simple.php
-│   │   │   mostrar.php
-│   │   │   orden_nueva.php
-│   │   │   partes.php
-│   │   │   proceso_triage.php
-│   │   │   salidas.php
-│   │   │   test_edicion.php
-│   │   │   ver.php
-│   │   │   ver_triage_2.php
-│   │   │
-│   │   └───HAY COSAS POR IMPLENTAR UNIR CON NUEVO
-│   │           old_estetico.php
-│   │           old_lista_parte.php
-│   │           old_solicitar_parte.php
-│   │
-│   └───Venta
 ├───config
 │       ctconex.php
 │       db_sin_data.sql
@@ -150,6 +128,7 @@ C:.
 │   │   registrar.php
 │   │   salir.php
 │   │
+│   ├───a1_limpiar
 │   ├───administrador
 │   │       escritorio.php
 │   │
@@ -168,6 +147,7 @@ C:.
 │   │   │   │   463824.gif
 │   │   │   │   4d.webp
 │   │   │   │   error-500.jpg
+│   │   │   │   evid_70_1759249610.png
 │   │   │   │   evid_ord_1_1758210363.pdf
 │   │   │   │   favicon.webp
 │   │   │   │   img1.svg
@@ -237,6 +217,8 @@ C:.
 │   │       equipo_historia.php
 │   │       escritorio.php
 │   │       estetico.php
+│   │       historial_electrico.php
+│   │       historial_estetico.php
 │   │       inventario.php
 │   │       lista_estetico.php
 │   │       lista_parte.php
@@ -287,6 +269,7 @@ C:.
 │   │       escritorio.php
 │   │
 │   ├───controllers
+│   │       ctconex.php
 │   │       get_entrada_details.php
 │   │       get_entrada_fun_det.php
 │   │       get_ingresar_m.php
@@ -301,9 +284,7 @@ C:.
 │   │       update_price.php
 │   │
 │   ├───control_calidad
-│   │       dashboard.php
 │   │       mostrar.php
-│   │       old_dashboard.php
 │   │
 │   ├───cuenta
 │   │       configuracion.php
@@ -312,6 +293,7 @@ C:.
 │   │
 │   ├───despacho
 │   │       delicado.php
+│   │       despachos.php
 │   │       historial.php
 │   │       pedientes.php
 │   │       pendientes.php
@@ -340,16 +322,13 @@ C:.
 │   │
 │   ├───laboratorio
 │   │       editar_inventario.php
+│   │       historial_lab.php
 │   │       ingresar_m.php
-│   │       ingresar_myl.php
 │   │       mostrar.php
-│   │       nuevo.php
-│   │       test_mantenimiento.php
 │   │
 │   ├───layouts
 │   │       menu_data.php
 │   │       nav.php
-│   │       top_navbar.php
 │   │
 │   ├───marketing
 │   │       mostrar.php
@@ -435,6 +414,7 @@ C:.
 │           mostrar.php
 │           nuevo.php
 │           nuevo_actualizado.php
+│           procesar.php
 │           ticket.php
 │
 └───vendor
@@ -1663,6 +1643,3 @@ C:.
                 function.php
                 LICENSE
                 README.md
-
-
-C:\laragon\www\pcmteam>^

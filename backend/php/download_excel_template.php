@@ -14,37 +14,18 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
-// Limpiar cualquier salida previa que pueda corromper el archivo
-ob_clean();
+// Limpiar cualquier salida previa
+if (ob_get_level()) {
+    ob_end_clean();
+}
+ob_start();
 try {
     // Crear nuevo documento Excel
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     // Configurar título
     $sheet->setTitle('Plantilla Importación Equipos');
-    // Estilos para encabezados
-    $headerStyle = [
-        'font' => [
-            'bold' => true,
-            'color' => ['rgb' => 'FFFFFF'],
-            'size' => 11,
-        ],
-        'fill' => [
-            'fillType' => Fill::FILL_SOLID,
-            'startColor' => ['rgb' => '4472C4'],
-        ],
-        'alignment' => [
-            'horizontal' => Alignment::HORIZONTAL_CENTER,
-            'vertical' => Alignment::VERTICAL_CENTER,
-        ],
-        'borders' => [
-            'allBorders' => [
-                'borderStyle' => Border::BORDER_THIN,
-                'color' => ['rgb' => '000000'],
-            ],
-        ],
-    ];
-    // Estilos para campos requeridos
+    // Estilos para campos requeridos (ROJOS)
     $requiredStyle = [
         'font' => [
             'bold' => true,
@@ -53,11 +34,12 @@ try {
         ],
         'fill' => [
             'fillType' => Fill::FILL_SOLID,
-            'startColor' => ['rgb' => 'DC3545'], // Rojo para campos obligatorios
+            'startColor' => ['rgb' => 'DC3545'],
         ],
         'alignment' => [
             'horizontal' => Alignment::HORIZONTAL_CENTER,
             'vertical' => Alignment::VERTICAL_CENTER,
+            'wrapText' => true,
         ],
         'borders' => [
             'allBorders' => [
@@ -66,7 +48,7 @@ try {
             ],
         ],
     ];
-    // Estilos para campos opcionales
+    // Estilos para campos opcionales (VERDES)
     $optionalStyle = [
         'font' => [
             'bold' => true,
@@ -75,11 +57,12 @@ try {
         ],
         'fill' => [
             'fillType' => Fill::FILL_SOLID,
-            'startColor' => ['rgb' => '28A745'], // Verde para campos opcionales
+            'startColor' => ['rgb' => '28A745'],
         ],
         'alignment' => [
             'horizontal' => Alignment::HORIZONTAL_CENTER,
             'vertical' => Alignment::VERTICAL_CENTER,
+            'wrapText' => true,
         ],
         'borders' => [
             'allBorders' => [
@@ -88,298 +71,301 @@ try {
             ],
         ],
     ];
-    // Encabezados de columnas (MAPEO EXACTO CON EL CÓDIGO DE IMPORTACIÓN)
-    $headers = [
-        'A1' => 'CÓDIGO GENERAL *',      // codigo_g
-        'B1' => 'LOTE',                  // lote
-        'C1' => 'UBICACIÓN EN SEDE *',   // ubicacion
-        'D1' => 'POSICIÓN *',            // posicion
-        'E1' => 'TIPO DE PRODUCTO *',    // producto
-        'F1' => 'MARCA *',               // marca
-        'G1' => 'SERIAL *',              // serial
-        'H1' => 'MODELO *',              // modelo
-        'I1' => 'PROCESADOR',            // procesador
-        'J1' => 'MEMORIA RAM *',         // ram
-        'K1' => 'DISCO',                 // disco
-        'L1' => 'PULGADAS',              // pulgadas
-        'M1' => 'OBSERVACIONES',         // observaciones
-        'N1' => 'GRADO *',               // grado
-        'O1' => 'DISPOSICIÓN *',         // disposicion
-        'P1' => 'TÁCTIL *',              // tactil
-        'Q1' => 'PROVEEDOR ID *',        // proveedor_id
-        'R1' => 'CANTIDAD'               // cantidad
+    // Estilo para campos con lista desplegable (AZUL)
+    $dropdownStyle = [
+        'font' => [
+            'bold' => true,
+            'color' => ['rgb' => 'FFFFFF'],
+            'size' => 11,
+        ],
+        'fill' => [
+            'fillType' => Fill::FILL_SOLID,
+            'startColor' => ['rgb' => '0066CC'], // Azul
+        ],
+        'alignment' => [
+            'horizontal' => Alignment::HORIZONTAL_CENTER,
+            'vertical' => Alignment::VERTICAL_CENTER,
+            'wrapText' => true,
+        ],
+        'borders' => [
+            'allBorders' => [
+                'borderStyle' => Border::BORDER_THIN,
+                'color' => ['rgb' => '000000'],
+            ],
+        ],
     ];
-    // Aplicar encabezados
-    foreach ($headers as $cell => $value) {
-        $sheet->setCellValue($cell, $value);
+    // Encabezados de columnas con indicador de tipo
+    $headers = [
+        'A1' => ['text' => 'CÓDIGO GENERAL *', 'type' => 'required'],
+        'B1' => ['text' => 'LOTE', 'type' => 'optional'],
+        'C1' => ['text' => 'UBICACIÓN ▼ *', 'type' => 'dropdown'],
+        'D1' => ['text' => 'POSICIÓN *', 'type' => 'required'],
+        'E1' => ['text' => 'TIPO PRODUCTO ▼ *', 'type' => 'dropdown'],
+        'F1' => ['text' => 'MARCA ▼ *', 'type' => 'dropdown'],
+        'G1' => ['text' => 'SERIAL *', 'type' => 'required'],
+        'H1' => ['text' => 'MODELO *', 'type' => 'required'],
+        'I1' => ['text' => 'PROCESADOR', 'type' => 'optional'],
+        'J1' => ['text' => 'MEMORIA RAM ▼ *', 'type' => 'dropdown'],
+        'K1' => ['text' => 'DISCO', 'type' => 'optional'],
+        'L1' => ['text' => 'PULGADAS', 'type' => 'optional'],
+        'M1' => ['text' => 'OBSERVACIONES', 'type' => 'optional'],
+        'N1' => ['text' => 'GRADO ▼ *', 'type' => 'dropdown'],
+        'O1' => ['text' => 'DISPOSICIÓN ▼ *', 'type' => 'dropdown'],
+        'P1' => ['text' => 'TÁCTIL ▼ *', 'type' => 'dropdown'],
+        'Q1' => ['text' => 'PROVEEDOR ID ▼ *', 'type' => 'dropdown'],
+        'R1' => ['text' => 'CANTIDAD', 'type' => 'optional']
+    ];
+    // Aplicar encabezados con estilos según tipo
+    foreach ($headers as $cell => $data) {
+        $sheet->setCellValue($cell, $data['text']);
+        if ($data['type'] === 'dropdown') {
+            $style = $dropdownStyle;
+        } elseif ($data['type'] === 'required') {
+            $style = $requiredStyle;
+        } else {
+            $style = $optionalStyle;
+        }
+        $sheet->getStyle($cell)->applyFromArray($style);
     }
-    // Aplicar estilos específicos por tipo de campo
-    $requiredFields = ['A1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'J1', 'N1', 'O1', 'P1', 'Q1'];
-    $optionalFields = ['B1', 'I1', 'K1', 'L1', 'M1', 'R1'];
-    foreach ($requiredFields as $cell) {
-        $sheet->getStyle($cell)->applyFromArray($requiredStyle);
-    }
-    foreach ($optionalFields as $cell) {
-        $sheet->getStyle($cell)->applyFromArray($optionalStyle);
-    }
-    // Obtener proveedores para los datos de ejemplo
+    // Obtener proveedores de la base de datos
     $proveedores = [];
+    $proveedorIds = [];
+    $proveedoresTexto = [];
+    $primer_proveedor_id = '1';
     try {
         $stmt = $connect->prepare("SELECT id, nombre, nomenclatura FROM proveedores WHERE nombre IS NOT NULL ORDER BY nombre ASC");
         $stmt->execute();
-        $primer_proveedor_id = null;
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            if ($primer_proveedor_id === null) {
+            if (empty($primer_proveedor_id) || $primer_proveedor_id === '1') {
                 $primer_proveedor_id = $row['id'];
             }
-            $proveedores[] = $row['id'] . ' - ' . $row['nombre'] . ' (' . $row['nomenclatura'] . ')';
+            $proveedorIds[] = $row['id'];
+            $proveedoresTexto[] = $row['id'] . ' - ' . $row['nombre'] . ' (' . $row['nomenclatura'] . ')';
         }
     } catch (Exception $e) {
-        $primer_proveedor_id = '1';
-        $proveedores = ['Error al cargar proveedores: ' . $e->getMessage()];
+        error_log("Error al cargar proveedores: " . $e->getMessage());
+        $proveedoresTexto = ['1 - Error al cargar proveedores'];
+        $proveedorIds = ['1'];
     }
-    // Agregar datos de ejemplo en la fila 2
-    $exampleData = [
-        'A2' => 'LOTE-5-001',              // codigo_g
-        'B2' => 'COLSOF-LOTE-5',           // lote
-        'C2' => 'Principal',               // ubicacion
-        'D2' => 'ESTANTE-1-A',             // posicion
-        'E2' => 'Portatil',                // producto
-        'F2' => 'Dell',                    // marca
-        'G2' => 'DL123456789',             // serial
-        'H2' => 'Latitude 5520',           // modelo
-        'I2' => 'Intel i5-1135G7',         // procesador
-        'J2' => '8GB',                     // ram
-        'K2' => '256GB SSD',               // disco
-        'L2' => '15.6',                    // pulgadas
-        'M2' => 'Equipo en buen estado',   // observaciones
-        'N2' => 'A',                       // grado
-        'O2' => 'En revisión',             // disposicion
-        'P2' => 'NO',                      // tactil
-        'Q2' => $primer_proveedor_id ?? '1', // proveedor_id
-        'R2' => '1'                         // cantidad
+    // ===== CREAR HOJA OCULTA PARA LAS LISTAS =====
+    $listSheet = $spreadsheet->createSheet();
+    $listSheet->setTitle('_Listas');
+    // Poblar la hoja oculta con las listas
+    $listSheet->setCellValue('A1', 'Ubicaciones');
+    $ubicaciones = ['Principal', 'Unilago', 'Cúcuta', 'Medellín'];
+    foreach ($ubicaciones as $i => $val) {
+        $listSheet->setCellValue('A' . ($i + 2), $val);
+    }
+    $listSheet->setCellValue('B1', 'Tipos');
+    $tipos = ['Desktop','Portatil', 'CPU', 'Monitor', 'AIO', 'Tablet', 'Celular', 'Impresora', 'Periferico', 'otro'];
+    foreach ($tipos as $i => $val) {
+        $listSheet->setCellValue('B' . ($i + 2), $val);
+    }
+    $listSheet->setCellValue('C1', 'Marcas');
+    $marcas = ['HP', 'Dell', 'Lenovo', 'Acer', 'CompuMax', 'Otro'];
+    foreach ($marcas as $i => $val) {
+        $listSheet->setCellValue('C' . ($i + 2), $val);
+    }
+    $listSheet->setCellValue('D1', 'RAM');
+    $rams = ['4GB', '8GB', '16GB', '32GB', 'otro'];
+    foreach ($rams as $i => $val) {
+        $listSheet->setCellValue('D' . ($i + 2), $val);
+    }
+    $listSheet->setCellValue('E1', 'Grados');
+    $grados = ['A', 'B', 'C', 'SCRAP', '#N/D'];
+    foreach ($grados as $i => $val) {
+        $listSheet->setCellValue('E' . ($i + 2), $val);
+    }
+    $listSheet->setCellValue('F1', 'Disposiciones');
+    $disposiciones = ['En revisión', 'Por Alistamiento', 'En Laboratorio', 'En Bodega', 'Disposicion final', 'Para Venta'];
+    foreach ($disposiciones as $i => $val) {
+        $listSheet->setCellValue('F' . ($i + 2), $val);
+    }
+    $listSheet->setCellValue('G1', 'Táctil');
+    $tactiles = ['SI', 'NO'];
+    foreach ($tactiles as $i => $val) {
+        $listSheet->setCellValue('G' . ($i + 2), $val);
+    }
+    $listSheet->setCellValue('H1', 'ProveedorIDs');
+    foreach ($proveedorIds as $i => $val) {
+        $listSheet->setCellValue('H' . ($i + 2), $val);
+    }
+    // Ocultar la hoja de listas
+    $listSheet->setSheetState(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet::SHEETSTATE_HIDDEN);
+    // Volver a la hoja principal
+    $spreadsheet->setActiveSheetIndex(0);
+    // Agregar ejemplos en las filas 2 y 3
+    $ejemplos = [
+        2 => [
+            'A' => 'LOTE-5-001',
+            'B' => 'COLSOF-LOTE-5',
+            'C' => 'Principal',
+            'D' => 'ESTANTE-1-A',
+            'E' => 'Portatil',
+            'F' => 'Dell',
+            'G' => 'DL123456789',
+            'H' => 'Latitude 5520',
+            'I' => 'Intel i5-1135G7',
+            'J' => '8GB',
+            'K' => '256GB SSD',
+            'L' => '15.6',
+            'M' => 'Equipo en buen estado',
+            'N' => 'A',
+            'O' => 'En revisión',
+            'P' => 'NO',
+            'Q' => $primer_proveedor_id,
+            'R' => '1'
+        ],
+        3 => [
+            'A' => 'LOTE-5-002',
+            'B' => 'COLSOF-LOTE-5',
+            'C' => 'Unilago',
+            'D' => 'ESTANTE-2-B',
+            'E' => 'Desktop',
+            'F' => 'HP',
+            'G' => 'HP987654321',
+            'H' => 'EliteDesk 800',
+            'I' => 'Intel i7-10700',
+            'J' => '16GB',
+            'K' => '512GB SSD',
+            'L' => '',
+            'M' => 'EQUIPO LISTO',
+            'N' => 'A',
+            'O' => 'Para Venta',
+            'P' => 'NO',
+            'Q' => $primer_proveedor_id,
+            'R' => '1'
+        ]
     ];
-    foreach ($exampleData as $cell => $value) {
-        $sheet->setCellValue($cell, $value);
+    foreach ($ejemplos as $row => $datos) {
+        foreach ($datos as $col => $valor) {
+            $sheet->setCellValue($col . $row, $valor);
+        }
     }
-    // Agregar segundo ejemplo en la fila 3
-    $exampleData2 = [
-        'A3' => 'LOTE-5-002',             // codigo_g
-        'B3' => 'COLSOF-LOTE-5',          // lote
-        'C3' => 'Unilago',                // ubicacion
-        'D3' => 'ESTANTE-2-B',            // posicion
-        'E3' => 'Desktop',                // producto
-        'F3' => 'HP',                     // marca
-        'G3' => 'HP987654321',            // serial
-        'H3' => 'EliteDesk 800',          // modelo
-        'I3' => 'Intel i7-10700',         // procesador
-        'J3' => '16GB',                   // ram
-        'K3' => '512GB SSD',              // disco
-        'L3' => '',                       // pulgadas (vacío para desktop)
-        'M3' => 'EQUIPO LISTO',           // observaciones
-        'N3' => 'A',                      // grado
-        'O3' => 'Para Venta',             // disposicion
-        'P3' => 'NO',                     // tactil
-        'Q3' => $primer_proveedor_id ?? '1', // proveedor_id
-        'R3' => '1'                         // cantidad
-    ];
-    foreach ($exampleData2 as $cell => $value) {
-        $sheet->setCellValue($cell, $value);
-    }
-    // Agregar instrucciones detalladas
+    // Instrucciones (estilos mejorados)
     $instructionStyle = [
-        'font' => [
-            'bold' => true,
-            'color' => ['rgb' => '000000'],
-            'size' => 10,
-        ],
-        'fill' => [
-            'fillType' => Fill::FILL_SOLID,
-            'startColor' => ['rgb' => 'FFFF99'],
-        ],
-        'alignment' => [
-            'horizontal' => Alignment::HORIZONTAL_LEFT,
-            'vertical' => Alignment::VERTICAL_TOP,
-            'wrapText' => true,
-        ],
-        'borders' => [
-            'allBorders' => [
-                'borderStyle' => Border::BORDER_THIN,
-                'color' => ['rgb' => '000000'],
-            ],
-        ],
+        'font' => ['bold' => true, 'size' => 10, 'color' => ['rgb' => '000000']],
+        'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'FFFF99']],
+        'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_TOP, 'wrapText' => true],
+        'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => '000000']]],
     ];
-    $sheet->setCellValue('A5', 'INSTRUCCIONES IMPORTANTES:');
-    $sheet->setCellValue('A6', '1. Los campos marcados con * (ROJOS) son OBLIGATORIOS');
-    $sheet->setCellValue('A7', '2. Los campos VERDES son opcionales');
-    $sheet->setCellValue('A8', '3. MUCHOS CAMPOS SON DESPLEGABLES - Haga clic en la flecha ▼');
-    $sheet->setCellValue('A9', '4. El CÓDIGO GENERAL y SERIAL deben ser únicos');
-    $sheet->setCellValue('A10', '5. ELIMINE estas filas de instrucciones antes de importar');
-    $sheet->setCellValue('A11', '6. Si un código ya existe, se omitirá ese equipo');
-    $sheet->setCellValue('A12', '7. Las listas desplegables evitan errores de escritura');
-    $sheet->getStyle('A5:A12')->applyFromArray($instructionStyle);
-    // Agregar valores válidos
+    $instrucciones = [
+        5 => 'INSTRUCCIONES IMPORTANTES:',
+        6 => '1. Los campos marcados con * son OBLIGATORIOS',
+        7 => '2. Los campos con ▼ (AZULES) tienen listas desplegables - Haga clic en la celda para ver las opciones',
+        8 => '3. Los campos VERDES son opcionales',
+        9 => '4. El CÓDIGO GENERAL y SERIAL deben ser únicos',
+        10 => '5. ELIMINE estas filas de instrucciones (5-27) antes de importar',
+        11 => '6. Si un código ya existe, se omitirá ese equipo',
+        12 => '7. Las listas desplegables evitan errores de escritura'
+    ];
+    foreach ($instrucciones as $row => $texto) {
+        $sheet->setCellValue('A' . $row, $texto);
+        $sheet->getStyle('A' . $row)->applyFromArray($instructionStyle);
+    }
+    // Valores válidos
     $validValuesStyle = [
-        'font' => [
-            'color' => ['rgb' => '006600'],
-            'size' => 9,
-        ],
-        'fill' => [
-            'fillType' => Fill::FILL_SOLID,
-            'startColor' => ['rgb' => 'E6FFE6'],
-        ],
-        'alignment' => [
-            'horizontal' => Alignment::HORIZONTAL_LEFT,
-            'vertical' => Alignment::VERTICAL_TOP,
-            'wrapText' => true,
-        ],
-        'borders' => [
-            'allBorders' => [
-                'borderStyle' => Border::BORDER_THIN,
-                'color' => ['rgb' => '006600'],
-            ],
-        ],
+        'font' => ['color' => ['rgb' => '006600'], 'size' => 9],
+        'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'E6FFE6']],
+        'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_TOP, 'wrapText' => true],
+        'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => '006600']]],
     ];
-    $sheet->setCellValue('A14', 'CAMPOS CON LISTAS DESPLEGABLES:');
-    $sheet->setCellValue('A15', 'UBICACIONES: Principal, Unilago, Cucuta, Medellin');
-    $sheet->setCellValue('A16', 'TIPOS: Portatil, Desktop, Monitor, AIO, Tablet, Celular, Impresora, Periferico, otro');
-    $sheet->setCellValue('A17', 'MARCAS: HP, Dell, Lenovo, Acer, CompuMax, Otro');
-    $sheet->setCellValue('A18', 'RAM: 4GB, 8GB, 16GB, 32GB, otro');
-    $sheet->setCellValue('A19', 'GRADOS: A, B, C, SCRAP, #N/D');
-    $sheet->setCellValue('A20', 'DISPOSICIONES: En revisión, Por Alistamiento, En Laboratorio, En Bodega, Disposicion final, Para Venta');
-    $sheet->setCellValue('A21', 'TÁCTIL: SI, NO');
-    $sheet->setCellValue('A22', 'CANTIDAD: Solo números enteros positivos');
-    $sheet->getStyle('A14:A22')->applyFromArray($validValuesStyle);
-    // Información de proveedores
-    $sheet->setCellValue('A24', 'PROVEEDORES DISPONIBLES (use solo el ID numérico):');
-    $sheet->setCellValue('A25', implode(' | ', $proveedores));
-    $sheet->getStyle('A24:A25')->applyFromArray($validValuesStyle);
-    // Información de proveedores
-    $sheet->setCellValue('A23', 'PROVEEDORES DISPONIBLES (use solo el ID numérico):');
-    $sheet->setCellValue('A24', implode(' | ', $proveedores));
-    $sheet->getStyle('A23:A24')->applyFromArray($validValuesStyle);
-    // AGREGAR VALIDACIONES DE DATOS (LISTAS DESPLEGABLES)
-    // 1. Validación para UBICACIÓN EN SEDE (Columna C)
-    $ubicacionValidation = $sheet->getCell('C2')->getDataValidation();
-    $ubicacionValidation->setType(DataValidation::TYPE_LIST);
-    $ubicacionValidation->setErrorStyle(DataValidation::STYLE_INFORMATION);
-    $ubicacionValidation->setAllowBlank(false);
-    $ubicacionValidation->setShowInputMessage(true);
-    $ubicacionValidation->setShowErrorMessage(true);
-    $ubicacionValidation->setErrorTitle('Valor inválido');
-    $ubicacionValidation->setError('Por favor seleccione una ubicación válida de la lista');
-    $ubicacionValidation->setPromptTitle('Ubicación en Sede');
-    $ubicacionValidation->setPrompt('Seleccione la ubicación donde se almacenará el equipo');
-    $ubicacionValidation->setFormula1('"Principal,Unilago,Cúcuta,Medellín"');
-    // Copiar validación a las filas 2-1000
-    $sheet->setDataValidation('C2:C1000', clone $ubicacionValidation);
-    // 2. Validación para TIPO DE PRODUCTO (Columna E)
-    $productoValidation = $sheet->getCell('E2')->getDataValidation();
-    $productoValidation->setType(DataValidation::TYPE_LIST);
-    $productoValidation->setErrorStyle(DataValidation::STYLE_INFORMATION);
-    $productoValidation->setAllowBlank(false);
-    $productoValidation->setShowInputMessage(true);
-    $productoValidation->setShowErrorMessage(true);
-    $productoValidation->setErrorTitle('Valor inválido');
-    $productoValidation->setError('Por favor seleccione un tipo de producto válido de la lista');
-    $productoValidation->setPromptTitle('Tipo de Producto');
-    $productoValidation->setPrompt('Seleccione el tipo de equipo');
-    $productoValidation->setFormula1('"Portatil,Desktop,Monitor,AIO,Tablet,Celular,Impresora,Periferico,otro"');
-    $sheet->setDataValidation('E2:E1000', clone $productoValidation);
-    // 3. Validación para MARCA (Columna F)
-    $marcaValidation = $sheet->getCell('F2')->getDataValidation();
-    $marcaValidation->setType(DataValidation::TYPE_LIST);
-    $marcaValidation->setErrorStyle(DataValidation::STYLE_INFORMATION);
-    $marcaValidation->setAllowBlank(false);
-    $marcaValidation->setShowInputMessage(true);
-    $marcaValidation->setShowErrorMessage(true);
-    $marcaValidation->setErrorTitle('Valor inválido');
-    $marcaValidation->setError('Por favor seleccione una marca válida de la lista');
-    $marcaValidation->setPromptTitle('Marca');
-    $marcaValidation->setPrompt('Seleccione la marca del equipo');
-    $marcaValidation->setFormula1('"HP,Dell,Lenovo,Acer,CompuMax,Otro"');
-    $sheet->setDataValidation('F2:F1000', clone $marcaValidation);
-    // 4. Validación para MEMORIA RAM (Columna J)
-    $ramValidation = $sheet->getCell('J2')->getDataValidation();
-    $ramValidation->setType(DataValidation::TYPE_LIST);
-    $ramValidation->setErrorStyle(DataValidation::STYLE_INFORMATION);
-    $ramValidation->setAllowBlank(false);
-    $ramValidation->setShowInputMessage(true);
-    $ramValidation->setShowErrorMessage(true);
-    $ramValidation->setErrorTitle('Valor inválido');
-    $ramValidation->setError('Por favor seleccione una capacidad de RAM válida de la lista');
-    $ramValidation->setPromptTitle('Memoria RAM');
-    $ramValidation->setPrompt('Seleccione la cantidad de memoria RAM');
-    $ramValidation->setFormula1('"4GB,8GB,16GB,32GB,otro"');
-    $sheet->setDataValidation('J2:J1000', clone $ramValidation);
-    // 5. Validación para GRADO (Columna N)
-    $gradoValidation = $sheet->getCell('N2')->getDataValidation();
-    $gradoValidation->setType(DataValidation::TYPE_LIST);
-    $gradoValidation->setErrorStyle(DataValidation::STYLE_INFORMATION);
-    $gradoValidation->setAllowBlank(false);
-    $gradoValidation->setShowInputMessage(true);
-    $gradoValidation->setShowErrorMessage(true);
-    $gradoValidation->setErrorTitle('Valor inválido');
-    $gradoValidation->setError('Por favor seleccione un grado válido de la lista');
-    $gradoValidation->setPromptTitle('Grado');
-    $gradoValidation->setPrompt('Seleccione la clasificación del equipo');
-    $gradoValidation->setFormula1('"A,B,C,SCRAP,#N/D"');
-    $sheet->setDataValidation('N2:N1000', clone $gradoValidation);
-    // 6. Validación para DISPOSICIÓN (Columna O)
-    $disposicionValidation = $sheet->getCell('O2')->getDataValidation();
-    $disposicionValidation->setType(DataValidation::TYPE_LIST);
-    $disposicionValidation->setErrorStyle(DataValidation::STYLE_INFORMATION);
-    $disposicionValidation->setAllowBlank(false);
-    $disposicionValidation->setShowInputMessage(true);
-    $disposicionValidation->setShowErrorMessage(true);
-    $disposicionValidation->setErrorTitle('Valor inválido');
-    $disposicionValidation->setError('Por favor seleccione una disposición válida de la lista');
-    $disposicionValidation->setPromptTitle('Disposición');
-    $disposicionValidation->setPrompt('Seleccione el estado actual del equipo');
-    $disposicionValidation->setFormula1('"En revisión,Por Alistamiento,En Laboratorio,En Bodega,Disposicion final,Para Venta"');
-    $sheet->setDataValidation('O2:O1000', clone $disposicionValidation);
-    // 7. Validación para TÁCTIL (Columna P)
-    $tactilValidation = $sheet->getCell('P2')->getDataValidation();
-    $tactilValidation->setType(DataValidation::TYPE_LIST);
-    $tactilValidation->setErrorStyle(DataValidation::STYLE_INFORMATION);
-    $tactilValidation->setAllowBlank(false);
-    $tactilValidation->setShowInputMessage(true);
-    $tactilValidation->setShowErrorMessage(true);
-    $tactilValidation->setErrorTitle('Valor inválido');
-    $tactilValidation->setError('Por favor seleccione SI o NO');
-    $tactilValidation->setPromptTitle('Táctil');
-    $tactilValidation->setPrompt('¿El equipo tiene pantalla táctil?');
-    $tactilValidation->setFormula1('"SI,NO"');
-    $sheet->setDataValidation('P2:P2000', clone $tactilValidation);
-    // 8. Validación para PROVEEDOR ID (Columna Q) - Lista dinámica basada en BD
-    if (!empty($proveedores)) {
-        // Crear lista de IDs de proveedores
-        $proveedorIds = [];
-        try {
-            $stmt = $connect->prepare("SELECT id FROM proveedores WHERE nombre IS NOT NULL ORDER BY nombre ASC");
-            $stmt->execute();
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $proveedorIds[] = $row['id'];
-            }
-        } catch (Exception $e) {
-            $proveedorIds = ['1']; // Valor por defecto
-        }
-        if (!empty($proveedorIds)) {
-            $proveedorValidation = $sheet->getCell('Q2')->getDataValidation();
-            $proveedorValidation->setType(DataValidation::TYPE_LIST);
-            $proveedorValidation->setErrorStyle(DataValidation::STYLE_INFORMATION);
-            $proveedorValidation->setAllowBlank(false);
-            $proveedorValidation->setShowInputMessage(true);
-            $proveedorValidation->setShowErrorMessage(true);
-            $proveedorValidation->setErrorTitle('Valor inválido');
-            $proveedorValidation->setError('Por favor seleccione un ID de proveedor válido de la lista');
-            $proveedorValidation->setPromptTitle('Proveedor ID');
-            $proveedorValidation->setPrompt('Seleccione el ID del proveedor (vea la lista de proveedores abajo)');
-            $proveedorValidation->setFormula1('"' . implode(',', $proveedorIds) . '"');
-            $sheet->setDataValidation('Q2:Q1000', clone $proveedorValidation);
+    $valoresValidos = [
+        14 => 'CAMPOS CON LISTAS DESPLEGABLES (AZULES):',
+        15 => 'UBICACIONES: Principal, Unilago, Cúcuta, Medellín',
+        16 => 'TIPOS: Portatil, Desktop, Monitor, AIO, Tablet, Celular, Impresora, Periferico, otro',
+        17 => 'MARCAS: HP, Dell, Lenovo, Acer, CompuMax, Otro',
+        18 => 'RAM: 4GB, 8GB, 16GB, 32GB, otro',
+        19 => 'GRADOS: A, B, C, SCRAP, #N/D',
+        20 => 'DISPOSICIONES: En revisión, Por Alistamiento, En Laboratorio, En Bodega, Disposicion final, Para Venta',
+        21 => 'TÁCTIL: SI, NO',
+        22 => 'CANTIDAD: Solo números enteros positivos (deje vacío para 1)',
+        23 => '',
+        24 => 'PROVEEDORES DISPONIBLES (use solo el ID numérico):',
+        25 => implode(' | ', $proveedoresTexto),
+        26 => '',
+        27 => '*** HAGA CLIC EN LAS CELDAS AZULES PARA VER LA FLECHA DE DESPLEGABLE ***'
+    ];
+    foreach ($valoresValidos as $row => $texto) {
+        $sheet->setCellValue('A' . $row, $texto);
+        $sheet->getStyle('A' . $row)->applyFromArray($validValuesStyle);
+    }
+    // ===== VALIDACIONES DE DATOS CON REFERENCIAS A HOJA OCULTA =====
+    // Configuración de validaciones con referencias a la hoja oculta
+    $validaciones = [
+        'C' => [
+            'rango' => '_Listas!$A$2:$A$' . (count($ubicaciones) + 1),
+            'titulo' => 'Ubicación en Sede',
+            'prompt' => 'Seleccione la ubicación donde se almacenará el equipo'
+        ],
+        'E' => [
+            'rango' => '_Listas!$B$2:$B$' . (count($tipos) + 1),
+            'titulo' => 'Tipo de Producto',
+            'prompt' => 'Seleccione el tipo de equipo'
+        ],
+        'F' => [
+            'rango' => '_Listas!$C$2:$C$' . (count($marcas) + 1),
+            'titulo' => 'Marca',
+            'prompt' => 'Seleccione la marca del equipo'
+        ],
+        'J' => [
+            'rango' => '_Listas!$D$2:$D$' . (count($rams) + 1),
+            'titulo' => 'Memoria RAM',
+            'prompt' => 'Seleccione la cantidad de memoria RAM'
+        ],
+        'N' => [
+            'rango' => '_Listas!$E$2:$E$' . (count($grados) + 1),
+            'titulo' => 'Grado',
+            'prompt' => 'Seleccione la clasificación del equipo'
+        ],
+        'O' => [
+            'rango' => '_Listas!$F$2:$F$' . (count($disposiciones) + 1),
+            'titulo' => 'Disposición',
+            'prompt' => 'Seleccione el estado actual del equipo'
+        ],
+        'P' => [
+            'rango' => '_Listas!$G$2:$G$' . (count($tactiles) + 1),
+            'titulo' => 'Táctil',
+            'prompt' => '¿El equipo tiene pantalla táctil?'
+        ]
+    ];
+    foreach ($validaciones as $columna => $config) {
+        $validation = $sheet->getCell($columna . '2')->getDataValidation();
+        $validation->setType(DataValidation::TYPE_LIST);
+        $validation->setErrorStyle(DataValidation::STYLE_STOP);
+        $validation->setAllowBlank(false);
+        $validation->setShowInputMessage(true);
+        $validation->setShowErrorMessage(true);
+        $validation->setShowDropDown(true); // IMPORTANTE: Mostrar la flecha del desplegable
+        $validation->setErrorTitle('Valor inválido');
+        $validation->setError('Por favor seleccione un valor válido de la lista desplegable');
+        $validation->setPromptTitle($config['titulo']);
+        $validation->setPrompt($config['prompt']);
+        $validation->setFormula1($config['rango']);
+        // Aplicar a las filas 2-1000
+        for ($i = 2; $i <= 1000; $i++) {
+            $sheet->getCell($columna . $i)->setDataValidation(clone $validation);
         }
     }
-    // 9. Validación para CANTIDAD (Columna R) - Solo números enteros positivos
+    // Validación especial para PROVEEDOR ID (Columna Q)
+    if (!empty($proveedorIds)) {
+        $proveedorValidation = $sheet->getCell('Q2')->getDataValidation();
+        $proveedorValidation->setType(DataValidation::TYPE_LIST);
+        $proveedorValidation->setErrorStyle(DataValidation::STYLE_STOP);
+        $proveedorValidation->setAllowBlank(false);
+        $proveedorValidation->setShowInputMessage(true);
+        $proveedorValidation->setShowErrorMessage(true);
+        $proveedorValidation->setShowDropDown(true); // IMPORTANTE: Mostrar la flecha
+        $proveedorValidation->setErrorTitle('Valor inválido');
+        $proveedorValidation->setError('Por favor seleccione un ID de proveedor válido de la lista');
+        $proveedorValidation->setPromptTitle('Proveedor ID');
+        $proveedorValidation->setPrompt('Seleccione el ID del proveedor (vea la lista de proveedores en la fila 25)');
+        $proveedorValidation->setFormula1('_Listas!$H$2:$H$' . (count($proveedorIds) + 1));
+        for ($i = 2; $i <= 1000; $i++) {
+            $sheet->getCell('Q' . $i)->setDataValidation(clone $proveedorValidation);
+        }
+    }
+    // Validación para CANTIDAD (Columna R) - Solo números enteros positivos
     $cantidadValidation = $sheet->getCell('R2')->getDataValidation();
     $cantidadValidation->setType(DataValidation::TYPE_WHOLE);
     $cantidadValidation->setErrorStyle(DataValidation::STYLE_STOP);
@@ -392,104 +378,157 @@ try {
     $cantidadValidation->setError('La cantidad debe ser un número entero mayor o igual a 1');
     $cantidadValidation->setPromptTitle('Cantidad');
     $cantidadValidation->setPrompt('Ingrese la cantidad (número entero positivo, deje vacío para 1)');
-    $sheet->setDataValidation('R2:R1000', clone $cantidadValidation);
-    // lista selecionable de elementos fDeclara arriba esta variable y a hacer las correciones pertinentes
-    $columnSelector = [
-        'A',
-        'B',
-        'C' => '<select> <option>Principal</option> <option>Unilago</option> <option>Cúcuta</option> <option>Medellín</option>/select>',
-        'D',
-        'D',
-        'E' => '<select> <option>Portatil</option> <option>Desktop</option> <option>Monitor</option> <option>AIO</option> <option>Tablet</option> <option>Celular</option> <option>Impresora</option> <option>Periferico</option> <option>otro</option>/select>',
-        'F' => '<select> <option>HP</option> <option>Dell</option> <option>Lenovo</option> <option>Acer</option> <option>CompuMax</option> <option>',
-        'G',
-        'H',
-        'I',
-        'J' => '<option>16GB</option> <option>8GB</option> <select> <option>4GB</option> <option>otro</option>/select>',
-        'K',
-        'L',
-        'M',
-        'N' => '<select> <option>A</option> <option>B</option> <option>C</option> <option>SCRAP</option> <select>',
-        'O' => '<select> <option>En revisión</option> <option>Por Alistamiento</option> <option>En Laboratorio</option> <option>En Bodega</option> <option>Disposicion final</option> <option>Para Venta</option>/select>',
-        'P' => '<select> <option>SI</option> <option>NO</option>/select>',
-        'Q',
-        'R',
-    ];
+    for ($i = 2; $i <= 1000; $i++) {
+        $sheet->getCell('R' . $i)->setDataValidation(clone $cantidadValidation);
+    }
     // Ajustar ancho de columnas
     $columnWidths = [
         'A' => 18,
         'B' => 15,
-        'C' => 18,
+        'C' => 20,
         'D' => 15,
-        'E' => 18,
-        'F' => 12,
+        'E' => 20,
+        'F' => 15,
         'G' => 15,
         'H' => 20,
         'I' => 18,
-        'J' => 12,
+        'J' => 16,
         'K' => 12,
         'L' => 10,
         'M' => 25,
-        'N' => 8,
-        'O' => 14,
-        'P' => 8,
-        'Q' => 12,
-        'R' => 5
+        'N' => 12,
+        'O' => 22,
+        'P' => 12,
+        'Q' => 16,
+        'R' => 10
     ];
     foreach ($columnWidths as $col => $width) {
         $sheet->getColumnDimension($col)->setWidth($width);
     }
-    // Establecer altura para las filas de encabezados
-    $sheet->getRowDimension('1')->setRowHeight(25);
+    // Altura de fila de encabezados
+    $sheet->getRowDimension('1')->setRowHeight(35);
+    // Congelar panel (primera fila)
+    $sheet->freezePane('A2');
     // Configurar encabezados HTTP para descarga
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment; filename="Plantilla_Importacion_Equipos_' . date('Y-m-d_H-i-s') . '.xlsx"');
+    header('Content-Disposition: attachment; filename="Plantilla_Importacion_Equipos_' . date('Y-m-d_His') . '.xlsx"');
     header('Cache-Control: max-age=0');
-    header('Cache-Control: max-age=1');
-    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-    header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-    header('Cache-Control: cache, must-revalidate');
+    header('Cache-Control: no-cache, must-revalidate');
+    header('Expires: 0');
     header('Pragma: public');
-    // Crear archivo Excel y enviarlo
+    // Crear y enviar archivo
     $writer = new Xlsx($spreadsheet);
-    // Usar buffer de salida para capturar el contenido
-    ob_start();
     $writer->save('php://output');
-    $content = ob_get_contents();
-    ob_end_clean();
-    // Enviar el contenido
-    echo $content;
+    // Limpiar recursos
+    $spreadsheet->disconnectWorksheets();
+    unset($spreadsheet);
     exit();
 } catch (Exception $e) {
-    // En caso de error, limpiar buffer y mostrar mensaje
-    ob_clean();
+    // Limpiar buffer en caso de error
+    if (ob_get_level()) {
+        ob_end_clean();
+    }
+    // Log del error
+    error_log("Error generando plantilla Excel: " . $e->getMessage() . " en " . $e->getFile() . " línea " . $e->getLine());
+    // Mostrar página de error
     header('Content-Type: text/html; charset=utf-8');
     http_response_code(500);
-    echo '<!DOCTYPE html>';
-    echo '<html lang="es">';
-    echo '<head>';
-    echo '<meta charset="UTF-8">';
-    echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
-    echo '<title>Error al generar Excel</title>';
-    echo '<style>';
-    echo 'body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }';
-    echo '.error-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }';
-    echo '.error-title { color: #d32f2f; margin-bottom: 15px; }';
-    echo '.error-message { color: #666; margin-bottom: 20px; }';
-    echo '.back-button { background: #1976d2; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; }';
-    echo '.back-button:hover { background: #1565c0; }';
-    echo '</style>';
-    echo '</head>';
-    echo '<body>';
-    echo '<div class="error-container">';
-    echo '<h2 class="error-title">Error al generar plantilla Excel</h2>';
-    echo '<div class="error-message">';
-    echo '<strong>Error:</strong> ' . htmlspecialchars($e->getMessage());
-    echo '</div>';
-    echo '<a href="javascript:history.back()" class="back-button">Volver atrás</a>';
-    echo '</div>';
-    echo '</body>';
-    echo '</html>';
-    // Log del error
-    error_log("Error generando plantilla Excel: " . $e->getMessage() . " - Archivo: " . $e->getFile() . " - Línea: " . $e->getLine());
+?>
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Error al generar Excel</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            }
+            .error-container {
+                background: white;
+                padding: 40px;
+                border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                max-width: 600px;
+                width: 100%;
+            }
+            .error-icon {
+                text-align: center;
+                font-size: 64px;
+                color: #d32f2f;
+                margin-bottom: 20px;
+            }
+            .error-title {
+                color: #d32f2f;
+                margin-bottom: 15px;
+                text-align: center;
+                font-size: 24px;
+            }
+            .error-message {
+                color: #666;
+                margin-bottom: 20px;
+                line-height: 1.6;
+                background: #f5f5f5;
+                padding: 15px;
+                border-radius: 8px;
+                border-left: 4px solid #d32f2f;
+            }
+            .error-details {
+                font-size: 14px;
+                color: #999;
+                margin-top: 15px;
+                padding-top: 15px;
+                border-top: 1px solid #e0e0e0;
+            }
+            .back-button {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 12px 24px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                font-weight: 500;
+                transition: transform 0.2s, box-shadow 0.2s;
+                width: 100%;
+                text-align: center;
+                margin-top: 20px;
+            }
+            .back-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="error-container">
+            <div class="error-icon">⚠️</div>
+            <h2 class="error-title">Error al generar plantilla Excel</h2>
+            <div class="error-message">
+                <strong>Error:</strong> <?php echo htmlspecialchars($e->getMessage()); ?>
+            </div>
+            <div class="error-details">
+                <strong>Archivo:</strong> <?php echo htmlspecialchars(basename($e->getFile())); ?><br>
+                <strong>Línea:</strong> <?php echo $e->getLine(); ?>
+            </div>
+            <a href="javascript:history.back()" class="back-button">← Volver atrás</a>
+        </div>
+    </body>
+    </html>
+<?php
+    exit();
 }
+?>

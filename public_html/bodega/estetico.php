@@ -352,7 +352,7 @@ function gradoBadgeClass(string $grado): string
       padding: 20px;
     }
     .top-navbar {
-      background: linear-gradient(135deg, #ffd93d 0%, #ff6b6b 100%);
+      background: linear-gradient(135deg, #542965 0%, #9b59b6 100%);
       padding: 15px 20px;
       margin-bottom: 20px;
       border-radius: 8px;
@@ -419,9 +419,9 @@ function gradoBadgeClass(string $grado): string
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
           <i class="material-icons" style="margin-right: 8px;">palette</i>
-          🎨 DIAGNÓSTICO ESTÉTICO | <?php echo htmlspecialchars($_SESSION['nombre'] ?? 'USUARIO'); ?>
+          DIAGNÓSTICO ESTÉTICO | <?php echo htmlspecialchars($_SESSION['nombre'] ?? 'USUARIO'); ?>
         </a>
-        <a href="inventario.php" class="btn btn-sm btn-outline-secondary">
+        <a href="inventario.php" class="btn btn-sm btn-outline-light">
                 <i class="material-icons">inventory</i> Inventario
               </a>
       </div>

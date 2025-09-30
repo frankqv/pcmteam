@@ -5,22 +5,18 @@ ob_start();
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
-
 require_once dirname(__DIR__, 2) . '/config/ctconex.php';
-
 // Validación de roles
 $allowedRoles = [1, 2, 5, 6, 7];
 if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], $allowedRoles, true)) {
   header('Location: ../error404.php');
   exit;
 }
-
 // Variables globales
 $mensaje = '';
 $equipos_pendientes = [];
 $equipo_seleccionado = null;
 $diagnostico_ultimo = null;
-
 // Obtener información del usuario para navbar
 $userInfo = null;
 try {
@@ -39,10 +35,8 @@ try {
     'idsede' => 'Sede sin definir'
   ];
 }
-
 // Cargar equipos pendientes de diagnóstico estético
 // Permite que cualquier usuario vea todos los equipos sin restricciones
-
 try {
   $stmt = $connect->prepare("
     SELECT i.*, 
@@ -86,10 +80,8 @@ try {
   error_log("Error carga equipos: " . $e->getMessage());
   $mensaje .= "<div class='alert alert-warning'>Error al cargar equipos: " . htmlspecialchars($e->getMessage()) . "</div>";
 }
-
 // Sección CORREGIDA para cargar TODOS los equipos disponibles para diagnóstico estético
 // Permite que cualquier usuario vea todos los equipos sin restricciones
-
 try {
   $stmt = $connect->prepare("
     SELECT i.*, 
@@ -133,7 +125,6 @@ try {
   error_log("Error carga equipos: " . $e->getMessage());
   $mensaje .= "<div class='alert alert-warning'>Error al cargar equipos: " . htmlspecialchars($e->getMessage()) . "</div>";
 }
-
 // Código CORREGIDO para insertar diagnóstico estético
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   try {
@@ -237,10 +228,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mensaje .= "<div class='alert alert-danger'>❌ Error: " . htmlspecialchars($e->getMessage()) . "</div>";
   }
 }
-
 // Código CORREGIDO para cargar datos del equipo seleccionado
 // Reemplaza la sección de carga de equipo seleccionado (líneas 130-150 aproximadamente)
-
 if (isset($_GET['id']) && (int) $_GET['id'] > 0) {
   $equipo_id = (int) $_GET['id'];
   try {
@@ -269,7 +258,6 @@ function badgeClass(string $v): string {
   if ($v === 'MALO' || $v === 'RECHAZADO') return 'status-malo';
   return 'status-nd';
 }
-
 // Helper function for grade badges
 function gradoBadgeClass(string $grado): string {
   $grado = strtoupper(trim($grado ?? ''));
@@ -282,7 +270,6 @@ function gradoBadgeClass(string $grado): string {
   }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -421,7 +408,7 @@ function gradoBadgeClass(string $grado): string {
       padding: 20px;
     }
     .top-navbar {
-      background: linear-gradient(135deg, #ffd93d 0%, #ff6b6b 100%);
+      background: linear-gradient(135deg, #542965 0%, #9b59b6 100%);
       padding: 15px 20px;
       margin-bottom: 20px;
       border-radius: 8px;
