@@ -173,6 +173,7 @@ if (isset($_GET['id'])) {
                                                         echo '</option>';
                                                     }
                                                     ?>
+                                                    <option value="Todo">Acceso Completo</option>
                                                 </select>
                                             </div>
                                         </div>
