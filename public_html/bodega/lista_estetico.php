@@ -1,5 +1,5 @@
-
 <?php
+// bodega/lista_estetico.php
 // estetico.php - Diagnóstico Estético de Equipos
 ob_start();
 if (session_status() === PHP_SESSION_NONE) {
@@ -129,10 +129,8 @@ try {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   try {
     $connect->beginTransaction();
-    
     $inventario_id = (int) ($_POST['inventario_id'] ?? 0);
     $tecnico_id = (int) ($_SESSION['id']);
-    
     if ($inventario_id > 0) {
       // Insertar diagnóstico estético
       $stmt = $connect->prepare("
@@ -142,7 +140,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          estado_final, observaciones, fecha_proceso)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
       ");
-      
       $stmt->execute([
         $inventario_id,
         $tecnico_id,
@@ -156,7 +153,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_POST['estado_final'] ?? 'pendiente',
         $_POST['observaciones'] ?? ''
       ]);
-      
       // Actualizar disposición del inventario según el estado final
       $nueva_disposicion = 'en_revision';
       if ($_POST['estado_final'] === 'aprobado') {
@@ -164,14 +160,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       } elseif ($_POST['estado_final'] === 'requiere_revision') {
         $nueva_disposicion = 'pendiente_estetico';
       }
-      
       $stmt = $connect->prepare("
         UPDATE bodega_inventario 
         SET disposicion = ?, fecha_modificacion = NOW()
         WHERE id = ?
       ");
       $stmt->execute([$nueva_disposicion, $inventario_id]);
-      
       // Registrar cambio en log
       $stmt = $connect->prepare("
         INSERT INTO bodega_log_cambios 
@@ -185,9 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'pendiente_estetico',
         $nueva_disposicion
       ]);
-      
       $mensaje .= "<div class='alert alert-success'>✅ Diagnóstico estético guardado correctamente</div>";
-      
       // Recargar TODOS los equipos disponibles (sin restricciones)
       $stmt = $connect->prepare("
         SELECT i.*, 
@@ -221,7 +213,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $stmt->execute();
       $equipos_pendientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
     $connect->commit();
   } catch (Exception $e) {
     $connect->rollBack();
@@ -236,7 +227,6 @@ if (isset($_GET['id']) && (int) $_GET['id'] > 0) {
     $stmt = $connect->prepare("SELECT * FROM bodega_inventario WHERE id = ? LIMIT 1");
     $stmt->execute([$equipo_id]);
     $equipo_seleccionado = $stmt->fetch(PDO::FETCH_ASSOC);
-    
     if ($equipo_seleccionado) {
       $stmt = $connect->prepare("
         SELECT * FROM bodega_estetico 
@@ -252,21 +242,28 @@ if (isset($_GET['id']) && (int) $_GET['id'] > 0) {
   }
 }
 // Helper function for status badges
-function badgeClass(string $v): string {
+function badgeClass(string $v): string
+{
   $v = strtoupper(trim($v ?? ''));
   if ($v === 'BUENO' || $v === 'APROBADO') return 'status-bueno';
   if ($v === 'MALO' || $v === 'RECHAZADO') return 'status-malo';
   return 'status-nd';
 }
 // Helper function for grade badges
-function gradoBadgeClass(string $grado): string {
+function gradoBadgeClass(string $grado): string
+{
   $grado = strtoupper(trim($grado ?? ''));
   switch ($grado) {
-    case 'A': return 'grado-a';
-    case 'B': return 'grado-b';
-    case 'C': return 'grado-c';
-    case 'SCRAP': return 'grado-scrap';
-    default: return 'grado-nd';
+    case 'A':
+      return 'grado-a';
+    case 'B':
+      return 'grado-b';
+    case 'C':
+      return 'grado-c';
+    case 'SCRAP':
+      return 'grado-scrap';
+    default:
+      return 'grado-nd';
   }
 }
 ?>
@@ -286,7 +283,7 @@ function gradoBadgeClass(string $grado): string {
       padding: 20px;
       margin-bottom: 20px;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     .section-title {
       background: #f2f2f2;
@@ -318,7 +315,7 @@ function gradoBadgeClass(string $grado): string {
     .equipment-card:hover {
       background: #e9ecef;
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
     .equipment-card.selected {
       background: #d4edda;
@@ -340,14 +337,38 @@ function gradoBadgeClass(string $grado): string {
       font-size: 0.875em;
       font-weight: 500;
     }
-    .status-bueno { background-color: #d4edda; color: #155724; }
-    .status-malo { background-color: #f8d7da; color: #721c24; }
-    .status-nd { background-color: #e2e3e5; color: #495057; }
-    .grado-a { background-color: #d4edda; color: #155724; }
-    .grado-b { background-color: #fff3cd; color: #856404; }
-    .grado-c { background-color: #f8d7da; color: #721c24; }
-    .grado-scrap { background-color: #721c24; color: #f8d7da; }
-    .grado-nd { background-color: #e2e3e5; color: #495057; }
+    .status-bueno {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .status-malo {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .status-nd {
+      background-color: #e2e3e5;
+      color: #495057;
+    }
+    .grado-a {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .grado-b {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    .grado-c {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .grado-scrap {
+      background-color: #721c24;
+      color: #f8d7da;
+    }
+    .grado-nd {
+      background-color: #e2e3e5;
+      color: #495057;
+    }
     .alert {
       padding: 12px 15px;
       margin-bottom: 15px;
@@ -460,17 +481,15 @@ function gradoBadgeClass(string $grado): string {
 <body>
   <!-- Top Navbar -->
   <?php
-    include_once '../layouts/nav.php';
-    include_once '../layouts/menu_data.php';
+  include_once '../layouts/nav.php';
+  include_once '../layouts/menu_data.php';
   ?>
-  
   <nav id="sidebar">
     <div class="sidebar-header">
       <h3><img src="../assets/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
     </div>
     <?php renderMenu($menu); ?>
   </nav>
-  
   <div class="main-container">
     <!-- Top Navbar -->
     <div class="top-navbar">
@@ -481,12 +500,10 @@ function gradoBadgeClass(string $grado): string {
         </a>
       </div>
     </div>
-    
     <!-- Mensajes de alerta -->
     <?php if (!empty($mensaje)): ?>
       <?php echo $mensaje; ?>
     <?php endif; ?>
-    
     <!-- Guía de Grados Estéticos -->
     <div class="guia-grados">
       <h5><i class="material-icons" style="margin-right: 8px;">info</i>Guía de Grados Estéticos</h5>
@@ -497,65 +514,56 @@ function gradoBadgeClass(string $grado): string {
         <li><strong>SCRAP:</strong> Estado muy deteriorado, no apto para venta</li>
       </ul>
     </div>
-    
     <!-- Lista de Equipos Pendientes -->
-<!-- Reemplaza la sección de "Lista de Equipos Pendientes" en tu HTML -->
-<div class="form-section">
-  <div class="section-title">
-    <div class="card-icon">📋</div>
-    <h4>Todos los Equipos Disponibles para Diagnóstico Estético</h4>
-  </div>
-  
-  <?php if (empty($equipos_pendientes)): ?>
-    <div class="alert alert-info">
-      ℹ️ No hay equipos disponibles para diagnóstico estético en este momento.
-    </div>
-  <?php else: ?>
-    <div class="alert alert-info">
-      📌 <strong>Mostrando <?php echo count($equipos_pendientes); ?> equipos disponibles</strong> - Cualquier técnico puede trabajar con estos equipos.
-    </div>
-    
-    <div class="row">
-      <?php foreach ($equipos_pendientes as $equipo): ?>
-        <div class="col-md-6 col-lg-4">
-          <div class="equipment-card" onclick="seleccionarEquipo(<?php echo $equipo['id']; ?>)">
-            <div class="equipment-code"><?php echo htmlspecialchars($equipo['codigo_g'] ?? 'N/A'); ?></div>
-            <div class="equipment-details">
-              <strong><?php echo htmlspecialchars(($equipo['marca'] ?? '') . ' ' . ($equipo['modelo'] ?? '')); ?></strong><br>
-              <small>Serial: <?php echo htmlspecialchars($equipo['serial'] ?? 'N/A'); ?></small><br>
-              <small>Ubicación: <?php echo htmlspecialchars($equipo['ubicacion'] ?? 'N/A'); ?></small><br>
-              
-              <!-- Información del técnico asignado (si existe) -->
-              <?php if (!empty($equipo['tecnico_asignado'])): ?>
-                <small>Técnico: <?php echo htmlspecialchars($equipo['tecnico_asignado']); ?></small><br>
-              <?php endif; ?>
-              
-              <!-- Estado actual del equipo -->
-              <span class="status-badge status-nd">
-                <?php echo htmlspecialchars(ucfirst(str_replace('_', ' ', $equipo['disposicion'] ?? 'pendiente'))); ?>
-              </span>
-              
-              <!-- Estado estético actual -->
-              <span class="status-badge <?php echo badgeClass($equipo['estado_estetico']); ?>">
-                Estético: <?php echo htmlspecialchars(ucfirst($equipo['estado_estetico'] ?? 'pendiente')); ?>
-              </span>
-              
-              <!-- Indicadores de fallas si existen -->
-              <?php if (!empty($equipo['falla_electrica']) && $equipo['falla_electrica'] === 'si'): ?>
-                <br><small class="text-warning">⚡ Tiene falla eléctrica</small>
-              <?php endif; ?>
-              
-              <?php if (!empty($equipo['falla_estetica']) && $equipo['falla_estetica'] === 'si'): ?>
-                <br><small class="text-danger">🎨 Tiene falla estética</small>
-              <?php endif; ?>
-            </div>
-          </div>
+    <!-- Reemplaza la sección de "Lista de Equipos Pendientes" en tu HTML -->
+    <div class="form-section">
+      <div class="section-title">
+        <div class="card-icon">📋</div>
+        <h4>Todos los Equipos Disponibles para Diagnóstico Estético</h4>
+      </div>
+      <?php if (empty($equipos_pendientes)): ?>
+        <div class="alert alert-info">
+          ℹ️ No hay equipos disponibles para diagnóstico estético en este momento.
         </div>
-      <?php endforeach; ?>
+      <?php else: ?>
+        <div class="alert alert-info">
+          📌 <strong>Mostrando <?php echo count($equipos_pendientes); ?> equipos disponibles</strong> - Cualquier técnico puede trabajar con estos equipos.
+        </div>
+        <div class="row">
+          <?php foreach ($equipos_pendientes as $equipo): ?>
+            <div class="col-md-6 col-lg-4">
+              <div class="equipment-card" onclick="seleccionarEquipo(<?php echo $equipo['id']; ?>)">
+                <div class="equipment-code"><?php echo htmlspecialchars($equipo['codigo_g'] ?? 'N/A'); ?></div>
+                <div class="equipment-details">
+                  <strong><?php echo htmlspecialchars(($equipo['marca'] ?? '') . ' ' . ($equipo['modelo'] ?? '')); ?></strong><br>
+                  <small>Serial: <?php echo htmlspecialchars($equipo['serial'] ?? 'N/A'); ?></small><br>
+                  <small>Ubicación: <?php echo htmlspecialchars($equipo['ubicacion'] ?? 'N/A'); ?></small><br>
+                  <!-- Información del técnico asignado (si existe) -->
+                  <?php if (!empty($equipo['tecnico_asignado'])): ?>
+                    <small>Técnico: <?php echo htmlspecialchars($equipo['tecnico_asignado']); ?></small><br>
+                  <?php endif; ?>
+                  <!-- Estado actual del equipo -->
+                  <span class="status-badge status-nd">
+                    <?php echo htmlspecialchars(ucfirst(str_replace('_', ' ', $equipo['disposicion'] ?? 'pendiente'))); ?>
+                  </span>
+                  <!-- Estado estético actual -->
+                  <span class="status-badge <?php echo badgeClass($equipo['estado_estetico']); ?>">
+                    Estético: <?php echo htmlspecialchars(ucfirst($equipo['estado_estetico'] ?? 'pendiente')); ?>
+                  </span>
+                  <!-- Indicadores de fallas si existen -->
+                  <?php if (!empty($equipo['falla_electrica']) && $equipo['falla_electrica'] === 'si'): ?>
+                    <br><small class="text-warning">⚡ Tiene falla eléctrica</small>
+                  <?php endif; ?>
+                  <?php if (!empty($equipo['falla_estetica']) && $equipo['falla_estetica'] === 'si'): ?>
+                    <br><small class="text-danger">🎨 Tiene falla estética</small>
+                  <?php endif; ?>
+                </div>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
     </div>
-  <?php endif; ?>
-</div>
-    
     <!-- Formulario de Diagnóstico Estético -->
     <?php if ($equipo_seleccionado): ?>
       <!-- Panel de Diagnóstico Actual -->
@@ -599,16 +607,13 @@ function gradoBadgeClass(string $grado): string {
           </div>
         <?php endif; ?>
       </div>
-      
       <!-- Formulario -->
       <form method="POST" class="form-section">
         <div class="section-title">
           <div class="card-icon">🎨</div>
           <h4>Nuevo Diagnóstico Estético</h4>
         </div>
-        
         <input type="hidden" name="inventario_id" value="<?php echo $equipo_seleccionado['id']; ?>">
-        
         <div class="form-grid">
           <div class="form-group">
             <label for="estado_carcasa">Estado de la Carcasa</label>
@@ -621,7 +626,6 @@ function gradoBadgeClass(string $grado): string {
               <option value="N/D">N/D</option>
             </select>
           </div>
-          
           <div class="form-group">
             <label for="estado_pantalla_fisica">Estado Físico de la Pantalla</label>
             <select id="estado_pantalla_fisica" name="estado_pantalla_fisica" class="form-control" required>
@@ -633,7 +637,6 @@ function gradoBadgeClass(string $grado): string {
               <option value="N/D">N/D</option>
             </select>
           </div>
-          
           <div class="form-group">
             <label for="estado_teclado_fisico">Estado Físico del Teclado</label>
             <select id="estado_teclado_fisico" name="estado_teclado_fisico" class="form-control" required>
@@ -645,7 +648,6 @@ function gradoBadgeClass(string $grado): string {
               <option value="N/D">N/D</option>
             </select>
           </div>
-          
           <div class="form-group">
             <label for="grado_asignado">Grado Estético Asignado</label>
             <select id="grado_asignado" name="grado_asignado" class="form-control" required>
@@ -657,13 +659,11 @@ function gradoBadgeClass(string $grado): string {
             </select>
           </div>
         </div>
-        
         <div class="form-group">
           <label for="rayones_golpes">Descripción de Rayones y Golpes</label>
-          <textarea id="rayones_golpes" name="rayones_golpes" rows="3" class="form-control" 
-                    placeholder="Describe detalladamente los rayones, golpes o daños físicos encontrados..."></textarea>
+          <textarea id="rayones_golpes" name="rayones_golpes" rows="3" class="form-control"
+            placeholder="Describe detalladamente los rayones, golpes o daños físicos encontrados..."></textarea>
         </div>
-        
         <div class="form-group">
           <label for="limpieza_realizada">¿Se Realizó Limpieza?</label>
           <select id="limpieza_realizada" name="limpieza_realizada" class="form-control" required>
@@ -673,13 +673,11 @@ function gradoBadgeClass(string $grado): string {
             <option value="no">NO - No se requirió limpieza</option>
           </select>
         </div>
-        
         <div class="form-group">
           <label for="partes_reemplazadas">Partes Reemplazadas</label>
-          <textarea id="partes_reemplazadas" name="partes_reemplazadas" rows="3" class="form-control" 
-                    placeholder="Lista las partes que fueron reemplazadas por daños estéticos..."></textarea>
+          <textarea id="partes_reemplazadas" name="partes_reemplazadas" rows="3" class="form-control"
+            placeholder="Lista las partes que fueron reemplazadas por daños estéticos..."></textarea>
         </div>
-        
         <div class="form-group">
           <label for="estado_final">Estado Final</label>
           <select id="estado_final" name="estado_final" class="form-control" required>
@@ -689,13 +687,11 @@ function gradoBadgeClass(string $grado): string {
             <option value="requiere_revision">REQUIERE REVISIÓN - Necesita más trabajo estético</option>
           </select>
         </div>
-        
         <div class="form-group">
           <label for="observaciones">Observaciones Adicionales</label>
-          <textarea id="observaciones" name="observaciones" rows="3" class="form-control" 
-                    placeholder="Observaciones adicionales del diagnóstico estético..."></textarea>
+          <textarea id="observaciones" name="observaciones" rows="3" class="form-control"
+            placeholder="Observaciones adicionales del diagnóstico estético..."></textarea>
         </div>
-        
         <div class="btn-container">
           <button type="submit" class="btn btn-success">
             <i class="material-icons" style="margin-right: 8px;">save</i>
@@ -703,7 +699,6 @@ function gradoBadgeClass(string $grado): string {
           </button>
         </div>
       </form>
-      
       <!-- Botones de navegación -->
       <div class="btn-container">
         <a href="?" class="btn btn-secondary">
@@ -722,7 +717,6 @@ function gradoBadgeClass(string $grado): string {
       </div>
     <?php endif; ?>
   </div>
-  
   <!-- Scripts -->
   <script src="../assets/js/jquery-3.3.1.min.js"></script>
   <script src="../assets/js/bootstrap.min.js"></script>
@@ -732,26 +726,23 @@ function gradoBadgeClass(string $grado): string {
       document.querySelectorAll('.equipment-card').forEach(card => {
         card.classList.remove('selected');
       });
-      
       // Seleccionar nueva tarjeta
       event.currentTarget.classList.add('selected');
-      
       // Redirigir al formulario
       window.location.href = '?id=' + equipoId;
     }
-    
     // Pre-llenar formulario si hay diagnóstico anterior
     <?php if ($diagnostico_ultimo): ?>
-    document.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('estado_carcasa').value = '<?php echo htmlspecialchars($diagnostico_ultimo['estado_carcasa'] ?? ''); ?>';
-      document.getElementById('estado_pantalla_fisica').value = '<?php echo htmlspecialchars($diagnostico_ultimo['estado_pantalla_fisica'] ?? ''); ?>';
-      document.getElementById('estado_teclado_fisico').value = '<?php echo htmlspecialchars($diagnostico_ultimo['estado_teclado_fisico'] ?? ''); ?>';
-      document.getElementById('grado_asignado').value = '<?php echo htmlspecialchars($diagnostico_ultimo['grado_asignado'] ?? ''); ?>';
-      document.getElementById('rayones_golpes').value = '<?php echo htmlspecialchars($diagnostico_ultimo['rayones_golpes'] ?? ''); ?>';
-      document.getElementById('limpieza_realizada').value = '<?php echo htmlspecialchars($diagnostico_ultimo['limpieza_realizada'] ?? ''); ?>';
-      document.getElementById('partes_reemplazadas').value = '<?php echo htmlspecialchars($diagnostico_ultimo['partes_reemplazadas'] ?? ''); ?>';
-      document.getElementById('observaciones').value = '<?php echo htmlspecialchars($diagnostico_ultimo['observaciones'] ?? ''); ?>';
-    });
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('estado_carcasa').value = '<?php echo htmlspecialchars($diagnostico_ultimo['estado_carcasa'] ?? ''); ?>';
+        document.getElementById('estado_pantalla_fisica').value = '<?php echo htmlspecialchars($diagnostico_ultimo['estado_pantalla_fisica'] ?? ''); ?>';
+        document.getElementById('estado_teclado_fisico').value = '<?php echo htmlspecialchars($diagnostico_ultimo['estado_teclado_fisico'] ?? ''); ?>';
+        document.getElementById('grado_asignado').value = '<?php echo htmlspecialchars($diagnostico_ultimo['grado_asignado'] ?? ''); ?>';
+        document.getElementById('rayones_golpes').value = '<?php echo htmlspecialchars($diagnostico_ultimo['rayones_golpes'] ?? ''); ?>';
+        document.getElementById('limpieza_realizada').value = '<?php echo htmlspecialchars($diagnostico_ultimo['limpieza_realizada'] ?? ''); ?>';
+        document.getElementById('partes_reemplazadas').value = '<?php echo htmlspecialchars($diagnostico_ultimo['partes_reemplazadas'] ?? ''); ?>';
+        document.getElementById('observaciones').value = '<?php echo htmlspecialchars($diagnostico_ultimo['observaciones'] ?? ''); ?>';
+      });
     <?php endif; ?>
   </script>
 </body>

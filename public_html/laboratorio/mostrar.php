@@ -30,24 +30,53 @@ while ($rowTec = $resultTec->fetch_assoc()) {
         <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
         <link rel="icon" type="image/png" href="../assets/img/favicon.webp" />
         <style>
-        /* fila con mantenimiento — celeste claro */
-        .registered-row { 
-            background-color: #dff6ff !important; 
-        }
-        /* hover ligeramente más oscuro */
-        #inventarioTable tbody tr.registered-row:hover { 
-            background-color: #c6eefc !important; 
-        }
-        /* Indicador visual adicional en la columna de acciones para equipos con mantenimiento */
-        .maintenance-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #87edd9ff;
-            border-radius: 50%;
-            margin-left: 5px;
-            vertical-align: middle;
-        }
+            /* Filas con mantenimiento registrado */
+            .registered-row {
+                background-color: #d1ecf1 !important;
+            }
+            .registered-row:hover {
+                background-color: #bee5eb !important;
+            }
+            /* Indicador visual de mantenimiento */
+            .maintenance-indicator {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                background-color: #28a745;
+                border-radius: 50%;
+                margin-left: 8px;
+                vertical-align: middle;
+                animation: pulse 2s infinite;
+            }
+            @keyframes pulse {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.5;
+                }
+            }
+            /* Mejorar visualización de los cards */
+            .card-body h4 {
+                font-size: 2.5rem;
+                font-weight: bold;
+            }
+            .text-white-50 {
+                font-size: 0.85rem;
+            }
+            /* Estilos para los filtros */
+            .badge-info {
+                background-color: #17a2b8;
+                padding: 5px 10px;
+                margin-right: 5px;
+                border-radius: 12px;
+            }
+            #clearFilters {
+                padding: 0;
+                font-size: 12px;
+                vertical-align: middle;
+            }
         </style>
     </head>
     <body>
@@ -69,7 +98,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                         <div class="container-fluid">
                             <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                                 <span class="material-icons">arrow_back_ios</span>
-                            </button> 
+                            </button>
                             <?php
                             $titulo = "";
                             if ($_SESSION['rol'] == 1) {
@@ -87,42 +116,56 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                             } elseif ($_SESSION['rol'] == 7) {
                                 $titulo = "BOGDEGA";
                             } else {
-                                // Obtener el nombre del usuario actual
                                 $sql = "SELECT nombre FROM usuarios WHERE id = '" . $_SESSION['id'] . "'";
                                 $result = $conn->query($sql);
                                 $user = $result->fetch_assoc();
                                 $titulo = $user['nombre'];
                             }
                             ?>
-                            <a class="navbar-brand" href="#"> LISTADO DE MANTENIMIEMNTO Y LIMPIEZA </a>
-                            </div>
+                            <a class="navbar-brand" href="#"> LISTADO EQUIPOS ASINGNADOS|</a>
+                        </div>
+                        <?php
+                        $userInfo = [];
+                        if (isset($_SESSION['id'])) {
+                            $userId = $_SESSION['id'];
+                            try {
+                                $sql_user = "SELECT nombre, usuario, correo, foto, idsede FROM usuarios WHERE id = :id";
+                                $stmt_user = $connect->prepare($sql_user);
+                                $stmt_user->bindParam(':id', $userId, PDO::PARAM_INT);
+                                $stmt_user->execute();
+                                $userInfo = $stmt_user->fetch(PDO::FETCH_ASSOC);
+                            } catch (PDOException $e) {
+                                $userInfo = [];
+                            }
+                        }
+                        ?>
+                        <a class="navbar-brand" href="#">
+                            <i class="material-icons" style="margin-right: 8px;">handyman</i>
+                                MANTENIMIENTO Y LIMPIEZA <?php echo htmlspecialchars($_SESSION['nombre'] ?? 'USUARIO'); ?>
+                        </a>
                         <ul class="nav navbar-nav ml-auto">
                             <li class="dropdown nav-item active">
                                 <a href="#" class="nav-link" data-toggle="dropdown">
-                                    <img src="../assets/img/<?php echo htmlspecialchars($user['foto']); ?>"
-                                        alt="Foto de perfil" style="width: 30px; height: 30px; border-radius: 50%;">
+                                    <img src="../assets/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
+                                        alt="Foto de perfil"
+                                        style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
                                 </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <?php
-                                        // Obtener información completa del usuario para el dropdown
-                                        $sql = "SELECT nombre, usuario, correo, rol, foto, idsede FROM usuarios WHERE id = '" . $_SESSION['id'] . "'";
-                                        $result = $conn->query($sql);
-                                        $user = $result->fetch_assoc();
-                                        ?>
-                                        <strong><a href="#"><?php echo htmlspecialchars($user['nombre']); ?></a></strong>
-                                        <a href="#"><?php echo htmlspecialchars($user['usuario']); ?></a>
-                                        <a href="#"><?php echo htmlspecialchars($user['correo']); ?></a>
-                                        <?php echo trim($user['idsede'] ?? '') !== '' ? htmlspecialchars($user['idsede']) : 'Sede sin definir'; ?>
-                                        <a href="../cuenta/perfil.php">Mi perfil</a>
+                                <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
+                                    <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong></li>
+                                    <li><?php echo htmlspecialchars($userInfo['usuario'] ?? 'usuario'); ?></li>
+                                    <li><?php echo htmlspecialchars($userInfo['correo'] ?? 'correo@ejemplo.com'); ?></li>
+                                    <li><?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?></li>
+                                    <li class="mt-2">
+                                        <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi perfil</a>
                                     </li>
-                                    <!-- <li> <a href="../cuenta/salir.php">Salir</a> </li> -->
+                                    <li><a href="../salir.php" class="btn btn-sm btn-ligth btn-block">Salir</a></li>
+                                </ul>
                             </li>
                         </ul>
                     </nav>
                 </div>
                 <div class="main-content">
-                    <!-- Resumen de Inventario -->
+                    <!-- Resumen de Inventario Mejorado -->
                     <div class="row">
                         <div class="col-md-3">
                             <div class="card bg-primary text-white mb-4">
@@ -133,7 +176,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                     $row = $result->fetch_assoc();
                                     ?>
                                     <h4 class="mb-0"><?php echo $row['total']; ?></h4>
-                                    <div class="text-white-50">Total Equipos</div>
+                                    <div class="text-white-50">Total Equipos Asignados</div>
                                 </div>
                             </div>
                         </div>
@@ -141,25 +184,17 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                             <div class="card bg-success text-white mb-4">
                                 <div class="card-body">
                                     <?php
-                                    $sql = "SELECT COUNT(*) as disponibles FROM bodega_inventario WHERE (estado = 'activo' OR  estado = 'inactivo' OR estado = 'Business') AND disposicion = 'disponible' AND tecnico_id = '" . $_SESSION['id'] . "'";
+                                    // Equipos con mantenimiento registrado (ya realizados)
+                                    $sql = "SELECT COUNT(DISTINCT i.id) as completados 
+                                            FROM bodega_inventario i
+                                            INNER JOIN bodega_mantenimiento m ON i.id = m.inventario_id
+                                            WHERE i.estado = 'activo' 
+                                            AND i.tecnico_id = '" . $_SESSION['id'] . "'";
                                     $result = $conn->query($sql);
                                     $row = $result->fetch_assoc();
                                     ?>
-                                    <h4 class="mb-0"><?php echo $row['disponibles']; ?></h4>
-                                    <div class="text-white-50">Disponibles</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-warning text-white mb-4">
-                                <div class="card-body">
-                                    <?php
-                                    $sql = "SELECT COUNT(*) as en_proceso FROM bodega_inventario WHERE estado = 'activo' AND disposicion IN ('en_diagnostico', 'en_reparacion', 'en_control') AND tecnico_id = '" . $_SESSION['id'] . "'";
-                                    $result = $conn->query($sql);
-                                    $row = $result->fetch_assoc();
-                                    ?>
-                                    <h4 class="mb-0"><?php echo $row['en_proceso']; ?></h4>
-                                    <div class="text-white-50">En Proceso</div>
+                                    <h4 class="mb-0"><?php echo $row['completados']; ?></h4>
+                                    <div class="text-white-50">Ya Realizados</div>
                                 </div>
                             </div>
                         </div>
@@ -167,17 +202,24 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                             <div class="card bg-danger text-white mb-4">
                                 <div class="card-body">
                                     <?php
-                                    $sql = "SELECT COUNT(*) as pendientes FROM bodega_inventario WHERE estado = 'activo' AND disposicion = 'pendiente' AND tecnico_id = '" . $_SESSION['id'] . "'";
+                                    // Equipos en proceso (tienen diagnóstico pero no mantenimiento completo)
+                                    $sql = "SELECT COUNT(DISTINCT i.id) as en_proceso 
+                                            FROM bodega_inventario i
+                                            LEFT JOIN bodega_mantenimiento m ON i.id = m.inventario_id
+                                            WHERE i.estado = 'activo' 
+                                            AND i.tecnico_id = '" . $_SESSION['id'] . "'
+                                            AND i.disposicion IN ('en_diagnostico', 'en_reparacion', 'en_control')
+                                            AND m.id IS NULL";
                                     $result = $conn->query($sql);
                                     $row = $result->fetch_assoc();
                                     ?>
-                                    <h4 class="mb-0"><?php echo $row['pendientes']; ?></h4>
-                                    <div class="text-white-50">Pendientes</div>
+                                    <h4 class="mb-0"><?php echo $row['en_proceso']; ?></h4>
+                                    <div class="text-white-50">En Proceso (Sin Mantenimiento)</div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Filtros -->
+                    <!-- Filtros Mejorados -->
                     <div class="row mb-4">
                         <div class="col-md-12">
                             <div class="card">
@@ -188,7 +230,17 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                     <form id="filterForm" class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label>Estado</label>
+                                                <label>🔵 Estado de Mantenimiento</label>
+                                                <select class="form-control" id="filterMantenimiento">
+                                                    <option value="">Todos</option>
+                                                    <option value="realizado" style="background: #1abc9c; color:#fff;">Ya Realizado ✓</option>
+                                                    <option value="pendiente">Por Hacer ✗</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Disposición</label>
                                                 <select class="form-control" id="filterEstado">
                                                     <option value="">Todos</option>
                                                     <option value="disponible">Disponible</option>
@@ -199,7 +251,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label>Ubicación</label>
                                                 <select class="form-control" id="filterUbicacion">
@@ -210,7 +262,7 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label>Grado</label>
                                                 <select class="form-control" id="filterGrado">
@@ -218,18 +270,25 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                     <option value="A">A</option>
                                                     <option value="B">B</option>
                                                     <option value="C">C</option>
+                                                    <option value="S">D</option>
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label>&nbsp;</label>
                                                 <button type="button" class="btn btn-primary btn-block" id="applyFilters">
-                                                    Aplicar Filtros
+                                                    <i class="material-icons" style="font-size: 18px; vertical-align: middle;">filter_list</i>
+                                                    Filtrar
                                                 </button>
                                             </div>
                                         </div>
                                     </form>
+                                    <!-- Indicador de filtros activos -->
+                                    <div id="activeFilters" class="mt-2" style="display: none;">
+                                        <small class="text-muted">Filtros activos: <span id="filterTags"></span></small>
+                                        <button type="button" class="btn btn-sm btn-link" id="clearFilters">Limpiar filtros</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -262,7 +321,6 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                             </thead>
                                             <tbody>
                                                 <?php
-                                                // Consulta actualizada: incluye flag has_mantenimiento (1/0)
                                                 $sql = "SELECT i.*, 
                                                     CASE 
                                                         WHEN d.estado_reparacion IS NOT NULL THEN d.estado_reparacion
@@ -279,14 +337,12 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                     LEFT JOIN usuarios u ON i.tecnico_id = u.id
                                                     WHERE i.estado = 'activo' AND i.tecnico_id = '" . $_SESSION['id'] . "' 
                                                     ORDER BY i.fecha_modificacion DESC";
-                                                    $result = $conn->query($sql);
+                                                $result = $conn->query($sql);
                                                 if ($result) {
                                                     while ($row = $result->fetch_assoc()) {
-                                                        // Detectar si tiene mantenimiento (viene como '1' o 1)
                                                         $has_maintenance = isset($row['has_mantenimiento']) && intval($row['has_mantenimiento']) > 0;
                                                         $trClass = $has_maintenance ? 'registered-row' : '';
                                                         $maintenanceIndicator = $has_maintenance ? '<span class="maintenance-indicator" title="Este equipo tiene registros de mantenimiento"></span>' : '';
-                                                        
                                                         echo "<tr class='" . $trClass . "'>";
                                                         echo "<td>" . htmlspecialchars($row['codigo_g']) . "</td>";
                                                         echo "<td>" . htmlspecialchars($row['producto']) . "</td>";
@@ -301,14 +357,13 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                                                         echo "<td>" . htmlspecialchars($row['fecha_modificacion']) . "</td>";
                                                         echo "<td class='text-center'>
                                                             <a href='javascript:void(0)' class='btn btn-secondary btn-sm view-btn' data-id='" . $row['id'] . "' title='VER | Detalles del EQUIPO'><i class='material-icons'>visibility</i></a>
-                                                            <a style='background: #1abc9c;' href='javascript:void(0)' class='btn btn-success btn-sm mantenimiento-btn' data-id='" . $row['id'] . "' title='Editar Matenimiento y Limpieza'><i class='material-icons'>edit</i></a>
+                                                            <a style='background: #1abc9c;' href='javascript:void(0)' class='btn btn-success btn-sm mantenimiento-btn' data-id='" . $row['id'] . "' title='Editar Mantenimiento y Limpieza'><i class='material-icons'>edit</i></a>
                                                             <a style='background: #dc3545;' href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "' title='Editar Equipo en Inventario'><i class='material-icons'>edit</i></a>
                                                             " . $maintenanceIndicator . "
                                                         </td>";
                                                         echo "</tr>";
                                                     }
                                                 } else {
-                                                    // Si la consulta falla, mostramos mensaje en consola del navegador (útil para depuración)
                                                     error_log('mostrar.php - Error en consulta SQL: ' . $conn->error);
                                                 }
                                                 ?>
@@ -353,40 +408,90 @@ while ($rowTec = $resultTec->fetch_assoc()) {
         <script type="text/javascript" src="../assets/js/buttonshtml5.js"></script>
         <script type="text/javascript" src="../assets/js/buttonsprint.js"></script>
         <script>
-            $(document).ready(function () {
+            $(document).ready(function() {
                 // Inicializar DataTable
                 var table = $('#inventarioTable').DataTable({
                     dom: 'Bfrtip',
-                    buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
-                    ],
+                    buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
                     language: {
                         url: 'https://cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
                     }
                 });
-                // Aplicar filtros
-                $('#applyFilters').click(function () {
+                // Función para aplicar filtros
+                function applyAllFilters() {
+                    var mantenimiento = $('#filterMantenimiento').val();
                     var estado = $('#filterEstado').val();
                     var ubicacion = $('#filterUbicacion').val();
                     var grado = $('#filterGrado').val();
-                    table.columns(7).search(estado); // Estado
-                    table.columns(5).search(ubicacion); // Ubicación
-                    table.columns(6).search(grado); // Grado
+                    // Limpiar filtros personalizados anteriores
+                    $.fn.dataTable.ext.search = [];
+                    // Filtro especial por mantenimiento
+                    if (mantenimiento === 'realizado') {
+                        $.fn.dataTable.ext.search.push(
+                            function(settings, data, dataIndex) {
+                                return $(table.row(dataIndex).node()).hasClass('registered-row');
+                            }
+                        );
+                    } else if (mantenimiento === 'pendiente') {
+                        $.fn.dataTable.ext.search.push(
+                            function(settings, data, dataIndex) {
+                                return !$(table.row(dataIndex).node()).hasClass('registered-row');
+                            }
+                        );
+                    }
+                    // Filtros por columnas
+                    table.columns(7).search(estado);
+                    table.columns(5).search(ubicacion);
+                    table.columns(6).search(grado);
                     table.draw();
+                    updateFilterTags();
+                }
+                // Actualizar etiquetas de filtros activos
+                function updateFilterTags() {
+                    var tags = [];
+                    var mantenimiento = $('#filterMantenimiento option:selected').text();
+                    var estado = $('#filterEstado option:selected').text();
+                    var ubicacion = $('#filterUbicacion option:selected').text();
+                    var grado = $('#filterGrado option:selected').text();
+                    if ($('#filterMantenimiento').val()) tags.push('<span class="badge badge-info">' + mantenimiento + '</span>');
+                    if ($('#filterEstado').val()) tags.push('<span class="badge badge-info">' + estado + '</span>');
+                    if ($('#filterUbicacion').val()) tags.push('<span class="badge badge-info">' + ubicacion + '</span>');
+                    if ($('#filterGrado').val()) tags.push('<span class="badge badge-info">' + grado + '</span>');
+                    if (tags.length > 0) {
+                        $('#filterTags').html(tags.join(' '));
+                        $('#activeFilters').show();
+                    } else {
+                        $('#activeFilters').hide();
+                    }
+                }
+                // Botón aplicar filtros
+                $('#applyFilters').click(function() {
+                    applyAllFilters();
                 });
-                // Ver detalles - Corregido el parámetro
-                $(document).on('click', '.view-btn', function () {
+                // Botón limpiar filtros
+                $('#clearFilters').click(function() {
+                    $('#filterMantenimiento').val('');
+                    $('#filterEstado').val('');
+                    $('#filterUbicacion').val('');
+                    $('#filterGrado').val('');
+                    $.fn.dataTable.ext.search = [];
+                    table.columns().search('').draw();
+                    $('#activeFilters').hide();
+                });
+                // Ver detalles
+                $(document).on('click', '.view-btn', function() {
                     var id = $(this).data('id');
                     $.ajax({
                         url: '../controllers/get_myl_details.php',
                         type: 'GET',
-                        data: { inventario_id: id }, // Corregido: era { id: id }
-                        success: function (response) {
+                        data: {
+                            inventario_id: id
+                        },
+                        success: function(response) {
                             $('#viewModalBody').html(response);
                             $('#viewModal').modal('show');
                         },
-                        error: function (xhr) {
-                            // Mostrar error útil dentro del modal para depuración
+                        error: function(xhr) {
                             var msg = 'Error al cargar detalles. HTTP ' + xhr.status + ' — ' + xhr.statusText;
                             if (xhr.responseText) msg += '<br><pre style="white-space:pre-wrap;">' + xhr.responseText + '</pre>';
                             $('#viewModalBody').html(msg);
@@ -395,32 +500,14 @@ while ($rowTec = $resultTec->fetch_assoc()) {
                     });
                 });
                 // Editar mantenimiento
-                $('.mantenimiento-btn').click(function () {
+                $('.mantenimiento-btn').click(function() {
                     var id = $(this).data('id');
                     window.location.href = 'ingresar_m.php?id=' + id;
                 });
                 // Editar equipo
-                $('.edit-btn').click(function () {
+                $('.edit-btn').click(function() {
                     var id = $(this).data('id');
                     window.location.href = 'editar_inventario.php?id=' + id;
-                });
-                // Eliminar equipo
-                $('.delete-btn').click(function () {
-                    if (confirm('¿Está seguro de que desea eliminar este equipo?')) {
-                        var id = $(this).data('id');
-                        $.ajax({
-                            url: '../../backend/php/delete_inventario.php',
-                            type: 'POST',
-                            data: { id: id },
-                            success: function (response) {
-                                alert('Equipo eliminado exitosamente');
-                                location.reload();
-                            },
-                            error: function () {
-                                alert('Error al eliminar el equipo');
-                            }
-                        });
-                    }
                 });
             });
         </script>

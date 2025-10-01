@@ -275,7 +275,7 @@ function condicionBadgeClass(string $condicion): string
             margin: 0 auto;
             padding: 20px;
         } .top-navbar {
-            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            background: #16a085;
             padding: 15px 20px;
             margin-bottom: 20px;
             border-radius: 8px;
@@ -284,7 +284,7 @@ function condicionBadgeClass(string $condicion): string
             font-weight: bold;
             text-decoration: none;
         } .modal-header {
-            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            background: #16a085;
             color: white;
         } .modal-header .close {
             color: white;
@@ -292,14 +292,11 @@ function condicionBadgeClass(string $condicion): string
     </style>
 </head>
 <body>
-    <!-- Top Navbar -->
-
-<body>
+    <!-- begin::Top Navbar -->
     <div class="wrapper">
         <div class="body-overlay"></div>
         <?php include_once '../layouts/nav.php';
         include_once '../layouts/menu_data.php'; ?>
-        
         <nav id="sidebar">
             <div class="sidebar-header">
                 <h3><img src="../assets/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
@@ -308,11 +305,8 @@ function condicionBadgeClass(string $condicion): string
                 renderMenu($menu);
             } ?>
         </nav>
-
         <div class="main-container">
-            ```
-
-        <!-- Top Navbar -->
+        <!-- end::Top Navbar -->
         <div class="top-navbar">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">

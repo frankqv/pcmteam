@@ -61,7 +61,6 @@ while ($rowTec = $resultTec->fetch_assoc()) {
 // ===================================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
     $equipo_id = intval($_POST['equipo_id']);
-
     // 1) Actualizar ubicacion
     if (isset($_POST['ubicacion'])) {
         $ubicacion = trim($_POST['ubicacion']);
@@ -74,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
         header('Location: ' . $_SERVER['PHP_SELF']);
         exit;
     }
-
     // 2) Actualizar posicion
     if (isset($_POST['posicion'])) {
         $posicion = trim($_POST['posicion']);
@@ -87,9 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
         header('Location: ' . $_SERVER['PHP_SELF']);
         exit;
     }
-
     // 3) Actualizar/limpiar tecnico_id
-    // Usamos array_key_exists para distinguir entre "no enviado" y "enviado vacío"
+    // Usamos array_key_exists para distinguir entre "no enviado para translado" y "enviado para translado vacío"
     if (array_key_exists('tecnico_id', $_POST)) {
         $tec_raw = $_POST['tecnico_id'];
         if ($tec_raw === '' || $tec_raw === null) {
@@ -139,6 +136,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                 padding: 8px 15px;
                 border-radius: 5px;
                 font-weight: bold;
+            }
+            /* ---- CSS AÑADIDO (CORREGIDO) ---- */
+            /* Este CSS es solo indicativo para navegadores que lo soporten. */
+            /* La solución principal se basa en JS para colorear el <select> completo. */
+            #filterPosicion option[value="Trasito"] {
+                background-color: #28a745;
+            }
+            #filterPosicion option[value="Recibido"] {
+                background-color: #2C62E8;
+            }
+            #filterPosicion option[value="De_vuelto_garantia"] {
+                background-color: #CDAB00;
+            }
+            #filterPosicion option[value="recibido_para_garantia"] {
+                background-color: #CC0618;
             }
         </style>
     </head>
@@ -225,7 +237,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                     </nav>
                 </div>
                 <div class="main-content">
-                    <!-- Resumen de Inventario (CON FILTRO POR SEDE) -->
                     <div class="row">
                         <div class="col-md-3">
                             <div class="card bg-primary text-white mb-4">
@@ -280,7 +291,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                             </div>
                         </div>
                     </div>
-                    <!-- Alert informativo -->
                     <?php if (!$verTodoInventario): ?>
                         <div class="alert alert-info alert-dismissible fade show" role="alert">
                             <strong><i class="material-icons" style="vertical-align: middle;">info</i> Filtro por Sede Activo</strong><br>
@@ -290,7 +300,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                             </button>
                         </div>
                     <?php endif; ?>
-                    <!-- Filtros -->
                     <div class="row mb-4">
                         <div class="col-md-12">
                             <div class="card">
@@ -340,10 +349,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                                                 <select class="form-control" id="filterUbicacion">
                                                     <option value="">Todas</option>
                                                     <?php
-                                                    // Ubicaciones fijas del sistema
                                                     $ubicacionesFijas = ['Medellin', 'Cucuta', 'Unilago', 'Principal'];
                                                     foreach ($ubicacionesFijas as $ubi) {
-                                                        // Marcar como seleccionada si es la sede del usuario
                                                         $selected = ($ubi === $usuarioSede) ? 'selected' : '';
                                                         $badge = ($ubi === $usuarioSede) ? ' ★' : '';
                                                         echo '<option value="' . e($ubi) . '" ' . $selected . '>' . e($ubi) . $badge . '</option>';
@@ -357,19 +364,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                                                     </small>
                                                 <?php endif; ?>
                                             </div>
-                                        </div> 
+                                        </div>
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label>Posición</label>
-                                                <select class="form-control" id="filterPosicion">
+                                                <select class="form-control colorable" id="filterPosicion">
                                                     <option value="">Todas</option>
-                                                    <option value="Enviado">Enviado</option>
+                                                    <option value="Trasito">Trasito</option>
                                                     <option value="Recibido">Recibido</option>
                                                     <option value="De_vuelto_garantia">De Vuelta Garantía</option>
                                                     <option value="recibido_para_garantia">Recibido para Garantía</option>
                                                     <?php
                                                     // Agregar posiciones adicionales desde BD que no estén en la lista fija
-                                                    $posicionesFijas = ['Enviado', 'Recibido', 'De_vuelto_garantia', 'recibido_para_garantia'];
+                                                    $posicionesFijas = ['Trasito', 'Recibido', 'De_vuelto_garantia', 'recibido_para_garantia'];
                                                     $query = "SELECT DISTINCT posicion FROM bodega_inventario i WHERE posicion IS NOT NULL AND posicion != '' $filtroSede ORDER BY posicion";
                                                     $result = $connect->prepare($query);
                                                     $result->execute();
@@ -416,7 +423,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                             </div>
                         </div>
                     </div>
-                    <!-- Tabla de Inventario (CON FILTRO POR SEDE) -->
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card">
@@ -445,9 +451,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                                             </thead>
                                             <tbody>
                                                 <?php
-                                                // Definir opciones para los selectores
                                                 $ubicacionesDisponibles = ['Medellin', 'Cucuta', 'Unilago', 'Principal'];
-                                                $posicionesDisponibles = ['Enviado', 'Recibido', 'De_vuelto_garantia', 'recibido_para_garantia'];
+                                                $posicionesDisponibles = ['Trasito', 'Recibido', 'De_vuelto_garantia', 'recibido_para_garantia'];
                                                 $sql = "SELECT i.*, u.nombre as tecnico_nombre
                                                     FROM bodega_inventario i
                                                     LEFT JOIN usuarios u ON i.tecnico_id = u.id
@@ -461,7 +466,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                                                     echo "<td>" . e($row['marca']) . "</td>";
                                                     echo "<td>" . e($row['modelo']) . "</td>";
                                                     echo "<td>" . e($row['serial']) . "</td>";
-                                                    // SELECTOR DE UBICACIÓN (ahora postea a este mismo archivo)
+                                                    // SELECTOR DE UBICACIÓN
                                                     echo "<td>
                                                     <form method='post' action='" . $_SERVER['PHP_SELF'] . "' style='margin:0;'>
                                                         <input type='hidden' name='equipo_id' value='" . (int)$row['id'] . "'>
@@ -476,12 +481,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                                                     echo "      </select>
                                                     </form>
                                                 </td>";
-                                                    // SELECTOR DE POSICIÓN (ahora postea a este mismo archivo)
+                                                    // ---- HTML MODIFICADO ----
+                                                    // Se añade la clase 'colorable' y se actualiza el 'onchange'
                                                     echo "<td>
                                                     <form method='post' action='" . $_SERVER['PHP_SELF'] . "' style='margin:0;'>
                                                         <input type='hidden' name='equipo_id' value='" . (int)$row['id'] . "'>
-                                                        <select name='posicion' class='form-control form-control-sm' onchange='this.form.submit()' style='min-width:140px;'>
-                                                            <option value='" . e($row['posicion']) . "' selected>" . e($row['posicion']) . "</option>
+                                                        <select name='posicion' class='form-control form-control-sm colorable' 
+                                                                onchange='cambiarColor(this); this.form.submit()' 
+                                                                style='min-width:140px; color: white; font-weight: bold;'>
+                                                            <option value='" . e($row['posicion']) . "' selected>" 
+                                                            . e(str_replace('_', ' ', ucfirst($row['posicion']))) . "</option>
                                                             <option disabled>──────────</option>";
                                                     foreach ($posicionesDisponibles as $pos) {
                                                         $posDisplay = str_replace('_', ' ', ucfirst($pos));
@@ -492,11 +501,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                                                     echo "      </select>
                                                     </form>
                                                 </td>";
-
                                                     echo "<td>" . e($row['grado']) . "</td>";
                                                     echo "<td>" . e($row['disposicion']) . "</td>";
                                                     echo "<td>" . e($row['estado']) . "</td>";
-                                                    // SELECTOR DE TÉCNICO (ya existente) -> ahora postea explicitamente a este archivo
+                                                    // SELECTOR DE TÉCNICO
                                                     echo "<td>
                                                     <form method='post' action='" . $_SERVER['PHP_SELF'] . "' style='margin:0;'>
                                                         <input type='hidden' name='equipo_id' value='" . (int)$row['id'] . "'>
@@ -528,7 +536,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                 </div>
             </div>
         </div>
-        <!-- Modal para ver detalles -->
         <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -539,12 +546,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                         </button>
                     </div>
                     <div class="modal-body" id="viewModalBody">
-                        <!-- Los detalles se cargarán aquí dinámicamente -->
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Scripts -->
         <script src="../assets/js/jquery-3.3.1.min.js"></script>
         <script src="../assets/js/popper.min.js"></script>
         <script src="../assets/js/bootstrap.min.js"></script>
@@ -562,9 +567,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                 var table = $('#inventarioTable').DataTable({
                     dom: 'Bfrtip',
                     buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-                   // language: {
-                    //    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
-                    //},
                     order: [
                         [11, 'desc']
                     ]
@@ -588,8 +590,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                 });
                 $('#clearFilters').click(function() {
                     $('#filterDisposicion, #filterEstado, #filterUbicacion, #filterGrado, #filterProducto, #filterPosicion').val('');
+                    // Disparar evento de cambio para resetear el color del filtro de posición
+                    $('#filterPosicion').trigger('change');
                     table.search('').columns().search('').draw();
                 });
+                // --- Eventos para Modales y Acciones ---
                 $(document).on('click', '.view-btn', function() {
                     var id = $(this).data('id');
                     $.ajax({
@@ -601,15 +606,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                         success: function(response) {
                             $('#viewModalBody').html(response);
                             $('#viewModal').modal('show');
-                        },
-                        error: function() {
-                            alert('Error al cargar los detalles del equipo');
                         }
                     });
                 });
                 $(document).on('click', '.edit-btn', function() {
-                    var id = $(this).data('id');
-                    window.location.href = 'editar_inventario.php?id=' + id;
+                    window.location.href = 'editar_inventario.php?id=' + $(this).data('id');
                 });
                 $(document).on('click', '.delete-btn', function() {
                     if (confirm('¿Está seguro de que desea eliminar este equipo?')) {
@@ -621,14 +622,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                                 id: id
                             },
                             success: function(response) {
-                                alert('Equipo eliminado exitosamente');
                                 location.reload();
-                            },
-                            error: function() {
-                                alert('Error al eliminar el equipo');
                             }
                         });
                     }
+                });
+            });
+        </script>
+        <script>
+            // Mapa de colores para los valores de 'posicion'
+            const __posicionColores = {
+                "Trasito": "#28A745",
+                "Recibido": "#2C62E8",
+                "De_vuelto_garantia": "#CDAB00",
+                "recibido_para_garantia": "#CC0618"
+            };
+            // Función para cambiar el color del <select>
+            function cambiarColor(sel) {
+                if (!sel) return;
+                const v = sel.value || "";
+                const color = __posicionColores[v] || ""; // Busca el color en el mapa
+                sel.style.background = color;
+                // Ajusta el color del texto para un mejor contraste
+                sel.style.color = color ? "white" : "";
+                sel.style.fontWeight = color ? "bold" : "";
+            }
+            // Al cargar el DOM, aplica el color a todos los selects marcados
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('.colorable').forEach(function(s) {
+                    cambiarColor(s); // Aplica color en la carga inicial
+                    // Escucha cambios para aplicar el color inmediatamente
+                    s.addEventListener('change', function() {
+                        cambiarColor(s);
+                    });
                 });
             });
         </script>

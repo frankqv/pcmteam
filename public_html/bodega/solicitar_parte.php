@@ -4,16 +4,13 @@ ob_start();
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
-
 require_once dirname(__DIR__, 2) . '/config/ctconex.php';
-
 // Validación de roles
 $allowedRoles = [1, 2, 5, 6, 7];
 if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], $allowedRoles, true)) {
   header('Location: ../error404.php');
   exit;
 }
-
 // Variables globales
 $mensaje = '';
 $equipos_disponibles = [];
@@ -24,7 +21,6 @@ $estadisticas = [
   'aprobadas' => 0,
   'entregadas' => 0
 ];
-
 // Obtener información del usuario para navbar
 $userInfo = null;
 try {
@@ -43,7 +39,6 @@ try {
     'idsede' => 'Sede sin definir'
   ];
 }
-
 // Procesamiento del formulario de solicitud
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   try {
@@ -85,7 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mensaje .= "<div class='alert alert-danger'>❌ Error: " . htmlspecialchars($e->getMessage()) . "</div>";
   }
 }
-
 // Cargar datos
 try {
   // Equipos disponibles para solicitar partes
@@ -127,7 +121,6 @@ try {
   error_log("Error carga datos: " . $e->getMessage());
   $mensaje .= "<div class='alert alert-warning'>Error al cargar datos: " . htmlspecialchars($e->getMessage()) . "</div>";
 }
-
 // Helper functions
 function urgenciaBadgeClass(string $urgencia): string {
   $urgencia = strtoupper(trim($urgencia ?? ''));
@@ -138,7 +131,6 @@ function urgenciaBadgeClass(string $urgencia): string {
     default: return 'urgencia-nd';
   }
 }
-
 function estadoBadgeClass(string $estado): string {
   $estado = strtoupper(trim($estado ?? ''));
   switch ($estado) {
@@ -150,7 +142,6 @@ function estadoBadgeClass(string $estado): string {
   }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -295,7 +286,7 @@ function estadoBadgeClass(string $estado): string {
       padding: 20px;
     }
     .top-navbar {
-      background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+      background: #16a085;
       padding: 15px 20px;
       margin-bottom: 20px;
       border-radius: 8px;

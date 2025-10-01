@@ -4,23 +4,19 @@ ob_start();
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
-
 require_once dirname(__DIR__, 2) . '/config/ctconex.php';
-
 // Validación de roles
 $allowedRoles = [1, 2, 5, 6, 7];
 if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], $allowedRoles, true)) {
   header('Location: ../error404.php');
   exit;
 }
-
 // Variables globales
 $mensaje = '';
 $equipos_pendientes = [];
 $equipo_seleccionado = null;
 $diagnostico_ultimo = null;
 $diagnostico_general = null;
-
 // Obtener información del usuario para navbar
 $userInfo = null;
 try {
@@ -39,7 +35,6 @@ try {
     'idsede' => 'Sede sin definir'
   ];
 }
-
 // Cargar equipos pendientes de diagnóstico eléctrico
 try {
   $stmt = $connect->prepare("
@@ -62,7 +57,6 @@ try {
   error_log("Error carga equipos: " . $e->getMessage());
   $mensaje .= "<div class='alert alert-warning'>Error al cargar equipos: " . htmlspecialchars($e->getMessage()) . "</div>";
 }
-
 // Procesamiento del formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   try {
@@ -152,7 +146,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mensaje .= "<div class='alert alert-danger'>❌ Error: " . htmlspecialchars($e->getMessage()) . "</div>";
   }
 }
-
 // Cargar datos del equipo seleccionado
 if (isset($_GET['id']) && (int) $_GET['id'] > 0) {
   $equipo_id = (int) $_GET['id'];
@@ -185,7 +178,6 @@ if (isset($_GET['id']) && (int) $_GET['id'] > 0) {
     $mensaje .= "<div class='alert alert-warning'>Error al cargar equipo: " . htmlspecialchars($e->getMessage()) . "</div>";
   }
 }
-
 // Helper function for status badges
 function badgeClass(string $v): string {
   $v = strtoupper(trim($v ?? ''));
@@ -193,7 +185,6 @@ function badgeClass(string $v): string {
   if ($v === 'MALO' || $v === 'RECHAZADO') return 'status-malo';
   return 'status-nd';
 }
-
 // Helper function for electrical fault badge
 function faultBadgeClass(string $v): string {
   $v = strtolower(trim($v ?? ''));
@@ -202,7 +193,6 @@ function faultBadgeClass(string $v): string {
   return 'status-nd';
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
