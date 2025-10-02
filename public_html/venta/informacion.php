@@ -2,15 +2,13 @@
 ob_start();
      session_start();
     
-    if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2])){
+    if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2,3,4,5,6,7])){
     header('location: ../error404.php');
   }
 ?>
 <?php if(isset($_SESSION['id'])) { ?>
-
 <!doctype html>
 <html lang="es">
-
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -22,12 +20,7 @@ ob_start();
     <!----css3---->
     <link rel="stylesheet" href="../assets/css/custom.css">
     <link rel="stylesheet" href="../assets/css/loader.css">
-
-
-
-
     <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -35,11 +28,8 @@ ob_start();
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../assets/img/favicon.webp" />
 </head>
-
 <body>
-
     <div class="wrapper">
-
         <div class="body-overlay"></div>
         <!-- layouts nav.php  |  Sidebar -->
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
@@ -49,8 +39,6 @@ ob_start();
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
-
         <!-- Page Content  -->
         <div id="content">
             <div class='pre-loader'>
@@ -59,19 +47,15 @@ ob_start();
             <div class="top-navbar">
                 <nav class="navbar navbar-expand-lg">
                     <div class="container-fluid">
-
                         <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
-
                         <a class="navbar-brand" href="#"> Ventas </a>
-
                         <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
                             data-toggle="collapse" data-target="#navbarSupportedContent"
                             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="material-icons">more_vert</span>
                         </button>
-
                         <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
                             id="navbarSupportedContent">
                             <ul class="nav navbar-nav ml-auto">
@@ -82,9 +66,7 @@ ob_start();
                                 </li>
                                 <li class="dropdown nav-item active">
                                     <a href="#" class="nav-link" data-toggle="dropdown">
-
                                         <img src="../assets/img/reere.webp">
-
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
@@ -93,16 +75,13 @@ ob_start();
                                         <li>
                                             <a href="../cuenta/salir.php">Salir</a>
                                         </li>
-
                                     </ul>
                                 </li>
-
                             </ul>
                         </div>
                     </div>
                 </nav>
             </div>
-
             <div class="main-content">
                 <div class="row ">
                     <div class="col-lg-12 col-md-12">
@@ -119,14 +98,12 @@ ob_start();
                                 <h4 class="card-title">Ventas</h4>
                                 <p class="category">Informacion de la venta</p>
                             </div>
-
                             <div class="card-content table-responsive">
                                 <?php
  require '../../config/ctconex.php'; 
  $id = $_GET['id'];
  $sentencia = $connect->prepare("SELECT orders.idord, orders.user_id, clientes.idclie,clientes.numid, clientes.nomcli, clientes.apecli, clientes.celu, orders.method, orders.total_products, orders.total_price, orders.placed_on, orders.payment_status, orders.tipc FROM orders INNER JOIN clientes on orders.user_cli = clientes.idclie WHERE orders.idord= '$id';");
  $sentencia->execute();
-
 $data =  array();
 if($sentencia){
   while($r = $sentencia->fetchObject()){
@@ -145,7 +122,6 @@ if($sentencia){
                                                     value="<?php echo  $f->nomcli  ; ?> <?php echo  $f->apecli  ; ?>"
                                                     class="form-control" name="txtnampr" required
                                                     placeholder="Nombre del producto">
-
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-lg-6">
@@ -154,7 +130,6 @@ if($sentencia){
                                                 <input type="text" readonly value="<?php echo  $f->placed_on  ; ?>"
                                                     class="form-control" name="txtnampr" required
                                                     placeholder="Nombre del producto">
-
                                             </div>
                                         </div>
                                     </div>
@@ -165,27 +140,22 @@ if($sentencia){
                                                 <input type="text" readonly value="<?php echo  $f->tipc  ; ?> "
                                                     class="form-control" name="txtnampr" required
                                                     placeholder="Nombre del producto">
-
                                             </div>
                                         </div>
-
                                         <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
                                                 <label for="email">Metodo<span class="text-danger">*</span></label>
                                                 <input type="text" readonly value="<?php echo  $f->method  ; ?> "
                                                     class="form-control" name="txtnampr" required
                                                     placeholder="Nombre del producto">
-
                                             </div>
                                         </div>
-
                                         <div class="col-md-4 col-lg-4">
                                             <div class="form-group">
                                                 <label for="email">Estado<span class="text-danger">*</span></label>
                                                 <input type="text" readonly
                                                     value="<?php echo  $f->payment_status  ; ?> " class="form-control"
                                                     name="txtnampr" required placeholder="Nombre del producto">
-
                                             </div>
                                         </div>
                                     </div>
@@ -207,7 +177,6 @@ if($sentencia){
                                 <hr>
                                 <div class="form-group">
                                     <div class="col-sm-12">
-
                                         <a class="btn btn-danger text-white" href="../venta/mostrar.php">Cancelar</a>
                                     </div>
                                 </div>
@@ -216,58 +185,36 @@ if($sentencia){
                                 <div class="alert alert-warning" role="alert">
                                     No se encontró ningún dato!
                                 </div>
-
                                 <?php endif; ?>
                             </div>
-
                         </div>
-
-
-
                     </div>
                 </div>
-
             </div>
-
         </div>
-
     </div>
     </div>
-
-
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="../assets/js/jquery-3.3.1.slim.min.js"></script>
     <script src="../assets/js/popper.min.js"></script>
     <script src="../assets/js/bootstrap.min.js"></script>
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
-
     <script src="../assets/js/sweetalert.js"></script>
-
     <script type="text/javascript">
     $(document).ready(function() {
         $('#sidebarCollapse').on('click', function() {
             $('#sidebar').toggleClass('active');
             $('#content').toggleClass('active');
         });
-
         $('.more-button,.body-overlay').on('click', function() {
             $('#sidebar,.body-overlay').toggleClass('show-nav');
         });
-
     });
     </script>
     <script src="../assets/js/loader.js"></script>
-
-
 </body>
-
 </html>
-
-
-
-
-
 <?php }else{ 
     header('Location: ../error404.php');
  } ?>

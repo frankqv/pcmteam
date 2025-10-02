@@ -2,7 +2,7 @@
 <?php
 ob_start();
 if (session_status() === PHP_SESSION_NONE) session_start();
-if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
+if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 5, 6, 7])) {
 header('location: ../error404.php');
 exit();
 }

@@ -43,10 +43,8 @@ try {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   try {
     $connect->beginTransaction();
-    
     $inventario_id = (int) ($_POST['inventario_id'] ?? 0);
     $tecnico_id = (int) ($_SESSION['id']);
-    
     if ($inventario_id > 0) {
       // Insertar solicitud de parte
       $stmt = $connect->prepare("
@@ -56,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          usuario_solicitante, estado, fecha_solicitud)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', NOW())
       ");
-      
       $stmt->execute([
         $inventario_id,
         $_POST['detalle_solicitud'] ?? '',
@@ -70,10 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tecnico_id,
         $tecnico_id
       ]);
-      
       $mensaje .= "<div class='alert alert-success'>✅ Solicitud de parte enviada correctamente</div>";
     }
-    
     $connect->commit();
   } catch (Exception $e) {
     $connect->rollBack();
@@ -92,7 +87,6 @@ try {
   ");
   $stmt->execute();
   $equipos_disponibles = $stmt->fetchAll(PDO::FETCH_ASSOC);
-  
   // Estadísticas de solicitudes del usuario
   $stmt = $connect->prepare("
     SELECT 
@@ -105,7 +99,6 @@ try {
   ");
   $stmt->execute([$_SESSION['id']]);
   $estadisticas = $stmt->fetch(PDO::FETCH_ASSOC);
-  
   // Solicitudes del usuario
   $stmt = $connect->prepare("
     SELECT sp.*, i.codigo_g, i.marca, i.modelo
@@ -122,23 +115,34 @@ try {
   $mensaje .= "<div class='alert alert-warning'>Error al cargar datos: " . htmlspecialchars($e->getMessage()) . "</div>";
 }
 // Helper functions
-function urgenciaBadgeClass(string $urgencia): string {
+function urgenciaBadgeClass(string $urgencia): string
+{
   $urgencia = strtoupper(trim($urgencia ?? ''));
   switch ($urgencia) {
-    case 'BAJA': return 'urgencia-baja';
-    case 'MEDIA': return 'urgencia-media';
-    case 'ALTA': return 'urgencia-alta';
-    default: return 'urgencia-nd';
+    case 'BAJA':
+      return 'urgencia-baja';
+    case 'MEDIA':
+      return 'urgencia-media';
+    case 'ALTA':
+      return 'urgencia-alta';
+    default:
+      return 'urgencia-nd';
   }
 }
-function estadoBadgeClass(string $estado): string {
+function estadoBadgeClass(string $estado): string
+{
   $estado = strtoupper(trim($estado ?? ''));
   switch ($estado) {
-    case 'PENDIENTE': return 'estado-pendiente';
-    case 'APROBADA': return 'estado-aprobada';
-    case 'ENTREGADA': return 'estado-entregada';
-    case 'RECHAZADA': return 'estado-rechazada';
-    default: return 'estado-nd';
+    case 'PENDIENTE':
+      return 'estado-pendiente';
+    case 'APROBADA':
+      return 'estado-aprobada';
+    case 'ENTREGADA':
+      return 'estado-entregada';
+    case 'RECHAZADA':
+      return 'estado-rechazada';
+    default:
+      return 'estado-nd';
   }
 }
 ?>
@@ -158,7 +162,7 @@ function estadoBadgeClass(string $estado): string {
       padding: 20px;
       margin-bottom: 20px;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     .section-title {
       background: #f2f2f2;
@@ -185,7 +189,7 @@ function estadoBadgeClass(string $estado): string {
       padding: 20px;
       border-radius: 10px;
       text-align: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
     .stat-card h3 {
       font-size: 2.5rem;
@@ -207,7 +211,8 @@ function estadoBadgeClass(string $estado): string {
       border: 1px solid #ddd;
       border-radius: 4px;
     }
-    .table-sm th, .table-sm td {
+    .table-sm th,
+    .table-sm td {
       padding: 8px;
       font-size: 0.875em;
     }
@@ -217,15 +222,42 @@ function estadoBadgeClass(string $estado): string {
       font-size: 0.875em;
       font-weight: 500;
     }
-    .urgencia-baja { background-color: #d4edda; color: #155724; }
-    .urgencia-media { background-color: #fff3cd; color: #856404; }
-    .urgencia-alta { background-color: #f8d7da; color: #721c24; }
-    .urgencia-nd { background-color: #e2e3e5; color: #495057; }
-    .estado-pendiente { background-color: #fff3cd; color: #856404; }
-    .estado-aprobada { background-color: #d1ecf1; color: #0c5460; }
-    .estado-entregada { background-color: #d4edda; color: #155724; }
-    .estado-rechazada { background-color: #f8d7da; color: #721c24; }
-    .estado-nd { background-color: #e2e3e5; color: #495057; }
+    .urgencia-baja {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .urgencia-media {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    .urgencia-alta {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .urgencia-nd {
+      background-color: #e2e3e5;
+      color: #495057;
+    }
+    .estado-pendiente {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    .estado-aprobada {
+      background-color: #d1ecf1;
+      color: #0c5460;
+    }
+    .estado-entregada {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .estado-rechazada {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .estado-nd {
+      background-color: #e2e3e5;
+      color: #495057;
+    }
     .alert {
       padding: 12px 15px;
       margin-bottom: 15px;
@@ -301,17 +333,15 @@ function estadoBadgeClass(string $estado): string {
 <body>
   <!-- Top Navbar -->
   <?php
-    include_once '../layouts/nav.php';
-    include_once '../layouts/menu_data.php';
+  include_once '../layouts/nav.php';
+  include_once '../layouts/menu_data.php';
   ?>
-  
   <nav id="sidebar">
     <div class="sidebar-header">
       <h3><img src="../assets/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
     </div>
     <?php renderMenu($menu); ?>
   </nav>
-  
   <div class="main-container">
     <!-- Top Navbar -->
     <div class="top-navbar">
@@ -322,12 +352,10 @@ function estadoBadgeClass(string $estado): string {
         </a>
       </div>
     </div>
-    
     <!-- Mensajes de alerta -->
     <?php if (!empty($mensaje)): ?>
       <?php echo $mensaje; ?>
     <?php endif; ?>
-    
     <!-- Estadísticas -->
     <div class="stats-grid">
       <div class="stat-card">
@@ -347,14 +375,12 @@ function estadoBadgeClass(string $estado): string {
         <p>Entregadas</p>
       </div>
     </div>
-    
     <!-- Formulario de Solicitud -->
     <div class="form-section">
       <div class="section-title">
         <div class="card-icon">📝</div>
         <h4>Nueva Solicitud de Parte</h4>
       </div>
-      
       <form method="POST">
         <div class="form-grid">
           <div class="form-group">
@@ -362,29 +388,26 @@ function estadoBadgeClass(string $estado): string {
             <select id="codigo_equipo" name="codigo_equipo" class="form-control" required>
               <option value="">-- Seleccionar Equipo --</option>
               <?php foreach ($equipos_disponibles as $equipo): ?>
-                <option value="<?php echo htmlspecialchars($equipo['codigo_g']); ?>" 
-                        data-id="<?php echo $equipo['id']; ?>"
-                        data-marca="<?php echo htmlspecialchars($equipo['marca']); ?>"
-                        data-modelo="<?php echo htmlspecialchars($equipo['modelo']); ?>">
+                <option value="<?php echo htmlspecialchars($equipo['codigo_g']); ?>"
+                  data-id="<?php echo $equipo['id']; ?>"
+                  data-marca="<?php echo htmlspecialchars($equipo['marca']); ?>"
+                  data-modelo="<?php echo htmlspecialchars($equipo['modelo']); ?>">
                   <?php echo htmlspecialchars($equipo['codigo_g'] . ' - ' . $equipo['marca'] . ' ' . $equipo['modelo']); ?>
                 </option>
               <?php endforeach; ?>
             </select>
             <input type="hidden" id="inventario_id" name="inventario_id" value="">
           </div>
-          
           <div class="form-group">
             <label for="detalle_solicitud">Detalle de la Solicitud *</label>
-            <textarea id="detalle_solicitud" name="detalle_solicitud" rows="3" class="form-control" 
-                      placeholder="Describe detalladamente la parte que necesitas..." required></textarea>
+            <textarea id="detalle_solicitud" name="detalle_solicitud" rows="3" class="form-control"
+              placeholder="Describe detalladamente la parte que necesitas..." required></textarea>
           </div>
-          
           <div class="form-group">
             <label for="cantidad_solicitada">Cantidad Solicitada *</label>
-            <input type="number" id="cantidad_solicitada" name="cantidad_solicitada" class="form-control" 
-                   min="1" value="1" required>
+            <input type="number" id="cantidad_solicitada" name="cantidad_solicitada" class="form-control"
+              min="1" value="1" required>
           </div>
-          
           <div class="form-group">
             <label for="nivel_urgencia">Nivel de Urgencia *</label>
             <select id="nivel_urgencia" name="nivel_urgencia" class="form-control" required>
@@ -394,32 +417,27 @@ function estadoBadgeClass(string $estado): string {
               <option value="Alta">Alta (24h)</option>
             </select>
           </div>
-          
           <div class="form-group">
             <label for="serial_parte">Serial de la Parte</label>
-            <input type="text" id="serial_parte" name="serial_parte" class="form-control" 
-                   placeholder="Serial de la parte (si se conoce)">
+            <input type="text" id="serial_parte" name="serial_parte" class="form-control"
+              placeholder="Serial de la parte (si se conoce)">
           </div>
-          
           <div class="form-group">
             <label for="marca_parte">Marca de la Parte</label>
-            <input type="text" id="marca_parte" name="marca_parte" class="form-control" 
-                   placeholder="Marca de la parte">
+            <input type="text" id="marca_parte" name="marca_parte" class="form-control"
+              placeholder="Marca de la parte">
           </div>
-          
           <div class="form-group">
             <label for="referencia_parte">Referencia de la Parte</label>
-            <input type="text" id="referencia_parte" name="referencia_parte" class="form-control" 
-                   placeholder="Referencia o modelo de la parte">
+            <input type="text" id="referencia_parte" name="referencia_parte" class="form-control"
+              placeholder="Referencia o modelo de la parte">
           </div>
-          
           <div class="form-group">
             <label for="ubicacion_pieza">Ubicación de la Pieza</label>
-            <input type="text" id="ubicacion_pieza" name="ubicacion_pieza" class="form-control" 
-                   placeholder="Ubicación en bodega (si se conoce)">
+            <input type="text" id="ubicacion_pieza" name="ubicacion_pieza" class="form-control"
+              placeholder="Ubicación en bodega (si se conoce)">
           </div>
         </div>
-        
         <div class="btn-container">
           <button type="submit" class="btn btn-success">
             <i class="material-icons" style="margin-right: 8px;">send</i>
@@ -432,14 +450,12 @@ function estadoBadgeClass(string $estado): string {
         </div>
       </form>
     </div>
-    
     <!-- Historial de Solicitudes -->
     <div class="form-section">
       <div class="section-title">
         <div class="card-icon">📋</div>
         <h4>Mis Solicitudes de Partes</h4>
       </div>
-      
       <?php if (empty($solicitudes_usuario)): ?>
         <div class="alert alert-info">
           ✅ No has realizado solicitudes de partes aún.
@@ -495,7 +511,6 @@ function estadoBadgeClass(string $estado): string {
         </div>
       <?php endif; ?>
     </div>
-    
     <!-- Botones de navegación -->
     <div class="btn-container">
       <a href="../bodega/mostrar.php" class="btn btn-primary">
@@ -517,7 +532,6 @@ function estadoBadgeClass(string $estado): string {
       const selectedOption = this.options[this.selectedIndex];
       const inventarioId = selectedOption.getAttribute('data-id');
       document.getElementById('inventario_id').value = inventarioId || '';
-      
       // Pre-llenar marca del equipo si está disponible
       if (inventarioId) {
         const marcaEquipo = selectedOption.getAttribute('data-marca');
@@ -532,7 +546,6 @@ function estadoBadgeClass(string $estado): string {
       const detalleSolicitud = document.getElementById('detalle_solicitud').value.trim();
       const cantidadSolicitada = document.getElementById('cantidad_solicitada').value;
       const nivelUrgencia = document.getElementById('nivel_urgencia').value;
-      
       if (!inventarioId || !detalleSolicitud || !cantidadSolicitada || !nivelUrgencia) {
         e.preventDefault();
         alert('Por favor, complete todos los campos obligatorios marcados con *.');

@@ -10,5 +10,3 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
 header('Location: entradas.php');
 exit();
 ?>
-
-

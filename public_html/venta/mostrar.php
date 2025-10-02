@@ -2,11 +2,12 @@
 // /public_html/venta/mostrar.php
 ob_start();
 session_start();
-if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4])) {
+if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7])) {
     header('location: ../error404.php');
     exit;
 }
 require_once('../../config/ctconex.php');
+
 // --- USER INFO FOR NAVBAR ---
 $userInfo = [];
 if (isset($_SESSION['id'])) {
@@ -21,31 +22,35 @@ if (isset($_SESSION['id'])) {
         $userInfo = [];
     }
 }
+
 // --- SUMMARY CARD QUERIES ---
 try {
     // Total Sales Today
-    $stmtToday = $connect->prepare("SELECT SUM(total_venta) as total FROM bodega_ordenes WHERE DATE(fecha_creacion) = CURDATE()");
+    $stmtToday = $connect->prepare("SELECT SUM(total_pago) as total FROM bodega_ordenes WHERE DATE(created_at) = CURDATE()");
     $stmtToday->execute();
     $totalHoy = $stmtToday->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+    
     // Total Sales This Month
-    $stmtMonth = $connect->prepare("SELECT SUM(total_venta) as total FROM bodega_ordenes WHERE MONTH(fecha_creacion) = MONTH(CURDATE()) AND YEAR(fecha_creacion) = YEAR(CURDATE())");
+    $stmtMonth = $connect->prepare("SELECT SUM(total_pago) as total FROM bodega_ordenes WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())");
     $stmtMonth->execute();
     $totalMes = $stmtMonth->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+    
     // Overall Total Sales
-    $stmtTotal = $connect->prepare("SELECT SUM(total_venta) as total FROM bodega_ordenes");
+    $stmtTotal = $connect->prepare("SELECT SUM(total_pago) as total FROM bodega_ordenes");
     $stmtTotal->execute();
     $totalGeneral = $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 } catch (PDOException $e) {
-    // Handle potential DB errors
     $totalHoy = $totalMes = $totalGeneral = 0;
 }
+
 // --- DATA FOR FILTERS ---
 // Clientes
 $stmt_clientes = $connect->prepare("SELECT idclie, nomcli, apecli FROM clientes WHERE estad='Activo' ORDER BY nomcli ASC");
 $stmt_clientes->execute();
 $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
-// Vendedores
-$stmt_vendedores = $connect->prepare("SELECT id, CONCAT(nombre, apellido) as vendedor_nombre FROM usuarios ORDER BY vendedor_nombre ASC");
+
+// Vendedores - CORREGIDO
+$stmt_vendedores = $connect->prepare("SELECT id, nombre as vendedor_nombre FROM usuarios ORDER BY nombre ASC");
 $stmt_vendedores->execute();
 $vendedores = $stmt_vendedores->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -103,7 +108,6 @@ $vendedores = $stmt_vendedores->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                     </div>
                 </nav>
-                
             </div>
             <div class="main-content">
                 <div class="container-fluid">
@@ -165,10 +169,10 @@ $vendedores = $stmt_vendedores->fetchAll(PDO::FETCH_ASSOC);
                                 <div class="card-body">
                                     <div class="row mb-3">
                                         <div class="col-md-3">
-                                            <input type="date" id="fecha_inicio" class="form-control">
+                                            <input type="date" id="fecha_inicio" class="form-control" placeholder="Fecha Inicio">
                                         </div>
                                         <div class="col-md-3">
-                                            <input type="date" id="fecha_fin" class="form-control">
+                                            <input type="date" id="fecha_fin" class="form-control" placeholder="Fecha Fin">
                                         </div>
                                         <div class="col-md-3">
                                             <select id="cliente_filtro" class="form-control">
@@ -237,20 +241,19 @@ $vendedores = $stmt_vendedores->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
-    <!-- Modal para ver detalles de la venta -->
-    <div class="modal fade" id="detalleVentaModal" tabindex="-1" role="dialog" aria-labelledby="detalleVentaModalLabel" aria-hidden="true">
+    
+    <!-- Modal para ver detalles -->
+    <div class="modal fade" id="detalleVentaModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="detalleVentaModalLabel">Detalles de la Venta</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div id="detalleVentaContenido">
-                        <!-- AJAX content will be loaded here -->
-                    </div>
+                    <div id="detalleVentaContenido"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -258,6 +261,7 @@ $vendedores = $stmt_vendedores->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
+    
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/bootstrap.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
@@ -272,11 +276,10 @@ $vendedores = $stmt_vendedores->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
-            // Sidebar toggle
             $('#sidebarCollapse').on('click', function() {
                 $('#sidebar, #content').toggleClass('active');
             });
-            // DataTable initialization
+            
             var ventasTable = $('#ventasTable').DataTable({
                 "processing": true,
                 "serverSide": true,
@@ -291,81 +294,49 @@ $vendedores = $stmt_vendedores->fetchAll(PDO::FETCH_ASSOC);
                         d.metodo_pago = $('#metodo_pago_filtro').val();
                     }
                 },
-                "columns": [{
-                        "data": "id_orden"
-                    },
-                    {
-                        "data": "cliente_nombre"
-                    },
+                "columns": [
+                    {"data": "id_orden"},
+                    {"data": "cliente_nombre"},
                     {
                         "data": "total_venta",
-                        "render": function(data, type, row) {
-                            return '$' + parseFloat(data).toLocaleString('es-CO', {
-                                minimumFractionDigits: 2
-                            });
+                        "render": function(data) {
+                            return '$' + parseFloat(data).toLocaleString('es-CO', {minimumFractionDigits: 2});
                         }
                     },
-                    {
-                        "data": "metodo_pago"
-                    },
-                    {
-                        "data": "estado_pago"
-                    },
-                    {
-                        "data": "fecha_creacion"
-                    },
-                    {
-                        "data": "vendedor_nombre"
-                    },
-                    {
-                        "data": "acciones",
-                        "orderable": false,
-                        "searchable": false
-                    }
+                    {"data": "metodo_pago"},
+                    {"data": "estado_pago"},
+                    {"data": "fecha_creacion"},
+                    {"data": "vendedor_nombre"},
+                    {"data": "acciones", "orderable": false, "searchable": false}
                 ],
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
                 },
                 "dom": 'Bfrtip',
-                "buttons": [{
-                        extend: 'excelHtml5',
-                        text: 'Excel',
-                        className: 'btn btn-success'
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        text: 'PDF',
-                        className: 'btn btn-danger'
-                    },
-                    {
-                        extend: 'csvHtml5',
-                        text: 'CSV',
-                        className: 'btn btn-info'
-                    }
+                "buttons": [
+                    {extend: 'excelHtml5', text: 'Excel', className: 'btn btn-success'},
+                    {extend: 'pdfHtml5', text: 'PDF', className: 'btn btn-danger'},
+                    {extend: 'csvHtml5', text: 'CSV', className: 'btn btn-info'}
                 ],
-                "order": [
-                    [0, "desc"]
-                ]
+                "order": [[0, "desc"]]
             });
-            // Filter button
+            
             $('#btn_filtrar').on('click', function() {
                 ventasTable.ajax.reload();
             });
-            // Clear filter button
+            
             $('#btn_limpiar').on('click', function() {
                 $('#fecha_inicio, #fecha_fin, #cliente_filtro, #vendedor_filtro, #metodo_pago_filtro').val('');
                 ventasTable.ajax.reload();
             });
-            // Event listener for detail modal
+            
             $('#ventasTable tbody').on('click', '.btn-view', function() {
                 var ordenId = $(this).data('id');
                 $('#detalleVentaModalLabel').text('Detalles de la Venta #' + ordenId);
                 $.ajax({
-                    url: '../controllers/get_sale_details.php',
+                    url: '../controllers/get_venta_details.php',
                     type: 'POST',
-                    data: {
-                        id_orden: ordenId
-                    },
+                    data: {id_orden: ordenId},
                     success: function(response) {
                         $('#detalleVentaContenido').html(response);
                         $('#detalleVentaModal').modal('show');

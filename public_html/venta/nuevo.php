@@ -2,7 +2,7 @@
 // selecion de un producto del catalogo
 ob_start();
 session_start();
-if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4])){
+if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7])){
     header('location: ../error404.php');
 }
 // Verificar si viene desde el catálogo

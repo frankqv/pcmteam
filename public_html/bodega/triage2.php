@@ -4,7 +4,7 @@ ob_start();
 session_start();
 date_default_timezone_set('America/Bogota');
 /* -------------------- Seguridad -------------------- */
-if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], [1, 2, 7, 6])) {
+if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], [1, 2, 5, 6, 7])) {
     header('location: ../error404.php');
     exit();
 }

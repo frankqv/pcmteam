@@ -1,14 +1,11 @@
 <?php
 ob_start();
 session_start();
-
-if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4])) {
+if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4,5,6,7])) {
     header('location: ../error404.php');
     exit();
 }
-
 require_once '../../config/ctconex.php';
-
 // Verificar que el usuario existe y obtener su información
 $userInfo = null;
 if (isset($_SESSION['id'])) {
@@ -19,7 +16,6 @@ if (isset($_SESSION['id'])) {
     $result = $stmt->get_result();
     $userInfo = $result->fetch_assoc();
 }
-
 if (!$userInfo) {
     header('Location: ../error404.php');
     exit();
@@ -170,7 +166,6 @@ if (!$userInfo) {
                         </div>
                     </form>
                 </div>
-
                 <!-- Catálogo de Productos -->
                 <div class="row" id="productosContainer">
                     <?php
@@ -184,7 +179,6 @@ if (!$userInfo) {
                             AND estado = 'activo'
                             GROUP BY marca, modelo, procesador, ram, disco, grado, precio
                             ORDER BY marca, modelo";
-
                     $result = $conn->query($sql);
                     
                     if ($result && $result->num_rows > 0) {
@@ -237,7 +231,6 @@ if (!$userInfo) {
             </div>
         </div>
     </div>
-
     <!-- Modal para confirmar venta -->
     <div class="modal fade" id="ventaModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
@@ -263,7 +256,6 @@ if (!$userInfo) {
             </div>
         </div>
     </div>
-
     <!-- Scripts -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/popper.min.js"></script>

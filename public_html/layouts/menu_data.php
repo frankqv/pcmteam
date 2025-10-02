@@ -47,6 +47,15 @@ $menu = [
         'icon' => 'dashboard'
     ],
 ];
+# ==================== NOTIFICACIOENS 🔔 ====================
+if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
+    $menu[] = [
+        'label' => 'NOTIFICACIONES (Build)',
+        'icon' => 'notifications',
+        'id' => 'notificaciones_group',
+    ];
+}
+
 # ==================== GRUPO 1: PROCESO ====================
 if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
     $menu[] = [
@@ -130,7 +139,7 @@ if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
         'url' => '../bodega/lista_producto.php'
     ];
 }
-if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
+if (in_array($rol, [1, 3, 4, 5,6,7])) {
     $ventaItems[] = [
         'label' => 'CLIENTES',
         'icon' => 'groups',
@@ -138,7 +147,7 @@ if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     ];
 }
 // Clientes por Tienda
-if (in_array($rol, [1, 2, 4, 5])) {
+if (in_array($rol, [1, 2, 4, 5, 7])) {
     $ventaItems[] = [
         'label' => 'CLIENTES × LOCAL',
         'icon' => 'store',
@@ -327,14 +336,14 @@ if (in_array($rol, [1, 3, 5])) {
     ];
 }
 // Configuración
-if (in_array($rol, [1, 3, 5, 7])) {
+if (in_array($rol, [1, 3, 5])) {
     $adminItems[] = [
         'label' => 'Configuración',
         'url' => '../cuenta/configuracion.php',
         'icon' => 'settings'
     ];
 }
-if (in_array($rol, [1, 3, 5, 7])){
+if (in_array($rol, [1,2,3,4,5,6,7])){
     $adminItems[] = [
         'label' => 'Perfil',
         'url'   => '../cuenta/perfil.php',

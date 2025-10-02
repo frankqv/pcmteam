@@ -4,7 +4,7 @@ ob_start();
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }require_once dirname(__DIR__, 2) . '/config/ctconex.php';// Validación de roles
-$allowedRoles = [1, 2, 5, 6, 7];
+$allowedRoles = [1, 2, 3, 4, 5, 6, 7];
 if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], $allowedRoles, true)) {
     header('Location: ../error404.php');
     exit;
