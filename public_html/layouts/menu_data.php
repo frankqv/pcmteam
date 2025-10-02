@@ -224,6 +224,14 @@ if (!empty($despachoItems)) {
 }
 # ==================== GRUPO 5: FINANZAS Y CONTABILIDAD ====================
 $finanzasItems = [];
+// Ingresos 
+if (in_array($rol, [1, 2, 3, 4])) {
+    $finanzasItems[] = [
+        'label' => 'INGRESOS (Build)',
+        'icon' => 'signal_cellular_alt',
+        'url' => '../ingresos/mostrar.php'
+    ];
+}
 // Gastos Generales
 if (in_array($rol, [1, 2, 3, 4])) {
     $finanzasItems[] = [
@@ -276,6 +284,13 @@ if (in_array($rol, [1, 3])) {
             ['label' => '> Técnicos', 'url' => '../reporte/tecnicos.php']
         ]
     ];
+}
+// Graficos Y estadisticas de tecnicos
+if (in_array($rol, [1, 3])) {
+    $reportesItems[] = [
+        'label' => 'TECNICOS (BUILD)',
+        'icon' => 'signal_cellular_alt',
+        'url' => 'bodega/graficos_tecnicos.php' ];
 }
 // Gráficos
 if (in_array($rol, [1, 3])) {
