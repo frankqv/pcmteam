@@ -6,7 +6,7 @@
 // ===================================================================
 ob_start();
 session_start();
-if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2,4,5,6, 7])) {
+if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4, 5, 6, 7])) {
     header('location: ../error404.php');
     exit;
 }
@@ -140,11 +140,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
             /* ---- CSS AÑADIDO (CORREGIDO) ---- */
             /* Este CSS es solo indicativo para navegadores que lo soporten. */
             /* La solución principal se basa en JS para colorear el <select> completo. */
-            #filterPosicion option[value="Trasito"] {
-                background-color: #28a745;
+            #filterPosicion option[value="Traslado"] {
+                background-color: #2C62E8;
             }
             #filterPosicion option[value="Recibido"] {
-                background-color: #2C62E8;
+                background-color: #28a745;
             }
             #filterPosicion option[value="De_vuelto_garantia"] {
                 background-color: #CDAB00;
@@ -370,13 +370,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                                                 <label>Posición</label>
                                                 <select class="form-control colorable" id="filterPosicion">
                                                     <option value="">Todas</option>
-                                                    <option value="Trasito">Trasito</option>
+                                                    <option value="Traslado">Traslado</option>
                                                     <option value="Recibido">Recibido</option>
                                                     <option value="De_vuelto_garantia">De Vuelta Garantía</option>
                                                     <option value="recibido_para_garantia">Recibido para Garantía</option>
                                                     <?php
                                                     // Agregar posiciones adicionales desde BD que no estén en la lista fija
-                                                    $posicionesFijas = ['Trasito', 'Recibido', 'De_vuelto_garantia', 'recibido_para_garantia'];
+                                                    $posicionesFijas = ['Traslado', 'Recibido', 'De_vuelto_garantia', 'recibido_para_garantia'];
                                                     $query = "SELECT DISTINCT posicion FROM bodega_inventario i WHERE posicion IS NOT NULL AND posicion != '' $filtroSede ORDER BY posicion";
                                                     $result = $connect->prepare($query);
                                                     $result->execute();
@@ -452,7 +452,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                                             <tbody>
                                                 <?php
                                                 $ubicacionesDisponibles = ['Medellin', 'Cucuta', 'Unilago', 'Principal'];
-                                                $posicionesDisponibles = ['Trasito', 'Recibido', 'De_vuelto_garantia', 'recibido_para_garantia'];
+                                                $posicionesDisponibles = ['Traslado', 'Recibido', 'De_vuelto_garantia', 'recibido_para_garantia'];
                                                 $sql = "SELECT i.*, u.nombre as tecnico_nombre
                                                     FROM bodega_inventario i
                                                     LEFT JOIN usuarios u ON i.tecnico_id = u.id
@@ -483,24 +483,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
                                                 </td>";
                                                     // ---- HTML MODIFICADO ----
                                                     // Se añade la clase 'colorable' y se actualiza el 'onchange'
+                                                    $posActual = $row['posicion'] ?? '';
                                                     echo "<td>
-                                                    <form method='post' action='" . $_SERVER['PHP_SELF'] . "' style='margin:0;'>
-                                                        <input type='hidden' name='equipo_id' value='" . (int)$row['id'] . "'>
-                                                        <select name='posicion' class='form-control form-control-sm colorable' 
-                                                                onchange='cambiarColor(this); this.form.submit()' 
-                                                                style='min-width:140px; color: white; font-weight: bold;'>
-                                                            <option value='" . e($row['posicion']) . "' selected>" 
-                                                            . e(str_replace('_', ' ', ucfirst($row['posicion']))) . "</option>
-                                                            <option disabled>──────────</option>";
+<form method='post' action='" . $_SERVER['PHP_SELF'] . "' style='margin:0;'>
+    <input type='hidden' name='equipo_id' value='" . (int)$row['id'] . "'>
+    <select name='posicion' class='form-control form-control-sm colorable' 
+            onchange='cambiarColor(this); this.form.submit()' 
+            style='min-width:140px; color: white; font-weight: bold;'>
+        <option value='" . e((string)$posActual) . "' selected>"
+                                                        . e(str_replace('_', ' ', (string)$posActual)) . "</option>
+        <option disabled>──────────</option>";
                                                     foreach ($posicionesDisponibles as $pos) {
-                                                        $posDisplay = str_replace('_', ' ', ucfirst($pos));
-                                                        if ($pos !== $row['posicion']) {
-                                                            echo "<option value='" . e($pos) . "'>" . e($posDisplay) . "</option>";
+                                                        $pos = $pos ?? '';
+                                                        $posDisplay = str_replace('_', ' ', (string)$pos);
+                                                        if ((string)$pos !== (string)$posActual) {
+                                                            echo "<option value='" . e((string)$pos) . "'>" . e($posDisplay) . "</option>";
                                                         }
                                                     }
-                                                    echo "      </select>
-                                                    </form>
-                                                </td>";
+                                                    echo "</select></form></td>";
                                                     echo "<td>" . e($row['grado']) . "</td>";
                                                     echo "<td>" . e($row['disposicion']) . "</td>";
                                                     echo "<td>" . e($row['estado']) . "</td>";
@@ -632,8 +632,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['equipo_id'])) {
         <script>
             // Mapa de colores para los valores de 'posicion'
             const __posicionColores = {
-                "Trasito": "#28A745",
-                "Recibido": "#2C62E8",
+                "Traslado": "#2C62E8",
+                "Recibido": "#28A745",
                 "De_vuelto_garantia": "#CDAB00",
                 "recibido_para_garantia": "#CC0618"
             };

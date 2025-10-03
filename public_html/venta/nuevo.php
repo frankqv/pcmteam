@@ -59,7 +59,7 @@ if ($from_catalog) {
             <?php renderMenu($menu); ?>
         </nav>
         <!-- Page Content  -->
-        <div id="content">
+        <div id="content" style="background: #cfc9c9ff">
             <div class='pre-loader'>
                 <img class='loading-gif' alt='loading' src="https://i.imgflip.com/9vd6wr.gif" />
             </div>

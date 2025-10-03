@@ -6,13 +6,11 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 5, 6, 7]))
     header('location: ../error404.php');
 }
 require_once '../../config/ctconex.php';
-
 // Helper para escapar valores (evita warnings cuando llegan null)
 function e($v){
     // garantizamos string y manejamos null con ''
     return htmlspecialchars((string)($v ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
-
 $tecnicos = [];
 $resultTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN ('1','5','6','7')");
 while ($rowTec = $resultTec->fetch_assoc()) {

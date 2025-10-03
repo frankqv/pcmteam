@@ -34,11 +34,9 @@ if (!$userInfo) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Inventario - PCMARKETTEAM</title>
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/custom.css">
     <link rel="stylesheet" href="../assets/css/loader.css">
-    <!-- Data Tables -->
     <link rel="stylesheet" type="text/css" href="../assets/css/datatable.css">
     <link rel="stylesheet" type="text/css" href="../assets/css/buttonsdataTables.css">
     <link rel="stylesheet" type="text/css" href="../assets/css/font.css">
@@ -51,30 +49,13 @@ if (!$userInfo) {
             font-size: 0.875rem;
             font-weight: 500;
         }
-        .status-disponible {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .status-en_diagnostico {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-        .status-en_reparacion {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        .status-en_control {
-            background-color: #d1ecf1;
-            color: #0c5460;
-        }
-        .status-pendiente {
-            background-color: #f5c6cb;
-            color: #721c24;
-        }
-        .status-business_room {
-            background-color: #d4edda;
-            color: #155724;
-        }
+        .status-disponible { background-color: #d4edda; color: #155724; }
+        .status-en_diagnostico { background-color: #fff3cd; color: #856404; }
+        .status-en_reparacion { background-color: #f8d7da; color: #721c24; }
+        .status-en_control { background-color: #d1ecf1; color: #0c5460; }
+        .status-pendiente { background-color: #f5c6cb; color: #721c24; }
+        .status-business_room { background-color: #d4edda; color: #155724; }
+        .btn-precio { font-size: 0.875rem; padding: 0.25rem 0.5rem; }
     </style>
 </head>
 <body>
@@ -82,14 +63,12 @@ if (!$userInfo) {
         <div class="body-overlay"></div>
         <?php include_once '../layouts/nav.php';
         include_once '../layouts/menu_data.php'; ?>
-        <!-- Sidebar -->
         <nav id="sidebar">
             <div class="sidebar-header">
                 <h3><img src="../assets/img/favicon.webp" class="img-fluid" /><span>PCMARKETTEAM</span></h3>
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-        <!-- Page Content -->
         <div id="content">
             <div class="top-navbar">
                 <nav class="navbar navbar-expand-lg" style="background: #27ae60;">
@@ -100,62 +79,36 @@ if (!$userInfo) {
                         <?php
                         $titulo = "";
                         switch ($_SESSION['rol']) {
-                            case 1:
-                                $titulo = "ADMINISTRADOR";
-                                break;
-                            case 2:
-                                $titulo = "DEFAULT";
-                                break;
-                            case 3:
-                                $titulo = "CONTABLE";
-                                break;
-                            case 4:
-                                $titulo = "COMERCIAL";
-                                break;
-                            case 5:
-                                $titulo = "JEFE TÉCNICO";
-                                break;
-                            case 6:
-                                $titulo = "TÉCNICO";
-                                break;
-                            case 7:
-                                $titulo = "BODEGA";
-                                break;
-                            default:
-                                $titulo = $userInfo['nombre'];
-                                break;
+                            case 1: $titulo = "ADMINISTRADOR"; break;
+                            case 2: $titulo = "DEFAULT"; break;
+                            case 3: $titulo = "CONTABLE"; break;
+                            case 4: $titulo = "COMERCIAL"; break;
+                            case 5: $titulo = "JEFE TÉCNICO"; break;
+                            case 6: $titulo = "TÉCNICO"; break;
+                            case 7: $titulo = "BODEGA"; break;
+                            default: $titulo = $userInfo['nombre']; break;
                         }
                         ?>
-                        <a class="navbar-brand" href="#"> <B>BUSINESS ROOM </B> <?php echo htmlspecialchars($titulo); ?>
-                        </a>
+                        <a class="navbar-brand" href="#"> <B>BUSINESS ROOM </B> <?php echo htmlspecialchars($titulo); ?></a>
                         <a class="navbar-brand" href="#"> Inventario </a>
                     </div>
-                    <!-- Menú derecho (usuario) -->
                     <ul class="nav navbar-nav ml-auto">
                         <li class="dropdown nav-item active">
                             <a href="#" class="nav-link" data-toggle="dropdown">
                                 <img src="../assets/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
-                                    alt="Foto de perfil"
-                                    style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+                                    alt="Foto de perfil" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
                             </a>
                             <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
-                                <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong>
-                                </li>
+                                <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong></li>
                                 <li><?php echo htmlspecialchars($userInfo['usuario'] ?? 'usuario'); ?></li>
                                 <li><?php echo htmlspecialchars($userInfo['correo'] ?? 'correo@ejemplo.com'); ?></li>
-                                <li>
-                                    <?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?>
-                                </li>
-                                <li class="mt-2">
-                                    <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi
-                                        perfil</a>
-                                </li>
+                                <li><?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?></li>
+                                <li class="mt-2"><a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi perfil</a></li>
                             </ul>
                         </li>
                     </ul>
                 </nav>
             </div>
-            <!--- end:: top_navbar -->
             <div class="main-content">
                 <!-- Resumen de Inventario -->
                 <div class="row">
@@ -163,7 +116,6 @@ if (!$userInfo) {
                         <div class="card bg-primary text-white mb-4">
                             <div class="card-body">
                                 <?php
-                                // Filtro mejorado para mostrar equipos del técnico actual
                                 $whereClause = "i.estado = 'activo'";
                                 if (in_array($_SESSION['rol'], [5, 6, 7])) {
                                     $whereClause .= " AND i.tecnico_id = " . $_SESSION['id'];
@@ -217,13 +169,12 @@ if (!$userInfo) {
                         </div>
                     </div>
                 </div>
+                
                 <!-- Filtros -->
                 <div class="row mb-4">
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-header">
-                                <h4>Filtros de Búsqueda</h4>
-                            </div>
+                            <div class="card-header"><h4>Filtros de Búsqueda</h4></div>
                             <div class="card-body">
                                 <form id="filterForm" class="row">
                                     <div class="col-md-3">
@@ -267,9 +218,7 @@ if (!$userInfo) {
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>&nbsp;</label>
-                                            <button type="button" class="btn btn-primary btn-block" id="applyFilters">
-                                                Aplicar Filtros
-                                            </button>
+                                            <button type="button" class="btn btn-primary btn-block" id="applyFilters">Aplicar Filtros</button>
                                         </div>
                                     </div>
                                 </form>
@@ -277,6 +226,7 @@ if (!$userInfo) {
                         </div>
                     </div>
                 </div>
+                
                 <!-- Tabla de Inventario -->
                 <div class="row">
                     <div class="col-md-12">
@@ -292,9 +242,7 @@ if (!$userInfo) {
                                     <table id="inventarioTable" class="table table-striped table-hover table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>
-                                                    <input type="checkbox" id="selectAll" title="Seleccionar todos">
-                                                </th>
+                                                <th><input type="checkbox" id="selectAll" title="Seleccionar todos"></th>
                                                 <th>Código</th>
                                                 <th>Producto</th>
                                                 <th>Marca</th>
@@ -311,7 +259,6 @@ if (!$userInfo) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            // Consulta para mostrar equipos listos para enviar a ventas
                                             $sql = "SELECT i.*, 
                                                 CASE 
                                                     WHEN d.estado_reparacion IS NOT NULL THEN d.estado_reparacion
@@ -327,15 +274,15 @@ if (!$userInfo) {
                                                 LEFT JOIN usuarios u ON i.tecnico_id = u.id
                                                 WHERE i.estado = 'activo' 
                                                 AND i.disposicion IN ('Para Venta', 'Business', 'para_venta', 'aprobado', 'Business Room', 'en_control')";
-                                            // Filtrar por técnico si no es administrador
+                                            
                                             if (in_array($_SESSION['rol'], [5, 6, 7])) {
                                                 $sql .= " AND i.tecnico_id = " . $_SESSION['id'];
                                             }
                                             $sql .= " ORDER BY i.fecha_modificacion DESC";
+                                            
                                             $result = $conn->query($sql);
                                             if ($result && $result->num_rows > 0) {
                                                 while ($row = $result->fetch_assoc()) {
-                                                    // Determinar clase CSS para el estado
                                                     $statusClass = 'status-' . strtolower(str_replace(' ', '_', $row['estado_actual']));
                                                     echo "<tr>";
                                                     echo "<td><input type='checkbox' class='equipo-checkbox' value='" . $row['id'] . "'></td>";
@@ -347,25 +294,26 @@ if (!$userInfo) {
                                                     echo "<td>" . htmlspecialchars($row['ubicacion']) . "</td>";
                                                     echo "<td><span class='badge badge-info'>" . htmlspecialchars($row['grado']) . "</span></td>";
                                                     echo "<td><span class='status-badge " . $statusClass . "'>" . htmlspecialchars($row['estado_actual']) . "</span></td>";
-                                                    // Precio o mensaje
+                                                    
+                                                    // Precio con botón siempre visible
                                                     $precioTxt = '';
-                                                    if (isset($row['precio']) && $row['precio'] !== '' && $row['precio'] !== '0') {
-                                                        $precioTxt = '$' . number_format((float)$row['precio'], 0, ',', '.');
+                                                    $precioActual = isset($row['precio']) && $row['precio'] !== '' && $row['precio'] !== '0' ? $row['precio'] : '';
+                                                    if ($precioActual) {
+                                                        $precioTxt = '<div>$' . number_format((float)$precioActual, 0, ',', '.') . '</div>';
                                                     } else {
-                                                        $precioTxt = "<span class='text-danger'>falta precio</span>";
+                                                        $precioTxt = '<div class="text-danger">Sin precio</div>';
                                                     }
+                                                    $precioTxt .= '<button type="button" class="btn btn-success btn-sm btn-precio edit-price-btn mt-1" data-id="' . $row['id'] . '" data-precio="' . $precioActual . '" title="Editar precio">
+                                                        <i class="material-icons" style="font-size:14px;">edit</i> Precio
+                                                    </button>';
                                                     echo "<td>" . $precioTxt . "</td>";
+                                                    
                                                     echo "<td>" . htmlspecialchars($row['tecnico_nombre'] ?? 'Sin asignar') . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['fecha_modificacion']) . "</td>";
                                                     echo "<td class='text-center'>
                                                         <a href='javascript:void(0)' class='btn btn-info btn-sm view-btn' data-id='" . $row['id'] . "' title='Ver detalles'><i class='material-icons'>visibility</i></a>
                                                         <a href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "' title='Editar'><i class='material-icons'>edit</i></a>";
-                                                        //  <a href='../' class='btn btn-success btn-sm add-price-btn' data-id='" . $row['id'] . "' title='Mandar a Productos'><i class='material-icons'>price_check</i></a>"
-                                                        // <a href='javascript:void(0)' class='btn btn-success btn-sm add-price-btn' data-id='" . $row['id'] . "' title='Mandar a Productos'><i class='material-icons'>price_check</i></a>";
-                                                        if (!isset($row['precio']) || $row['precio'] === '' || $row['precio'] === '0') {
-                                                        echo "<button type='button' class='btn btn-success btn-sm add-price-btn' data-id='" . $row['id'] . "' title='Agregar precio / foto'><i class='material-icons'>attach_moneyV</i></button>";
-                                                    }
-                                                    // Solo mostrar botón eliminar para administradores
+                                                    
                                                     if ($_SESSION['rol'] == 1) {
                                                         echo "<a href='javascript:void(0)' class='btn btn-danger btn-sm delete-btn' data-id='" . $row['id'] . "' title='Eliminar'><i class='material-icons'>delete</i></a>";
                                                     }
@@ -373,7 +321,7 @@ if (!$userInfo) {
                                                     echo "</tr>";
                                                 }
                                             } else {
-                                                echo "<tr><td colspan='12' class='text-center'>No hay equipos listos para enviar a ventas</td></tr>";
+                                                echo "<tr><td colspan='13' class='text-center'>No hay equipos listos para enviar a ventas</td></tr>";
                                             }
                                             ?>
                                         </tbody>
@@ -386,7 +334,7 @@ if (!$userInfo) {
             </div>
         </div>
     </div>
-    <!-- Modal para ver detalles -->
+    <!-- Modal Ver Detalles -->
     <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -406,13 +354,13 @@ if (!$userInfo) {
             </div>
         </div>
     </div>
-    <!-- Modal agregar precio/foto -->
+    <!-- Modal Editar Precio -->
     <div class="modal fade" id="priceModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form id="priceForm" method="post" action="../controllers/update_price.php" enctype="multipart/form-data">
                     <div class="modal-header">
-                        <h5 class="modal-title">Agregar precio / foto</h5>
+                        <h5 class="modal-title">Editar Precio y Foto</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -420,17 +368,19 @@ if (!$userInfo) {
                     <div class="modal-body">
                         <input type="hidden" name="inventario_id" id="priceInventarioId">
                         <div class="form-group">
-                            <label>Precio</label>
-                            <input type="number" step="0.01" min="0" class="form-control" name="precio" required>
+                            <label>Precio <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" min="0" class="form-control" name="precio" id="pricePrecioInput" required>
+                            <small class="form-text text-muted">Precio actual: <span id="precioActualText">N/A</span></small>
                         </div>
                         <div class="form-group">
                             <label>Foto (opcional)</label>
-                            <input type="file" class="form-control" name="foto" accept="image/*">
+                            <input type="file" class="form-control-file" name="foto" accept="image/*">
+                            <small class="form-text text-muted">Deja vacío si no deseas cambiar la foto</small>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -442,7 +392,6 @@ if (!$userInfo) {
     <script src="../assets/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../assets/js/sidebarCollapse.js"></script>
     <script src="../assets/js/loader.js"></script>
-    <!-- Data Tables -->
     <script type="text/javascript" src="../assets/js/datatable.js"></script>
     <script type="text/javascript" src="../assets/js/datatablebuttons.js"></script>
     <script type="text/javascript" src="../assets/js/jszip.js"></script>
@@ -452,30 +401,23 @@ if (!$userInfo) {
     <script type="text/javascript" src="../assets/js/buttonsprint.js"></script>
     <script>
         $(document).ready(function () {
-            // Inicializar DataTable
             var table = $('#inventarioTable').DataTable({
                 dom: 'Bfrtip',
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ],
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
-                },
+                buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+                language: { url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json' },
                 pageLength: 25,
                 responsive: true,
-                order: [[9, 'desc']] // Ordenar por fecha de modificación
+                order: [[11, 'desc']]
             });
-            // Aplicar filtros
             $('#applyFilters').click(function () {
                 var estado = $('#filterEstado').val();
                 var ubicacion = $('#filterUbicacion').val();
                 var grado = $('#filterGrado').val();
-                table.columns(7).search(estado); // Estado
-                table.columns(5).search(ubicacion); // Ubicación
-                table.columns(6).search(grado); // Grado
+                table.columns(8).search(estado);
+                table.columns(6).search(ubicacion);
+                table.columns(7).search(grado);
                 table.draw();
             });
-            // Limpiar filtros
             $('#filterForm').append('<div class="col-md-12 mt-2"><button type="button" class="btn btn-secondary" id="clearFilters">Limpiar Filtros</button></div>');
             $('#clearFilters').click(function () {
                 $('#filterEstado, #filterUbicacion, #filterGrado').val('');
@@ -503,13 +445,17 @@ if (!$userInfo) {
                 var id = $(this).data('id');
                 window.location.href = 'editar_inventario.php?id=' + id;
             });
-            // Agregar precio/foto
-            $(document).on('click', '.add-price-btn', function () {
+            // NUEVO: Editar precio (funciona siempre, con o sin precio previo)
+            $(document).on('click', '.edit-price-btn', function () {
                 var id = $(this).data('id');
+                var precioActual = $(this).data('precio');
+                
                 $('#priceInventarioId').val(id);
+                $('#pricePrecioInput').val(precioActual || '');
+                $('#precioActualText').text(precioActual ? '$' + parseFloat(precioActual).toLocaleString('es-CO') : 'Sin precio');
                 $('#priceModal').modal('show');
             });
-            // Eliminar equipo (solo para administradores)
+            // Eliminar equipo
             $(document).on('click', '.delete-btn', function () {
                 if (confirm('¿Está seguro de que desea eliminar este equipo del inventario?')) {
                     var id = $(this).data('id');
@@ -541,27 +487,22 @@ if (!$userInfo) {
                     });
                 }
             });
-
-            // Funcionalidad de selección múltiple
+            // Selección múltiple
             $('#selectAll').change(function() {
                 $('.equipo-checkbox').prop('checked', this.checked);
                 updateEnviarButton();
             });
-
             $('.equipo-checkbox').change(function() {
                 updateEnviarButton();
-                // Si se deselecciona uno, desmarcar "Seleccionar todo"
                 if (!this.checked) {
                     $('#selectAll').prop('checked', false);
                 }
-                // Si todos están seleccionados, marcar "Seleccionar todo"
                 var totalCheckboxes = $('.equipo-checkbox').length;
                 var checkedCheckboxes = $('.equipo-checkbox:checked').length;
                 if (checkedCheckboxes === totalCheckboxes && totalCheckboxes > 0) {
                     $('#selectAll').prop('checked', true);
                 }
             });
-
             function updateEnviarButton() {
                 var selectedCount = $('.equipo-checkbox:checked').length;
                 if (selectedCount > 0) {
@@ -570,26 +511,21 @@ if (!$userInfo) {
                     $('#enviarVentasBtn').prop('disabled', true).html('<i class="material-icons">shopping_cart</i> Enviar Seleccionados a Ventas');
                 }
             }
-
             // Enviar equipos a ventas
             $('#enviarVentasBtn').click(function() {
                 var selectedIds = [];
                 $('.equipo-checkbox:checked').each(function() {
                     selectedIds.push($(this).val());
                 });
-
                 if (selectedIds.length === 0) {
                     alert('Por favor seleccione al menos un equipo');
                     return;
                 }
-
                 if (!confirm('¿Está seguro de enviar ' + selectedIds.length + ' equipos a ventas?')) {
                     return;
                 }
-
                 var button = $(this);
                 button.prop('disabled', true).html('<i class="material-icons">hourglass_empty</i> Procesando...');
-
                 $.ajax({
                     url: '../../backend/php/procesar_envio_ventas.php',
                     type: 'POST',
@@ -600,12 +536,8 @@ if (!$userInfo) {
                             var result = JSON.parse(response);
                             if (result.status === 'success') {
                                 var message = result.message;
-                                if (result.warnings) {
-                                    message += '\n\nAdvertencias: ' + result.warnings;
-                                }
-                                if (result.info) {
-                                    message += '\n\nInformación: ' + result.info;
-                                }
+                                if (result.warnings) message += '\n\nAdvertencias: ' + result.warnings;
+                                if (result.info) message += '\n\nInformación: ' + result.info;
                                 alert(message);
                                 location.reload();
                             } else {
