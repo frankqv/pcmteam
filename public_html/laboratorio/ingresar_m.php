@@ -275,7 +275,6 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Limpieza y Mantenimiento - Sistema Integrado</title>
-  <link rel="stylesheet" href="../../backend/css/ingesar.css" />
   <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="../assets/css/custom.css">
   <link rel="icon" type="image/png" href="../assets/img/favicon.webp" />
@@ -508,22 +507,91 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
   include_once '../layouts/nav.php';
   include_once '../layouts/menu_data.php';
   ?>
+      <div class="wrapper">
+        <div class="body-overlay"></div>
+  <div class="main-container">
   <nav id="sidebar">
     <div class="sidebar-header">
       <h3><img src="../assets/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
     </div>
     <?php renderMenu($menu); ?>
   </nav>
-  <div class="main-container">
-    <!--top-navbar-->
-    <div class="top-navbar">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-          <i class="material-icons" style="margin-right: 8px;">build</i>
-          🔧 LIMPIEZA Y MANTENIMIENTO | <?php echo htmlspecialchars($_SESSION['nombre'] ?? 'USUARIO'); ?>
-        </a>
-      </div>
-    </div>
+  <!--top-navbar-->
+            <!-- begin:: top-navbar -->
+            <div class="top-navbar">
+                <nav class="navbar navbar-expand-lg" style="background: #16a085;">
+                    <div class="container-fluid">
+                        <!-- Botón Sidebar -->
+                        <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-none d-none">
+                            <span class="material-icons">arrow_back_ios</span>
+                        </button>
+                        <!-- Título dinámico -->
+                        <?php
+                        $titulo = "";
+                        switch ($_SESSION['rol']) {
+                            case 1: $titulo = "ADMINISTRADOR"; break;
+                            case 2: $titulo = "DEFAULT"; break;
+                            case 3: $titulo = "CONTABLE"; break;
+                            case 4: $titulo = "COMERCIAL"; break;
+                            case 5: $titulo = "JEFE TÉCNICO"; break;
+                            case 6: $titulo = "TÉCNICO"; break;
+                            case 7: $titulo = "BODEGA"; break;
+                            default: $titulo = $userInfo['nombre'] ?? 'USUARIO'; break;
+                        }
+                        ?>
+                        <!-- Branding -->
+                        <a class="navbar-brand" href="#" style="color: #fff; font-weight: bold;">
+                            <i class="material-icons" style="margin-right: 8px; color: #16a085;">build_circle</i>
+                            🔧 LIMPIEZA Y MANTENIMIENTO | LABORATORIO <?php echo htmlspecialchars($_SESSION['nombre'] ?? 'USUARIO'); ?>
+                        </a>
+                        <?php
+                            require_once __DIR__ . '/../../config/ctconex.php';
+                            $userInfo = [];
+                            if (isset($_SESSION['id'])) {
+                                $userId = $_SESSION['id'];
+                                try {
+                                    $sql = "SELECT nombre, usuario, correo, foto, idsede FROM usuarios WHERE id = :id";
+                                    $stmt = $connect->prepare($sql);
+                                    $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+                                    $stmt->execute();
+                                    $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+                                } catch (PDOException $e) { 
+                                    $userInfo = []; 
+                                } 
+                            }
+                        ?>
+                        <!-- Menú derecho (usuario) -->
+                        <ul class="nav navbar-nav ml-auto">
+                            <!-- notificaciones -->
+                            <div> <a class="material-icons">notifications</a> </div>
+                            <li class="dropdown nav-item active">
+                                <a href="#" class="nav-link" data-toggle="dropdown">
+                                    <img src="../assets/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
+                                        alt="Foto de perfil"
+                                        style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+                                </a>
+                                <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
+                                    <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong></li>
+                                    <li><?php echo htmlspecialchars($userInfo['usuario'] ?? 'usuario'); ?></li>
+                                    <li><?php echo htmlspecialchars($userInfo['correo'] ?? 'correo@ejemplo.com'); ?></li>
+                                    <li>
+                                        <?php echo htmlspecialchars(trim($userInfo['idsede'] ?? '') !== '' ? $userInfo['idsede'] : 'Sede sin definir'); ?>
+                                    </li>
+                                    <li class="mt-2">
+                                        <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi perfil</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <button class="d-inline-block d-lg-none ml-auto more-button" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="material-icons">more_vert</span>
+                    </button>
+                </nav>
+            </div>
+            <!-- end:: top_navbar -->
     <!-- Mensajes de alerta -->
     <?php if (!empty($mensaje)): ?>
       <?php echo $mensaje; ?>
@@ -559,7 +627,7 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
                   'Parlantes' => $diagnostico_ultimo['parlantes'] ?? 'N/D',
                   'Batería' => $diagnostico_ultimo['bateria'] ?? 'N/D',
                   'Micrófono' => $diagnostico_ultimo['microfono'] ?? 'N/D',
-                  'Pantalla' => $diagnostico_ultimo['pantalla'] ?? 'N/D'
+                  'Pantalla' => $diagnostico_ultimo['pantalla'] ?? 'N/D',
                 ];
                 foreach ($fields as $label => $val) {
                   $cls = badgeClass((string) $val);
@@ -1012,6 +1080,7 @@ if (!empty($diagnostico_ultimo['tecnico_id'])) {
         <a href="../laboratorio/mostrar.php" class="btn btn-primary">Volver al Dashboard</a>
       </div> <?php endif; ?>
   </div> <!-- Scripts -->
+  </div>
   <script src="../assets/js/jquery-3.3.1.min.js"></script>
   <script src="../assets/js/bootstrap.min.js"></script>
   <script>

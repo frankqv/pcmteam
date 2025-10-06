@@ -106,10 +106,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     if ($_POST['action'] == 'get_stats') {
         try {
             $techStats = [];
-            $sqlStats = "SELECT u.nombre, COUNT(bi.id) as total_equipos 
+            // CAMBIO 1: Modificar GROUP_CONCAT para incluir código y serial en la consulta de AJAX.
+            $sqlStats = "SELECT u.id, u.nombre, COUNT(bi.id) as total_equipos, GROUP_CONCAT(CONCAT(bi.codigo_g, ' (SN: ', bi.serial, ')') SEPARATOR '|') as equipos_asignados
                         FROM usuarios u 
                         LEFT JOIN bodega_inventario bi ON u.id = bi.tecnico_id 
-                        WHERE u.rol IN ('1','6',) AND u.estado = '1'
+                        WHERE u.rol IN ('1','5','6','7') AND u.estado = '1'
                         GROUP BY u.id, u.nombre 
                         ORDER BY total_equipos DESC";
             $resultStats = $conn->query($sqlStats);
@@ -167,7 +168,8 @@ if ($resultTec) {
 }
 // Obtener estadísticas de equipos asignados por técnico
 $techStats = [];
-$sqlStats = "SELECT u.nombre, COUNT(bi.id) as total_equipos 
+// CAMBIO 2: Modificar GROUP_CONCAT para incluir código y serial en la carga inicial de la página.
+$sqlStats = "SELECT u.id, u.nombre, COUNT(bi.id) as total_equipos, GROUP_CONCAT(CONCAT(bi.codigo_g, ' (SN: ', bi.serial, ')') SEPARATOR '|') as equipos_asignados
         FROM usuarios u 
         LEFT JOIN bodega_inventario bi ON u.id = bi.tecnico_id 
         WHERE u.rol IN ('1','5','6','7') AND u.estado = '1'
@@ -181,7 +183,8 @@ if ($resultStats) {
 }
 // Obtener equipos disponibles para asignar
 $equiposDisponibles = [];
-$sqlEquipos = "SELECT id, codigo_g, producto, marca, modelo 
+// CAMBIO 3: Añadir la columna 'serial' a la consulta de equipos disponibles.
+$sqlEquipos = "SELECT id, codigo_g, producto, marca, modelo, serial
         FROM bodega_inventario 
         WHERE (tecnico_id IS NULL OR tecnico_id = 0) AND estado = 'activo'
         ORDER BY fecha_ingreso";
@@ -196,28 +199,20 @@ if ($resultEquipos) {
     <!doctype html>
     <html lang="es">
     <head>
-        <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-        <!-- title -->
         <title>Dashboard Asignación Equipos - PCMARKETTEAM</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.css">
-        <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-        <!----css3---->
         <link rel="stylesheet" href="../assets/css/custom.css">
-        <link rel="stylesheet" href="../assets/css/loader.css">
-        <!-- Data Tables -->
         <link rel="stylesheet" type="text/css" href="../assets/css/datatable.css">
         <link rel="stylesheet" type="text/css" href="../assets/css/buttonsdataTables.css">
         <link rel="stylesheet" type="text/css" href="../assets/css/font.css">
-        <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-        <!--google material icon-->
         <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
         <link rel="icon" type="image/png" href="../assets/img/favicon.webp" />
         <style>
@@ -482,15 +477,17 @@ if ($resultEquipos) {
                 max-height: 400px;
                 overflow-y: auto;
             }
+            .tech-row-container {
+                border-bottom: 1px solid #444;
+            }
+            .tech-row-container:last-child {
+                 border-bottom: none;
+            }
             .tech-row {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 padding: 10px 0;
-                border-bottom: 1px solid #444;
-            }
-            .tech-row:last-child {
-                border-bottom: none;
             }
             .tech-name {
                 color: white;
@@ -503,6 +500,47 @@ if ($resultEquipos) {
                 font-size: 14px;
                 font-weight: bold;
             }
+            .tech-btn {
+                cursor: pointer;
+                user-select: none;
+                color: #fff;
+                transition: color 0.2s;
+            }
+            .tech-btn:hover {
+                color: #68c5ff;
+            }
+            .tech-btn.active {
+                transform: rotate(180deg);
+            }
+            .tech-equipment-details {
+                display: none;
+                padding: 10px;
+                background-color: #333;
+                border-radius: 5px;
+                margin-top: 5px;
+            }
+             .tech-equipment-search {
+                width: 100%;
+                padding: 5px;
+                margin-bottom: 10px;
+                background: #444;
+                border: 1px solid #555;
+                color: white;
+                border-radius: 4px;
+            }
+            .tech-equipment-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                max-height: 150px;
+                overflow-y: auto;
+            }
+            .tech-equipment-list li {
+                padding: 3px 5px;
+                font-size: 12px;
+                color: #ccc;
+            }
+
             .process-info {
                 display: flex;
                 justify-content: space-between;
@@ -596,7 +634,6 @@ if ($resultEquipos) {
     </head>
     <body>
         <div class="wrapper">
-            <!-- layouts nav.php  |  Sidebar -->
             <div class="body-overlay"></div>
             <?php include_once '../layouts/nav.php';
             include_once '../layouts/menu_data.php'; ?>
@@ -606,7 +643,6 @@ if ($resultEquipos) {
                 </div>
                 <?php renderMenu($menu); ?>
             </nav>
-            <!-- Page Content -->
             <?php
             // Verificar sesión
             if (!isset($_SESSION['id'])) {
@@ -637,7 +673,6 @@ if ($resultEquipos) {
             ];
             $titulo = $titulos[$userInfo['rol']] ?? $userInfo['nombre'];
             ?>
-            <!-- Navbar -->
             <div class="top-navbar">
                 <nav class="navbar navbar-expand-lg" style="background:rgb(250, 107, 107);">
                     <div class="container-fluid">
@@ -649,6 +684,7 @@ if ($resultEquipos) {
                         <i class="fas fa-tools" style="margin-right: 8px; color: var(--accent-orange);"></i>
                         ASIGNACION TECNICO | EQUIPOS | <?php echo htmlspecialchars($titulo); ?>
                     </a>
+                    <i class="material-icons">notifications</i>
                     <ul class="nav navbar-nav ml-auto">
                         <li class="dropdown nav-item active">
                             <a href="#" class="nav-link" data-toggle="dropdown">
@@ -673,11 +709,9 @@ if ($resultEquipos) {
                     </button>
                 </nav>
             </div>
-            <!-- Page Content  -->
             <div id="content">
                 <div class="container-fluid">
                     <div class="dashboard-grid">
-                        <!-- Panel Izquierdo - Asignación Equipos para Triage -->
                         <div class="panel panel-triage">
                             <div class="panel-header">
                                 ASIGNACION EQUIPOS PARA TRIAGE
@@ -685,12 +719,11 @@ if ($resultEquipos) {
                             <div class="panel-content">
                                 <form id="triageForm">
                                     <div class="equipment-section">
-                                        <!-- Barra de búsqueda -->
                                         <div class="search-container" id="triageSearchContainer">
                                             <input type="text"
                                                 class="search-input"
                                                 id="triageSearchInput"
-                                                placeholder="🔍 Buscar equipos por código, producto o marca..."
+                                                placeholder="🔍 Buscar por código, serial, producto o marca..."
                                                 oninput="handleSearchInput('triage')">
                                             <button type="button" class="search-clear-btn" id="triageSearchClear"
                                                 onclick="clearSearch('triage')" title="Limpiar búsqueda" style="color:#FFA500">
@@ -698,20 +731,17 @@ if ($resultEquipos) {
                                             </button>
                                             <div class="search-results-info" id="triageSearchInfo"></div>
                                         </div>
-                                        <!-- Controles de selección -->
                                         <div class="selection-controls">
                                             <button type="button" onclick="selectAllEquipment('triage')">Seleccionar Todos</button>
                                             <button type="button" onclick="selectVisibleEquipment('triage')">Seleccionar Visibles</button>
                                             <button type="button" onclick="clearSelectionEquipment('triage')">Limpiar Selección</button>
                                         </div>
-                                        <!-- Contador de seleccionados -->
                                         <div class="selected-count" id="triageSelectedCount">
                                             Equipos seleccionados: 0
                                         </div>
-                                        <!-- Lista de equipos con checkboxes -->
                                         <div class="equipment-list" id="triageEquipmentList">
                                             <?php foreach ($equiposDisponibles as $equipo): ?>
-                                                <div class="equipment-item" data-search="<?php echo strtolower($equipo['codigo_g'] . ' ' . $equipo['producto'] . ' ' . $equipo['marca'] . ' ' . $equipo['modelo']); ?>">
+                                                <div class="equipment-item" data-search="<?php echo strtolower($equipo['codigo_g'] . ' ' . $equipo['serial'] . ' ' . $equipo['producto'] . ' ' . $equipo['marca'] . ' ' . $equipo['modelo']); ?>">
                                                     <input type="checkbox"
                                                         name="triage_equipos[]"
                                                         value="<?php echo $equipo['id']; ?>"
@@ -742,7 +772,6 @@ if ($resultEquipos) {
                                 </form>
                             </div>
                         </div>
-                        <!-- Panel Central - Total Equipos Asignados por Técnico -->
                         <div class="panel panel-center">
                             <div class="chart-container">
                                 <div class="chart-title">
@@ -755,14 +784,31 @@ if ($resultEquipos) {
                             </div>
                             <div class="tech-stats" id="techStats">
                                 <?php foreach ($techStats as $stat): ?>
+                                <div class="tech-row-container">
                                     <div class="tech-row">
                                         <span class="tech-name"><?php echo strtoupper(htmlspecialchars($stat['nombre'])); ?></span>
                                         <span class="tech-count"><?php echo $stat['total_equipos']; ?></span>
+                                        <span class="tech-btn" data-target="tech-details-<?php echo $stat['id']; ?>">▼</span>
                                     </div>
+                                    <div class="tech-equipment-details" id="tech-details-<?php echo $stat['id']; ?>">
+                                        <input type="text" class="tech-equipment-search" placeholder="Buscar por código o serial...">
+                                        <ul class="tech-equipment-list">
+                                            <?php
+                                            if (!empty($stat['equipos_asignados'])) {
+                                                $equipos_lista = explode('|', $stat['equipos_asignados']);
+                                                foreach ($equipos_lista as $codigo_equipo) {
+                                                    echo '<li>' . htmlspecialchars($codigo_equipo) . '</li>';
+                                                }
+                                            } else {
+                                                echo '<li>No hay equipos asignados.</li>';
+                                            }
+                                            ?>
+                                        </ul>
+                                    </div>
+                                </div>
                                 <?php endforeach; ?>
                             </div>
                         </div>
-                        <!-- Panel Derecho - Asignación Equipos Proceso -->
                         <div class="panel panel-process">
                             <div class="panel-header">
                                 ASIGNACION EQUIPOS PROCESO
@@ -770,12 +816,11 @@ if ($resultEquipos) {
                             <div class="panel-content">
                                 <form id="processForm">
                                     <div class="equipment-section">
-                                        <!-- Barra de búsqueda para proceso -->
                                         <div class="search-container" id="processSearchContainer">
                                             <input type="text"
                                                 class="search-input"
                                                 id="processSearchInput"
-                                                placeholder="🔍 Buscar equipos por código, producto o marca..."
+                                                placeholder="🔍 Buscar por código, serial, producto o marca..."
                                                 oninput="handleSearchInput('process')">
                                             <button type="button" class="search-clear-btn" id="processSearchClear"
                                                 onclick="clearSearch('process')" title="Limpiar búsqueda" style="color:#00CC00">
@@ -783,28 +828,26 @@ if ($resultEquipos) {
                                             </button>
                                             <div class="search-results-info" id="processSearchInfo"></div>
                                         </div>
-                                        <!-- Controles de selección para proceso -->
                                         <div class="selection-controls">
                                             <button type="button" onclick="selectAllEquipment('process')">Seleccionar Todos</button>
                                             <button type="button" onclick="selectVisibleEquipment('process')">Seleccionar Visibles</button>
                                             <button type="button" onclick="clearSelectionEquipment('process')">Limpiar Selección</button>
                                         </div>
-                                        <!-- Contador de seleccionados para proceso -->
                                         <div class="selected-count" id="processSelectedCount">
                                             Equipos seleccionados: 0
                                         </div>
-                                        <!-- Lista de equipos para proceso -->
                                         <div class="equipment-list" id="processEquipmentList">
                                             <?php
                                             // Equipos en diagnóstico para proceso
-                                            $sqlProceso = "SELECT id, codigo_g, producto, marca, modelo 
+                                            // CAMBIO 5: Añadir la columna 'serial' a la consulta de equipos en proceso.
+                                            $sqlProceso = "SELECT id, codigo_g, producto, marca, modelo, serial 
                                             FROM bodega_inventario 
                                             WHERE disposicion IN ('en_diagnostico', 'Business Room') 
                                             ORDER BY fecha_modificacion";
                                             $resultProceso = $conn->query($sqlProceso);
                                             if ($resultProceso) {
                                                 while ($equipoProceso = $resultProceso->fetch_assoc()): ?>
-                                                    <div class="equipment-item" data-search="<?php echo strtolower($equipoProceso['codigo_g'] . ' ' . $equipoProceso['producto'] . ' ' . $equipoProceso['marca'] . ' ' . $equipoProceso['modelo']); ?>">
+                                                    <div class="equipment-item" data-search="<?php echo strtolower($equipoProceso['codigo_g'] . ' ' . $equipoProceso['serial'] . ' ' . $equipoProceso['producto'] . ' ' . $equipoProceso['marca'] . ' ' . $equipoProceso['modelo']); ?>">
                                                         <input type="checkbox"
                                                             name="process_equipos[]"
                                                             value="<?php echo $equipoProceso['id']; ?>"
@@ -855,9 +898,7 @@ if ($resultEquipos) {
                         </div>
                     </div>
                 </div>
-                <!-- Alert Container -->
                 <div id="alertContainer"></div>
-                <!-- Scripts -->
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
                 <script>
@@ -1071,7 +1112,7 @@ if ($resultEquipos) {
                                     const noResults = list.querySelector('.no-results');
                                     list.innerHTML = '';
                                     equipos.forEach(function(equipo) {
-                                        const searchData = (equipo.codigo_g + ' ' + equipo.producto + ' ' + equipo.marca + ' ' + (equipo.modelo || '')).toLowerCase();
+                                        const searchData = (equipo.codigo_g + ' ' + equipo.serial + ' ' + equipo.producto + ' ' + equipo.marca + ' ' + (equipo.modelo || '')).toLowerCase();
                                         const item = document.createElement('div');
                                         item.className = 'equipment-item';
                                         item.setAttribute('data-search', searchData);
@@ -1265,12 +1306,26 @@ if ($resultEquipos) {
                                 const statsContainer = document.getElementById('techStats');
                                 statsContainer.innerHTML = '';
                                 stats.forEach(function(stat) {
-                                    const row = document.createElement('div');
-                                    row.className = 'tech-row';
-                                    row.innerHTML = `
-                                    <span class="tech-name">${stat.nombre.toUpperCase()}</span>
-                                    <span class="tech-count">${stat.total_equipos}</span>`;
-                                    statsContainer.appendChild(row);
+                                const container = document.createElement('div');
+                                container.className = 'tech-row-container';
+                                
+                                let listItems = '<li>No hay equipos asignados.</li>';
+                                if (stat.equipos_asignados) {
+                                    listItems = stat.equipos_asignados.split('|').map(item => `<li>${item}</li>`).join('');
+                                }
+                                container.innerHTML = `
+                                    <div class="tech-row">
+                                        <span class="tech-name">${stat.nombre.toUpperCase()}</span>
+                                        <span class="tech-count">${stat.total_equipos}</span>
+                                        <span class="tech-btn" data-target="tech-details-${stat.id}">▼</span>
+                                    </div>
+                                    <div class="tech-equipment-details" id="tech-details-${stat.id}">
+                                        <input type="text" class="tech-equipment-search" placeholder="Buscar por código o serial...">
+                                        <ul class="tech-equipment-list">
+                                            ${listItems}
+                                        </ul>
+                                    </div>`;
+                                statsContainer.appendChild(container);
                                 });
                             },
                             error: function() {
@@ -1322,6 +1377,25 @@ if ($resultEquipos) {
                                 }
                             });
                         }
+                        // Event listeners para desplegables y búsqueda de equipos de técnico
+                        $('#techStats').on('click', '.tech-btn', function() {
+                            const targetId = $(this).data('target');
+                            const detailsPanel = $(`#${targetId}`);
+                            detailsPanel.slideToggle(200);
+                            $(this).toggleClass('active');
+                        });
+                         $('#techStats').on('input', '.tech-equipment-search', function() {
+                            const searchTerm = $(this).val().toLowerCase();
+                            const list = $(this).siblings('.tech-equipment-list').find('li');s
+                            list.each(function() {
+                                const equipmentCode = $(this).text().toLowerCase();
+                                if (equipmentCode.includes(searchTerm)) {
+                                    $(this).show();
+                                } else {
+                                    $(this).hide();
+                                }
+                            });
+                        });
                         // Agregar tooltips informativos
                         triageSearchInput?.setAttribute('title', 'Presiona Escape para limpiar la búsqueda');
                         processSearchInput?.setAttribute('title', 'Presiona Escape para limpiar la búsqueda');
@@ -1330,16 +1404,11 @@ if ($resultEquipos) {
                     setInterval(updateStats, 1200000);
                 </script>
             </div>
-            <!---  Contenido de MAIN -->
-            <!-- Optional JavaScript -->
-            <!-- jQuery first, then Popper.js, then Bootstrap JS -->
             <script src="../assets/js/jquery-3.3.1.slim.min.js"></script>
             <script src="../assets/js/popper.min.js"></script>
             <script src="../assets/js/bootstrap.min.js"></script>
             <script src="../assets/js/jquery-3.3.1.min.js"></script>
             <script type="text/javascript" src="../assets/js/sidebarCollapse.js"></script>
-            <script src="../assets/js/loader.js"></script>
-            <!-- Data Tables -->
             <script type="text/javascript" src="../assets/js/datatable.js"></script>
             <script type="text/javascript" src="../assets/js/datatablebuttons.js"></script>
             <script type="text/javascript" src="../assets/js/jszip.js"></script>
@@ -1348,14 +1417,7 @@ if ($resultEquipos) {
             <script type="text/javascript" src="../assets/js/buttonshtml5.js"></script>
             <script type="text/javascript" src="../assets/js/buttonsprint.js"></script>
             <script type="text/javascript" src="../assets/js/example.js"></script>
-            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-            <script src="../assets/js/chart/Chart.js"></script>
-            <script>
-                google.charts.load('current', {
-                    'packages': ['corechart']
-                });
-                google.charts.setOnLoadCallback(drawChart);
-            </script>
+            <script type="text/javascript" src="../assets/js/charts-loader.js"></script>
     </body>
     </html>
 <?php } else {

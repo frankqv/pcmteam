@@ -383,7 +383,7 @@ if (!$userInfo) {
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
                 language: {
-                    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
+                    url: '../assets/js/spanish.json'
                 },
                 pageLength: 25,
                 responsive: true,

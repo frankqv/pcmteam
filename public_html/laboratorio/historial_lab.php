@@ -366,7 +366,7 @@ if (!$result) {
         var table = $('#mantenimientoTable').DataTable({
             dom: 'Bfrtip',
             buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-            language: { url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json' },
+            language: { url: '../assets/js/spanish.json' },
             order: [[0, 'desc']], // Ordenar por fecha descendente
             columnDefs: [
                 { targets: [0], type: 'datetime' }
