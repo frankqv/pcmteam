@@ -15,5 +15,3 @@ require_once '../../config/ctconex.php';
 require_once '../../backend/php/procesar_venta_final.php';
 exit();
 ?>
-
-

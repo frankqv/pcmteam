@@ -256,13 +256,6 @@ if (isset($_SESSION['id'])) {
         <script type="text/javascript" src="../assets/js/buttonsprint.js"></script>
         <script type="text/javascript" src="../assets/js/example.js"></script>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-        <script src="../assets/js/Chart-prod.js"></script>
-        <script>
-            google.charts.load('current', {
-                'packages': ['corechart']
-            });
-            google.charts.setOnLoadCallback(loadDataAndDraw);
-        </script>
         <script>
             $(document).ready(function () {
                 if (!$.fn.DataTable.isDataTable('#example')) {
@@ -271,9 +264,9 @@ if (isset($_SESSION['id'])) {
                         buttons: [
                             'copy', 'csv', 'excel', 'pdf', 'print'
                         ],
-                        //language: {
-                        //    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
-                        // }
+                        language: {
+                            url: '../assets/js/spanish.json'
+                        },
                     });
                 }
             });

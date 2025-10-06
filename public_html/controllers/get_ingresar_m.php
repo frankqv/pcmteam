@@ -1,94 +1,122 @@
 <?php
-// ../controllers/get_inventario_details.php
+// Evitar cualquier salida previa
+ob_start();
 header('Content-Type: application/json; charset=utf-8');
-// Opcional: permitir peticiones desde public_html si hace falta (ajustar origen)
-// header('Access-Control-Allow-Origin: http://192.168.2.10');
-// header('Access-Control-Allow-Credentials: true');
-if (!isset($_GET['id'])) {
+// Validar que se recibió el ID
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+    ob_end_clean();
     http_response_code(400);
-    echo json_encode(['success' => false, 'data' => null, 'message' => 'Falta parámetro id']);
+    echo json_encode(['success' => false, 'error' => 'Falta parámetro id']);
     exit;
 }
 $id = (int) $_GET['id'];
 if ($id <= 0) {
+    ob_end_clean();
     http_response_code(400);
-    echo json_encode(['success' => false, 'data' => null, 'message' => 'id inválido']);
+    echo json_encode(['success' => false, 'error' => 'ID inválido']);
     exit;
 }
-// Incluir conexión (ajusta ruta según tu estructura)
-require_once dirname(__DIR__, 2) . '../../config/ctconex.php';
-// Asumimos $connect es PDO o mysqli
-if (!isset($connect)) {
+// Incluir conexión
+require_once dirname(__DIR__, 2) . '/config/ctconex.php';
+// Verificar conexión
+if (!isset($conn)) {
+    ob_end_clean();
     http_response_code(500);
-    echo json_encode(['success' => false, 'data' => null, 'message' => 'Conexión a BD no disponible']);
+    echo json_encode(['success' => false, 'error' => 'Conexión a BD no disponible']);
     exit;
 }
-// Helper para obtener última fila de una tabla por campo de fecha
-function fetch_last($connect, $table, $inventario_id, $date_field, $extra_columns = '*')
-{
-    $sql = "SELECT {$extra_columns} FROM {$table} WHERE inventario_id = ? ORDER BY {$date_field} DESC LIMIT 1";
-    if ($connect instanceof PDO) {
-        $stmt = $connect->prepare($sql);
-        if (!$stmt)
-            return null;
-        $stmt->execute([$inventario_id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    } else {
-        // mysqli
-        $stmt = $connect->prepare($sql);
-        if (!$stmt)
-            return null;
-        $stmt->bind_param('i', $inventario_id);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $row = $res ? $res->fetch_assoc() : null;
-        $stmt->close();
-        return $row;
-    }
-}
+// Limpiar buffer
+ob_end_clean();
 try {
-    // Inventario principal
-    if ($connect instanceof PDO) {
-        $stmt = $connect->prepare("SELECT * FROM bodega_inventario WHERE id = ? LIMIT 1");
-        $stmt->execute([$id]);
-        $inventario = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Consulta para obtener el mantenimiento completo con datos del equipo
+    $sql = "
+    SELECT 
+        m.*,
+        inv.codigo_g,
+        inv.producto,
+        inv.marca,
+        inv.modelo,
+        inv.serial,
+        inv.grado,
+        inv.disposicion,
+        ut.nombre AS tecnico_nombre,
+        ur.nombre AS usuario_registro_nombre
+    FROM bodega_mantenimiento m
+    LEFT JOIN bodega_inventario inv ON m.inventario_id = inv.id
+    LEFT JOIN usuarios ut ON m.tecnico_id = ut.id
+    LEFT JOIN usuarios ur ON m.usuario_registro = ur.id
+    WHERE m.id = ?
+    LIMIT 1
+    ";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        throw new Exception('Error al preparar consulta: ' . $conn->error);
+    }
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result && $result->num_rows > 0) {
+        $data = $result->fetch_assoc();
+        // Asegurar que todos los campos existan (evitar undefined)
+        $response = [
+            'success' => true,
+            'data' => [
+                // Información del equipo
+                'codigo_g' => $data['codigo_g'] ?? '',
+                'producto' => $data['producto'] ?? '',
+                'marca' => $data['marca'] ?? '',
+                'modelo' => $data['modelo'] ?? '',
+                'serial' => $data['serial'] ?? '',
+                'grado' => $data['grado'] ?? '',
+                'disposicion' => $data['disposicion'] ?? '',
+                // Información del mantenimiento
+                'fecha_registro' => $data['fecha_registro'] ?? '',
+                'tecnico_id' => $data['tecnico_id'] ?? '',
+                'tecnico_nombre' => $data['tecnico_nombre'] ?? '',
+                'usuario_registro' => $data['usuario_registro'] ?? '',
+                'usuario_registro_nombre' => $data['usuario_registro_nombre'] ?? '',
+                'estado' => $data['estado'] ?? '',
+                // Fallas
+                'falla_electrica' => $data['falla_electrica'] ?? '',
+                'detalle_falla_electrica' => $data['detalle_falla_electrica'] ?? '',
+                'falla_estetica' => $data['falla_estetica'] ?? '',
+                'detalle_falla_estetica' => $data['detalle_falla_estetica'] ?? '',
+                // Proceso de mantenimiento
+                'limpieza_electronico' => $data['limpieza_electronico'] ?? '',
+                'observaciones_limpieza_electronico' => $data['observaciones_limpieza_electronico'] ?? '',
+                'mantenimiento_crema_disciplinaria' => $data['mantenimiento_crema_disciplinaria'] ?? '',
+                'observaciones_mantenimiento_crema' => $data['observaciones_mantenimiento_crema'] ?? '',
+                'mantenimiento_partes' => $data['mantenimiento_partes'] ?? '',
+                'cambio_piezas' => $data['cambio_piezas'] ?? '',
+                'piezas_solicitadas_cambiadas' => $data['piezas_solicitadas_cambiadas'] ?? '',
+                'proceso_reconstruccion' => $data['proceso_reconstruccion'] ?? '',
+                'parte_reconstruida' => $data['parte_reconstruida'] ?? '',
+                'limpieza_general' => $data['limpieza_general'] ?? '',
+                // Información adicional
+                'referencia_externa' => $data['referencia_externa'] ?? '',
+                'partes_solicitadas' => $data['partes_solicitadas'] ?? '',
+                'remite_otra_area' => $data['remite_otra_area'] ?? '',
+                'area_remite' => $data['area_remite'] ?? '',
+                'proceso_electronico' => $data['proceso_electronico'] ?? '',
+                'observaciones_globales' => $data['observaciones_globales'] ?? '',
+                'observaciones' => $data['observaciones'] ?? '',
+            ]
+        ];
+        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     } else {
-        // mysqli
-        $stmt = $connect->prepare("SELECT * FROM bodega_inventario WHERE id = ? LIMIT 1");
-        $stmt->bind_param('i', $id);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $inventario = $res ? $res->fetch_assoc() : null;
-        $stmt->close();
-    }
-    if (!$inventario) {
         http_response_code(404);
-        echo json_encode(['success' => false, 'data' => null, 'message' => "Inventario no encontrado para id = {$id}"]);
-        exit;
+        echo json_encode([
+            'success' => false,
+            'error' => 'Mantenimiento no encontrado'
+        ]);
     }
-    // Último mantenimiento
-    $mantenimiento = fetch_last($connect, 'bodega_mantenimiento', $id, 'fecha_registro');
-    // Último diagnóstico (puede venir desde bodega_diagnosticos)
-    $diagnostico = fetch_last($connect, 'bodega_diagnosticos', $id, 'fecha_diagnostico');
-    // Última entrada
-    $entrada = fetch_last($connect, 'bodega_entradas', $id, 'fecha_entrada');
-    // Último control calidad (opcional)
-    $control_calidad = fetch_last($connect, 'bodega_control_calidad', $id, 'fecha_control');
-    $payload = [
-        'success' => true,
-        'data' => [
-            'inventario' => $inventario,
-            'mantenimiento_ultimo' => $mantenimiento,
-            'diagnostico_ultimo' => $diagnostico,
-            'entrada_ultima' => $entrada,
-            'control_calidad_ultimo' => $control_calidad
-        ],
-        'message' => ''
-    ];
-    echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    $stmt->close();
 } catch (Exception $e) {
-    error_log("get_inventario_details error: " . $e->getMessage());
+    error_log("Error en get_ingresar_m.php: " . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['success' => false, 'data' => null, 'message' => 'Error interno del servidor']);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Error interno del servidor: ' . $e->getMessage()
+    ]);
 }
-?>
+$conn->close();

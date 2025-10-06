@@ -7,21 +7,18 @@ if (!isset($_SESSION['rol']) || !in_array((int) $_SESSION['rol'], [1, 2, 5, 6, 7
 }
 require_once '../../config/ctconex.php';
 date_default_timezone_set('America/Bogota');
-
 // Obtener técnicos para filtros
 $tecnicos = [];
 $resTec = $conn->query("SELECT id, nombre FROM usuarios WHERE rol IN (1,5,6,7) ORDER BY nombre");
 while ($r = $resTec->fetch_assoc()) {
     $tecnicos[$r['id']] = $r['nombre'];
 }
-
 // Obtener usuarios para mostrar nombres
 $usuarios = [];
 $resUser = $conn->query("SELECT id, nombre FROM usuarios ORDER BY nombre");
 while ($r = $resUser->fetch_assoc()) {
     $usuarios[$r['id']] = $r['nombre'];
 }
-
 // Consulta principal para obtener datos de mantenimiento con información del inventario
 $sql = "
 SELECT 
@@ -41,7 +38,6 @@ LEFT JOIN usuarios ut ON m.tecnico_id = ut.id
 LEFT JOIN usuarios ur ON m.usuario_registro = ur.id
 ORDER BY m.fecha_registro DESC
 ";
-
 $result = $conn->query($sql);
 if (!$result) {
     die("Error en consulta: " . $conn->error);
@@ -142,7 +138,6 @@ if (!$result) {
                 renderMenu($menu);
             } ?>
         </nav>
-        
         <div id="content">
             <!-- begin:: top-navbar -->
             <div class="top-navbar">
@@ -152,7 +147,6 @@ if (!$result) {
                         <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-none d-none">
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
-                        
                         <!-- Título dinámico -->
                         <?php
                         $titulo = "";
@@ -172,7 +166,6 @@ if (!$result) {
                             <i class="material-icons" style="margin-right: 8px; color: #16a085;">build_circle</i>
                             <b>HISTORIAL DE MANTENIMIENTO - LABORATORIO</b>
                         </a>
-                        
                         <?php
                             require_once __DIR__ . '/../../config/ctconex.php';
                             $userInfo = [];
@@ -191,6 +184,8 @@ if (!$result) {
                         ?>
                         <!-- Menú derecho (usuario) -->
                         <ul class="nav navbar-nav ml-auto">
+                            <!-- notificaciones -->
+                            <div> <a class="material-icons">notifications</a> </div>
                             <li class="dropdown nav-item active">
                                 <a href="#" class="nav-link" data-toggle="dropdown">
                                     <img src="../assets/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
@@ -591,7 +586,6 @@ if (!$result) {
                                         </div>
                                     </div>
                                 </div>
-
                                 <!-- Observaciones -->
                                 <div class="info-section">
                                     <h5><i class="material-icons" style="vertical-align: middle;">notes</i> Observaciones y Detalles</h5>
@@ -652,7 +646,6 @@ if (!$result) {
                                         </div>
                                     ` : ''}
                                 </div>
-
                                 <!-- Información Adicional -->
                                 ${data.referencia_externa || data.partes_solicitadas ? `
                                 <div class="info-section">

@@ -1,25 +1,39 @@
+/* ===== Loader unificado ===== */
+
+/* contenedor del pre-loader */
+.pre-loader {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #191f26; /* tu color original */
+  z-index: 99999;
+  transition: opacity 0.8s ease, visibility 0.8s;
+}
+
+/* si usas un GIF */
 .loading-gif {
-            max-width: 500px;
-        }
-        .pre-loader {
-            position: fixed;
-            z-index: 100; /** make sure this is the highest value compared to all other divs **/
-            top: 0;
-            left: 0;
-            background: #191f26;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            width: 100%;
-        }
-        .pre-loader.hidden {
-            animation: fadeOut 2s; /** change to 1s */
-            animation-fill-mode: forwards;
-        }
-        @keyframes fadeOut {
-            100% {
-                opacity: 0;
-                visibility: hidden;
-            }
-        }
+  max-width: 500px;
+}
+
+/* spinner opcional si no usas GIF */
+.pre-loader .spinner {
+  width: 48px;
+  height: 48px;
+  border: 6px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #00bfff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* estado oculto (cuando el JS agrega la clase .hidden) */
+.pre-loader.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}

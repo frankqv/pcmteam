@@ -334,7 +334,7 @@ foreach ($historial as $evento) {
             padding-bottom: 5px;
             margin-bottom: 10px;
         }
-        @print {
+        @media print {
             .timeline::before { background: #000 !important; }
             .timeline-content { box-shadow: none !important; border: 1px solid #ddd !important; }
         }

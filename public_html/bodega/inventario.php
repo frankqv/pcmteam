@@ -42,7 +42,7 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
         <link rel="stylesheet" href="../assets/css/custom.css">
-        <link rel="stylesheet" href="../assets/css/loader.css">
+        <!-- loader ace se demore mucho <link rel="stylesheet" href="../assets/css/loader.css"> -->
         <!-- Data Tables -->
         <link rel="stylesheet" type="text/css" href="../assets/css/datatable.css">
         <link rel="stylesheet" type="text/css" href="../assets/css/buttonsdataTables.css">
@@ -216,7 +216,8 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
                                                     $result_sedes->execute();
                                                     $sedes = $result_sedes->fetchAll(PDO::FETCH_ASSOC);
                                                     foreach ($sedes as $sede) {
-                                                        $selected = (isset($f->producto) && $f->producto == $sede['producto']) ? 'selected' : '';
+                                                        $f = (object)($_POST['f'] ?? []);
+                                                        $selected = 'producto' == $sede['producto'] ? 'selected' : '';
                                                         echo '<option value="' . e($sede['producto']) . '" ' . $selected . '>';
                                                         echo e($sede['producto']);
                                                         echo '</option>';
@@ -236,6 +237,7 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
                                                     $result_sedes->execute();
                                                     $sedes = $result_sedes->fetchAll(PDO::FETCH_ASSOC);
                                                     foreach ($sedes as $sede) {
+                                                        $f = (object)($_POST['f'] ?? []);
                                                         $selected = (isset($f->grado) && $f->grado == $sede['grado']) ? 'selected' : '';
                                                         echo '<option value="' . e($sede['grado']) . '" ' . $selected . '>';
                                                         echo e($sede['grado']);
@@ -257,6 +259,7 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
                                                     $result_sedes->execute();
                                                     $sedes = $result_sedes->fetchAll(PDO::FETCH_ASSOC);
                                                     foreach ($sedes as $sede) {
+                                                        $f = (object) ($_POST ['f'] ?? []);
                                                         $selected = (isset($f->ubicacion) && $f->ubicacion == $sede['ubicacion']) ? 'selected' : '';
                                                         echo '<option value="' . e($sede['ubicacion']) . '" ' . $selected . '>';
                                                         echo e($sede['ubicacion']);
@@ -277,6 +280,7 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
                                                     $result_sedes->execute();
                                                     $sedes = $result_sedes->fetchAll(PDO::FETCH_ASSOC);
                                                     foreach ($sedes as $sede) {
+                                                        $f =(object) ($_POST ['f'] ?? []);
                                                         $selected = (isset($f->posicion) && $f->posicion == $sede['posicion']) ? 'selected' : '';
                                                         echo '<option value="' . e($sede['posicion']) . '" ' . $selected . '>';
                                                         echo e($sede['posicion']);
@@ -431,7 +435,7 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
         <script src="../assets/js/popper.min.js"></script>
         <script src="../assets/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="../assets/js/sidebarCollapse.js"></script>
-        <script src="../assets/js/loader.js"></script>
+        <!-- <script src="../assets/js/loader.js"></script> -->
         <!-- Data Tables -->
         <script type="text/javascript" src="../assets/js/datatable.js"></script>
         <script type="text/javascript" src="../assets/js/datatablebuttons.js"></script>
@@ -449,7 +453,7 @@ if ($_POST && isset($_POST['equipo_id'], $_POST['tecnico_id'])) {
                         'copy', 'csv', 'excel', 'pdf', 'print'
                     ],
                     language: {
-                        url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
+                        url: '../assets/js/spanish.json'
                     },
                     order: [[10, 'desc']] // Ordenar por fecha de modificación descendente
                 });
