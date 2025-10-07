@@ -116,12 +116,12 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2])) {
                                                 <div class="row">
                                                     <div class="col-md-4 col-lg-4">
                                                         <div class="form-group">
-                                                            <label for="email">RUC de la empresa<span
+                                                            <label for="email">NIT de la empresa<span
                                                                     class="text-danger">*</span></label>
                                                             <input type="text" maxlength="14"
                                                                 onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
                                                                 value="<?php echo  $d->ruc; ?>" class="form-control" name="txtruc"
-                                                                required placeholder="RUC de la empresa">
+                                                                required placeholder="NIT de la empresa">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4 col-lg-4">
