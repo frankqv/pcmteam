@@ -369,9 +369,28 @@ if (!$userInfo) {
                         <input type="hidden" name="inventario_id" id="priceInventarioId">
                         <div class="form-group">
                             <label>Precio <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" min="0" class="form-control" name="precio" id="pricePrecioInput" required>
+<input
+  type="text"
+  id="precio"
+  name="precio"
+  class="form-control"
+  required
+  placeholder="Precio"
+  maxlength="15" autocomplete="off" />
                             <small class="form-text text-muted">Precio actual: <span id="precioActualText">N/A</span></small>
                         </div>
+                            <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const priceInput = document.getElementById('precio');
+                                if (!priceInput) return;
+                                priceInput.addEventListener('input', function() {
+                                    // Quitar todo lo que no sea dígito
+                                    let raw = this.value.replace(/\D/g, '');
+                                    // Insertar puntos cada 3 dígitos
+                                    let withDots = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                                });
+                            });
+                            </script>
                         <div class="form-group">
                             <label>Foto (opcional)</label>
                             <input type="file" class="form-control-file" name="foto" accept="image/*">

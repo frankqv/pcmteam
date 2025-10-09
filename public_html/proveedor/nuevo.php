@@ -148,16 +148,9 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2,5, 6,7])) {
                                                 <div class="form-group">
                                                     <label class="bmd-label-floating">Celular*</label>
                                                     <input
-                                                        type="text"
-                                                        id="telefono"
-                                                        name="telefono"
-                                                        class="form-control"
-                                                        required
-                                                        inputmode="numeric"
-                                                        pattern="[0-9]{3} [0-9]{4} [0-9]{3}"
-                                                        placeholder="301 234 567"
-                                                        maxlength="12"
-                                                        autocomplete="off">
+                                                        type="text" id="telefono" name="telefono"
+                                                        class="form-control" required inputmode="numeric" pattern="[0-9]{3} [0-9]{3} [0-9]{3}" 
+                                                        placeholder="Precio" maxlength="12" autocomplete="off">
                                                 </div>
                                                 <script>
                                                     const telefonoInput = document.getElementById('telefono');
