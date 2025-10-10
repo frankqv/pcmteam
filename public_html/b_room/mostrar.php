@@ -30,6 +30,7 @@ if (!$userInfo) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -49,15 +50,44 @@ if (!$userInfo) {
             font-size: 0.875rem;
             font-weight: 500;
         }
-        .status-disponible { background-color: #d4edda; color: #155724; }
-        .status-en_diagnostico { background-color: #fff3cd; color: #856404; }
-        .status-en_reparacion { background-color: #f8d7da; color: #721c24; }
-        .status-en_control { background-color: #d1ecf1; color: #0c5460; }
-        .status-pendiente { background-color: #f5c6cb; color: #721c24; }
-        .status-business_room { background-color: #d4edda; color: #155724; }
-        .btn-precio { font-size: 0.875rem; padding: 0.25rem 0.5rem; }
+
+        .status-disponible {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-en_diagnostico {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-en_reparacion {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-en_control {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-pendiente {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .status-business_room {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .btn-precio {
+            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
+        }
     </style>
 </head>
+
 <body>
     <div class="wrapper">
         <div class="body-overlay"></div>
@@ -79,14 +109,30 @@ if (!$userInfo) {
                         <?php
                         $titulo = "";
                         switch ($_SESSION['rol']) {
-                            case 1: $titulo = "ADMINISTRADOR"; break;
-                            case 2: $titulo = "DEFAULT"; break;
-                            case 3: $titulo = "CONTABLE"; break;
-                            case 4: $titulo = "COMERCIAL"; break;
-                            case 5: $titulo = "JEFE TÉCNICO"; break;
-                            case 6: $titulo = "TÉCNICO"; break;
-                            case 7: $titulo = "BODEGA"; break;
-                            default: $titulo = $userInfo['nombre']; break;
+                            case 1:
+                                $titulo = "ADMINISTRADOR";
+                                break;
+                            case 2:
+                                $titulo = "DEFAULT";
+                                break;
+                            case 3:
+                                $titulo = "CONTABLE";
+                                break;
+                            case 4:
+                                $titulo = "COMERCIAL";
+                                break;
+                            case 5:
+                                $titulo = "JEFE TÉCNICO";
+                                break;
+                            case 6:
+                                $titulo = "TÉCNICO";
+                                break;
+                            case 7:
+                                $titulo = "BODEGA";
+                                break;
+                            default:
+                                $titulo = $userInfo['nombre'];
+                                break;
                         }
                         ?>
                         <a class="navbar-brand" href="#"> <B>BUSINESS ROOM </B> <?php echo htmlspecialchars($titulo); ?></a>
@@ -169,12 +215,13 @@ if (!$userInfo) {
                         </div>
                     </div>
                 </div>
-                
                 <!-- Filtros -->
                 <div class="row mb-4">
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-header"><h4>Filtros de Búsqueda</h4></div>
+                            <div class="card-header">
+                                <h4>Filtros de Búsqueda</h4>
+                            </div>
                             <div class="card-body">
                                 <form id="filterForm" class="row">
                                     <div class="col-md-3">
@@ -226,7 +273,6 @@ if (!$userInfo) {
                         </div>
                     </div>
                 </div>
-                
                 <!-- Tabla de Inventario -->
                 <div class="row">
                     <div class="col-md-12">
@@ -274,12 +320,10 @@ if (!$userInfo) {
                                                 LEFT JOIN usuarios u ON i.tecnico_id = u.id
                                                 WHERE i.estado = 'activo' 
                                                 AND i.disposicion IN ('Para Venta', 'Business', 'para_venta', 'aprobado', 'Business Room', 'en_control')";
-                                            
                                             if (in_array($_SESSION['rol'], [5, 6, 7])) {
                                                 $sql .= " AND i.tecnico_id = " . $_SESSION['id'];
                                             }
                                             $sql .= " ORDER BY i.fecha_modificacion DESC";
-                                            
                                             $result = $conn->query($sql);
                                             if ($result && $result->num_rows > 0) {
                                                 while ($row = $result->fetch_assoc()) {
@@ -294,7 +338,6 @@ if (!$userInfo) {
                                                     echo "<td>" . htmlspecialchars($row['ubicacion']) . "</td>";
                                                     echo "<td><span class='badge badge-info'>" . htmlspecialchars($row['grado']) . "</span></td>";
                                                     echo "<td><span class='status-badge " . $statusClass . "'>" . htmlspecialchars($row['estado_actual']) . "</span></td>";
-                                                    
                                                     // Precio con botón siempre visible
                                                     $precioTxt = '';
                                                     $precioActual = isset($row['precio']) && $row['precio'] !== '' && $row['precio'] !== '0' ? $row['precio'] : '';
@@ -307,13 +350,11 @@ if (!$userInfo) {
                                                         <i class="material-icons" style="font-size:14px;">edit</i> Precio
                                                     </button>';
                                                     echo "<td>" . $precioTxt . "</td>";
-                                                    
                                                     echo "<td>" . htmlspecialchars($row['tecnico_nombre'] ?? 'Sin asignar') . "</td>";
                                                     echo "<td>" . htmlspecialchars($row['fecha_modificacion']) . "</td>";
                                                     echo "<td class='text-center'>
                                                         <a href='javascript:void(0)' class='btn btn-info btn-sm view-btn' data-id='" . $row['id'] . "' title='Ver detalles'><i class='material-icons'>visibility</i></a>
                                                         <a href='javascript:void(0)' class='btn btn-primary btn-sm edit-btn' data-id='" . $row['id'] . "' title='Editar'><i class='material-icons'>edit</i></a>";
-                                                    
                                                     if ($_SESSION['rol'] == 1) {
                                                         echo "<a href='javascript:void(0)' class='btn btn-danger btn-sm delete-btn' data-id='" . $row['id'] . "' title='Eliminar'><i class='material-icons'>delete</i></a>";
                                                     }
@@ -365,32 +406,61 @@ if (!$userInfo) {
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
+                    <!-- begin:: Precio -->
+                    <?php
+                    // Supongamos que te pasan por GET o POST el inventario_id
+                    $inventario_id = $_GET['inventario_id'] ?? null;
+                    $precioActual = null;
+                    if ($inventario_id) {
+                        require_once '../../config/ctconex.php';
+                        $stmt = $pdo->prepare("SELECT precio FROM inventarios WHERE id = :id");
+                        $stmt->execute(['id' => $inventario_id]);
+                        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+                        if ($fila) {
+                            $precioActual = $fila['precio'];
+                        }
+                    }
+                    ?>
                     <div class="modal-body">
                         <input type="hidden" name="inventario_id" id="priceInventarioId">
                         <div class="form-group">
                             <label>Precio <span class="text-danger">*</span></label>
-<input
-  type="text"
-  id="precio"
-  name="precio"
-  class="form-control"
-  required
-  placeholder="Precio"
-  maxlength="15" autocomplete="off" />
+                            <input type="text" id="precio" name="precio"
+                                class="form-control" placeholder="$0" required>
                             <small class="form-text text-muted">Precio actual: <span id="precioActualText">N/A</span></small>
                         </div>
-                            <script>
+                        <script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 const priceInput = document.getElementById('precio');
                                 if (!priceInput) return;
                                 priceInput.addEventListener('input', function() {
-                                    // Quitar todo lo que no sea dígito
                                     let raw = this.value.replace(/\D/g, '');
-                                    // Insertar puntos cada 3 dígitos
-                                    let withDots = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                                    if (raw === '') {
+                                        this.value = '';
+                                        return;
+                                    }
+                                    let withDots = raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                                    this.value = '$' + withDots;
                                 });
+                                priceInput.addEventListener('focus', function() {
+                                    setTimeout(() => {
+                                        this.setSelectionRange(this.value.length, this.value.length);
+                                    }, 0);
+                                });
+                                const form = document.getElementById('priceForm');
+                                if (form) {
+                                    form.addEventListener('submit', function(e) {
+                                        const cleanValue = priceInput.value.replace(/[$\.]/g, '');
+                                        const hiddenInput = document.createElement('input');
+                                        hiddenInput.type = 'hidden';
+                                        hiddenInput.name = 'precio_clean';
+                                        hiddenInput.value = cleanValue;
+                                        this.appendChild(hiddenInput);
+                                    });
+                                }
                             });
-                            </script>
+                        </script>
+                        <!-- End:: finlaizacion popUp de Cambiar precio  -->
                         <div class="form-group">
                             <label>Foto (opcional)</label>
                             <input type="file" class="form-control-file" name="foto" accept="image/*">
@@ -419,16 +489,20 @@ if (!$userInfo) {
     <script type="text/javascript" src="../assets/js/buttonshtml5.js"></script>
     <script type="text/javascript" src="../assets/js/buttonsprint.js"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             var table = $('#inventarioTable').DataTable({
                 dom: 'Bfrtip',
                 buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-                language: { url: '../assets/js/spanish.json' },
+                language: {
+                    url: '../assets/js/spanish.json'
+                },
                 pageLength: 25,
                 responsive: true,
-                order: [[11, 'desc']]
+                order: [
+                    [11, 'desc']
+                ]
             });
-            $('#applyFilters').click(function () {
+            $('#applyFilters').click(function() {
                 var estado = $('#filterEstado').val();
                 var ubicacion = $('#filterUbicacion').val();
                 var grado = $('#filterGrado').val();
@@ -438,44 +512,45 @@ if (!$userInfo) {
                 table.draw();
             });
             $('#filterForm').append('<div class="col-md-12 mt-2"><button type="button" class="btn btn-secondary" id="clearFilters">Limpiar Filtros</button></div>');
-            $('#clearFilters').click(function () {
+            $('#clearFilters').click(function() {
                 $('#filterEstado, #filterUbicacion, #filterGrado').val('');
                 table.search('').columns().search('').draw();
             });
             // Ver detalles
-            $(document).on('click', '.view-btn', function () {
+            $(document).on('click', '.view-btn', function() {
                 var id = $(this).data('id');
                 $('#viewModalBody').html('<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Cargando...</span></div></div>');
                 $('#viewModal').modal('show');
                 $.ajax({
                     url: '../controllers/get_inventario_details.php',
                     type: 'GET',
-                    data: { id: id },
-                    success: function (response) {
+                    data: {
+                        id: id
+                    },
+                    success: function(response) {
                         $('#viewModalBody').html(response);
                     },
-                    error: function () {
+                    error: function() {
                         $('#viewModalBody').html('<div class="alert alert-danger">Error al cargar los detalles del equipo.</div>');
                     }
                 });
             });
             // Editar equipo
-            $(document).on('click', '.edit-btn', function () {
+            $(document).on('click', '.edit-btn', function() {
                 var id = $(this).data('id');
                 window.location.href = 'editar_inventario.php?id=' + id;
             });
             // NUEVO: Editar precio (funciona siempre, con o sin precio previo)
-            $(document).on('click', '.edit-price-btn', function () {
+            $(document).on('click', '.edit-price-btn', function() {
                 var id = $(this).data('id');
                 var precioActual = $(this).data('precio');
-                
                 $('#priceInventarioId').val(id);
                 $('#pricePrecioInput').val(precioActual || '');
                 $('#precioActualText').text(precioActual ? '$' + parseFloat(precioActual).toLocaleString('es-CO') : 'Sin precio');
                 $('#priceModal').modal('show');
             });
             // Eliminar equipo
-            $(document).on('click', '.delete-btn', function () {
+            $(document).on('click', '.delete-btn', function() {
                 if (confirm('¿Está seguro de que desea eliminar este equipo del inventario?')) {
                     var id = $(this).data('id');
                     var button = $(this);
@@ -483,8 +558,10 @@ if (!$userInfo) {
                     $.ajax({
                         url: '../../backend/php/delete_inventario.php',
                         type: 'POST',
-                        data: { id: id },
-                        success: function (response) {
+                        data: {
+                            id: id
+                        },
+                        success: function(response) {
                             try {
                                 var result = JSON.parse(response);
                                 if (result.success) {
@@ -499,7 +576,7 @@ if (!$userInfo) {
                                 location.reload();
                             }
                         },
-                        error: function () {
+                        error: function() {
                             alert('Error al eliminar el equipo');
                             button.prop('disabled', false);
                         }
@@ -522,6 +599,7 @@ if (!$userInfo) {
                     $('#selectAll').prop('checked', true);
                 }
             });
+
             function updateEnviarButton() {
                 var selectedCount = $('.equipo-checkbox:checked').length;
                 if (selectedCount > 0) {
@@ -549,7 +627,9 @@ if (!$userInfo) {
                     url: '../../backend/php/procesar_envio_ventas.php',
                     type: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({ equipos_ids: selectedIds }),
+                    data: JSON.stringify({
+                        equipos_ids: selectedIds
+                    }),
                     success: function(response) {
                         try {
                             var result = JSON.parse(response);
@@ -577,5 +657,6 @@ if (!$userInfo) {
         });
     </script>
 </body>
+
 </html>
 <?php ob_end_flush(); ?>

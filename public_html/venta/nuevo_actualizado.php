@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $vendedor_id = $_SESSION['id'] ?? null;
     if (empty($cliente_id) || empty($metodo_pago) || empty($carrito_json) || $total_venta <= 0) {
         $_SESSION['mensaje_error'] = 'Error: Faltan datos requeridos para procesar la venta. Asegúrate de seleccionar un cliente, un método de pago y agregar productos.';
-        header('Location: nueva.php');
+        header('Location: nuevo.php');
         exit;
     }
     $carrito = json_decode($carrito_json, true);
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Exception $e) {
         $connect->rollBack();
         $_SESSION['mensaje_error'] = "Error al procesar la venta: " . $e->getMessage();
-        header('Location: nueva.php');
+        header('Location: nuevo.php');
         exit;
     }
 }
@@ -175,7 +175,7 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
                                         <h4 class="mb-0 text-success">$<span id="totalPrice">0</span></h4>
                                     </div>
                                 </div>
-                                <form id="ventaForm" action="nueva.php" method="POST">
+                                <form id="ventaForm" action="nuevo.php" method="POST">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">

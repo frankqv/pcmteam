@@ -53,6 +53,11 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
         'label' => 'NOTIFICACIONES (Build)',
         'icon' => 'notifications',
         'id' => 'notificaciones_group',
+        'children' => [
+            ['icon' => '', 'label' => 'Preventa comerciales (reservas venta) (build)', 'url' => '../venta/preventa.php'],
+            ['icon' => '', 'label' => 'Solicitud de Pedido comerciales (build)', 'url' => '../bodega/preventa.php.php'],
+            ['icon' => '', 'label' => 'Equipos Asignados (build)', 'url' => '../bodega/asignar.php'],
+        ]
     ];
 }
 
@@ -116,8 +121,11 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
                 'label' => 'CONTROL DE CALIDAD',
                 'icon' => 'verified',
                 'id' => 'control_calidad_group',
-                'url' => '../control_calidad/mostrar.php',
-                'class' => 'style-control-calidad'
+                'class' => 'style-control-calidad',
+                'children' => [
+                    ['label' => '◖Ingresar',  'url' => '../control_calidad/mostrar.php'],
+                    ['label' => '● Historial', 'url' => '../control_calidad/historial.php'],
+                ]
             ],
             [
                 'label' => 'BUSINESS ROOM',
@@ -131,6 +139,14 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
 }
 # ==================== GRUPO 2: Proceso de Venta ====================
 $ventaItems = [];
+// lista de preventa produtos en la tabla de bodega inventario,
+if (in_array($rol, [1, 2, 3, 4, 5, 6])) {
+    $ventaItems[] = [
+        'label' => 'RESERVAS VENTA(B)',
+        'icon' => 'grading',
+        'url' => '../bodega/reserva_venta.php'
+    ];
+}
 // Ventas
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $ventaItems[] = [
