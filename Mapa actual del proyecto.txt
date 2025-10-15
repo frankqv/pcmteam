@@ -15,13 +15,12 @@
 ## Estructura Actual del Proyecto
 
 ```
-C:\laragon\www\pcmteam> tree /f
+PS C:\laragon\www\pcmteam> tree /f
 Listado de rutas de carpetas
 El número de serie del volumen es 1CFA-2E35
 C:.
 │   composer.json
 │   composer.lock
-│   IMPLEMENTACION_COMPLETA.md
 │   index.php
 │   Mapa actual del proyecto.txt
 │
@@ -128,7 +127,6 @@ C:.
 │   │   registrar.php
 │   │   salir.php
 │   │
-│   ├───a1_limpiar
 │   ├───administrador
 │   │       escritorio.php
 │   │
@@ -189,6 +187,7 @@ C:.
 │   │           buttonshtml5.js
 │   │           buttonsprint.js
 │   │           Chart-prod.js
+│   │           charts-loader.js
 │   │           datatable.js
 │   │           datatablebuttons.js
 │   │           example.js
@@ -204,12 +203,14 @@ C:.
 │   │           popper.min.js
 │   │           reenvio.js
 │   │           sidebarCollapse.js
+│   │           spanish.json
 │   │           sweetalert.js
 │   │           vfs_fonts.js
 │   │
 │   ├───bodega
 │   │       asignar.php
 │   │       barcode.php
+│   │       despachos.php
 │   │       editar_equipo.php
 │   │       editar_inventario.php
 │   │       electrico.php
@@ -220,11 +221,15 @@ C:.
 │   │       historial_electrico.php
 │   │       historial_estetico.php
 │   │       inventario.php
+│   │       inventario_rol_sede.php
 │   │       lista_estetico.php
 │   │       lista_parte.php
 │   │       lista_producto.php
+│   │       lista_reserva_venta.php
 │   │       lista_triage_2.php
 │   │       nuevo_equipo.php
+│   │       preventa.php
+│   │       reserva_venta.php
 │   │       solicitar_parte.php
 │   │       triage2.php
 │   │
@@ -278,12 +283,12 @@ C:.
 │   │       get_sales_data.php
 │   │       get_triage2_fun.php
 │   │       get_venta_details.php
-│   │       migration_bodega.sql
 │   │       st_add_ingreso.php
 │   │       st_add_order.php
 │   │       update_price.php
 │   │
 │   ├───control_calidad
+│   │       historial.php
 │   │       mostrar.php
 │   │
 │   ├───cuenta
@@ -413,7 +418,8 @@ C:.
 │           informacion.php
 │           mostrar.php
 │           nuevo.php
-│           nuevo_actualizado.php
+│           nuevo_multiproducto.php
+│           preventa.php
 │           procesar.php
 │           ticket.php
 │

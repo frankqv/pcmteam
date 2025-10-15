@@ -139,12 +139,33 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
 }
 # ==================== GRUPO 2: Proceso de Venta ====================
 $ventaItems = [];
-// lista de preventa produtos en la tabla de bodega inventario,
-if (in_array($rol, [1, 2, 3, 4, 5, 6])) {
+
+// Preventa - Solicitud de Alistamiento
+if (in_array($rol, [1, 4])) {
     $ventaItems[] = [
-        'label' => 'RESERVAS VENTA(B)',
-        'icon' => 'grading',
-        'url' => '../bodega/reserva_venta.php'
+        'label' => 'PREVENTA',
+        'icon' => 'request_quote',
+        'url' => '../venta/preventa.php'
+    ];
+}
+
+//historias de preventa/ historial completo de Solicitudes de Alistamiento
+if(in_array($rol, [1, 3, 4, 5, 6, 7])) {
+    $ventaItems[] = [
+        'label' => '● Historico soliciturdes Preventa',
+        'url'=> '../venta/historico_preventa.php'
+    ];
+}
+
+// Reservas de Venta
+if (in_array($rol, [1, 4])) {
+    $ventaItems[] = [
+        'label' => 'RESERVAS',
+        'icon' => 'bookmark',
+        'children' => [
+            ['label' => '> Crear Reserva', 'url' => '../bodega/reserva_venta.php'],
+            ['label' => '> Ver Reservas', 'url' => '../bodega/lista_reserva_venta.php']
+        ]
     ];
 }
 // Ventas
@@ -187,6 +208,14 @@ if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
         'label' => 'VENDER',
         'icon' => 'request_page',
         'url' => '../venta/nuevo.php'
+    ];
+}
+// Nueva Venta Múltiple
+if (in_array($rol, [1, 4])) {
+    $ventaItems[] = [
+        'label' => 'VENTA MÚLTIPLE',
+        'icon' => 'shopping_cart',
+        'url' => '../venta/nuevo_multiproducto.php'
     ];
 }
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
