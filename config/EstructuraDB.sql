@@ -2,6 +2,12 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+
 CREATE TABLE `bodega_asignaciones` (
   `id` int NOT NULL,
   `tecnico_id` int NOT NULL,
@@ -79,17 +85,10 @@ INSERT INTO `bodega_diagnosticos` (`id`, `inventario_id`, `fecha_diagnostico`, `
 (64, 109, '2025-09-24 15:04:59', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 100', 'si', 'falla', 'si', 'falla', 'aprobado', 'testando ando'),
 (65, 109, '2025-09-24 15:05:05', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 100', 'si', 'falla', 'si', 'falla', 'aprobado', 'testando ando'),
 (66, 227, '2025-09-27 12:24:03', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"MALO\",\"HDMI\":\"BUENO\",\"USB\":\"MALO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 98', 'si', 'limpieza¿Presenta falla eléctrica?', 'si', 'Fallas Estéticas', 'aprobado', 'observacion Gobal'),
-(67, 122, '2025-09-27 12:24:03', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"MALO\",\"HDMI\":\"BUENO\",\"USB\":\"MALO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 98', 'si', 'limpieza¿Presenta falla eléctrica?', 'si', 'Fallas Estéticas', 'aprobado', 'observacion Gobal'),
-(68, 131, '2025-09-27 12:24:03', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"MALO\",\"HDMI\":\"BUENO\",\"USB\":\"MALO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 98', 'si', 'limpieza¿Presenta falla eléctrica?', 'si', 'Fallas Estéticas', 'aprobado', 'observacion Gobal'),
-(69, 134, '2025-09-27 12:24:03', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"MALO\",\"HDMI\":\"BUENO\",\"USB\":\"MALO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 98', 'si', 'limpieza¿Presenta falla eléctrica?', 'si', 'Fallas Estéticas', 'aprobado', 'observacion Gobal'),
-(70, 150, '2025-09-27 12:24:03', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"MALO\",\"HDMI\":\"BUENO\",\"USB\":\"MALO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 98', 'si', 'limpieza¿Presenta falla eléctrica?', 'si', 'Fallas Estéticas', 'aprobado', 'observacion Gobal'),
 (71, 156, '2025-09-27 12:24:03', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"MALO\",\"HDMI\":\"BUENO\",\"USB\":\"MALO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 98', 'si', 'limpieza¿Presenta falla eléctrica?', 'si', 'Fallas Estéticas', 'aprobado', 'observacion Gobal'),
 (72, 127, '2025-09-29 17:45:46', 1, 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"MALO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 78', 'si', 'fallo 1 Electronico puerto usb balsatados', 'si', '2 Detalle de la falla estética', 'aprobado', 'AAAAAAA observacioens'),
 (73, 227, '2025-10-02 10:01:30', 1, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 95', 'si', 'Fallo eléctrico Puerto sulfatado', 'si', 'Esquinas de portátiles para reconstrucción, y tapas talladas', 'aprobado', 'sobre calentamiento'),
 (74, 127, '2025-10-02 10:01:30', 1, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 95', 'si', 'Fallo eléctrico Puerto sulfatado', 'si', 'Esquinas de portátiles para reconstrucción, y tapas talladas', 'aprobado', 'sobre calentamiento'),
-(75, 166, '2025-10-02 10:01:30', 1, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 95', 'si', 'Fallo eléctrico Puerto sulfatado', 'si', 'Esquinas de portátiles para reconstrucción, y tapas talladas', 'aprobado', 'sobre calentamiento'),
-(76, 122, '2025-10-02 10:01:30', 1, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 95', 'si', 'Fallo eléctrico Puerto sulfatado', 'si', 'Esquinas de portátiles para reconstrucción, y tapas talladas', 'aprobado', 'sobre calentamiento'),
-(77, 125, '2025-10-02 10:01:30', 1, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 95', 'si', 'Fallo eléctrico Puerto sulfatado', 'si', 'Esquinas de portátiles para reconstrucción, y tapas talladas', 'aprobado', 'sobre calentamiento'),
 (78, 141, '2025-10-02 10:01:30', 1, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 95', 'si', 'Fallo eléctrico Puerto sulfatado', 'si', 'Esquinas de portátiles para reconstrucción, y tapas talladas', 'aprobado', 'sobre calentamiento'),
 (79, 143, '2025-10-02 10:01:30', 1, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 95', 'si', 'Fallo eléctrico Puerto sulfatado', 'si', 'Esquinas de portátiles para reconstrucción, y tapas talladas', 'aprobado', 'sobre calentamiento'),
 (80, 144, '2025-10-02 10:01:30', 1, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 95', 'si', 'Fallo eléctrico Puerto sulfatado', 'si', 'Esquinas de portátiles para reconstrucción, y tapas talladas', 'aprobado', 'sobre calentamiento');
@@ -149,35 +148,6 @@ INSERT INTO `bodega_entradas` (`id`, `inventario_id`, `fecha_entrada`, `proveedo
 (44, 357, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2025'),
 (45, 358, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2026'),
 (46, 359, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2027'),
-(47, 360, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2028'),
-(48, 361, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2029'),
-(49, 362, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2030'),
-(50, 363, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2031'),
-(51, 364, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2032'),
-(52, 365, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2033'),
-(53, 366, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2034'),
-(54, 367, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2035'),
-(55, 368, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2036'),
-(56, 369, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2037'),
-(57, 370, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2038'),
-(58, 371, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2039'),
-(59, 372, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2040'),
-(60, 373, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2041'),
-(61, 374, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2042'),
-(62, 375, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2043'),
-(63, 376, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2044'),
-(64, 377, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2045'),
-(103, 416, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2084'),
-(104, 417, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2085'),
-(105, 418, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2086'),
-(106, 419, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2087'),
-(107, 420, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2088'),
-(171, 421, '2025-10-09 16:59:40', 1, 1, 1, 'Importado desde Excel - Lote: CUCUTA9_octubre2026 - PANTALLA TOUCH'),
-(172, 422, '2025-10-09 16:59:40', 1, 1, 1, 'Importado desde Excel - Lote: CUCUTA9_octubre2026 - n/d'),
-(173, 423, '2025-10-09 16:59:40', 1, 1, 1, 'Importado desde Excel - Lote: CUCUTA9_octubre2026 - PANTALLA TOUCH'),
-(174, 424, '2025-10-09 16:59:40', 1, 1, 1, 'Importado desde Excel - Lote: CUCUTA9_octubre2026 - n/d'),
-(183, 433, '2025-10-09 16:59:40', 1, 1, 1, 'Importado desde Excel - Lote: CUCUTA9_octubre2026 - n/d'),
-(184, 434, '2025-10-09 16:59:40', 1, 1, 1, 'Importado desde Excel - Lote: CUCUTA9_octubre2026 - n/d'),
 (185, 435, '2025-10-09 16:59:40', 1, 1, 1, 'Importado desde Excel - Lote: CUCUTA9_octubre2026 - n/d'),
 (186, 436, '2025-10-09 16:59:40', 1, 1, 1, 'Importado desde Excel - Lote: CUCUTA9_octubre2026 - n/d'),
 (187, 437, '2025-10-09 16:59:40', 1, 1, 1, 'Importado desde Excel - Lote: CUCUTA9_octubre2026 - n/d');
@@ -255,20 +225,6 @@ INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `ubicacion`, `posicion`, `fec
 (121, 'CLLPT1-5-207', 'Principal', 'ESTANTE-1-E', '2025-09-26 15:48:58', '2025-10-06 14:25:07', 'Portatil', 'Lenovo', 'PF290C50', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_proceso', 'activo', 1, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
 (122, 'CLLPT1-5-221', 'Principal', 'ESTANTE-2-A', '2025-09-26 15:48:58', '2025-09-29 10:38:01', 'Portatil', 'Lenovo', 'PF2BB7XR', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_revision', 'activo', 1, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
 (123, 'CLLPT1-5-222', 'Principal', 'ESTANTE-2-B', '2025-09-26 15:48:58', '2025-10-06 14:25:08', 'Portatil', 'Lenovo', 'PF2ASHL1', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_proceso', 'activo', 1, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(124, 'CLLPT1-5-223', 'Principal', 'ESTANTE-2-C', '2025-09-26 15:48:58', '2025-09-27 09:56:57', 'Portatil', 'Lenovo', 'PF2BB7V3', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_diagnostico', 'activo', 8, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(125, 'CLLPT1-5-228', 'Principal', 'Traslado', '2025-09-26 15:48:58', '2025-10-09 10:02:54', 'Portatil', 'Lenovo', 'PF2ASHKP', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '32GB', '512 SSD', '13.3', 'N/A', 'B', 'Vendido', 'activo', 1, NULL, NULL, 'SI', 'COLSOF1', NULL, 1400000.00, NULL),
-(126, 'CLLPT1-5-231', 'Principal', 'ESTANTE-2-E', '2025-09-26 15:48:58', '2025-09-27 10:49:10', 'Portatil', 'Lenovo', 'PF2BB9YB', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_diagnostico', 'activo', 1, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(127, 'CLLPT1-5-239', 'Principal', 'ESTANTE-3-A', '2025-09-26 15:48:58', '2025-09-27 10:49:10', 'Portatil', 'Lenovo', 'PF1TKM75', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_diagnostico', 'activo', 1, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(128, 'CLLPT1-5-241', 'Principal', 'ESTANTE-3-B', '2025-09-26 15:48:58', '2025-09-27 10:49:10', 'Portatil', 'Lenovo', 'PF1TKEDP', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_diagnostico', 'activo', 1, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(129, 'CLLPT1-5-246', 'Principal', 'ESTANTE-3-C', '2025-09-26 15:48:58', '2025-09-27 11:10:44', 'Portatil', 'Lenovo', 'PF1TKGNW', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_proceso', 'activo', 33, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(130, 'CLLPT1-5-249', 'Medellin', 'Traslado', '2025-09-26 15:48:58', '2025-10-02 15:43:13', 'Portatil', 'Lenovo', 'PF1TKJWX', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_diagnostico', 'activo', 36, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(131, 'CLLPT1-5-251', 'Principal', 'ESTANTE-3-E', '2025-09-26 15:48:58', '2025-09-27 10:49:10', 'Portatil', 'Lenovo', 'PF290C4R', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_diagnostico', 'activo', 1, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(132, 'CLLPT1-5-255', 'Principal', 'ESTANTE-4-A', '2025-09-26 15:48:58', '2025-09-27 10:49:10', 'Portatil', 'Lenovo', 'PF290HVC', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_diagnostico', 'activo', 1, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(430, 'n_d_cucuta_oct25_10', 'Cucuta', 'Recibido', '2025-10-09 16:59:40', '2025-10-09 16:59:40', 'Desktop', 'Lenovo', 'MJPVZ17', 'M82', 'CELERON', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
-(431, 'n_d_cucuta_oct25_11', 'Cucuta', 'Recibido', '2025-10-09 16:59:40', '2025-10-09 16:59:40', 'Desktop', 'Lenovo', 'MJ040V2Z', 'M93', 'AMD A8', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
-(432, 'n_d_cucuta_oct25_12', 'Cucuta', 'Recibido', '2025-10-09 16:59:40', '2025-10-09 16:59:40', 'Desktop', 'Lenovo', 'MJPVE73', 'M90', 'CELERON', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
-(433, 'n_d_cucuta_oct25_13', 'Cucuta', 'Recibido', '2025-10-09 16:59:40', '2025-10-09 16:59:40', 'Desktop', 'Lenovo', 'MJLGW78', 'M92', 'CELERON', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
-(434, 'n_d_cucuta_oct25_14', 'Cucuta', 'Recibido', '2025-10-09 16:59:40', '2025-10-09 16:59:40', 'Desktop', 'Lenovo', 'MJ13622', 'M77', 'AMD A8', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
 (435, 'n_d_cucuta_oct25_15', 'Cucuta', 'Recibido', '2025-10-09 16:59:40', '2025-10-09 16:59:40', 'Desktop', 'Lenovo', 'MJPWN50', 'M77', 'AMD A8', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
 (436, 'n_d_cucuta_oct25_16', 'Cucuta', 'Recibido', '2025-10-09 16:59:40', '2025-10-09 16:59:40', 'Desktop', 'Dell', 'D8SQDF1', 'VOSTRO 200', 'PENTIUM', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
 (437, 'n_d_cucuta_oct25_17', 'Cucuta', 'Recibido', '2025-10-09 16:59:40', '2025-10-09 16:59:40', 'Desktop', 'Lenovo', 'PB44R6P', 'M77', 'AMD A8', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL);
@@ -287,12 +243,28 @@ CREATE TABLE `bodega_log_cambios` (
 INSERT INTO `bodega_log_cambios` (`id`, `inventario_id`, `usuario_id`, `fecha_cambio`, `campo_modificado`, `valor_anterior`, `valor_nuevo`, `tipo_cambio`) VALUES
 (29, 57, 1, '2025-09-19 09:23:02', 'disposicion_electrico', 'en_mantenimiento', 'pendiente_estetico', 'edicion_manual'),
 (30, 57, 1, '2025-09-19 09:23:19', 'disposicion_electrico', 'en_mantenimiento', 'pendiente_estetico', 'edicion_manual'),
+(31, 57, 1, '2025-09-19 09:25:29', 'disposicion', 'pendiente_estetico', 'pendiente_control_calidad', 'edicion_manual'),
+(32, 57, 1, '2025-09-19 09:27:14', 'disposicion', 'pendiente_control_calidad', 'Para Venta', 'edicion_manual'),
+(33, 109, 1, '2025-09-29 09:38:19', 'disposicion_electrico', 'en_mantenimiento', 'pendiente_estetico', 'edicion_manual'),
+(34, 109, 1, '2025-09-29 10:04:37', 'disposicion', 'pendiente_estetico', 'pendiente_control_calidad', 'edicion_manual'),
+(35, 109, 1, '2025-09-29 10:05:59', 'disposicion', 'pendiente_control_calidad', 'Para Venta', 'edicion_manual'),
+(36, 122, 1, '2025-09-29 10:35:24', 'disposicion_electrico', 'en_mantenimiento', 'en_revision', 'edicion_manual'),
+(37, 122, 1, '2025-09-29 10:36:54', 'disposicion_electrico', 'en_mantenimiento', 'en_revision', 'edicion_manual'),
+(38, 122, 1, '2025-09-29 10:37:59', 'disposicion_electrico', 'en_mantenimiento', 'en_revision', 'edicion_manual'),
+(39, 122, 1, '2025-09-29 10:38:01', 'disposicion_electrico', 'en_mantenimiento', 'en_revision', 'edicion_manual'),
+(40, 122, 1, '2025-09-29 10:38:01', 'disposicion_electrico', 'en_mantenimiento', 'en_revision', 'edicion_manual'),
+(41, 109, 1, '2025-09-30 10:25:57', 'disposicion', 'Para Venta', 'Vendido', 'sistema'),
+(42, 125, 33, '2025-10-02 11:37:38', 'disposicion_electrico', 'en_mantenimiento', 'pendiente_estetico', 'edicion_manual'),
+(43, 125, 33, '2025-10-02 11:38:34', 'disposicion', 'pendiente_estetico', 'pendiente_control_calidad', 'edicion_manual'),
+(44, 125, 33, '2025-10-02 11:39:25', 'disposicion', 'pendiente_estetico', 'pendiente_control_calidad', 'edicion_manual'),
 (45, 125, 33, '2025-10-02 11:41:12', 'disposicion', 'pendiente_control_calidad', 'Para Venta', 'edicion_manual'),
 (46, 125, 1, '2025-10-09 10:02:54', 'disposicion', 'Para Venta', 'Vendido', 'sistema'),
 (47, 375, 1, '2025-10-10 12:46:23', 'precio', NULL, '1230000', 'edicion_manual'),
 (48, 375, 1, '2025-10-10 12:46:52', 'precio', NULL, '1200032', 'edicion_manual'),
 (49, 375, 1, '2025-10-10 13:57:03', 'precio', NULL, '1950000', 'edicion_manual'),
-(50, 375, 1, '2025-10-10 13:59:23', 'precio', NULL, '992300', 'edicion_manual');
+(50, 375, 1, '2025-10-10 13:59:23', 'precio', NULL, '992300', 'edicion_manual'),
+(51, 357, 1, '2025-10-16 10:02:29', 'precio', NULL, '500000', 'edicion_manual'),
+(52, 361, 1, '2025-10-16 10:20:04', 'disposicion', 'Para Venta', 'Vendido', 'sistema');
 
 CREATE TABLE `bodega_mantenimiento` (
   `id` int NOT NULL,
@@ -331,6 +303,14 @@ INSERT INTO `bodega_mantenimiento` (`id`, `inventario_id`, `fecha_registro`, `te
 (25, 59, '2025-09-23 16:57:44', 36, 36, 'realizado', NULL, NULL, 'si', '', 'si', '', NULL, NULL, NULL, 'realizada', '', 'realizada', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'si', 'laboratorio', '', ''),
 (26, 109, '2025-09-24 17:14:15', 1, 1, 'realizado', NULL, NULL, 'si', 'TIENE', 'si', 'TIENE', NULL, NULL, NULL, 'realizada', 'REALIZADO', 'realizada', 'OKAY', 'pendiente', 'no', '', 'si', 'PUERTOS DAÑADOS', 'pendiente', 'si', 'laboratorio', '', 'FALLA'),
 (27, 122, '2025-09-29 09:23:44', 1, 1, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', ''),
+(28, 127, '2025-10-02 10:07:49', 1, 1, 'realizado', NULL, NULL, 'no', '', 'si', 'Rayones en tapas', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'Reparacion falla electrica Matenimiento'),
+(29, 127, '2025-10-02 10:14:04', 1, 1, 'realizado', NULL, NULL, 'no', '', 'si', 'Rayones en tapas', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'Reparacion falla electrica Matenimiento'),
+(30, 127, '2025-10-02 10:14:07', 1, 1, 'realizado', NULL, NULL, 'no', '', 'si', 'Rayones en tapas', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'Reparacion falla electrica Matenimiento'),
+(31, 127, '2025-10-06 09:37:37', 1, 1, 'realizado', NULL, NULL, 'no', '', 'si', 'Tapas rayadas 2 | 6 OCTUBRE 2025', NULL, NULL, NULL, 'realizada', 'LIMPIEZA REALIZADA', 'realizada', 'LIPIEZA REALIZADA', 'pendiente', 'no', '', 'si', 'Rejilla de aire', 'pendiente', 'no', '', '', 'TEXTO \r\nCLLPT1-5-239 OBSERVVACIONES GLOBALES'),
+(32, 127, '2025-10-06 09:37:47', 1, 1, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', ''),
+(33, 127, '2025-10-06 09:44:03', 1, 1, 'realizado', NULL, NULL, 'si', 'si ', 'si', 'si ', NULL, NULL, NULL, 'realizada', 'Okay 1', 'realizada', 'Okay 2', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'Observaciones Globales\r\n\r\nCLLPT1-5-239 — Lenovo ThinkPad X1 Yoga 4th Gen\r\n'),
+(34, 117, '2025-10-06 15:06:07', 1, 1, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', ''),
+(35, 118, '2025-10-06 15:11:31', 1, 1, 'realizado', NULL, NULL, 'si', 'Puertos Usb sulfatados', 'si', 'Rayones en tapas ', NULL, NULL, NULL, 'realizada', 'Limpieza de borad, cambio de fluw en conectores USbs', 'realizada', 'Amplicacion de pasta termica, reparaciond e de regilla', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'Observaciones Globales de cllpti-5-202, texto  TESTEO muestra de - Observacion Globales'),
 (36, 118, '2025-10-06 15:36:02', 1, 1, 'realizado', NULL, NULL, 'si', 'Puertos Usb sulfatados', 'si', 'Rayones en tapas ', NULL, NULL, NULL, 'realizada', 'Limpieza de borad, cambio de fluw en conectores USbs', 'realizada', 'Amplicacion de pasta termica, reparaciond e de regilla', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'Observaciones Globales de cllpti-5-202, texto  TESTEO muestra de - Observacion Globales'),
 (37, 127, '2025-10-06 17:42:29', 1, 1, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', ''),
 (38, 127, '2025-10-06 17:55:13', 1, 1, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', '');
@@ -410,16 +390,10 @@ INSERT INTO `bodega_salidas` (`id`, `inventario_id`, `cliente_id`, `tecnico_id`,
 (10, 117, NULL, 36, 1, NULL, '2025-09-27 09:56:43', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
 (11, 118, NULL, 36, 1, NULL, '2025-09-27 09:56:43', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
 (12, 120, NULL, 36, 1, NULL, '2025-09-27 09:56:43', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(66, 164, NULL, 33, 1, NULL, '2025-09-27 11:10:44', 1, 0.00, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(67, 166, NULL, 33, 1, NULL, '2025-09-27 11:10:44', 1, 0.00, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(68, 167, NULL, 33, 1, NULL, '2025-09-27 11:10:44', 1, 0.00, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(69, 129, NULL, 33, 1, NULL, '2025-09-27 11:10:44', 1, 0.00, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(70, 227, NULL, 1, 1, NULL, '2025-09-27 11:11:18', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(71, 121, NULL, 1, 1, NULL, '2025-10-06 14:25:08', 1, 0.00, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(72, 117, NULL, 1, 1, NULL, '2025-10-06 14:25:08', 1, 0.00, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(73, 118, NULL, 1, 1, NULL, '2025-10-06 14:25:08', 1, 0.00, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(74, 123, NULL, 1, 1, NULL, '2025-10-06 14:25:08', 1, 0.00, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(75, 120, NULL, 13, 1, NULL, '2025-10-06 14:26:12', 1, 0.00, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
+(13, 123, NULL, 36, 1, NULL, '2025-09-27 09:56:43', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
+(14, 139, NULL, 36, 1, NULL, '2025-09-27 09:56:43', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
+(15, 145, NULL, 36, 1, NULL, '2025-09-27 09:56:43', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
+(16, 146, NULL, 36, 1, NULL, '2025-09-27 09:56:43', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
 (76, 145, NULL, 13, 1, NULL, '2025-10-06 14:26:12', 1, 0.00, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
 (77, 133, NULL, 13, 1, NULL, '2025-10-06 14:26:12', 1, 0.00, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
 (78, 108, NULL, 13, 1, NULL, '2025-10-06 14:26:33', 1, 0.00, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL);
@@ -472,7 +446,7 @@ CREATE TABLE `categoria` (
 
 CREATE TABLE `clientes` (
   `idclie` int NOT NULL,
-  `numid` char(8) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `numid` char(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `nomcli` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `apecli` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `naci` date NOT NULL DEFAULT '1900-01-01',
@@ -489,7 +463,8 @@ INSERT INTO `clientes` (`idclie`, `numid`, `nomcli`, `apecli`, `naci`, `correo`,
 (20, '12345678', 'Juan', 'Perez', '1990-01-01', 'juan@correo.com', '3001234567', 'Activo', '2025-09-19 15:13:30', 'Calle 1 #2-3', 'Bogotá', 'Medellin'),
 (21, '87654321', 'Maria', 'Garay', '1985-05-15', 'maria@correo.com', '3009876543', 'Activo', '2025-09-19 15:13:30', 'Carrera 5 #10-20', 'Bogotá', 'Unilago'),
 (22, '11223344', 'Carlos', 'Lopez Vanegas', '1992-08-22', 'carlos@correo.com', '3005556772', 'Activo', '2025-09-19 15:13:30', 'Avenida 3 #15-8', 'Cucuta', 'Cucuta'),
-(23, '55667788', 'Anyi', 'Rodriguez Vidal', '1988-12-10', 'ana@correo.com', '3001112222', 'Activo', '2025-09-19 15:13:30', 'Calle 8 #25-12', 'Bogotá', 'Principal');
+(23, '55667788', 'Anyi', 'Rodriguez Vidal', '1988-12-10', 'ana@correo.com', '3001112222', 'Activo', '2025-09-19 15:13:30', 'Calle 8 #25-12', 'Bogotá', 'Principal'),
+(24, '1000603244', 'Gabiriel Arturo', 'Pacheco Franco', '2025-10-16', 'arturpacheco@gmail.com', '3242023365', 'Activo', '2025-10-16 15:19:37', 'Cra. 53 #14-51, Puente Aranda, Bogotá', 'BOGOTA (C/MARCA) (110110)', 'Principal');
 
 CREATE TABLE `compra` (
   `idcomp` int NOT NULL,
@@ -526,7 +501,8 @@ CREATE TABLE `ingresos` (
 
 INSERT INTO `ingresos` (`iding`, `detalle`, `total`, `fec`) VALUES
 (23, 'VENTA DE PRODUCTOS - Orden #18', 0.00, '2025-09-30'),
-(24, 'VENTA DE PRODUCTOS - Orden #19', 1400000.00, '2025-10-09');
+(24, 'VENTA DE PRODUCTOS - Orden #19', 1400000.00, '2025-10-09'),
+(25, 'VENTA DE PRODUCTOS - Orden #20', 1600000.00, '2025-10-16');
 
 CREATE TABLE `marketing` (
   `id` int NOT NULL,
@@ -559,7 +535,8 @@ CREATE TABLE `orders` (
 
 INSERT INTO `orders` (`idord`, `user_id`, `user_cli`, `method`, `total_products`, `total_price`, `placed_on`, `payment_status`, `tipc`, `despacho`, `responsable`) VALUES
 (18, 1, 20, 'Tarjeta', '0', 0.00, '2025-09-30 10:25:57', 'Aceptado', '0', 'Pendiente', 'Frank Quiñonez Vidal'),
-(19, 1, 23, 'Efectivo', '0', 1400000.00, '2025-10-09 10:02:54', 'Aceptado', '0', 'Pendiente', 'Frank Quiñonez Vidal');
+(19, 1, 23, 'Efectivo', '0', 1400000.00, '2025-10-09 10:02:54', 'Aceptado', '0', 'Pendiente', 'Frank Quiñonez Vidal'),
+(20, 1, 24, 'Efectivo', '0', 1600000.00, '2025-10-16 10:20:04', 'Aceptado', '0', 'Pendiente', 'Frank Quiñonez Vidal');
 
 CREATE TABLE `plan` (
   `idplan` int NOT NULL,
@@ -664,21 +641,21 @@ INSERT INTO `setting` (`idsett`, `nomem`, `ruc`, `decrp`, `corr`, `direc1`, `dir
 
 CREATE TABLE `solicitud_alistamiento` (
   `id` int NOT NULL,
-  `solicitante` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `solicitante` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `usuario_id` int NOT NULL COMMENT 'ID del usuario que solicita',
-  `sede` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cliente` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cantidad` varchar(1600) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sede` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cliente` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `cantidad` varchar(1600) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `descripcion` varchar(1600) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `marca` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `modelo` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `marca` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `modelo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `observacion` varchar(1200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tecnico_responsable` int DEFAULT NULL,
   `fecha_solicitud` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `estado` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pendiente',
   `fecha_creacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fecha_actualizacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `observacion_global` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `observacion_global` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `usuarios` (
@@ -708,6 +685,23 @@ INSERT INTO `usuarios` (`id`, `nombre`, `usuario`, `correo`, `clave`, `rol`, `fo
 (10, 'Luis González', 'Luisgonzalezpc', 'lg123@data.com', '2f04e635bab80099208ccdd506acad69', '6', 'reere.webp', '1', '2025-05-29 08:41:31', 'Principal', NULL),
 (11, 'Natali Florez', 'Nataliflorezpc', 'nf123@data.com', 'd8ef5df38ad01af8d7c5e6e7a478f00d', '2', 'reere.webp', '1', '2025-05-30 00:25:58', 'Principal', NULL),
 (12, 'Fabian Sanchez', 'Fabiansanchezpc', 'fs123@data.com', 'c7417ff8f3f5c8600b914497b6b73492', '6', 'reere.webp', '1', '2025-05-30 00:27:34', 'Principal', NULL),
+(13, 'José Borda', 'Josebordapc', 'jb123@data.com', '4cd26c72d84d1e1d8fe7da2194d5153e', '5', 'reere.webp', '1', '2025-05-30 00:30:57', 'Principal', NULL),
+(14, 'Felipe Romero', 'Feliperomeropc', 'fr123@data.com', 'c843da53f7e567b80ff967cb3ba23aee', '5', 'reere.webp', '1', '2025-05-30 00:31:24', 'Principal', NULL),
+(15, 'Rodrigo Martínez', 'Rodrigomartinezpc', 'rm123@data.com', 'eafabe7aff85735469db0f134663b7cb', '7', 'reere.webp', '1', '2025-05-30 00:31:43', 'Principal', NULL),
+(16, 'Deivi Lopez', 'Deivilopezpc', 'dl123@data.com', 'facbcd76dde2c647198b1bab1d5d834d', '7', 'reere.webp', '1', '2025-05-30 00:32:08', 'Principal', NULL),
+(17, 'Maricela Tabla', 'Maricelatablapc', 'mt123@data.com', '0e57650e147ce827aec8b788db5a25ab', '3', 'reere.webp', '1', '2025-05-30 00:32:29', 'Principal', NULL),
+(18, 'Ana Gaviria Contable', 'Anagaviriapc', 'ag123@data.com', '30e5488c3c420588715fe3a51143e7ec', '0', 'reere.webp', '1', '2025-05-30 00:32:51', 'Remoto', '2025-09-01'),
+(19, 'Laura Pedraza', 'Laurapedrazapc', 'lp123@data.com', '39382aa4884af196f11ed8feba7d128f', '4', 'reere.webp', '1', '2025-05-30 00:33:16', 'Unilago', NULL),
+(21, 'Gabriela Gutiérrez', 'gabrielagutierrezpc', 'gg123@data.com', '7d9bfd94d852319998c99d2c07980246', '4', 'reere.webp', '1', '2025-05-30 00:33:42', 'Cucuta', NULL),
+(22, 'Mónica Valencia', 'Monicavalenciapc', 'mv123@data.com', '213a253bf5cce2d84e4032ace9e29aa7', '4', 'reere.webp', '1', '2025-05-30 00:34:06', 'Medellin', NULL),
+(28, 'frank2', 'frank2', 'frank2@gmail.com', '202cb962ac59075b964b07152d234b70', '2', 'reere.webp', '1', '2025-06-07 07:40:21', 'Principal', NULL),
+(29, 'frank3', 'frank3', 'frank3@gmail.com', '202cb962ac59075b964b07152d234b70', '3', 'reere.webp', '1', '2025-06-10 06:07:48', 'Cucuta', NULL),
+(31, 'frank4', 'frank4', 'frank4@gmail.com', '202cb962ac59075b964b07152d234b70', '4', 'reere.webp', '1', '2025-06-10 06:08:22', 'Unilago', NULL),
+(32, 'frank5', 'frank5', 'frank5@gmail.com', '202cb962ac59075b964b07152d234b70', '5', 'reere.webp', '1', '2025-06-10 06:08:38', 'Medellin', NULL),
+(33, 'Tecnico FranciscoQV', 'frank6', 'frank6@gmail.com', '202cb962ac59075b964b07152d234b70', '6', 'reere.webp', '1', '2025-06-10 06:09:04', 'Medellin', ''),
+(34, 'frank7', 'frank7', 'frank7@gmail.com', '202cb962ac59075b964b07152d234b70', '7', 'reere.webp', '1', '2025-06-10 06:09:18', 'Principal', NULL),
+(35, 'salome', 'salome', 'salome@gmail.com', '202cb962ac59075b964b07152d234b70', '2', 'reere.webp', '1', '2025-07-13 01:22:31', 'Medellin', NULL),
+(36, 'Karen Perez', 'karenperez', 'karenperez@testeo.com', 'a98d0843cade39eb83e1807304341392', '1', 'reere.webp', '1', '2025-09-23 14:40:32', NULL, NULL);
 
 CREATE TABLE `venta_detalles` (
   `id` int NOT NULL,
@@ -721,7 +715,8 @@ CREATE TABLE `venta_detalles` (
 
 INSERT INTO `venta_detalles` (`id`, `orden_id`, `inventario_id`, `serial`, `codigo_g`, `precio_unitario`, `fecha_venta`) VALUES
 (4, 18, 109, 'HP987654321', 'EQ002', 0.00, '2025-09-30 15:25:57'),
-(5, 19, 125, 'PF2ASHKP', 'CLLPT1-5-228', 1400000.00, '2025-10-09 15:02:54');
+(5, 19, 125, 'PF2ASHKP', 'CLLPT1-5-228', 1400000.00, '2025-10-09 15:02:54'),
+(6, 20, 361, 'FVHD11JJMNHP', 'N/A/Medellin-2028', 1600000.00, '2025-10-16 15:20:04');
 
 
 ALTER TABLE `bodega_asignaciones`
@@ -865,13 +860,6 @@ ALTER TABLE `servicio`
 ALTER TABLE `setting`
   ADD PRIMARY KEY (`idsett`);
 
-ALTER TABLE `solicitud_alistamiento`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_usuario` (`usuario_id`),
-  ADD KEY `idx_tecnico` (`tecnico_responsable`),
-  ADD KEY `idx_estado` (`estado`),
-  ADD KEY `idx_sede` (`sede`);
-
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`);
 
@@ -912,7 +900,7 @@ ALTER TABLE `bodega_inventario`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=438;
 
 ALTER TABLE `bodega_log_cambios`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 ALTER TABLE `bodega_mantenimiento`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
@@ -939,7 +927,7 @@ ALTER TABLE `categoria`
   MODIFY `idcate` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 ALTER TABLE `clientes`
-  MODIFY `idclie` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `idclie` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 ALTER TABLE `compra`
   MODIFY `idcomp` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
@@ -951,13 +939,13 @@ ALTER TABLE `gastos`
   MODIFY `idga` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 ALTER TABLE `ingresos`
-  MODIFY `iding` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `iding` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 ALTER TABLE `marketing`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `orders`
-  MODIFY `idord` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `idord` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 ALTER TABLE `plan`
   MODIFY `idplan` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
@@ -977,14 +965,11 @@ ALTER TABLE `servicio`
 ALTER TABLE `setting`
   MODIFY `idsett` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
-ALTER TABLE `solicitud_alistamiento`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
 ALTER TABLE `usuarios`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 ALTER TABLE `venta_detalles`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 
 ALTER TABLE `bodega_salidas`
@@ -998,9 +983,8 @@ ALTER TABLE `reserva_venta`
   ADD CONSTRAINT `fk_reserva_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`idclie`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_reserva_inventario` FOREIGN KEY (`inventario_id`) REFERENCES `bodega_inventario` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_reserva_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `solicitud_alistamiento`
-  ADD CONSTRAINT `fk_solicitud_tecnico` FOREIGN KEY (`tecnico_responsable`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `fk_solicitud_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
 COMMIT;
 
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

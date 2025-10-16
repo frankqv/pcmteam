@@ -5,48 +5,45 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-// Verificar roles permitidos: Admin [1], Comercial [4]
+// Verificar roles permitidos: Admin [1], Comercial [3], Comercial Senior [4]
 $rol = $_SESSION['rol'] ?? 0;
-if (!in_array($rol, [1, 4])) {
+if (!in_array($rol, [1, 3, 4])) {
     header("Location: ../cuenta/sin_permiso.php");
     exit;
-
-
-    
 }
 
-require_once('../../config/db.php');
+require_once('../../config/ctconex.php');
 date_default_timezone_set('America/Bogota');
 
 // Procesar formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'crear_reserva') {
     try {
-        $pdo->beginTransaction();
+        $connect->beginTransaction();
 
         $inventario_id = intval($_POST['inventario_id']);
         $cliente_id = intval($_POST['cliente_id']);
         $observaciones = trim($_POST['observaciones']);
         $dias_reserva = intval($_POST['dias_reserva']);
 
-        // Validar días de reserva (máximo 7)
-        if ($dias_reserva < 1 || $dias_reserva > 7) {
-            throw new Exception("Los días de reserva deben estar entre 1 y 7");
+        // Validar días de reserva (máximo 5)
+        if ($dias_reserva < 1 || $dias_reserva > 5) {
+            throw new Exception("Los días de reserva deben estar entre 1 y 5");
         }
 
         // Calcular fecha de vencimiento
         $fecha_vencimiento = date('Y-m-d', strtotime("+$dias_reserva days"));
 
-        // Verificar que el equipo esté disponible para reserva
-        $stmt = $pdo->prepare("SELECT id, disposicion FROM bodega_inventario WHERE id = :id AND disposicion = 'Para Venta'");
+        // Verificar que el equipo esté disponible para reserva (solo grados A y B)
+        $stmt = $connect->prepare("SELECT id, disposicion, grado FROM bodega_inventario WHERE id = :id AND disposicion = 'Para Venta' AND grado IN ('A', 'B')");
         $stmt->execute([':id' => $inventario_id]);
         $equipo = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$equipo) {
-            throw new Exception("El equipo no está disponible para reserva");
+            throw new Exception("El equipo no está disponible para reserva o no es grado A/B");
         }
 
         // Crear reserva
-        $stmt = $pdo->prepare("INSERT INTO reserva_venta (
+        $stmt = $connect->prepare("INSERT INTO reserva_venta (
             inventario_id, usuario_id, cliente_id, fecha_vencimiento, observaciones, estado
         ) VALUES (
             :inventario_id, :usuario_id, :cliente_id, :fecha_vencimiento, :observaciones, 'activa'
@@ -60,35 +57,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             ':observaciones' => $observaciones
         ]);
 
-        $reserva_id = $pdo->lastInsertId();
+        $reserva_id = $connect->lastInsertId();
 
         // Actualizar disposición del equipo
-        $stmt = $pdo->prepare("UPDATE bodega_inventario SET disposicion = 'Reservado', pedido_id = :reserva_id WHERE id = :id");
+        $stmt = $connect->prepare("UPDATE bodega_inventario SET disposicion = 'Reservado', pedido_id = :reserva_id WHERE id = :id");
         $stmt->execute([
             ':reserva_id' => $reserva_id,
             ':id' => $inventario_id
         ]);
 
-        $pdo->commit();
+        $connect->commit();
 
         $mensaje = "Reserva creada exitosamente";
         $tipo_mensaje = "success";
     } catch (Exception $e) {
-        $pdo->rollBack();
+        $connect->rollBack();
         $mensaje = "Error: " . $e->getMessage();
         $tipo_mensaje = "error";
     }
 }
 
-// Obtener clientes
-$stmt = $pdo->query("SELECT id, nombre, documento, telefono FROM clientes WHERE estado = 'activo' ORDER BY nombre ASC");
+// Obtener clientes activos
+$stmt = $connect->query("SELECT idclie as id, CONCAT(nomcli, ' ', apecli) as nombre, numid as documento, celu as telefono FROM clientes WHERE estad = 'Activo' ORDER BY nomcli ASC");
 $clientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Obtener equipos disponibles para venta
-$stmt = $pdo->query("SELECT
+// Obtener equipos disponibles para venta (solo grados A y B)
+$stmt = $connect->query("SELECT
     id, codigo_general, serial, marca, modelo, procesador, ram, disco, pulgada, grado, precio
 FROM bodega_inventario
-WHERE disposicion = 'Para Venta' AND estado = 'activo'
+WHERE disposicion = 'Para Venta' AND grado IN ('A', 'B')
 ORDER BY fecha_entrada DESC");
 $equipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -259,11 +256,9 @@ $equipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <option value="2">2 días</option>
                             <option value="3">3 días</option>
                             <option value="4">4 días</option>
-                            <option value="5" selected>5 días</option>
-                            <option value="6">6 días</option>
-                            <option value="7">7 días (máximo)</option>
+                            <option value="5" selected>5 días (máximo)</option>
                         </select>
-                        <small class="text-muted">Máximo: 7 días</small>
+                        <small class="text-muted">Máximo: 5 días. Puede extenderse 1 vez por 5 días adicionales.</small>
                     </div>
 
                     <!-- Equipo -->

@@ -162,11 +162,12 @@ ob_start();
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
                                     <!-- 1. "txtdire" -->
                                     <div class="col-md-6 col-lg-6">
                                         <div class="form-group">
                                             <label for="text">Dirección del Cliente</label>
-                                            <input type="text" class="form-control" name="txtdire" placeholder="Dirección del Cliente" required>
+                                            <input type="text" class="form-control" name="txtdire" placeholder="Dirección del Cliente">
                                         </div>
                                     </div>
                                     <!-- 2. "txtciud" -->
@@ -178,17 +179,18 @@ ob_start();
                                     </div>
                                       <div class="col-md-3 col-lg-3">
                                         <div class="form-group">
-                                            <label for="txtsede">Selecione una sede</label>
+                                            <label for="txtsede">Seleccione una sede <span class="text-danger">*</span></label>
                                             <select class="form-control" name="txtsede" required>
                                                 <option value="">Seleccione una sede</option>
-                                                <option value="Principal" >Bodega   #1</option>
-                                                <option value="Medellin" >Medellin #2</option>
-                                                <option value="Cucuta" >Cúcuta   #3</option>
-                                                <option value="Unilago" >Unilago  #4</option> 
+                                                <option value="Principal">Bodega   #1</option>
+                                                <option value="Medellin">Medellin #2</option>
+                                                <option value="Cucuta">Cúcuta   #3</option>
+                                                <option value="Unilago">Unilago  #4</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <!-- 3. "txtsede" -->
+                                    </div>
+                                    <!-- FIN ROW campos adicionales -->
                                     <div class="row">
                                         <div class="col-md-12 col-lg-12">
                                             <div class="form-group">

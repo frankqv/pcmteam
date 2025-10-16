@@ -1,43 +1,63 @@
 <?php
-require_once __DIR__ . '../../../config/ctconex.php';
+// Ruta corregida
+require_once __DIR__ . '/../../config/ctconex.php';
 
 if (isset($_POST['staddcust'])) {
-    $numid = $_POST['txtnum'];
-    $nomcli = $_POST['txtnaame'];
-    $apecli = $_POST['txtape'];
-    $naci = $_POST['txtnaci'];
-    $correo = $_POST['txtema'];
-    $celu = $_POST['txtcel'];
+    // Capturar todos los campos del formulario
+    $numid = trim($_POST['txtnum']);
+    $nomcli = trim($_POST['txtnaame']);
+    $apecli = trim($_POST['txtape']);
+    $naci = !empty($_POST['txtnaci']) ? $_POST['txtnaci'] : '1900-01-01';
+    $correo = trim($_POST['txtema']);
+    $celu = trim($_POST['txtcel']);
     $estad = $_POST['txtesta'];
+
+    // NUEVOS CAMPOS
+    $dircli = trim($_POST['txtdire']);
+    $ciucli = trim($_POST['txtciud']);
+    $idsede = $_POST['txtsede'];
+
+    // Validación básica
     if (empty($numid)) {
-        $errMSG = "Por favor ingresa el número de identificación.";
+        echo '<script type="text/javascript">
+                swal("Error!", "Por favor ingresa el número de identificación.", "error");
+            </script>';
     } else {
-        // Validamos primero que el documento no exista
-        $sql = "SELECT * FROM clientes WHERE numid=:numid";
-        $stmt = $connect->prepare($sql);
-        $stmt->bindParam(':numid', $numid);
-        $stmt->execute();
-        if ($stmt->rowCount() > 0) {
-            echo '<script type="text/javascript">
-                    swal("Error!", "El número de identificación ya está registrado!", "error").then(function() {
-                        window.location = "../clientes/mostrar.php";
-                    });
-                </script>';
-        } else {
-            // Validamos si el correo electrónico ya está registrado
-            $sql_correo = "SELECT * FROM clientes WHERE correo=:correo";
-            $stmt_correo = $connect->prepare($sql_correo);
-            $stmt_correo->bindParam(':correo', $correo);
-            $stmt_correo->execute();
-            if ($stmt_correo->rowCount() > 0) {
+        try {
+            // Validar que el documento no exista
+            $sql = "SELECT * FROM clientes WHERE numid = :numid";
+            $stmt = $connect->prepare($sql);
+            $stmt->bindParam(':numid', $numid);
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
                 echo '<script type="text/javascript">
-                        swal("Error!", "El correo electrónico ya está registrado!", "error").then(function() {
+                        swal("Error!", "El número de identificación ya está registrado!", "error").then(function() {
                             window.location = "../clientes/mostrar.php";
                         });
                     </script>';
             } else {
-                // Insertamos los datos en la base de datos
-                $sql = "INSERT INTO clientes(numid, nomcli, apecli, naci, correo, celu, estad) VALUES (:numid, :nomcli, :apecli, :naci, :correo, :celu, :estad)";
+                // Validar correo solo si no está vacío
+                if (!empty($correo)) {
+                    $sql_correo = "SELECT * FROM clientes WHERE correo = :correo";
+                    $stmt_correo = $connect->prepare($sql_correo);
+                    $stmt_correo->bindParam(':correo', $correo);
+                    $stmt_correo->execute();
+
+                    if ($stmt_correo->rowCount() > 0) {
+                        echo '<script type="text/javascript">
+                                swal("Error!", "El correo electrónico ya está registrado!", "error").then(function() {
+                                    window.location = "../clientes/mostrar.php";
+                                });
+                            </script>';
+                        exit;
+                    }
+                }
+
+                // Insertar con TODOS los campos
+                $sql = "INSERT INTO clientes(numid, nomcli, apecli, naci, correo, celu, estad, dircli, ciucli, idsede)
+                        VALUES (:numid, :nomcli, :apecli, :naci, :correo, :celu, :estad, :dircli, :ciucli, :idsede)";
+
                 $stmt = $connect->prepare($sql);
                 $stmt->bindParam(':numid', $numid);
                 $stmt->bindParam(':nomcli', $nomcli);
@@ -46,6 +66,10 @@ if (isset($_POST['staddcust'])) {
                 $stmt->bindParam(':correo', $correo);
                 $stmt->bindParam(':celu', $celu);
                 $stmt->bindParam(':estad', $estad);
+                $stmt->bindParam(':dircli', $dircli);
+                $stmt->bindParam(':ciucli', $ciucli);
+                $stmt->bindParam(':idsede', $idsede);
+
                 if ($stmt->execute()) {
                     echo '<script type="text/javascript">
                             swal("¡Registrado!", "Cliente agregado correctamente", "success").then(function() {
@@ -53,9 +77,15 @@ if (isset($_POST['staddcust'])) {
                             });
                         </script>';
                 } else {
-                    $errMSG = "Error al insertar los datos.";
+                    echo '<script type="text/javascript">
+                            swal("Error!", "Error al insertar los datos en la base de datos.", "error");
+                        </script>';
                 }
             }
+        } catch (PDOException $e) {
+            echo '<script type="text/javascript">
+                    swal("Error!", "Error de base de datos: ' . $e->getMessage() . '", "error");
+                </script>';
         }
     }
 }

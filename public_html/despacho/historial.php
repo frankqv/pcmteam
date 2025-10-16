@@ -1,14 +1,11 @@
 <?php
 ob_start();
 session_start();
-
-if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2,3,4,5,6, 7])) {
+if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7])) {
     header('location: ../error404.php');
     exit();
 }
-
 require_once '../../config/ctconex.php';
-
 // Verificar que el usuario existe y obtener su información
 $userInfo = null;
 if (isset($_SESSION['id'])) {
@@ -19,7 +16,6 @@ if (isset($_SESSION['id'])) {
     $result = $stmt->get_result();
     $userInfo = $result->fetch_assoc();
 }
-
 if (!$userInfo) {
     header('Location: ../error404.php');
     exit();
@@ -28,8 +24,6 @@ if (!$userInfo) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Historial de Despachos - PCMARKETTEAM</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
@@ -41,6 +35,7 @@ if (!$userInfo) {
     <link rel="stylesheet" type="text/css" href="../assets/css/font.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../assets/img/favicon.webp" />
+    <meta charset="utf-8">
     <style>
         .serial-list {
             font-family: monospace;
@@ -99,7 +94,6 @@ if (!$userInfo) {
                     </ul>
                 </nav>
             </div>
-            
             <div class="main-content">
                 <!-- Filtros -->
                 <div class="row mb-4">
@@ -141,7 +135,6 @@ if (!$userInfo) {
                         </div>
                     </div>
                 </div>
-
                 <!-- Tabla de Historial -->
                 <div class="row">
                     <div class="col-12">
@@ -176,9 +169,7 @@ if (!$userInfo) {
                                                             WHERE o.despacho = 'Enviado' 
                                                             AND o.payment_status = 'Aceptado'
                                                             ORDER BY d.fecha_despacho DESC";
-                                            
                                             $result_historial = $conn->query($sql_historial);
-                                            
                                             if ($result_historial && $result_historial->num_rows > 0) {
                                                 while ($orden = $result_historial->fetch_assoc()) {
                                                     // Obtener seriales de la orden
@@ -187,12 +178,10 @@ if (!$userInfo) {
                                                     $stmt_seriales->bind_param("i", $orden['idord']);
                                                     $stmt_seriales->execute();
                                                     $seriales_result = $stmt_seriales->get_result();
-                                                    
                                                     $seriales = [];
                                                     while ($serial = $seriales_result->fetch_assoc()) {
                                                         $seriales[] = $serial['serial'];
                                                     }
-                                                    
                                                     echo "<tr>";
                                                     echo "<td><strong>#" . $orden['idord'] . "</strong></td>";
                                                     echo "<td>" . htmlspecialchars($orden['nomcli'] . ' ' . $orden['apecli']) . "<br>";
@@ -224,7 +213,6 @@ if (!$userInfo) {
             </div>
         </div>
     </div>
-
     <!-- Scripts -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/popper.min.js"></script>
@@ -239,7 +227,6 @@ if (!$userInfo) {
     <script type="text/javascript" src="../assets/js/vfs_fonts.js"></script>
     <script type="text/javascript" src="../assets/js/buttonshtml5.js"></script>
     <script type="text/javascript" src="../assets/js/buttonsprint.js"></script>
-    
     <script>
         $(document).ready(function() {
             // Inicializar DataTable
@@ -253,15 +240,15 @@ if (!$userInfo) {
                 },
                 pageLength: 25,
                 responsive: true,
-                order: [[5, 'desc']] // Ordenar por fecha de despacho
+                order: [
+                    [5, 'desc']
+                ] // Ordenar por fecha de despacho
             });
-            
             // Funcionalidad de filtros
             $('#applyFilters').click(function() {
                 var fechaDesde = $('#fechaDesde').val();
                 var fechaHasta = $('#fechaHasta').val();
                 var cliente = $('#clienteFiltro').val().toLowerCase();
-                
                 // Filtrar por fechas
                 if (fechaDesde) {
                     table.column(5).search(fechaDesde);
@@ -276,15 +263,12 @@ if (!$userInfo) {
                         return true;
                     });
                 }
-                
                 // Filtrar por cliente
                 if (cliente) {
                     table.column(1).search(cliente);
                 }
-                
                 table.draw();
             });
-            
             // Limpiar filtros
             $('#filterForm').append('<div class="col-md-12 mt-2"><button type="button" class="btn btn-secondary" id="clearFilters">Limpiar Filtros</button></div>');
             $('#clearFilters').click(function() {

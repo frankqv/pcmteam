@@ -9,7 +9,8 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 3, 4, 5, 6, 7]))
 }
 require_once '../../config/ctconex.php';
 require_once '../../backend/pdf/fpdf.php';
-function e($v) {
+function e($v)
+{
     return htmlspecialchars((string)($v ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 $mensaje = '';
@@ -36,47 +37,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crear_solicitud'])) {
         }
         // Iniciar transacción
         $connect->beginTransaction();
-        // Insertar solicitud principal
+
+        // Construir descripción y cantidad desde productos JSON
+        $cantidad_total = 0;
+        $descripcion_completa = '';
+        $primera_marca = '';
+        $primer_modelo = '';
+
+        foreach ($productos as $prod) {
+            $cantidad_total += $prod['cantidad'];
+            $descripcion_completa .= $prod['cantidad'] . 'x ' . $prod['descripcion'] . "\n";
+            if (empty($primera_marca) && !empty($prod['marca'])) {
+                $primera_marca = $prod['marca'];
+            }
+            if (empty($primer_modelo) && !empty($prod['modelo'])) {
+                $primer_modelo = $prod['modelo'];
+            }
+        }
+
+        $descripcion_completa = trim($descripcion_completa);
+        $observacion_completa = "Despacho: " . $despacho . " | Productos JSON: " . $productos_json;
+
+        // Insertar solicitud principal (ajustado a la estructura real de la tabla)
         $sql = "INSERT INTO solicitud_alistamiento (
                     solicitante,
                     usuario_id,
                     sede,
-                    despacho,
                     cliente,
-                    cliente_id,
+                    cantidad,
+                    descripcion,
+                    marca,
+                    modelo,
+                    observacion,
                     tecnico_responsable,
-                    productos_json
+                    estado
                 ) VALUES (
                     :solicitante,
                     :usuario_id,
                     :sede,
-                    :despacho,
                     :cliente,
-                    :cliente_id,
+                    :cantidad,
+                    :descripcion,
+                    :marca,
+                    :modelo,
+                    :observacion,
                     :tecnico_responsable,
-                    :productos_json
+                    'pendiente'
                 )";
         $stmt = $connect->prepare($sql);
         $stmt->execute([
             ':solicitante' => $solicitante,
             ':usuario_id' => $usuario_id,
             ':sede' => $sede,
-            ':despacho' => $despacho,
             ':cliente' => $cliente_nombre,
-            ':cliente_id' => $cliente_id,
-            ':tecnico_responsable' => $tecnico_responsable,
-            ':productos_json' => $productos_json
+            ':cantidad' => (string)$cantidad_total,
+            ':descripcion' => $descripcion_completa,
+            ':marca' => $primera_marca ?: null,
+            ':modelo' => $primer_modelo ?: null,
+            ':observacion' => $observacion_completa,
+            ':tecnico_responsable' => $tecnico_responsable
         ]);
         $solicitud_id = $connect->lastInsertId();
         $connect->commit();
         $mensaje = 'Solicitud de alistamiento creada exitosamente. ID: ' . $solicitud_id;
         $tipo_mensaje = 'success';
     } catch (PDOException $e) {
-        $connect->rollBack();
-        $mensaje = 'Error en la base de datos: ' . $e->getMessage();
+        if (isset($connect) && $connect->inTransaction()) {
+            $connect->rollBack();
+        }
+        $mensaje = 'Error al guardar la solicitud: ' . $e->getMessage();
         $tipo_mensaje = 'danger';
     } catch (Exception $e) {
-        $connect->rollBack();
+        if (isset($connect) && $connect->inTransaction()) {
+            $connect->rollBack();
+        }
         $mensaje = $e->getMessage();
         $tipo_mensaje = 'warning';
     }
@@ -104,7 +138,7 @@ $solicitudes = $stmt_solicitudes->fetchAll(PDO::FETCH_ASSOC);
 // Obtener info del usuario
 $userInfo = [];
 if (isset($_SESSION['id'])) {
-    $sqlUser = "SELECT nombre, usuario, foto, idsede FROM usuarios WHERE id = :id";
+    $sqlUser = "SELECT nombre, usuario, correo, foto, rol, idsede FROM usuarios WHERE id = :id";
     $stmtUser = $connect->prepare($sqlUser);
     $stmtUser->execute([':id' => $_SESSION['id']]);
     $userInfo = $stmtUser->fetch(PDO::FETCH_ASSOC);
@@ -112,6 +146,7 @@ if (isset($_SESSION['id'])) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -132,12 +167,14 @@ if (isset($_SESSION['id'])) {
         }
     </style>
 </head>
+
 <body>
     <div class="wrapper">
-        <?php include_once '../layouts/nav.php'; include_once '../layouts/menu_data.php'; ?>
+        <?php include_once '../layouts/nav.php';
+        include_once '../layouts/menu_data.php'; ?>
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3><img src="../assets/img/favicon.webp" class="img-fluid"/><span>PCMARKETTEAM</span></h3>
+                <h3><img src="../assets/img/favicon.webp" class="img-fluid" /><span>PCMARKETTEAM</span></h3>
             </div>
             <?php renderMenu($menu); ?>
         </nav>
@@ -156,11 +193,26 @@ if (isset($_SESSION['id'])) {
                             <li class="dropdown nav-item active">
                                 <a href="#" class="nav-link" data-toggle="dropdown">
                                     <img src="../assets/img/<?php echo e($userInfo['foto'] ?? 'reere.webp'); ?>"
-                                        style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
-                                </a>
+                                        style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;"></a>
                                 <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
                                     <li><strong><?php echo e($userInfo['nombre'] ?? 'Usuario'); ?></strong></li>
-                                    <li><small><?php echo e($userInfo['usuario'] ?? 'usuario'); ?></small></li>
+                                    <li><?php echo e($userInfo['usuario'] ?? 'usuario'); ?></li>
+                                    <li><smal><?php echo e($userInfo['rol'] ?? 'Rol'); ?> |
+                                        <?php
+                                        $roles = [
+                                            1 => 'Admin',
+                                            2 => 'Default',
+                                            3 => 'Contable',
+                                            4 => 'Comercial',
+                                            5 => 'Jefe técnico',
+                                            6 => 'Técnico',
+                                            7 => 'Bodega'
+                                        ];
+                                        $rolId = $userInfo['rol'] ?? null;
+                                        echo $roles[$rolId] ?? 'Rol';
+                                        ?></smal>
+                                    </li>
+                                    <li><p><?php echo e($userInfo['idsede'] ?? 'idsede'); ?></p></li>
                                     <li class="mt-2">
                                         <a href="../cuenta/perfil.php" class="btn btn-sm btn-primary btn-block">Mi perfil</a>
                                     </li>
@@ -194,22 +246,22 @@ if (isset($_SESSION['id'])) {
                                             <!-- Fecha (Auto) -->
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label>Fecha Solicitud</label>
-                                                    <input type="text" class="form-control" value="<?php echo date('d/m/Y'); ?>" readonly>
+                                                    <label for="fecha_solicitud">Fecha Solicitud</label>
+                                                    <input type="text" id="fecha_solicitud" name="fecha_solicitud" class="form-control" value="<?php echo date('d/m/Y'); ?>" readonly>
                                                 </div>
                                             </div>
                                             <!-- Número de Solicitud (Auto) -->
                                             <div class="col-md-2">
                                                 <div class="form-group">
-                                                    <label>N° Solicitud</label>
-                                                    <input type="text" class="form-control" value="Auto" readonly>
+                                                    <label for="num_solicitud">N° Solicitud</label>
+                                                    <input type="text" id="num_solicitud" name="num_solicitud" class="form-control" value="Auto" readonly>
                                                 </div>
                                             </div>
                                             <!-- Solicitante (Auto) -->
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label>Solicitante</label>
-                                                    <input type="text" class="form-control" value="<?php echo e($_SESSION['nombre']); ?>" readonly>
+                                                    <label for="solicitante_nombre">Solicitante</label>
+                                                    <input type="text" id="solicitante_nombre" name="solicitante_nombre" class="form-control" value="<?php echo e($_SESSION['nombre']); ?>" readonly>
                                                 </div>
                                             </div>
                                             <!-- Técnico Responsable -->
@@ -236,6 +288,7 @@ if (isset($_SESSION['id'])) {
                                                         <option value="Unilago">Unilago</option>
                                                         <option value="Cúcuta">Cúcuta</option>
                                                         <option value="Medellin">Medellín</option>
+                                                        <option value="capital_tech">Capital Tech</option>
                                                         <option value="Pagina Web">Página Web</option>
                                                     </select>
                                                 </div>
@@ -256,11 +309,17 @@ if (isset($_SESSION['id'])) {
                                                     </select>
                                                 </div>
                                             </div>
+                                            <!-- Observaciones Generales -->
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="Observaciones_globales">Observaciones Globales <span class="text-danger">*</span></label>
+                                                    </div>
+                                            </div>
                                             <!-- Cliente (Búsqueda) -->
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="cliente_search">Cliente</label>
-                                                    <input type="text" class="form-control" id="cliente_search" placeholder="Buscar cliente...">
+                                                    <input type="text" class="form-control" id="cliente_search" name="cliente_search" placeholder="Buscar cliente...">
                                                     <input type="hidden" id="cliente_id" name="cliente_id">
                                                     <input type="hidden" id="cliente_nombre" name="cliente_nombre">
                                                     <small class="form-text text-muted" id="cliente_selected"></small>
@@ -286,29 +345,29 @@ if (isset($_SESSION['id'])) {
                                                     </tr>
                                                 </thead>
                                                 <tbody id="productosBody">
-                                                    <tr class="producto-row">
-                                                        <td><input type="number" class="form-control form-control-sm cantidad-input" min="1" value="1"></td>
-                                                        <td><input type="text" class="form-control form-control-sm descripcion-input" placeholder="Ej: Laptop HP i5 8GB"></td>
-                                                        <td><input type="text" class="form-control form-control-sm marca-input" placeholder="HP"></td>
-                                                        <td><input type="text" class="form-control form-control-sm modelo-input" placeholder="EliteBook 840"></td>
-                                                        <td><input type="text" class="form-control form-control-sm observacion-input" placeholder="Opcional"></td>
-                                                        <td><button type="button" class="btn btn-danger btn-sm btn-remove-row" disabled><i class="material-icons" style="font-size: 14px;">close</i></button></td>
+                                                    <tr class="producto-row" data-row="1">
+                                                        <td><input type="number" id="cantidad_1" name="productos[1][cantidad]" class="form-control form-control-sm cantidad-input" min="1" value="1" aria-label="Cantidad producto 1"></td>
+                                                        <td><input type="text" id="descripcion_1" name="productos[1][descripcion]" class="form-control form-control-sm descripcion-input" placeholder="Ej: Laptop HP i5 8GB" aria-label="Descripción producto 1"></td>
+                                                        <td><input type="text" id="marca_1" name="productos[1][marca]" class="form-control form-control-sm marca-input" placeholder="HP" aria-label="Marca producto 1"></td>
+                                                        <td><input type="text" id="modelo_1" name="productos[1][modelo]" class="form-control form-control-sm modelo-input" placeholder="EliteBook 840" aria-label="Modelo producto 1"></td>
+                                                        <td><input type="text" id="observacion_1" name="productos[1][observacion]" class="form-control form-control-sm observacion-input" placeholder="Opcional" aria-label="Observación producto 1"></td>
+                                                        <td><button type="button" class="btn btn-danger btn-sm btn-remove-row" disabled aria-label="Eliminar producto 1"><i class="material-icons" style="font-size: 14px;">close</i></button></td>
                                                     </tr>
-                                                    <tr class="producto-row">
-                                                        <td><input type="number" class="form-control form-control-sm cantidad-input" min="1" value="1"></td>
-                                                        <td><input type="text" class="form-control form-control-sm descripcion-input"></td>
-                                                        <td><input type="text" class="form-control form-control-sm marca-input"></td>
-                                                        <td><input type="text" class="form-control form-control-sm modelo-input"></td>
-                                                        <td><input type="text" class="form-control form-control-sm observacion-input"></td>
-                                                        <td><button type="button" class="btn btn-danger btn-sm btn-remove-row"><i class="material-icons" style="font-size: 14px;">close</i></button></td>
+                                                    <tr class="producto-row" data-row="2">
+                                                        <td><input type="number" id="cantidad_2" name="productos[2][cantidad]" class="form-control form-control-sm cantidad-input" min="1" value="1" aria-label="Cantidad producto 2"></td>
+                                                        <td><input type="text" id="descripcion_2" name="productos[2][descripcion]" class="form-control form-control-sm descripcion-input" aria-label="Descripción producto 2"></td>
+                                                        <td><input type="text" id="marca_2" name="productos[2][marca]" class="form-control form-control-sm marca-input" aria-label="Marca producto 2"></td>
+                                                        <td><input type="text" id="modelo_2" name="productos[2][modelo]" class="form-control form-control-sm modelo-input" aria-label="Modelo producto 2"></td>
+                                                        <td><input type="text" id="observacion_2" name="productos[2][observacion]" class="form-control form-control-sm observacion-input" aria-label="Observación producto 2"></td>
+                                                        <td><button type="button" class="btn btn-danger btn-sm btn-remove-row" aria-label="Eliminar producto 2"><i class="material-icons" style="font-size: 14px;">close</i></button></td>
                                                     </tr>
-                                                    <tr class="producto-row">
-                                                        <td><input type="number" class="form-control form-control-sm cantidad-input" min="1" value="1"></td>
-                                                        <td><input type="text" class="form-control form-control-sm descripcion-input"></td>
-                                                        <td><input type="text" class="form-control form-control-sm marca-input"></td>
-                                                        <td><input type="text" class="form-control form-control-sm modelo-input"></td>
-                                                        <td><input type="text" class="form-control form-control-sm observacion-input"></td>
-                                                        <td><button type="button" class="btn btn-danger btn-sm btn-remove-row"><i class="material-icons" style="font-size: 14px;">close</i></button></td>
+                                                    <tr class="producto-row" data-row="3">
+                                                        <td><input type="number" id="cantidad_3" name="productos[3][cantidad]" class="form-control form-control-sm cantidad-input" min="1" value="1" aria-label="Cantidad producto 3"></td>
+                                                        <td><input type="text" id="descripcion_3" name="productos[3][descripcion]" class="form-control form-control-sm descripcion-input" aria-label="Descripción producto 3"></td>
+                                                        <td><input type="text" id="marca_3" name="productos[3][marca]" class="form-control form-control-sm marca-input" aria-label="Marca producto 3"></td>
+                                                        <td><input type="text" id="modelo_3" name="productos[3][modelo]" class="form-control form-control-sm modelo-input" aria-label="Modelo producto 3"></td>
+                                                        <td><input type="text" id="observacion_3" name="productos[3][observacion]" class="form-control form-control-sm observacion-input" aria-label="Observación producto 3"></td>
+                                                        <td><button type="button" class="btn btn-danger btn-sm btn-remove-row" aria-label="Eliminar producto 3"><i class="material-icons" style="font-size: 14px;">close</i></button></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -349,10 +408,19 @@ if (isset($_SESSION['id'])) {
                                             </thead>
                                             <tbody>
                                                 <?php foreach ($solicitudes as $sol):
-                                                    // Decodificar productos JSON
-                                                    $productos = json_decode($sol['productos_json'] ?? '[]', true);
+                                                    // Intentar decodificar productos desde observacion (donde está guardado el JSON)
+                                                    $productos_json_str = '';
+                                                    if (preg_match('/Productos JSON: (.+)$/s', $sol['observacion'] ?? '', $matches)) {
+                                                        $productos_json_str = $matches[1];
+                                                    }
+                                                    $productos = $productos_json_str ? json_decode($productos_json_str, true) : [];
                                                     $total_productos = is_array($productos) ? count($productos) : 0;
-                                                    $primera_descripcion = $total_productos > 0 ? $productos[0]['descripcion'] : 'Sin productos';
+
+                                                    // Si no hay productos, usar descripción directa
+                                                    $primera_descripcion = $sol['descripcion'] ?? 'Sin descripción';
+                                                    if ($total_productos > 0 && isset($productos[0]['descripcion'])) {
+                                                        $primera_descripcion = $productos[0]['descripcion'];
+                                                    }
                                                 ?>
                                                     <tr>
                                                         <td><strong>#<?php echo $sol['id']; ?></strong></td>
@@ -363,7 +431,7 @@ if (isset($_SESSION['id'])) {
                                                                 <br><small class="text-muted">+ <?php echo ($total_productos - 1); ?> producto(s) más</small>
                                                             <?php endif; ?>
                                                         </td>
-                                                        <td><?php echo $total_productos; ?></td>
+                                                        <td><?php echo $total_productos > 0 ? $total_productos : $sol['cantidad']; ?></td>
                                                         <td>
                                                             <?php
                                                             $estado_badges = [
@@ -377,15 +445,22 @@ if (isset($_SESSION['id'])) {
                                                             <span class="badge <?php echo $badge; ?>"><?php echo ucfirst($sol['estado']); ?></span>
                                                         </td>
                                                         <td class="text-center">
+                                                            <?php
+                                                            // Extraer despacho de observacion
+                                                            $despacho_extracted = '';
+                                                            if (preg_match('/Despacho: ([^|]+)/', $sol['observacion'] ?? '', $despacho_match)) {
+                                                                $despacho_extracted = trim($despacho_match[1]);
+                                                            }
+                                                            ?>
                                                             <button class="btn btn-sm btn-info btn-ver-detalle"
-                                                                    data-id="<?php echo $sol['id']; ?>"
-                                                                    data-solicitante="<?php echo e($sol['solicitante']); ?>"
-                                                                    data-sede="<?php echo e($sol['sede']); ?>"
-                                                                    data-despacho="<?php echo e($sol['despacho']); ?>"
-                                                                    data-cliente="<?php echo e($sol['cliente']); ?>"
-                                                                    data-productos='<?php echo htmlspecialchars($sol['productos_json'], ENT_QUOTES); ?>'
-                                                                    data-tecnico="<?php echo e($sol['tecnico_nombre'] ?? 'Sin asignar'); ?>"
-                                                                    data-fecha="<?php echo $sol['fecha_solicitud']; ?>">
+                                                                data-id="<?php echo $sol['id']; ?>"
+                                                                data-solicitante="<?php echo e($sol['solicitante']); ?>"
+                                                                data-sede="<?php echo e($sol['sede']); ?>"
+                                                                data-despacho="<?php echo e($despacho_extracted); ?>"
+                                                                data-cliente="<?php echo e($sol['cliente']); ?>"
+                                                                data-productos='<?php echo htmlspecialchars($productos_json_str, ENT_QUOTES); ?>'
+                                                                data-tecnico="<?php echo e($sol['tecnico_nombre'] ?? 'Sin asignar'); ?>"
+                                                                data-fecha="<?php echo $sol['fecha_solicitud']; ?>">
                                                                 <i class="material-icons" style="font-size: 14px;">visibility</i>
                                                             </button>
                                                         </td>
@@ -469,7 +544,9 @@ if (isset($_SESSION['id'])) {
         $(document).ready(function() {
             // Inicializar DataTable
             $('#solicitudesTable').DataTable({
-                order: [[1, 'desc']],
+                order: [
+                    [1, 'desc']
+                ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
                 }
@@ -488,7 +565,9 @@ if (isset($_SESSION['id'])) {
                 clientesTimeout = setTimeout(function() {
                     $.ajax({
                         method: 'GET',
-                        data: { q: term },
+                        data: {
+                            q: term
+                        },
                         dataType: 'json',
                         success: function(clientes) {
                             if (clientes && clientes.length > 0) {
@@ -511,14 +590,15 @@ if (isset($_SESSION['id'])) {
             // ========== MATRIZ DE PRODUCTOS ==========
             // Agregar nueva fila
             $('#btnAgregarFila').on('click', function() {
+                const rowCount = $('.producto-row').length + 1;
                 const nuevaFila = `
-                    <tr class="producto-row">
-                        <td><input type="number" class="form-control form-control-sm cantidad-input" min="1" value="1"></td>
-                        <td><input type="text" class="form-control form-control-sm descripcion-input"></td>
-                        <td><input type="text" class="form-control form-control-sm marca-input"></td>
-                        <td><input type="text" class="form-control form-control-sm modelo-input"></td>
-                        <td><input type="text" class="form-control form-control-sm observacion-input"></td>
-                        <td><button type="button" class="btn btn-danger btn-sm btn-remove-row"><i class="material-icons" style="font-size: 14px;">close</i></button></td>
+                    <tr class="producto-row" data-row="${rowCount}">
+                        <td><input type="number" id="cantidad_${rowCount}" name="productos[${rowCount}][cantidad]" class="form-control form-control-sm cantidad-input" min="1" value="1" aria-label="Cantidad producto ${rowCount}"></td>
+                        <td><input type="text" id="descripcion_${rowCount}" name="productos[${rowCount}][descripcion]" class="form-control form-control-sm descripcion-input" placeholder="Ej: Laptop HP i5 8GB" aria-label="Descripción producto ${rowCount}"></td>
+                        <td><input type="text" id="marca_${rowCount}" name="productos[${rowCount}][marca]" class="form-control form-control-sm marca-input" placeholder="HP" aria-label="Marca producto ${rowCount}"></td>
+                        <td><input type="text" id="modelo_${rowCount}" name="productos[${rowCount}][modelo]" class="form-control form-control-sm modelo-input" placeholder="EliteBook 840" aria-label="Modelo producto ${rowCount}"></td>
+                        <td><input type="text" id="observacion_${rowCount}" name="productos[${rowCount}][observacion]" class="form-control form-control-sm observacion-input" placeholder="Opcional" aria-label="Observación producto ${rowCount}"></td>
+                        <td><button type="button" class="btn btn-danger btn-sm btn-remove-row" aria-label="Eliminar producto ${rowCount}"><i class="material-icons" style="font-size: 14px;">close</i></button></td>
                     </tr>
                 `;
                 $('#productosBody').append(nuevaFila);
@@ -529,6 +609,7 @@ if (isset($_SESSION['id'])) {
                 $(this).closest('tr').remove();
                 actualizarBotonesEliminar();
             });
+
             function actualizarBotonesEliminar() {
                 const totalFilas = $('.producto-row').length;
                 if (totalFilas === 1) {
@@ -539,11 +620,25 @@ if (isset($_SESSION['id'])) {
             }
             // ========== ENVIAR FORMULARIO ==========
             $('#solicitudForm').on('submit', function(e) {
-                e.preventDefault();
+                // Validar sede y despacho
+                const sede = $('#sede').val();
+                const despacho = $('#despacho').val();
+
+                if (!sede) {
+                    e.preventDefault();
+                    alert('Debe seleccionar una sede');
+                    return false;
+                }
+                if (!despacho) {
+                    e.preventDefault();
+                    alert('Debe seleccionar un método de despacho');
+                    return false;
+                }
+
                 // Recolectar productos
                 const productos = [];
                 $('.producto-row').each(function() {
-                    const cantidad = parseInt($(this).find('.cantidad-input').val()) || 0;
+                    const cantidad = parseInt($(this).find('.cantidad-input').val()) || 1;
                     const descripcion = $(this).find('.descripcion-input').val().trim();
                     const marca = $(this).find('.marca-input').val().trim();
                     const modelo = $(this).find('.modelo-input').val().trim();
@@ -559,15 +654,27 @@ if (isset($_SESSION['id'])) {
                         });
                     }
                 });
+
                 // Validar que hay al menos un producto
                 if (productos.length === 0) {
+                    e.preventDefault();
                     alert('Debe agregar al menos un producto con descripción');
                     return false;
                 }
+
                 // Guardar JSON en campo oculto
-                $('#productos_json').val(JSON.stringify(productos));
-                // Enviar formulario
-                this.submit();
+                const jsonProductos = JSON.stringify(productos);
+                $('#productos_json').val(jsonProductos);
+
+                console.log('Enviando formulario con:', {
+                    sede: sede,
+                    despacho: despacho,
+                    productos: productos,
+                    json: jsonProductos
+                });
+
+                // Dejar que el formulario se envíe naturalmente
+                return true;
             });
             // ========== VER DETALLE DE SOLICITUD ==========
             $('.btn-ver-detalle').on('click', function() {
@@ -578,19 +685,16 @@ if (isset($_SESSION['id'])) {
                 $('#det-cliente').text($(this).data('cliente') || 'No especificado');
                 $('#det-tecnico').text($(this).data('tecnico'));
                 $('#det-fecha').text(new Date($(this).data('fecha')).toLocaleString('es-CO'));
-
                 // Decodificar y mostrar productos
                 const productosJson = $(this).data('productos');
                 let productos = [];
                 try {
                     productos = typeof productosJson === 'string' ? JSON.parse(productosJson) : productosJson;
-                } catch(e) {
+                } catch (e) {
                     productos = [];
                 }
-
                 // Limpiar tabla
                 $('#det-productos-body').empty();
-
                 // Llenar tabla con productos
                 if (productos && productos.length > 0) {
                     productos.forEach(function(prod) {
@@ -608,7 +712,6 @@ if (isset($_SESSION['id'])) {
                 } else {
                     $('#det-productos-body').html('<tr><td colspan="5" class="text-center text-muted">No hay productos registrados</td></tr>');
                 }
-
                 $('#detalleModal').modal('show');
             });
             // Generar PDF
@@ -620,5 +723,6 @@ if (isset($_SESSION['id'])) {
         });
     </script>
 </body>
+
 </html>
 <?php ob_end_flush(); ?>

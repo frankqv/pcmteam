@@ -60,7 +60,6 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
         ]
     ];
 }
-
 # ==================== GRUPO 1: PROCESO ====================
 if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
     $menu[] = [
@@ -139,16 +138,13 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
 }
 # ==================== GRUPO 2: Proceso de Venta ====================
 $ventaItems = [];
-
 // Preventa - Solicitud de Alistamiento
 if (in_array($rol, [1, 4])) {
     $ventaItems[] = [
-        'label' => 'PREVENTA',
-        'icon' => 'request_quote',
+        'label' => '● SOLITITUD ALISTAMIENTO',
         'url' => '../venta/preventa.php'
     ];
 }
-
 //historias de preventa/ historial completo de Solicitudes de Alistamiento
 if(in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $ventaItems[] = [
@@ -156,7 +152,6 @@ if(in_array($rol, [1, 3, 4, 5, 6, 7])) {
         'url'=> '../venta/historico_preventa.php'
     ];
 }
-
 // Reservas de Venta
 if (in_array($rol, [1, 4])) {
     $ventaItems[] = [
@@ -253,6 +248,14 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 # ==================== GRUPO 3: Proceso de Despacho ====================
 $despachoItems = [];
+// HISTORIAL DE ALISTAMIENTO
+if (in_array($rol, [1, 3, 5, 6, 7])) {
+    $despachoItems[] = [
+        'label' => '📋 HISTORIAL DE ALISTAMIENTO',
+        'url' => '../despacho/historial_solicitudes_alistamiento.php'
+    ];
+}
+
 // Ordenes pendientes de despacho
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $despachoItems[] = [

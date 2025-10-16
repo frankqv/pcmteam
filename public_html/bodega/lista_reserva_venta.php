@@ -1,43 +1,65 @@
 <?php
-// public_html/bodega/reserva_venta.php
+// public_html/bodega/lista_reserva_venta.php
 session_start();
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: ../cuenta/login.php");
     exit;
 }
-// Verificar roles permitidos: Admin [1], Comercial [4]
+// Verificar roles permitidos: Admin [1], Comercial [3], Comercial Senior [4]
 $rol = $_SESSION['rol'] ?? 0;
-if (!in_array($rol, [1, 4])) {
+if (!in_array($rol, [1, 3, 4])) {
     header("Location: ../cuenta/sin_permiso.php");
     exit;
 }
-require_once('../../config/ctconex.php
-');
+require_once('../../config/ctconex.php');
 date_default_timezone_set('America/Bogota');
-// Procesar acciones (cancelar, completar)
+// Procesar acciones (cancelar, completar, extender)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     try {
         $reserva_id = intval($_POST['reserva_id']);
         $action = $_POST['action'];
-        $pdo->beginTransaction();
+        $connect->beginTransaction();
         if ($action === 'cancelar') {
             // Cancelar reserva
-            $stmt = $pdo->prepare("UPDATE reserva_venta SET estado = 'cancelada' WHERE id = :id");
+            $stmt = $connect->prepare("UPDATE reserva_venta SET estado = 'cancelada' WHERE id = :id");
             $stmt->execute([':id' => $reserva_id]);
             // Liberar equipo
-            $stmt = $pdo->prepare("UPDATE bodega_inventario SET disposicion = 'Para Venta', pedido_id = NULL WHERE pedido_id = :reserva_id");
+            $stmt = $connect->prepare("UPDATE bodega_inventario SET disposicion = 'Para Venta', pedido_id = NULL WHERE pedido_id = :reserva_id");
             $stmt->execute([':reserva_id' => $reserva_id]);
             $mensaje = "Reserva cancelada exitosamente";
         } elseif ($action === 'completar') {
             // Completar reserva (marcar como vendida)
-            $stmt = $pdo->prepare("UPDATE reserva_venta SET estado = 'completada' WHERE id = :id");
+            $stmt = $connect->prepare("UPDATE reserva_venta SET estado = 'completada' WHERE id = :id");
             $stmt->execute([':id' => $reserva_id]);
             $mensaje = "Reserva completada exitosamente";
+        } elseif ($action === 'extender') {
+            // Extender reserva por 5 días más (máximo 1 extensión)
+            // Verificar que no se haya extendido antes
+            $stmt = $connect->prepare("SELECT fecha_vencimiento, fecha_reserva, observaciones FROM reserva_venta WHERE id = :id");
+            $stmt->execute([':id' => $reserva_id]);
+            $reserva = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($reserva) {
+                // Verificar si ya fue extendida (observación contiene "EXTENDIDA")
+                if (strpos($reserva['observaciones'], '[EXTENDIDA]') !== false) {
+                    throw new Exception("Esta reserva ya fue extendida anteriormente. Solo se permite 1 extensión.");
+                }
+                $nueva_fecha = date('Y-m-d', strtotime($reserva['fecha_vencimiento'] . ' +5 days'));
+                $nueva_obs = $reserva['observaciones'] . "\n[EXTENDIDA] " . date('Y-m-d H:i:s') . " por usuario " . $_SESSION['usuario_id'];
+                $stmt = $connect->prepare("UPDATE reserva_venta SET fecha_vencimiento = :nueva_fecha, observaciones = :obs WHERE id = :id");
+                $stmt->execute([
+                    ':nueva_fecha' => $nueva_fecha,
+                    ':obs' => $nueva_obs,
+                    ':id' => $reserva_id
+                ]);
+                $mensaje = "Reserva extendida por 5 días más hasta " . date('d/m/Y', strtotime($nueva_fecha));
+            } else {
+                throw new Exception("Reserva no encontrada");
+            }
         }
-        $pdo->commit();
+        $connect->commit();
         $tipo_mensaje = "success";
     } catch (Exception $e) {
-        $pdo->rollBack();
+        $connect->rollBack();
         $mensaje = "Error: " . $e->getMessage();
         $tipo_mensaje = "error";
     }
@@ -60,16 +82,16 @@ $sql = "SELECT
     bi.pulgada,
     bi.grado,
     bi.precio,
-    c.nombre as cliente_nombre,
-    c.documento as cliente_documento,
-    c.telefono as cliente_telefono,
+    CONCAT(c.nomcli, ' ', c.apecli) as cliente_nombre,
+    c.numid as cliente_documento,
+    c.celu as cliente_telefono,
     u.nombre as comercial_nombre
 FROM reserva_venta rv
 INNER JOIN bodega_inventario bi ON rv.inventario_id = bi.id
-INNER JOIN clientes c ON rv.cliente_id = c.id
+INNER JOIN clientes c ON rv.cliente_id = c.idclie
 INNER JOIN usuarios u ON rv.usuario_id = u.id
 ORDER BY rv.fecha_reserva DESC";
-$stmt = $pdo->query($sql);
+$stmt = $connect->query($sql);
 $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
@@ -329,6 +351,16 @@ $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             <span class="material-icons" style="font-size: 14px;">check_circle</span>
                                             Completar
                                         </button>
+                                        <?php
+                                        // Verificar si ya fue extendida
+                                        $ya_extendida = strpos($reserva['observaciones'], '[EXTENDIDA]') !== false;
+                                        ?>
+                                        <?php if (!$ya_extendida): ?>
+                                        <button class="btn btn-warning btn-sm btn-action" onclick="extenderReserva(<?php echo $reserva['id']; ?>)">
+                                            <span class="material-icons" style="font-size: 14px;">update</span>
+                                            Extender
+                                        </button>
+                                        <?php endif; ?>
                                         <button class="btn btn-danger btn-sm btn-action" onclick="cancelarReserva(<?php echo $reserva['id']; ?>)">
                                             <span class="material-icons" style="font-size: 14px;">cancel</span>
                                             Cancelar
@@ -385,6 +417,29 @@ $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     form.method = 'POST';
                     form.innerHTML = `
                         <input type="hidden" name="action" value="completar">
+                        <input type="hidden" name="reserva_id" value="${id}">
+                    `;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+        function extenderReserva(id) {
+            Swal.fire({
+                title: '¿Extender reserva?',
+                html: 'Se agregará <strong>5 días más</strong> a la reserva.<br><small class="text-muted">Solo se permite 1 extensión por reserva</small>',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, extender',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#ffc107',
+                cancelButtonColor: '#6c757d'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.innerHTML = `
+                        <input type="hidden" name="action" value="extender">
                         <input type="hidden" name="reserva_id" value="${id}">
                     `;
                     document.body.appendChild(form);

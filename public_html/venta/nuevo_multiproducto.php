@@ -10,22 +10,37 @@ require_once('../../config/ctconex.php');
 // --- LÓGICA DE PROCESAMIENTO DE VENTA ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cliente_id = $_POST['cliente_id'] ?? null;
-    $metodo_pago = $_POST['metodo_pago'] ?? null;
+    $method = $_POST['method'] ?? null;
     $carrito_json = $_POST['carrito_json'] ?? null;
     $total_venta = $_POST['total_venta'] ?? 0;
     $vendedor_id = $_SESSION['id'] ?? null;
-    if (empty($cliente_id) || empty($metodo_pago) || empty($carrito_json) || $total_venta <= 0) {
+    if (empty($cliente_id) || empty($method) || empty($carrito_json) || $total_venta <= 0) {
         $_SESSION['mensaje_error'] = 'Error: Faltan datos requeridos para procesar la venta. Asegúrate de seleccionar un cliente, un método de pago y agregar productos.';
-        header('Location: nuevo.php');
+        header('Location: nuevo_multiproducto.php');
         exit;
     }
     $carrito = json_decode($carrito_json, true);
     try {
         $connect->beginTransaction();
         // 1. Crear la orden de venta principal
-        $sql_order = "INSERT INTO orders (user_cli, total_price, metodo_pago, placed_on, payment_status, despacho) VALUES (?, ?, ?, NOW(), 'Aceptado', 'Pendiente')";
+        $sql_order = "INSERT INTO orders (user_id, user_cli, method, total_products, total_price, placed_on, payment_status, tipc, despacho, responsable)
+                      VALUES (?, ?, ?, ?, ?, NOW(), 'Aceptado', 'Venta', 'Pendiente', ?)";
         $stmt_order = $connect->prepare($sql_order);
-        $stmt_order->execute([$cliente_id, $total_venta, $metodo_pago]);
+
+        // Calcular total de productos
+        $total_productos = 0;
+        foreach ($carrito as $item) {
+            $total_productos += $item['cantidad'];
+        }
+
+        $stmt_order->execute([
+            $vendedor_id,           // user_id (vendedor)
+            $cliente_id,            // user_cli (cliente)
+            $method,                // method
+            $total_productos,       // total_products
+            $total_venta,           // total_price
+            $_SESSION['nombre'] ?? 'Sistema'  // responsable
+        ]);
         $order_id = $connect->lastInsertId();
         if (!$order_id) {
             throw new Exception("Error al crear la orden de venta.");
@@ -35,21 +50,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $cantidad_vendida = $item['cantidad'] ?? 0;
             $precio_unitario = $item['precio'] ?? 0;
             // a. Encontrar los IDs de inventario disponibles
-            $sql_inventario_ids = "SELECT id, serial, codigo_g FROM bodega_inventario 
-                                   WHERE marca = ? AND modelo = ? AND procesador = ? AND ram = ? AND disco = ? AND grado = ? 
+            $sql_inventario_ids = "SELECT id, serial, codigo_g FROM bodega_inventario
+                                   WHERE marca = ? AND modelo = ? AND procesador = ? AND ram = ? AND disco = ? AND grado = ?
                                    AND disposicion = 'Para Venta' AND estado = 'activo'
-                                   LIMIT ?";
+                                   LIMIT " . intval($cantidad_vendida);
             $stmt_inventario_ids = $connect->prepare($sql_inventario_ids);
-            $stmt_inventario_ids->execute([$item['marca'], $item['modelo'], $item['procesador'], $item['ram'], $item['disco'], $item['grado'], $cantidad_vendida]);
+            $stmt_inventario_ids->execute([$item['marca'], $item['modelo'], $item['procesador'], $item['ram'], $item['disco'], $item['grado']]);
             $inventario_disponibles = $stmt_inventario_ids->fetchAll(PDO::FETCH_ASSOC);
             if (count($inventario_disponibles) < $cantidad_vendida) {
                 throw new Exception("No hay suficiente stock para " . $item['marca'] . " " . $item['modelo']);
             }
             // b. Insertar en `venta_detalles` y actualizar inventario
             foreach ($inventario_disponibles as $inventario_item) {
-                $sql_detalle = "INSERT INTO venta_detalles (orden_id, inventario_id, serial, codigo_g, precio_unitario, fecha_venta, vendedor_id) VALUES (?, ?, ?, ?, ?, NOW(), ?)";
+                $sql_detalle = "INSERT INTO venta_detalles (orden_id, inventario_id, serial, codigo_g, precio_unitario, fecha_venta) VALUES (?, ?, ?, ?, ?, NOW())";
                 $stmt_detalle = $connect->prepare($sql_detalle);
-                $stmt_detalle->execute([$order_id, $inventario_item['id'], $inventario_item['serial'], $inventario_item['codigo_g'], $precio_unitario, $vendedor_id]);
+                $stmt_detalle->execute([$order_id, $inventario_item['id'], $inventario_item['serial'], $inventario_item['codigo_g'], $precio_unitario]);
                 $sql_update_inventario = "UPDATE bodega_inventario SET disposicion = 'Por Alistamiento', estado = 'inactivo' WHERE id = ?";
                 $stmt_update_inventario = $connect->prepare($sql_update_inventario);
                 $stmt_update_inventario->execute([$inventario_item['id']]);
@@ -62,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Exception $e) {
         $connect->rollBack();
         $_SESSION['mensaje_error'] = "Error al procesar la venta: " . $e->getMessage();
-        header('Location: nuevo.php');
+        header('Location: nuevo_multiproducto.php');
         exit;
     }
 }
@@ -86,7 +101,7 @@ $sql_inventario = "
         COUNT(id) as stock_disponible
     FROM bodega_inventario 
     WHERE disposicion = 'Para Venta' 
-      AND precio IS NOT NULL AND precio > 0 AND estado = 'activo'
+        AND precio IS NOT NULL AND precio > 0 AND estado = 'activo'
     GROUP BY marca, modelo, procesador, ram, disco, grado, precio
     ORDER BY marca, modelo";
 $stmt_inventario = $connect->prepare($sql_inventario);
@@ -185,7 +200,7 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
                                                 <h4 class="mb-0 text-success">$<span id="totalPrice">0</span></h4>
                                             </div>
                                         </div>
-                                        <form id="ventaForm" action="nuevo.php" method="POST">
+                                        <form id="ventaForm" action="nuevo_multiproducto.php" method="POST">
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
@@ -201,9 +216,13 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Método de Pago <span class="text-danger">*</span></label>
-                                                        <select class="form-control" name="metodo_pago" required>
+                                                        <select class="form-control" name="method" required>
                                                             <option value="">-- Seleccione --</option>
                                                             <option value="Efectivo">Efectivo</option>
+                                                            <option value="finanzacion">finanzacion</option>
+                                                            <option value="addi">addi</option>
+                                                            <option value="sistecredito">sistecredito</option>
+                                                            <option value="wompi">wompi</option>
                                                             <option value="Transferencia">Transferencia</option>
                                                             <option value="Tarjeta">Tarjeta</option>
                                                         </select>
@@ -223,7 +242,7 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
                             <div class="col-lg-5">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4 class="card-title">Inventario Disponible</h4>
+                                        <h4 class="card-title">Inventario Disponible Con Precio</h4>
                                     </div>
                                     <div class="card-body" style="max-height: 80vh; overflow-y: auto;">
                                         <?php if (count($productos_inventario) > 0): ?>
