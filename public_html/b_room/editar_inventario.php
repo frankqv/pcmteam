@@ -208,7 +208,7 @@ try {
                                             <button type="submit" class="btn btn-primary">
                                                 <i class="material-icons">save</i> Actualizar Equipo
                                             </button>
-                                            <a href="mostar.php" class="btn btn-secondary">
+                                            <a href="mostrar.php" class="btn btn-secondary">
                                                 <i class="material-icons">cancel</i> Cancelar
                                             </a>
                                         </div>
