@@ -71,7 +71,7 @@ try {
                         <div class="card">
                             <div class="card-header">
                                 <h4>Editar Equipo</h4>
-                                <a href="../laboratorio/mostrar.php" class="btn btn-secondary btn-sm">
+                                <a href="mostrar.php" class="btn btn-secondary btn-sm">
                                     <i class="material-icons">arrow_back</i> Volver al Inventario
                                 </a>
                             </div>
@@ -208,7 +208,7 @@ try {
                                             <button type="submit" class="btn btn-primary">
                                                 <i class="material-icons">save</i> Actualizar Equipo
                                             </button>
-                                            <a href="../laboratorio/mostar.php" class="btn btn-secondary">
+                                            <a href="mostar.php" class="btn btn-secondary">
                                                 <i class="material-icons">cancel</i> Cancelar
                                             </a>
                                         </div>
