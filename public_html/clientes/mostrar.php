@@ -87,12 +87,32 @@ ob_start();
                 </nav>
             </div>
             <div class="main-content">
+                <?php
+                // Verificar si se está filtrando por sede
+                $sede_filter = isset($_GET['sede']) ? trim($_GET['sede']) : '';
+                ?>
                 <div class="row ">
                     <div class="col-lg-12 col-md-12">
                         <div class="card" style="min-height: 485px">
                             <div class="card-header card-header-text">
-                                <h4 class="card-title">Clientes recientes</h4>
-                                <p class="category">Nuevas clientes reciente añadidos el dia de hoy</p>
+                                <h4 class="card-title">
+                                    <?php
+                                    if (!empty($sede_filter)) {
+                                        echo "Clientes de: " . htmlspecialchars($sede_filter);
+                                    } else {
+                                        echo "Clientes recientes";
+                                    }
+                                    ?>
+                                </h4>
+                                <p class="category">
+                                    <?php
+                                    if (!empty($sede_filter)) {
+                                        echo "Clientes registrados en la sede " . htmlspecialchars($sede_filter);
+                                    } else {
+                                        echo "Nuevas clientes reciente añadidos el dia de hoy";
+                                    }
+                                    ?>
+                                </p>
                             </div>
                             <br>
                             <a href="../clientes/nuevo.php" class="btn btn-danger text-white">Nuevo cliente</a>
@@ -100,14 +120,23 @@ ob_start();
                             <br>
                             <div class="card-content table-responsive">
                                 <?php
-                                require '../../config/ctconex.php'; 
-                                $sentencia = $connect->prepare("SELECT * FROM clientes order BY nomcli DESC;");
-                                $sentencia->execute();
-                                $data =  array();
-                                if($sentencia){
-                                while($r = $sentencia->fetchObject()){
-                                    $data[] = $r;
+                                require '../../config/ctconex.php';
+
+                                if (!empty($sede_filter)) {
+                                    // Filtrar por sede específica
+                                    $sentencia = $connect->prepare("SELECT * FROM clientes WHERE idsede = :sede ORDER BY nomcli DESC;");
+                                    $sentencia->execute([':sede' => $sede_filter]);
+                                } else {
+                                    // Mostrar todos los clientes
+                                    $sentencia = $connect->prepare("SELECT * FROM clientes ORDER BY nomcli DESC;");
+                                    $sentencia->execute();
                                 }
+
+                                $data = array();
+                                if($sentencia){
+                                    while($r = $sentencia->fetchObject()){
+                                        $data[] = $r;
+                                    }
                                 }
                                 ?>
                                 <?php if(count($data)>0):?>

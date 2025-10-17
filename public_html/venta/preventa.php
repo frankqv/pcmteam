@@ -38,13 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crear_solicitud'])) {
         }
         // Iniciar transacción
         $connect->beginTransaction();
-
         // Construir descripción y cantidad desde productos JSON
         $cantidad_total = 0;
         $descripcion_completa = '';
         $primera_marca = '';
         $primer_modelo = '';
-
         foreach ($productos as $prod) {
             $cantidad_total += $prod['cantidad'];
             $descripcion_completa .= $prod['cantidad'] . 'x ' . $prod['descripcion'] . "\n";
@@ -55,10 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crear_solicitud'])) {
                 $primer_modelo = $prod['modelo'];
             }
         }
-
         $descripcion_completa = trim($descripcion_completa);
         $observacion_completa = "Despacho: " . $despacho . " | Productos JSON: " . $productos_json;
-
         // Insertar solicitud principal (ajustado a la estructura real de la tabla)
         $sql = "INSERT INTO solicitud_alistamiento (
                     solicitante,
@@ -150,7 +146,6 @@ if (isset($_SESSION['id'])) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -171,7 +166,6 @@ if (isset($_SESSION['id'])) {
         }
     </style>
 </head>
-
 <body>
     <div class="wrapper">
         <?php include_once '../layouts/nav.php';
@@ -420,7 +414,6 @@ if (isset($_SESSION['id'])) {
                                                     }
                                                     $productos = $productos_json_str ? json_decode($productos_json_str, true) : [];
                                                     $total_productos = is_array($productos) ? count($productos) : 0;
-
                                                     // Si no hay productos, usar descripción directa
                                                     $primera_descripcion = $sol['descripcion'] ?? 'Sin descripción';
                                                     if ($total_productos > 0 && isset($productos[0]['descripcion'])) {
@@ -627,7 +620,6 @@ if (isset($_SESSION['id'])) {
                 $(this).closest('tr').remove();
                 actualizarBotonesEliminar();
             });
-
             function actualizarBotonesEliminar() {
                 const totalFilas = $('.producto-row').length;
                 if (totalFilas === 1) {
@@ -641,7 +633,6 @@ if (isset($_SESSION['id'])) {
                 // Validar sede y despacho
                 const sede = $('#sede').val();
                 const despacho = $('#despacho').val();
-
                 if (!sede) {
                     e.preventDefault();
                     alert('Debe seleccionar una sede');
@@ -652,7 +643,6 @@ if (isset($_SESSION['id'])) {
                     alert('Debe seleccionar un método de despacho');
                     return false;
                 }
-
                 // Recolectar productos
                 const productos = [];
                 $('.producto-row').each(function() {
@@ -672,25 +662,21 @@ if (isset($_SESSION['id'])) {
                         });
                     }
                 });
-
                 // Validar que hay al menos un producto
                 if (productos.length === 0) {
                     e.preventDefault();
                     alert('Debe agregar al menos un producto con descripción');
                     return false;
                 }
-
                 // Guardar JSON en campo oculto
                 const jsonProductos = JSON.stringify(productos);
                 $('#productos_json').val(jsonProductos);
-
                 console.log('Enviando formulario con:', {
                     sede: sede,
                     despacho: despacho,
                     productos: productos,
                     json: jsonProductos
                 });
-
                 // Dejar que el formulario se envíe naturalmente
                 return true;
             });
@@ -703,7 +689,6 @@ if (isset($_SESSION['id'])) {
                 $('#det-cliente').text($(this).data('cliente') || 'No especificado');
                 $('#det-tecnico').text($(this).data('tecnico'));
                 $('#det-fecha').text(new Date($(this).data('fecha')).toLocaleString('es-CO'));
-
                 // Observaciones
                 $('#det-observacion-global').text($(this).data('observacion-global') || 'Sin observaciones del comercial');
                 $('#det-observacion-tecnico').text($(this).data('observacion-tecnico') || 'Sin observaciones del técnico');
@@ -745,6 +730,5 @@ if (isset($_SESSION['id'])) {
         });
     </script>
 </body>
-
 </html>
 <?php ob_end_flush(); ?>

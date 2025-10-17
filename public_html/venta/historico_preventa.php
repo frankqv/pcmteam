@@ -79,7 +79,7 @@ $solicitudes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Histórico de Solicitudes - PCMARKETTEAM</title>
+    <title>Histï¿½rico de Solicitudes - PCMARKETTEAM</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
@@ -232,7 +232,7 @@ $solicitudes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         <?php if (isset($mensaje)): ?>
                         <div class="alert alert-<?php echo $tipo_mensaje === 'success' ? 'success' : 'danger'; ?> alert-dismissible fade show" role="alert">
-                            <strong><?php echo $tipo_mensaje === 'success' ? '¡Éxito!' : '¡Error!'; ?></strong> <?php echo htmlspecialchars($mensaje); ?>
+                            <strong><?php echo $tipo_mensaje === 'success' ? 'ï¿½ï¿½xito!' : 'ï¿½Error!'; ?></strong> <?php echo htmlspecialchars($mensaje); ?>
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -295,20 +295,30 @@ $solicitudes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                     <p class="mb-1"><strong>Modelo:</strong> <?php echo htmlspecialchars($solicitud['modelo']); ?></p>
                                                     <?php endif; ?>
                                                     <?php if ($solicitud['tecnico_nombre']): ?>
-                                                    <p class="mb-1"><strong>Técnico:</strong> <?php echo htmlspecialchars($solicitud['tecnico_nombre']); ?></p>
+                                                    <p class="mb-1"><strong>Tï¿½cnico:</strong> <?php echo htmlspecialchars($solicitud['tecnico_nombre']); ?></p>
                                                     <?php endif; ?>
                                                 </div>
                                             </div>
 
-                                            <p class="mb-1 mt-2"><strong>Descripción:</strong></p>
+                                            <p class="mb-1 mt-2"><strong>Descripciï¿½n:</strong></p>
                                             <p class="text-muted"><?php echo nl2br(htmlspecialchars($solicitud['descripcion'])); ?></p>
 
-                                            <?php if ($solicitud['observacion']): ?>
-                                            <p class="mb-1"><strong>Observaciones:</strong></p>
-                                            <p class="text-muted"><?php echo nl2br(htmlspecialchars($solicitud['observacion'])); ?></p>
+                                            <?php if ($solicitud['observacion_global']): ?>
+                                            <div class="alert alert-info mt-2 mb-2" style="padding: 8px 12px;">
+                                                <strong><span class="material-icons" style="font-size: 14px; vertical-align: middle;">comment</span> Observaci\u00f3n del Comercial:</strong><br>
+                                                <small><?php echo nl2br(htmlspecialchars($solicitud['observacion_global'])); ?></small>
+                                            </div>
                                             <?php endif; ?>
 
-                                            <button class="btn btn-sm btn-info mt-2" onclick="verDetalleSolicitud(<?php echo $solicitud['id']; ?>)">
+                                            <?php if ($solicitud['observacion_tecnico']): ?>
+                                            <div class="alert alert-success mt-2 mb-2" style="padding: 8px 12px;">
+                                                <strong><span class="material-icons" style="font-size: 14px; vertical-align: middle;">engineering</span> Observaci\u00f3n del T\u00e9cnico:</strong><br>
+                                                <small><?php echo nl2br(htmlspecialchars($solicitud['observacion_tecnico'])); ?></small>
+                                            </div>
+                                            <?php endif; ?>
+
+                                            <button class="btn btn-sm btn-info mt-2 btn-ver-detalle"
+                                                    data-solicitud='<?php echo htmlspecialchars(json_encode($solicitud), ENT_QUOTES); ?>'>
                                                 <span class="material-icons" style="font-size: 16px;">visibility</span>
                                                 Ver Detalles
                                             </button>
@@ -325,6 +335,63 @@ $solicitudes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ver Detalle -->
+    <div class="modal fade" id="detalleModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h5 class="modal-title">Detalle de Solicitud de Alistamiento</h5>
+                    <button type="button" class="close" data-dismiss="modal" style="color: white;">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>ID Solicitud:</strong> <span id="det-id"></span></p>
+                            <p><strong>Solicitante:</strong> <span id="det-solicitante"></span></p>
+                            <p><strong>Sede:</strong> <span id="det-sede"></span></p>
+                            <p><strong>Cliente:</strong> <span id="det-cliente"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Cantidad:</strong> <span id="det-cantidad"></span></p>
+                            <p><strong>Estado:</strong> <span id="det-estado"></span></p>
+                            <p><strong>TÃ©cnico Asignado:</strong> <span id="det-tecnico"></span></p>
+                            <p><strong>Fecha de Solicitud:</strong> <span id="det-fecha"></span></p>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6><strong>DescripciÃ³n:</strong></h6>
+                    <p id="det-descripcion" class="text-muted"></p>
+
+                    <div class="row" id="det-marca-modelo" style="display: none;">
+                        <div class="col-md-6">
+                            <p><strong>Marca:</strong> <span id="det-marca"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Modelo:</strong> <span id="det-modelo"></span></p>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><strong>ObservaciÃ³n del Comercial:</strong></h6>
+                            <p id="det-observacion-global" class="text-muted"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><strong>ObservaciÃ³n del TÃ©cnico:</strong></h6>
+                            <p id="det-observacion-tecnico" class="text-muted"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
@@ -372,14 +439,14 @@ $solicitudes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Descripción de Requerimientos <span class="text-danger">*</span></label>
+                            <label>Descripciï¿½n de Requerimientos <span class="text-danger">*</span></label>
                             <textarea name="descripcion" class="form-control" rows="4" required
-                                      placeholder="Describe las especificaciones técnicas requeridas (procesador, RAM, disco, pantalla, etc.)"></textarea>
+                                      placeholder="Describe las especificaciones tï¿½cnicas requeridas (procesador, RAM, disco, pantalla, etc.)"></textarea>
                         </div>
                         <div class="form-group">
                             <label>Observaciones</label>
                             <textarea name="observacion" class="form-control" rows="3"
-                                      placeholder="Información adicional o comentarios"></textarea>
+                                      placeholder="Informaciï¿½n adicional o comentarios"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -413,15 +480,43 @@ $solicitudes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             });
         });
 
-        function verDetalleSolicitud(id) {
-            Swal.fire({
-                title: 'Detalles de Solicitud #' + id,
-                html: 'Cargando información detallada...',
-                icon: 'info',
-                confirmButtonText: 'Cerrar',
-                confirmButtonColor: '#667eea'
-            });
-        }
+        // Ver detalle de solicitud
+        $('.btn-ver-detalle').on('click', function() {
+            const solicitud = $(this).data('solicitud');
+
+            $('#det-id').text('#' + solicitud.id);
+            $('#det-solicitante').text(solicitud.solicitante || 'N/A');
+            $('#det-sede').text(solicitud.sede || 'N/A');
+            $('#det-cliente').text(solicitud.cliente || 'N/A');
+            $('#det-cantidad').text(solicitud.cantidad || 'N/A');
+            $('#det-tecnico').text(solicitud.tecnico_nombre || 'Sin asignar');
+            $('#det-fecha').text(new Date(solicitud.fecha_solicitud).toLocaleString('es-CO'));
+            $('#det-descripcion').text(solicitud.descripcion || 'Sin descripciÃ³n');
+
+            // Estado con badge
+            const estadoBadges = {
+                'pendiente': '<span class="badge-pendiente">Pendiente</span>',
+                'en_proceso': '<span class="badge-en-proceso">En Proceso</span>',
+                'completada': '<span class="badge-completada">Completada</span>',
+                'cancelada': '<span class="badge-rechazada">Cancelada</span>'
+            };
+            $('#det-estado').html(estadoBadges[solicitud.estado] || solicitud.estado);
+
+            // Marca y modelo
+            if (solicitud.marca || solicitud.modelo) {
+                $('#det-marca-modelo').show();
+                $('#det-marca').text(solicitud.marca || '-');
+                $('#det-modelo').text(solicitud.modelo || '-');
+            } else {
+                $('#det-marca-modelo').hide();
+            }
+
+            // Observaciones
+            $('#det-observacion-global').text(solicitud.observacion_global || 'Sin observaciones del comercial');
+            $('#det-observacion-tecnico').text(solicitud.observacion_tecnico || 'Sin observaciones del tÃ©cnico');
+
+            $('#detalleModal').modal('show');
+        });
     </script>
 </body>
 </html>
