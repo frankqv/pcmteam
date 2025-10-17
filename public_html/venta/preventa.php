@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crear_solicitud'])) {
         $cliente_nombre = trim($_POST['cliente_nombre'] ?? '');
         $productos_json = $_POST['productos_json'] ?? '[]';
         $tecnico_responsable = !empty($_POST['tecnico_responsable']) ? intval($_POST['tecnico_responsable']) : null;
+        $observacion_global = trim($_POST['observacion_global'] ?? '');
         // Decodificar productos
         $productos = json_decode($productos_json, true);
         // Validaciones
@@ -70,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crear_solicitud'])) {
                     modelo,
                     observacion,
                     tecnico_responsable,
+                    observacion_global,
                     estado
                 ) VALUES (
                     :solicitante,
@@ -82,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crear_solicitud'])) {
                     :modelo,
                     :observacion,
                     :tecnico_responsable,
+                    :observacion_global,
                     'pendiente'
                 )";
         $stmt = $connect->prepare($sql);
@@ -95,7 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crear_solicitud'])) {
             ':marca' => $primera_marca ?: null,
             ':modelo' => $primer_modelo ?: null,
             ':observacion' => $observacion_completa,
-            ':tecnico_responsable' => $tecnico_responsable
+            ':tecnico_responsable' => $tecnico_responsable,
+            ':observacion_global' => $observacion_global
         ]);
         $solicitud_id = $connect->lastInsertId();
         $connect->commit();
@@ -309,11 +313,12 @@ if (isset($_SESSION['id'])) {
                                                     </select>
                                                 </div>
                                             </div>
-                                            <!-- Observaciones Generales -->
+                                            <!-- Observaciones Globales -->
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="Observaciones_globales">Observaciones Globales <span class="text-danger">*</span></label>
-                                                    </div>
+                                                    <label for="observacion_global">Observaciones Globales</label>
+                                                    <textarea class="form-control" id="observacion_global" name="observacion_global" rows="2" placeholder="Observaciones adicionales del comercial..."></textarea>
+                                                </div>
                                             </div>
                                             <!-- Cliente (Búsqueda) -->
                                             <div class="col-md-4">
@@ -460,7 +465,9 @@ if (isset($_SESSION['id'])) {
                                                                 data-cliente="<?php echo e($sol['cliente']); ?>"
                                                                 data-productos='<?php echo htmlspecialchars($productos_json_str, ENT_QUOTES); ?>'
                                                                 data-tecnico="<?php echo e($sol['tecnico_nombre'] ?? 'Sin asignar'); ?>"
-                                                                data-fecha="<?php echo $sol['fecha_solicitud']; ?>">
+                                                                data-fecha="<?php echo $sol['fecha_solicitud']; ?>"
+                                                                data-observacion-global="<?php echo e($sol['observacion_global'] ?? ''); ?>"
+                                                                data-observacion-tecnico="<?php echo e($sol['observacion_tecnico'] ?? ''); ?>">
                                                                 <i class="material-icons" style="font-size: 14px;">visibility</i>
                                                             </button>
                                                         </td>
@@ -517,6 +524,17 @@ if (isset($_SESSION['id'])) {
                             <tbody id="det-productos-body">
                             </tbody>
                         </table>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><strong>Observación del Comercial:</strong></h6>
+                            <p id="det-observacion-global" class="text-muted"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><strong>Observación del Técnico:</strong></h6>
+                            <p id="det-observacion-tecnico" class="text-muted"></p>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -685,6 +703,10 @@ if (isset($_SESSION['id'])) {
                 $('#det-cliente').text($(this).data('cliente') || 'No especificado');
                 $('#det-tecnico').text($(this).data('tecnico'));
                 $('#det-fecha').text(new Date($(this).data('fecha')).toLocaleString('es-CO'));
+
+                // Observaciones
+                $('#det-observacion-global').text($(this).data('observacion-global') || 'Sin observaciones del comercial');
+                $('#det-observacion-tecnico').text($(this).data('observacion-tecnico') || 'Sin observaciones del técnico');
                 // Decodificar y mostrar productos
                 const productosJson = $(this).data('productos');
                 let productos = [];

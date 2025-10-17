@@ -21,20 +21,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         try {
             $solicitud_id = intval($_POST['solicitud_id']);
             $nuevo_estado = trim($_POST['estado']);
-            $observacion_global = trim($_POST['observacion_global'] ?? '');
+            $observacion_tecnico = trim($_POST['observacion_tecnico'] ?? '');
             $tecnico_id = !empty($_POST['tecnico_responsable']) ? intval($_POST['tecnico_responsable']) : null;
             $connect->beginTransaction();
-            // Actualizar estado, observación global y técnico
+            // Actualizar estado, observación técnico y técnico
             $sql = "UPDATE solicitud_alistamiento
                     SET estado = :estado,
-                        observacion_global = :observacion_global,
+                        observacion_tecnico = :observacion_tecnico,
                         tecnico_responsable = :tecnico,
                         fecha_actualizacion = NOW()
                     WHERE id = :id";
             $stmt = $connect->prepare($sql);
             $stmt->execute([
                 ':estado' => $nuevo_estado,
-                ':observacion_global' => $observacion_global,
+                ':observacion_tecnico' => $observacion_tecnico,
                 ':tecnico' => $tecnico_id,
                 ':id' => $solicitud_id
             ]);
@@ -352,7 +352,7 @@ if (isset($_SESSION['id'])) {
                                                     <button class="btn btn-sm btn-primary btn-editar"
                                                         data-id="<?php echo $sol['id']; ?>"
                                                         data-estado="<?php echo $sol['estado']; ?>"
-                                                        data-observacion="<?php echo e($sol['observacion_global'] ?? ''); ?>">
+                                                        data-observacion="<?php echo e($sol['observacion_tecnico'] ?? ''); ?>">
                                                         <i class="material-icons" style="font-size: 14px;">edit</i>
                                                     </button>
                                                 </td>
@@ -409,8 +409,16 @@ if (isset($_SESSION['id'])) {
                         </table>
                     </div>
                     <hr>
-                    <h6><strong>Observación Global (Admin/Tecnico/Bodega):</strong></h6>
-                    <p id="det-observacion-global" class="text-muted"></p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><strong>Observación del Comercial:</strong></h6>
+                            <p id="det-observacion-global" class="text-muted"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><strong>Observación del Técnico:</strong></h6>
+                            <p id="det-observacion-tecnico" class="text-muted"></p>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -451,9 +459,9 @@ if (isset($_SESSION['id'])) {
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="edit-observacion">Observación Global (Admin/Bodega)</label>
-                            <textarea class="form-control" name="observacion_global" id="edit-observacion" rows="4"
-                                    placeholder="Comentarios sobre el proceso de alistamiento, problemas encontrados, etc."></textarea>
+                            <label for="edit-observacion">Observación del Técnico</label>
+                            <textarea class="form-control" name="observacion_tecnico" id="edit-observacion" rows="4"
+                                    placeholder="Comentarios del técnico sobre el proceso de alistamiento, problemas encontrados, etc."></textarea>
                             <small class="form-text text-muted">Esta observación es visible para todos los usuarios que vean esta solicitud.</small>
                         </div>
                     </div>
@@ -530,8 +538,9 @@ if (isset($_SESSION['id'])) {
                 } else {
                     $('#det-productos-body').html('<tr><td colspan="5" class="text-center text-muted">Sin productos</td></tr>');
                 }
-                // Observación global
-                $('#det-observacion-global').text(solicitudData.observacion_global || 'Sin observaciones globales');
+                // Observaciones
+                $('#det-observacion-global').text(solicitudData.observacion_global || 'Sin observaciones del comercial');
+                $('#det-observacion-tecnico').text(solicitudData.observacion_tecnico || 'Sin observaciones del técnico');
                 $('#detalleModal').modal('show');
             });
             // Editar
@@ -541,7 +550,7 @@ if (isset($_SESSION['id'])) {
                 $('#edit-solicitud-id').val(solicitudData.id);
                 $('#edit-estado').val(solicitudData.estado);
                 $('#edit-tecnico').val(solicitudData.tecnico_responsable || '');
-                $('#edit-observacion').val(solicitudData.observacion_global || '');
+                $('#edit-observacion').val(solicitudData.observacion_tecnico || '');
                 $('#editarModal').modal('show');
             });
             // ========== CAMBIO RÁPIDO DE ESTADO ==========
