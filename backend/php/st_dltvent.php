@@ -20,7 +20,7 @@ swal("¡Actualizado!", "Actualizado correctamente", "success").then(function() {
         } else {
             echo '<script type="text/javascript">
 swal("Error!", "Error al actualizar", "error").then(function() {
-            window.location = "../venta/mostrar.php";
+            window.location = "../ventaF/mostrar.php";
         });
         </script>';
             exit(0);

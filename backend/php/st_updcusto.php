@@ -15,7 +15,7 @@ if (isset($_POST['stupdcst'])) {
     $correo = $_POST['txtema'];
     $celu = $_POST['txtcel'];
     $estad = $_POST['txtesta'];
-   // Verificar si los campos existen en $_POST
+    // Verificar si los campos existen en $_POST
     $dircli = isset($_POST['txtdire']) ? $_POST['txtdire'] : 'NO RECIBIDO';
     $ciucli = isset($_POST['txtciud']) ? $_POST['txtciud'] : 'NO RECIBIDO';
     $idsede = isset($_POST['txtsede']) ? $_POST['txtsede'] : 'NO RECIBIDO';
@@ -35,7 +35,7 @@ if (isset($_POST['stupdcst'])) {
             ':idsede' => $idsede,
             ':idclie' => $idclie
         ];
-    $query_execute = $statement->execute($data);
+        $query_execute = $statement->execute($data);
         if ($query_execute) {
             echo '<script type="text/javascript">
     swal("¡Actualizado!", "Actualizado correctamente", "success").then(function() {
@@ -56,6 +56,3 @@ if (isset($_POST['stupdcst'])) {
         echo $e->getMessage();
     }
 }
-
-
-?>

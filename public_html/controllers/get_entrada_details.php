@@ -3,7 +3,7 @@
 session_start();
 header('Content-Type: application/json');
 // Verificar sesión y permisos
-if (!isset($_SESSION['id']) || !isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
+if (!isset($_SESSION['id']) || !isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1,3,4,5, 6, 7])) {
     http_response_code(401);
     echo json_encode(['success' => false, 'error' => 'Acceso no autorizado']);
     exit();

@@ -1,15 +1,12 @@
 <?php
 require_once('../../config/ctconex.php');
-
 if (isset($_POST['id'])) {
     $saleId = $_POST['id'];
-
     try {
         $stmt = $connect->prepare("SELECT total_products FROM orders WHERE idord = :id");
         $stmt->bindParam(':id', $saleId, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
         if ($result) {
             $products_string = $result['total_products'];
             // La cadena parece ser: Nombre (Cantidad) - Precio, ...

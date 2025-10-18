@@ -1,12 +1,10 @@
 <?php
-
 // ✅ Intentar cargar PHPMailer desde diferentes ubicaciones
 $phpmailer_paths = [
     __DIR__ . '/PHPMailer/Exception.php',
     __DIR__ . '/../../vendor/phpmailer/phpmailer/src/Exception.php',
     __DIR__ . '/../../../vendor/phpmailer/phpmailer/src/Exception.php'
 ];
-
 $loaded = false;
 foreach ($phpmailer_paths as $path) {
     if (file_exists($path)) {
@@ -17,21 +15,17 @@ foreach ($phpmailer_paths as $path) {
         break;
     }
 }
-
 if (!$loaded) {
     // Si PHPMailer no está disponible, mostrar mensaje y redirigir
     echo '<script>alert("PHPMailer no está instalado. Contacte al administrador."); window.location.href = "../servicio/mostrar.php";</script>';
     exit;
 }
-
 // ✅ Usar las clases después de cargarlas
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-
 // Credenciales de Gmail
 $correo = 'pcmarkettbackup@gmail.com';
 $clave = 'PCcomercial2025*';
-
 // Configurar PHPMailer
 $mail = new PHPMailer(true); // Pasa true para activar excepciones
 try {

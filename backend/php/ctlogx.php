@@ -1,10 +1,8 @@
 <?php
 session_start();
 error_reporting(0);
-
 // Corregir la ruta del archivo de conexión
 require_once __DIR__ . '../../../config/ctconex.php';
-
 // Comentado temporalmente para evitar redirecciones no deseadas
 /*
 $varsesion = $_SESSION['usuario'];
@@ -13,22 +11,17 @@ if ($varsesion == null || $varsesion == '') {
     die();
 }
 */
-
 if (isset($_POST['ctglog'])) {
   $errMsg = '';
-
   $usuario = $_POST['usuario'];
   $clave = MD5($_POST['clave']);
-
   if ($usuario == '') $errMsg = 'Digite su usuario';
   if ($clave == '') $errMsg = 'Digite su contraseña';
-
   if ($errMsg == '') {
     try {
       $stmt = $connect->prepare('SELECT id, nombre, usuario, correo, clave, rol, estado FROM usuarios WHERE usuario = :usuario');
       $stmt->execute([':usuario' => $usuario]);
       $data = $stmt->fetch(PDO::FETCH_ASSOC);
-
       if ($data == false) {
         $errMsg = "El nombre de usuario: $usuario no se encuentra, puede solicitarlo con el administrador.";
       } else {
@@ -40,7 +33,6 @@ if (isset($_POST['ctglog'])) {
           $_SESSION['clave'] = $data['clave'];
           $_SESSION['rol'] = $data['rol'];
           $_SESSION['estado'] = $data['estado'];
-
           switch ($_SESSION['rol']) {
             case 1:
               header('Location: ../public_html/administrador/escritorio.php'); //ADMINISTRADOR
@@ -75,7 +67,6 @@ if (isset($_POST['ctglog'])) {
     }
   }
 }
-
 // Mostrar el error en pantalla si existe
 if (!empty($errMsg)) {
   // echo "<script>alert('$errMsg'); window.location.href = 'login.php';</script>";

@@ -53,4 +53,3 @@ swal("Error!", "ya existe el registro!", "error").then(function() {
         }
     }
 }
-?>

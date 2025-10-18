@@ -14,7 +14,7 @@ if (isset($_POST['registro_administrador'])) {
     // Obtener datos del formulario
     $nombre_usuario = $_POST['nombre_usuario'];
     $contraseña = $_POST['contraseña'];
-   // Validar los datos del formulario
+    // Validar los datos del formulario
     if (!empty($nombre_usuario) && !empty($contraseña)) {
         try {
             // Preparar la consulta para insertar un nuevo administrador en la base de datos
@@ -22,9 +22,9 @@ if (isset($_POST['registro_administrador'])) {
             $stmt = $connect->prepare($sql);
             $stmt->bindParam(':nombre_usuario', $nombre_usuario);
             $stmt->bindParam(':contraseña', $contraseña);
-           // Ejecutar la consulta
+            // Ejecutar la consulta
             $stmt->execute();
-           // Redirigir al administrador a la página de inicio de sesión
+            // Redirigir al administrador a la página de inicio de sesión
             header('Location: login.php');
             exit();
         } catch (PDOException $e) {
@@ -57,14 +57,12 @@ if (isset($_POST['registro_administrador'])) {
                 <button type="submit" name="registro_administrador">Registrarse</button>
             </div>
         </form>
-        
         <!-- Mostrar mensaje de error si es necesario -->
         <?php if (!empty($errMsg)): ?>
             <div style="color: #FF0000; text-align: center; font-size: 20px; font-weight: bold;">
                 <?php echo $errMsg; ?>
             </div>
         <?php endif; ?>
-        
         <!-- Enlace para volver al inicio de sesión -->
         <div class="volver-login">
             <a href="login.php">Volver al inicio de sesión</a>

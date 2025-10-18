@@ -196,6 +196,14 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
         .btn-historial:hover {
             box-shadow: 0 8px 20px rgba(240, 221, 0, 0.3);
         }
+        .btn-business-room {
+            background: linear-gradient(135deg, #00CC54 0%, #00E05F 100%);
+            color: white;
+        }
+        .btn-business-room:hover {
+            box-shadow: 0 8px 20px rgba(0, 204, 84, 0.3);
+            transform: translateY(-3px);
+        }
     </style>
 </head>
 <body>
@@ -331,6 +339,20 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
                                                 <button class="action-button btn-historial">
                                                     <i class="material-icons" style="font-size: 28px;">history</i>
                                                     Ver Historial de Solicitudes
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <!-- Business Room Section -->
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <a href="../b_room/mostrar.php" class="text-decoration-none">
+                                                <button class="action-button btn-business-room">
+                                                    <i class="material-icons" style="font-size: 28px;">store</i>
+                                                    Business Room - Equipos Listos para Venta
                                                 </button>
                                             </a>
                                         </div>

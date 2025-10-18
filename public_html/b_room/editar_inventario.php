@@ -202,6 +202,16 @@ try {
                                                 </select>
                                             </div>
                                         </div>
+
+
+
+Que se muestre la cuidad tambien
+despacho/pendientes.php
+Tambien que se porcese el despacho se descuente ese equipo de inventario cambiado su estado a vendido o venta como este formulado ahi, revisa mi sql ,  en tabla de "bodega_inventario", también quiero que que exista el botón de de generar un dacumentotodos los datos del cliente, numero de orden del invio formato de envió coun adicional que traiga los datos en la parte de arriba , los datos que parecen en en la tabla de setting, con el  id 1,
+
+
+
+
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col-md-12 text-center">

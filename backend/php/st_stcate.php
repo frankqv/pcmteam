@@ -1,9 +1,9 @@
-<?php  
+<?php
 require_once __DIR__ . '../../../config/ctconex.php';
-if(isset($_POST['staddcate'])) {
+if (isset($_POST['staddcate'])) {
     $nomca = $_POST['txtnaame'];
     $estado = $_POST['txtesta'];
-    if(empty($nomca)) {
+    if (empty($nomca)) {
         $errMSG = "Por favor ingresa el nombre de la categoría.";
     } else {
         // Verificar si la categoría ya existe
@@ -23,7 +23,7 @@ if(isset($_POST['staddcate'])) {
             $stmt_insert = $connect->prepare($sql_insert);
             $stmt_insert->bindParam(':nomca', $nomca);
             $stmt_insert->bindParam(':estado', $estado);
-            if($stmt_insert->execute()) {
+            if ($stmt_insert->execute()) {
                 echo '<script type="text/javascript">
                         swal("¡Registrado!", "Categoría agregada correctamente", "success").then(function() {
                             window.location = "../categoria/mostrar.php";
@@ -35,4 +35,3 @@ if(isset($_POST['staddcate'])) {
         }
     }
 }
-?>

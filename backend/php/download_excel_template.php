@@ -157,7 +157,7 @@ try {
         $listSheet->setCellValue('A' . ($i + 2), $val);
     }
     $listSheet->setCellValue('B1', 'Tipos');
-    $tipos = ['Desktop','Portatil', 'CPU', 'Monitor', 'AIO', 'Tablet', 'Celular', 'Impresora', 'Periferico', 'otro'];
+    $tipos = ['Desktop', 'Portatil', 'CPU', 'Monitor', 'AIO', 'Tablet', 'Celular', 'Impresora', 'Periferico', 'otro'];
     foreach ($tipos as $i => $val) {
         $listSheet->setCellValue('B' . ($i + 2), $val);
     }

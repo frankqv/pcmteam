@@ -4,7 +4,7 @@
  * Ejecutar solo si hay problemas con la tabla
  */
 require_once __DIR__ . '../../config/ctconex.php';
-//
+// Verificar permisos
 try {
     echo "Iniciando reparación de la tabla clientes...\n";
     // 1. Verificar el estado actual de la tabla

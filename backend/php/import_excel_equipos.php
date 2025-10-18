@@ -29,7 +29,6 @@ if (!isset($_SESSION['id'])) {
 $usuario_id = $_SESSION['id'];
 // Validar que se haya subido un archivo
 if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR_OK) {
-    
     $tmp_name = $_FILES['excel_file']['tmp_name'];
     $results = [
         'total_rows' => 0,
@@ -47,12 +46,9 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
         $spreadsheet = IOFactory::load($tmp_name);
         $worksheet = $spreadsheet->getActiveSheet();
         $highestRow = $worksheet->getHighestRow();
-        
         // Debug: registrar información básica del archivo
         error_log("Importación Excel - Filas encontradas: {$highestRow}");
-        
         $results['total_rows'] = $highestRow - 1; // Asumiendo que la primera fila es de encabezados
-        
         if ($highestRow < 2) {
             throw new Exception("El archivo no contiene datos para importar (solo encabezados o está vacío)");
         }
@@ -80,7 +76,6 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
         // Iterar sobre cada fila del excel (empezando desde la 2 para saltar encabezados)
         for ($row = 2; $row <= $highestRow; $row++) {
             $codigo_g = trim($worksheet->getCell('A' . $row)->getValue() ?? '');
-            
             // Debug: registrar información de cada fila
             error_log("Procesando fila {$row}: código = '{$codigo_g}'");
             // Si el código está vacío, saltar la fila
@@ -88,9 +83,9 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
                 error_log("Fila {$row} omitida: código vacío");
                 $results['skipped']++;
                 $results['details'][] = [
-                    'row' => $row, 
-                    'codigo' => $codigo_g, 
-                    'status' => 'skipped', 
+                    'row' => $row,
+                    'codigo' => $codigo_g,
+                    'status' => 'skipped',
                     'message' => 'Código vacío, fila omitida.'
                 ];
                 continue;
@@ -101,9 +96,9 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
             if ($stmt_check->fetch()) {
                 $results['skipped']++;
                 $results['details'][] = [
-                    'row' => $row, 
-                    'codigo' => $codigo_g, 
-                    'status' => 'skipped', 
+                    'row' => $row,
+                    'codigo' => $codigo_g,
+                    'status' => 'skipped',
                     'message' => 'El código ya existe.'
                 ];
                 continue;
@@ -114,13 +109,11 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
                 $cellValue = trim($worksheet->getCell($col . $row)->getValue() ?? '');
                 $data[$field] = $cellValue;
             }
-            
             // Debug: registrar datos extraídos
             error_log("Fila {$row} datos: " . json_encode($data));
             // Validar campos obligatorios
             $requiredFields = ['codigo_g', 'ubicacion', 'posicion', 'producto', 'marca', 'serial', 'modelo', 'ram', 'grado', 'disposicion', 'tactil', 'proveedor_id'];
             $missingFields = [];
-            
             foreach ($requiredFields as $field) {
                 if (empty($data[$field])) {
                     $missingFields[] = $field;
@@ -129,8 +122,8 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
             if (!empty($missingFields)) {
                 error_log("Fila {$row} error: campos faltantes - " . implode(', ', $missingFields));
                 $results['errors'][] = [
-                    'row' => $row, 
-                    'codigo' => $codigo_g, 
+                    'row' => $row,
+                    'codigo' => $codigo_g,
                     'error' => 'Campos obligatorios faltantes: ' . implode(', ', $missingFields)
                 ];
                 continue;
@@ -140,8 +133,8 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
             $stmt_check_serial->execute(['serial' => $data['serial']]);
             if ($stmt_check_serial->fetch()) {
                 $results['errors'][] = [
-                    'row' => $row, 
-                    'codigo' => $codigo_g, 
+                    'row' => $row,
+                    'codigo' => $codigo_g,
                     'error' => "El serial '{$data['serial']}' ya existe en la base de datos."
                 ];
                 continue;
@@ -152,8 +145,8 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
             $proveedor_exists = $stmt_prov->fetch();
             if (!$proveedor_exists) {
                 $results['errors'][] = [
-                    'row' => $row, 
-                    'codigo' => $codigo_g, 
+                    'row' => $row,
+                    'codigo' => $codigo_g,
                     'error' => "Proveedor con ID '{$data['proveedor_id']}' no encontrado."
                 ];
                 continue;
@@ -162,8 +155,8 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
             $validUbicaciones = ['Principal', 'Unilago', 'Cúcuta', 'Medellín'];
             if (!in_array($data['ubicacion'], $validUbicaciones)) {
                 $results['errors'][] = [
-                    'row' => $row, 
-                    'codigo' => $codigo_g, 
+                    'row' => $row,
+                    'codigo' => $codigo_g,
                     'error' => "Ubicación '{$data['ubicacion']}' no válida. Valores permitidos: " . implode(', ', $validUbicaciones)
                 ];
                 continue;
@@ -171,8 +164,8 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
             $validProductos = ['Portatil', 'Desktop', 'Monitor', 'AIO', 'Tablet', 'Celular', 'Impresora', 'Periferico', 'otro'];
             if (!in_array($data['producto'], $validProductos)) {
                 $results['errors'][] = [
-                    'row' => $row, 
-                    'codigo' => $codigo_g, 
+                    'row' => $row,
+                    'codigo' => $codigo_g,
                     'error' => "Tipo de producto '{$data['producto']}' no válido."
                 ];
                 continue;
@@ -180,8 +173,8 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
             $validMarcas = ['HP', 'Dell', 'Lenovo', 'Acer', 'CompuMax', 'Otro'];
             if (!in_array($data['marca'], $validMarcas)) {
                 $results['errors'][] = [
-                    'row' => $row, 
-                    'codigo' => $codigo_g, 
+                    'row' => $row,
+                    'codigo' => $codigo_g,
                     'error' => "Marca '{$data['marca']}' no válida."
                 ];
                 continue;
@@ -189,8 +182,8 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
             $validGrados = ['A', 'B', 'C', 'SCRAP', '#N/D'];
             if (!in_array($data['grado'], $validGrados)) {
                 $results['errors'][] = [
-                    'row' => $row, 
-                    'codigo' => $codigo_g, 
+                    'row' => $row,
+                    'codigo' => $codigo_g,
                     'error' => "Grado '{$data['grado']}' no válido."
                 ];
                 continue;
@@ -198,8 +191,8 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
             $validDisposiciones = ['En revisión', 'Por Alistamiento', 'En Laboratorio', 'En Bodega', 'Disposicion final', 'Para Venta'];
             if (!in_array($data['disposicion'], $validDisposiciones)) {
                 $results['errors'][] = [
-                    'row' => $row, 
-                    'codigo' => $codigo_g, 
+                    'row' => $row,
+                    'codigo' => $codigo_g,
                     'error' => "Disposición '{$data['disposicion']}' no válida."
                 ];
                 continue;
@@ -207,8 +200,8 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
             $validTactil = ['SI', 'NO'];
             if (!in_array($data['tactil'], $validTactil)) {
                 $results['errors'][] = [
-                    'row' => $row, 
-                    'codigo' => $codigo_g, 
+                    'row' => $row,
+                    'codigo' => $codigo_g,
                     'error' => "Valor táctil '{$data['tactil']}' no válido. Use SI o NO."
                 ];
                 continue;
@@ -222,7 +215,6 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
                     :codigo_g, :producto, :marca, :modelo, :serial, :procesador, :ram, :disco, :pulgadas,
                     :tactil, :grado, :disposicion, :observaciones, :ubicacion, :posicion, :lote, 'activo'
                 )";
-                
                 $stmt_inventario = $connect->prepare($sql_inventario);
                 $stmt_inventario->execute([
                     ':codigo_g' => $data['codigo_g'],
@@ -242,7 +234,6 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
                     ':posicion' => $data['posicion'],
                     ':lote' => $data['lote']
                 ]);
-                
                 $inventario_id = $connect->lastInsertId();
                 // 6. Insertar en bodega_entradas
                 $cantidad = !empty($data['cantidad']) ? intval($data['cantidad']) : 1;
@@ -251,7 +242,6 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
                 ) VALUES (
                     :inventario_id, :proveedor_id, :usuario_id, :cantidad, :observaciones
                 )";
-                
                 $stmt_entrada = $connect->prepare($sql_entrada);
                 $stmt_entrada->execute([
                     ':inventario_id' => $inventario_id,
@@ -262,31 +252,29 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
                 ]);
                 $results['success']++;
                 $results['details'][] = [
-                    'row' => $row, 
-                    'codigo' => $codigo_g, 
-                    'status' => 'success', 
+                    'row' => $row,
+                    'codigo' => $codigo_g,
+                    'status' => 'success',
                     'message' => 'Importado correctamente.'
                 ];
             } catch (PDOException $e) {
                 $results['errors'][] = [
-                    'row' => $row, 
-                    'codigo' => $codigo_g, 
+                    'row' => $row,
+                    'codigo' => $codigo_g,
                     'error' => 'Error de base de datos: ' . $e->getMessage()
                 ];
                 continue;
             }
         }
         $connect->commit();
-        
         if ($results['success'] > 0) {
             $response['success'] = true;
-            $response['message'] = "Importación completada. {$results['success']} equipos importados, {$results['skipped']} omitidos" . 
+            $response['message'] = "Importación completada. {$results['success']} equipos importados, {$results['skipped']} omitidos" .
                 (count($results['errors']) > 0 ? ", " . count($results['errors']) . " errores" : "") . ".";
         } else {
             $response['success'] = false;
             $response['error'] = "No se importó ningún equipo. Revise los errores reportados.";
         }
-        
         $response['results'] = $results;
     } catch (Exception $e) {
         if ($connect->inTransaction()) {
@@ -294,7 +282,6 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
         }
         $response['error'] = "Error durante la importación: " . $e->getMessage();
         $response['results'] = $results;
-        
         // Log del error para debugging
         error_log("Error en importación Excel: " . $e->getMessage() . " - Archivo: " . $e->getFile() . " - Línea: " . $e->getLine());
     }

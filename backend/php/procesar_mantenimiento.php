@@ -1,30 +1,23 @@
 <?php
 session_start();
 require_once __DIR__ . '../../../config/ctconex.php';
-
 header('Content-Type: application/json');
-
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'Método no permitido']);
     exit;
 }
-
 try {
     $data = json_decode(file_get_contents('php://input'), true);
-    
     if (!$data) {
         throw new Exception('Datos no válidos');
     }
-    
     // Validar datos requeridos
     $inventario_id = $data['inventario_id'] ?? null;
     $tecnico_diagnostico = $data['tecnico_diagnostico'] ?? null;
-    
     if (!$inventario_id) {
         throw new Exception('ID de inventario es requerido');
     }
-    
     // Preparar datos para inserción
     $sql = "INSERT INTO bodega_mantenimiento (
         inventario_id, 
@@ -46,9 +39,7 @@ try {
         observaciones_globales,
         estado
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente')";
-    
     $stmt = $connect->prepare($sql);
-    
     $result = $stmt->execute([
         $inventario_id,
         $tecnico_diagnostico,
@@ -68,15 +59,12 @@ try {
         $data['proceso_electronico'] ?? null,
         $data['observaciones_globales'] ?? null
     ]);
-    
     if ($result) {
         $mantenimiento_id = $connect->lastInsertId();
-        
         // Actualizar estado del inventario
         $update_sql = "UPDATE bodega_inventario SET disposicion = 'en_mantenimiento' WHERE id = ?";
         $update_stmt = $connect->prepare($update_sql);
         $update_stmt->execute([$inventario_id]);
-        
         echo json_encode([
             'success' => true,
             'message' => 'Mantenimiento y limpieza registrado exitosamente en la base de datos',
@@ -85,12 +73,10 @@ try {
     } else {
         throw new Exception('Error al insertar en la base de datos');
     }
-    
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([
         'error' => true,
         'message' => $e->getMessage()
     ]);
-}
-?>
+} ?>

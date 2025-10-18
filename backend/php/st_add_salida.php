@@ -20,7 +20,6 @@ try {
     $stmt->bind_param("i", $inventario_id);
     $stmt->execute();
     $result = $stmt->get_result();
-    
     if ($result->num_rows === 0) {
         throw new Exception('Equipo no encontrado o no disponible');
     }
@@ -29,7 +28,7 @@ try {
         throw new Exception('El equipo no está disponible para salida');
     }
     // Determinar nueva disposición según razón de salida
-    $nueva_disposicion = match($razon_salida) {
+    $nueva_disposicion = match ($razon_salida) {
         'reparacion' => 'en_reparacion',
         'diagnostico' => 'en_diagnostico',
         'control_calidad' => 'en_control_calidad',
@@ -75,7 +74,6 @@ try {
 } catch (Exception $e) {
     // Revertir transacción en caso de error
     $conn->rollback();
-    
     header('Content-Type: application/json');
     echo json_encode(['error' => $e->getMessage()]);
 }

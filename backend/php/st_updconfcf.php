@@ -5,13 +5,13 @@ if (isset($_POST['stupdcomffot'])) {
     $imgFile = $_FILES['foto']['name'];
     $tmp_dir = $_FILES['foto']['tmp_name'];
     $imgSize = $_FILES['foto']['size'];
-   $upload_dir = '../../../public_html/img/subidas/'; // upload directory
-   $imgExt = strtolower(pathinfo($imgFile, PATHINFO_EXTENSION)); // get image extension
-   // valid image extensions
+    $upload_dir = '../../../public_html/img/subidas/'; // upload directory
+    $imgExt = strtolower(pathinfo($imgFile, PATHINFO_EXTENSION)); // get image extension
+    // valid image extensions
     $valid_extensions = array('jpeg', 'jpg', 'png', 'gif', 'webp', 'avif'); // valid extensions
-   // rename uploading image
+    // rename uploading image
     $foto = rand(1000, 1000000) . "." . $imgExt;
-   // allow valid image file formats
+    // allow valid image file formats
     if (in_array($imgExt, $valid_extensions)) {
         // Check file size '5MB'
         if ($imgSize < 5000000) {

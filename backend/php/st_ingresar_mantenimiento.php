@@ -145,4 +145,3 @@ if ($existe_registro) {
     $stmt->close();
 }
 $mysqli->close();
-?>

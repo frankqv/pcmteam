@@ -26,10 +26,8 @@ if (isset($_POST['order'])) {
          $cart_products[] = $cart_item['name'] . ' ( ' . $cart_item['quantity'] . ' )';
          $sub_total = ($cart_item['precio'] * $cart_item['quantity']);
          $cart_total += $sub_total;
-      }
-      ;
-   }
-   ;
+      };
+   };
    $total_products = implode(', ', $cart_products);
    $order_query = $connect->prepare("SELECT * FROM `orders` WHERE method = ?  AND total_products = ? AND total_price = ? AND tipc = ?");
    $order_query->execute([$method, $total_products, $cart_total, $tipc]);
@@ -57,5 +55,4 @@ swal("¡Registrado!", "La venta se realizo con exito", "success").then(function(
         </script>';
       }
    }
-}
-?>
+}  ?>

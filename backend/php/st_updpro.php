@@ -6,10 +6,8 @@ if (isset($_POST['stupdprof'])) {
     $nombre = $_POST['txtnaame'];
     $usuario = $_POST['txtusr'];
     $correo = $_POST['txtcorr'];
-    
     // Solo actualizar rol si está presente en el POST
     $incluir_rol = isset($_POST['txtcarr']) && !empty($_POST['txtcarr']);
-    
     try {
         if ($incluir_rol) {
             $rol = $_POST['txtcarr'];
@@ -31,10 +29,8 @@ if (isset($_POST['stupdprof'])) {
                 ':id' => $id
             ];
         }
-        
         $statement = $connect->prepare($query);
         $query_execute = $statement->execute($data);
-        
         if ($query_execute) {
             echo '<script type="text/javascript">
 swal("¡Actualizado!", "Actualizado correctamente", "success").then(function() {
@@ -54,4 +50,3 @@ swal("Error!", "Error al actualizar", "error").then(function() {
         echo $e->getMessage();
     }
 }
-?>

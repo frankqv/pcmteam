@@ -143,7 +143,6 @@ if (!$consultaTabla || $consultaTabla->num_rows === 0) {
         KEY idx_inventario (inventario_id),
         KEY idx_fecha (fecha_registro)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
-
     if (!$mysqli->query($sqlCrearTabla)) {
         enviarRespuesta('error', 'Error creando tabla: ' . $mysqli->error);
     }
@@ -201,4 +200,3 @@ if ($stmt->execute()) {
 }
 $stmt->close();
 $mysqli->close();
-?>

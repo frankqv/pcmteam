@@ -2,12 +2,10 @@
 // URL de la última versión de FPDF
 $fpdfUrl = 'http://www.fpdf.org/en/download/fpdf186.zip';
 $zipFile = 'fpdf.zip';
-
 // Descargar el archivo ZIP
 if (file_put_contents($zipFile, file_get_contents($fpdfUrl)) === false) {
     die("Error al descargar FPDF");
 }
-
 // Crear un objeto ZipArchive
 $zip = new ZipArchive;
 if ($zip->open($zipFile) === TRUE) {
@@ -16,7 +14,6 @@ if ($zip->open($zipFile) === TRUE) {
         'fpdf186/fpdf.php' => 'fpdf.php',
         'fpdf186/font/' => 'font/'
     );
-    
     foreach ($filesToExtract as $zipPath => $extractPath) {
         if (substr($zipPath, -1) === '/') {
             // Es un directorio
@@ -31,11 +28,10 @@ if ($zip->open($zipFile) === TRUE) {
             copy("zip://$zipFile#$zipPath", $extractPath);
         }
     }
-    
     $zip->close();
     unlink($zipFile);
     echo "FPDF instalado correctamente\n";
 } else {
     die("Error al abrir el archivo ZIP");
 }
-?> 
+?>

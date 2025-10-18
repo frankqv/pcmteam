@@ -2,7 +2,6 @@
 session_start();
 // ✅ RUTA CORREGIDA - Usando dirname() para ir dos niveles arriba
 require_once dirname(__DIR__, 2) . '/config/ctconex.php';
-
 // Verificar que la conexión exista (esperamos $conn como mysqli)
 if (!isset($conn) || !($conn instanceof mysqli)) {
     http_response_code(500);
@@ -10,23 +9,19 @@ if (!isset($conn) || !($conn instanceof mysqli)) {
     error_log("get_inventario_details.php: \$conn no existe o no es mysqli.");
     exit;
 }
-
 // Permisos (ajusta roles si quieres otros)
-if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1,2,5,6,7])) {
+if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1,2,3,4,5,6,7])) {
     http_response_code(403);
     echo "<div class='alert alert-danger'>Acceso no autorizado</div>";
     exit;
 }
-
 // Validar ID
 if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     http_response_code(400);
     echo "<div class='alert alert-danger'>ID inválido</div>";
     exit;
 }
-
 $id = intval($_GET['id']);
-
 $sql = "
 SELECT i.*, 
     e.fecha_entrada,
@@ -41,7 +36,6 @@ LEFT JOIN usuarios t ON i.tecnico_id = t.id
 WHERE i.id = ?
 LIMIT 1
 ";
-
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param("i", $id);
     $stmt->execute();

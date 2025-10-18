@@ -1,7 +1,6 @@
 <?php
 // Ruta corregida
 require_once __DIR__ . '/../../config/ctconex.php';
-
 if (isset($_POST['staddcust'])) {
     // Capturar todos los campos del formulario
     $numid = trim($_POST['txtnum']);
@@ -11,12 +10,10 @@ if (isset($_POST['staddcust'])) {
     $correo = trim($_POST['txtema']);
     $celu = trim($_POST['txtcel']);
     $estad = $_POST['txtesta'];
-
     // NUEVOS CAMPOS
     $dircli = trim($_POST['txtdire']);
     $ciucli = trim($_POST['txtciud']);
     $idsede = $_POST['txtsede'];
-
     // Validación básica
     if (empty($numid)) {
         echo '<script type="text/javascript">
@@ -29,7 +26,6 @@ if (isset($_POST['staddcust'])) {
             $stmt = $connect->prepare($sql);
             $stmt->bindParam(':numid', $numid);
             $stmt->execute();
-
             if ($stmt->rowCount() > 0) {
                 echo '<script type="text/javascript">
                         swal("Error!", "El número de identificación ya está registrado!", "error").then(function() {
@@ -43,7 +39,6 @@ if (isset($_POST['staddcust'])) {
                     $stmt_correo = $connect->prepare($sql_correo);
                     $stmt_correo->bindParam(':correo', $correo);
                     $stmt_correo->execute();
-
                     if ($stmt_correo->rowCount() > 0) {
                         echo '<script type="text/javascript">
                                 swal("Error!", "El correo electrónico ya está registrado!", "error").then(function() {
@@ -53,11 +48,9 @@ if (isset($_POST['staddcust'])) {
                         exit;
                     }
                 }
-
                 // Insertar con TODOS los campos
                 $sql = "INSERT INTO clientes(numid, nomcli, apecli, naci, correo, celu, estad, dircli, ciucli, idsede)
                         VALUES (:numid, :nomcli, :apecli, :naci, :correo, :celu, :estad, :dircli, :ciucli, :idsede)";
-
                 $stmt = $connect->prepare($sql);
                 $stmt->bindParam(':numid', $numid);
                 $stmt->bindParam(':nomcli', $nomcli);
@@ -69,7 +62,6 @@ if (isset($_POST['staddcust'])) {
                 $stmt->bindParam(':dircli', $dircli);
                 $stmt->bindParam(':ciucli', $ciucli);
                 $stmt->bindParam(':idsede', $idsede);
-
                 if ($stmt->execute()) {
                     echo '<script type="text/javascript">
                             swal("¡Registrado!", "Cliente agregado correctamente", "success").then(function() {
@@ -89,4 +81,3 @@ if (isset($_POST['staddcust'])) {
         }
     }
 }
-?>

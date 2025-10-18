@@ -35,4 +35,3 @@ swal("Error!", "Error al actualizar", "error").then(function() {
         echo $e->getMessage();
     }
 }
-?>

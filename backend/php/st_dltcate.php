@@ -27,6 +27,4 @@ swal("Error!", "Error al actualizar", "error").then(function() {
     } catch (PDOException $e) {
         echo $e->getMessage();
     }
-}
-
-?>
+} ?>

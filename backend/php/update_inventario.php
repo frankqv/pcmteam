@@ -4,7 +4,7 @@ require_once __DIR__ . '../../../config/ctconex.php';
 //
 header('Content-Type: application/json');
 // Validar autenticación
-if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 6, 7])) {
+if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1,3,4, 5,6, 7])) {
     http_response_code(403);
     echo json_encode(['error' => 'Acceso no autorizado']);
     exit;

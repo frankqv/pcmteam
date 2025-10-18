@@ -2,21 +2,16 @@
 // backend/php/get_triage_details.php
 header('Content-Type: application/json');
 session_start();
-
-if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 5, 6, 7])) {
+if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2,3,4, 5, 6, 7])) {
     echo json_encode(['success' => false, 'error' => 'Acceso no autorizado']);
     exit;
 }
-
 require_once '../../config/ctconex.php';
-
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     echo json_encode(['success' => false, 'error' => 'ID de inventario requerido']);
     exit;
 }
-
 $inventario_id = intval($_GET['id']);
-
 try {
     // Primero verificar si existe la tabla bodega_diagnosticos
     $table_check = $conn->query("SHOW TABLES LIKE 'bodega_diagnosticos'");
@@ -25,7 +20,6 @@ try {
         echo json_encode(['success' => false, 'error' => 'Tabla bodega_diagnosticos no existe']);
         exit;
     }
-
     // Consulta para obtener el último diagnóstico y los datos del inventario
     $sql = "SELECT 
                 i.codigo_g, i.producto, i.marca, i.modelo, i.serial, 

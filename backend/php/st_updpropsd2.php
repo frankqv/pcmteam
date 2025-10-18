@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '../../../config/ctconex.php';
-//
 if (isset($_POST['stupdprofpsd'])) {
     $id = $_POST['txtidadm'];
     $clave = MD5($_POST['txtpawd']);
