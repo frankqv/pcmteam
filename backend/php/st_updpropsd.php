@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '../../../config/ctconex.php';
+require_once __DIR__ . '/../../config/ctconex.php';
 // st_updpropsd.php
 if (isset($_POST['stupdprofpsd'])) {
     $id = $_POST['txtidadm'];

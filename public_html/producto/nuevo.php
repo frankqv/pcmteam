@@ -2,21 +2,17 @@
 <?php
 ob_start();
 session_start();
-
 // Activa el reporte de errores temporalmente para debug:
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-
 if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4, 5, 6, 7])){
     header('location: ../error404.php');
     exit;
 }
 ?>
 <?php if(isset($_SESSION['id'])) { ?>
-
 <!doctype html>
 <html lang="es">
-
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -36,7 +32,6 @@ if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4, 5, 6, 7])){
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../assets/img/favicon.webp" />
 </head>
-
 <body>
     <div class="wrapper">
         <div class="body-overlay"></div>
@@ -212,7 +207,6 @@ if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4, 5, 6, 7])){
                                             </div>
                                         </div>
                                     </div>
-
                                     <!-- Configuración del Equipo -->
                                     <center>
                                         <h4><b>Configuración del</b> Equipo</h4>
@@ -257,7 +251,6 @@ if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4, 5, 6, 7])){
                                             </div>
                                         </div>
                                     </div>
-
                                     <!-- Detalles Comerciales -->
                                     <center>
                                         <h4><b>Detalles</b> Comerciales</h4>
@@ -315,7 +308,6 @@ if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4, 5, 6, 7])){
             </div>
         </div>
     </div>
-
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="../assets/js/jquery-3.3.1.slim.min.js"></script>
@@ -330,7 +322,6 @@ if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4, 5, 6, 7])){
             $('#sidebar').toggleClass('active');
             $('#content').toggleClass('active');
         });
-
         $('.more-button,.body-overlay').on('click', function() {
             $('#sidebar,.body-overlay').toggleClass('show-nav');
         });
@@ -338,7 +329,6 @@ if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 4, 5, 6, 7])){
     </script>
     <script src="../assets/js/loader.js"></script>
 </body>
-
 </html>
 <?php }else{ 
     header('Location: ../error404.php');

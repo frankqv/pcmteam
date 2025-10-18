@@ -255,7 +255,6 @@ if (in_array($rol, [1, 3, 5, 6, 7])) {
         'url' => '../despacho/historial_solicitudes_alistamiento.php'
     ];
 }
-
 // Ordenes pendientes de despacho
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $despachoItems[] = [
@@ -406,6 +405,9 @@ if (!empty($adminItems)) {
         'children' => $adminItems
     ];
 }
+# ==================== PANELES DE CONTROL ====================
+
+
 # ==================== OPCIONES FINALES ====================
 // Información de versión (solo para desarrollo)
 if (in_array($rol, [1, 7])) { // Solo admin y bodega ven la versión

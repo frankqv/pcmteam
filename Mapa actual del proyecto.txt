@@ -15,14 +15,31 @@
 ## Estructura Actual del Proyecto
 
 ```
-PS C:\laragon\www\pcmteam> tree /f
+C:\laragon\www\pcmteam>tree /f
 Listado de rutas de carpetas
 El número de serie del volumen es 1CFA-2E35
 C:.
+│   CAMBIOS_BUSINESS_ROOM_COMERCIAL.md
+│   CAMBIOS_CLIENTES_POR_SEDE.md
+│   CAMBIOS_OBSERVACIONES_MODALES.md
+│   CAMBIOS_SISTEMA_RESERVAS.md
+│   CAMBIO_OBSERVACION_TECNICO.md
+│   COLORES_DASHBOARD_COMERCIAL.md
 │   composer.json
 │   composer.lock
+│   CORRECCION_CLIENTES.md
+│   CORRECCION_PREVENTA.md
+│   DASHBOARD_COMERCIAL.md
+│   FIX_CAMBIO_CONTRASEÑA.md
 │   index.php
 │   Mapa actual del proyecto.txt
+│   REPORTE_BASE_DATOS.md
+│   RESUMEN_FINAL_SISTEMA.md
+│   RESUMEN_SESION_171025.md
+│   SOLUCION_PREVENTA_FINAL.md
+│
+├───.claude
+│       settings.local.json
 │
 ├───backend
 │   │   fix_autoincrement.php
@@ -54,6 +71,7 @@ C:.
 │   │           zapfdingbats.php
 │   │
 │   └───php
+│           buscar_equipos_preventa.php
 │           buscar_equipo_posicion.php
 │           ctlogx.php
 │           delete_inventario.php
@@ -112,7 +130,6 @@ C:.
 │
 ├───config
 │       ctconex.php
-│       db_sin_data.sql
 │       EstructuraDB.sql
 │
 ├───public_html
@@ -221,7 +238,6 @@ C:.
 │   │       historial_electrico.php
 │   │       historial_estetico.php
 │   │       inventario.php
-│   │       inventario_rol_sede.php
 │   │       lista_estetico.php
 │   │       lista_parte.php
 │   │       lista_producto.php
@@ -300,6 +316,7 @@ C:.
 │   │       delicado.php
 │   │       despachos.php
 │   │       historial.php
+│   │       historial_solicitudes_alistamiento.php
 │   │       pedientes.php
 │   │       pendientes.php
 │   │
@@ -415,12 +432,16 @@ C:.
 │           cancelar.php
 │           catalogo.php
 │           eliminar.php
+│           fix_tabla.php
+│           historico_preventa.php
 │           informacion.php
+│           lista_historial_solicitudes_alistamiento.php
 │           mostrar.php
 │           nuevo.php
 │           nuevo_multiproducto.php
 │           preventa.php
 │           procesar.php
+│           test_preventa.php
 │           ticket.php
 │
 └───vendor
@@ -1649,3 +1670,8 @@ C:.
                 function.php
                 LICENSE
                 README.md
+
+
+
+se encuentra fallos en el diseño grafico  y en la navegacion "public_html/jtecnico/escritorio.php" del mismo mira  que fallos por ejemplo de doble barra de scroll en la la parte lateral derecha, eso no se ve bien, 
+puedes si existe la posibilidad de que que el dia de la semana este en español? Sabado, 18 de October 2025

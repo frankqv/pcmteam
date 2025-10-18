@@ -1,5 +1,9 @@
 <?php
 /*
+// public_html/tecnicos/escritorio.php
+<?php
+ob_start();
+session_start();<
     <!DOCTYPE html>
     <html lang="es">
     <head>
