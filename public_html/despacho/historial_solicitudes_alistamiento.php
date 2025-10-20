@@ -267,6 +267,8 @@ if (isset($_SESSION['id'])) {
                                                 <option value="pendiente" <?php echo $filtro_estado === 'pendiente' ? 'selected' : ''; ?>>Pendientes</option>
                                                 <option value="en_proceso" <?php echo $filtro_estado === 'en_proceso' ? 'selected' : ''; ?>>En Proceso</option>
                                                 <option value="completada" <?php echo $filtro_estado === 'completada' ? 'selected' : ''; ?>>Completadas</option>
+                                                <option value="despachado" <?php echo $filtro_estado === 'despachado' ? 'selected' : ''; ?>>Despachado</option>
+                                                <option value="enviado" <?php echo $filtro_estado === 'enviado' ? 'selected' : ''; ?>>Enviado</option>
                                                 <option value="cancelada" <?php echo $filtro_estado === 'cancelada' ? 'selected' : ''; ?>>Canceladas</option>
                                             </select>
                                         </div>

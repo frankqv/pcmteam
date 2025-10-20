@@ -88,56 +88,73 @@ ob_start();
             </div>
             <div class="main-content">
                 <?php
-                // Verificar si se está filtrando por sede
-                $sede_filter = isset($_GET['sede']) ? trim($_GET['sede']) : '';
+                require '../../config/ctconex.php';
+
+                // Obtener el idsede del usuario actual (interno, no manipulable desde URL)
+                $userIdSede = null;
+                try {
+                    $sqlUserInfo = "SELECT idsede FROM usuarios WHERE id = :id LIMIT 1";
+                    $stmtUserInfo = $connect->prepare($sqlUserInfo);
+                    $stmtUserInfo->execute([':id' => $_SESSION['id']]);
+                    $userData = $stmtUserInfo->fetch(PDO::FETCH_ASSOC);
+
+                    if ($userData) {
+                        $userIdSede = !empty($userData['idsede']) ? trim($userData['idsede']) : null;
+                    }
+                } catch (PDOException $e) {
+                    error_log("Error al obtener idsede del usuario: " . $e->getMessage());
+                }
+
+                // Determinar el título según la sede del usuario
+                $tituloSede = "Clientes recientes";
+                $descripcionSede = "Nuevos clientes recientes añadidos";
+
+                if ($userIdSede === "Todo") {
+                    $tituloSede = "Todos los clientes";
+                    $descripcionSede =  "Vista completa de todos los clientes del sistema" . "<strong style='color: #28a745;'>" . " Acceso Completo" ."</strong>";
+                } elseif (!empty($userIdSede)) {
+                    $tituloSede = "Clientes de sede: " . htmlspecialchars($userIdSede);
+                    $descripcionSede = "Clientes registrados en la sede " . "<strong style='color: blue;' >" . htmlspecialchars($userIdSede)  . "</strong>";
+                }
                 ?>
                 <div class="row ">
                     <div class="col-lg-12 col-md-12">
                         <div class="card" style="min-height: 485px">
                             <div class="card-header card-header-text">
-                                <h4 class="card-title">
-                                    <?php
-                                    if (!empty($sede_filter)) {
-                                        echo "Clientes de: " . htmlspecialchars($sede_filter);
-                                    } else {
-                                        echo "Clientes recientes";
-                                    }
-                                    ?>
-                                </h4>
-                                <p class="category">
-                                    <?php
-                                    if (!empty($sede_filter)) {
-                                        echo "Clientes registrados en la sede " . htmlspecialchars($sede_filter);
-                                    } else {
-                                        echo "Nuevas clientes reciente añadidos el dia de hoy";
-                                    }
-                                    ?>
-                                </p>
+                                <h4 class="card-title"><?php echo $tituloSede; ?></h4>
+                                <p class="category"><?php echo $descripcionSede; ?></p>
                             </div>
                             <br>
+                            <?php if (!empty($userIdSede)): ?>
                             <a href="../clientes/nuevo.php" class="btn btn-danger text-white">Nuevo cliente</a>
                             <a href="../clientes/importar.php" class="btn btn-success text-white ml-2">Subir archivo Excel</a>
+                            <?php endif; ?>
                             <br>
                             <div class="card-content table-responsive">
                                 <?php
-                                require '../../config/ctconex.php';
-
-                                if (!empty($sede_filter)) {
-                                    // Filtrar por sede específica
-                                    $sentencia = $connect->prepare("SELECT * FROM clientes WHERE idsede = :sede ORDER BY nomcli DESC;");
-                                    $sentencia->execute([':sede' => $sede_filter]);
+                                // Si no tiene sede asignada, mostrar mensaje de advertencia
+                                if (empty($userIdSede)) {
+                                    echo '<div class="alert alert-warning" role="alert">';
+                                    echo '<strong>Sin acceso!</strong> No tienes una sede asignada. Por favor contacta al administrador.';
+                                    echo '</div>';
                                 } else {
-                                    // Mostrar todos los clientes
-                                    $sentencia = $connect->prepare("SELECT * FROM clientes ORDER BY nomcli DESC;");
-                                    $sentencia->execute();
-                                }
-
-                                $data = array();
-                                if($sentencia){
-                                    while($r = $sentencia->fetchObject()){
-                                        $data[] = $r;
+                                    // Construir query según el idsede del usuario (NO desde URL)
+                                    if ($userIdSede === "Todo") {
+                                        // Usuario con acceso completo - mostrar todos los clientes
+                                        $sentencia = $connect->prepare("SELECT * FROM clientes ORDER BY nomcli DESC;");
+                                        $sentencia->execute();
+                                    } else {
+                                        // Usuario con sede específica - filtrar por su sede
+                                        $sentencia = $connect->prepare("SELECT * FROM clientes WHERE idsede = :sede ORDER BY nomcli DESC;");
+                                        $sentencia->execute([':sede' => $userIdSede]);
                                     }
-                                }
+
+                                    $data = array();
+                                    if($sentencia){
+                                        while($r = $sentencia->fetchObject()){
+                                            $data[] = $r;
+                                        }
+                                    }
                                 ?>
                                 <?php if(count($data)>0):?>
                                 <table class="table table-hover" id="example">
@@ -194,9 +211,16 @@ ob_start();
                                 <?php else:?>
                                 <!-- Warning Alert -->
                                 <div class="alert alert-warning" role="alert">
-                                    No se encontró ningún dato!
+                                    <?php
+                                    if ($userIdSede === "Todo") {
+                                        echo "No hay clientes registrados en el sistema.";
+                                    } else {
+                                        echo "No se encontraron clientes para tu sede: " . htmlspecialchars($userIdSede) . "Comienza registado el primer cliente ";
+                                    }
+                                    ?>
                                 </div>
                                 <?php endif; ?>
+                                <?php } // Fin del else de verificación de sede ?>
                             </div>
                         </div>
                     </div>

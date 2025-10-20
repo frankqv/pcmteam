@@ -416,7 +416,7 @@ if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
 // 6.3. Historial de Despachos
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $despachoItems[] = [
-        'label' => 'Historial de Despachos',
+        'label' => 'Historico Despacho',
         'icon' => 'local_shipping',
         'url' => '../despacho/historial.php'
     ];
@@ -533,7 +533,7 @@ $adminItems = [];
 // Roles: Todos excepto invitados (rol 0)
 if (!in_array($rol, [0])) {
     $adminItems[] = [
-        'label' => 'Documentos Generales',
+        'label' => 'Docs Generales',
         'icon' => 'library_books',
         'url' => '../docs/mostrar.php'
     ];
