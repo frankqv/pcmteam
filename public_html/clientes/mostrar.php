@@ -1,10 +1,9 @@
 <?php
 ob_start();
-     session_start();
-    
+    session_start();
     if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2,3,4,5,6,7])){
     header('location: ../error404.php');
-  }
+}
 ?>
 <?php if(isset($_SESSION['id'])) { ?>
 <!doctype html>
@@ -89,7 +88,6 @@ ob_start();
             <div class="main-content">
                 <?php
                 require '../../config/ctconex.php';
-
                 // Obtener el idsede del usuario actual (interno, no manipulable desde URL)
                 $userIdSede = null;
                 try {
@@ -97,18 +95,15 @@ ob_start();
                     $stmtUserInfo = $connect->prepare($sqlUserInfo);
                     $stmtUserInfo->execute([':id' => $_SESSION['id']]);
                     $userData = $stmtUserInfo->fetch(PDO::FETCH_ASSOC);
-
                     if ($userData) {
                         $userIdSede = !empty($userData['idsede']) ? trim($userData['idsede']) : null;
                     }
                 } catch (PDOException $e) {
                     error_log("Error al obtener idsede del usuario: " . $e->getMessage());
                 }
-
                 // Determinar el título según la sede del usuario
                 $tituloSede = "Clientes recientes";
                 $descripcionSede = "Nuevos clientes recientes añadidos";
-
                 if ($userIdSede === "Todo") {
                     $tituloSede = "Todos los clientes";
                     $descripcionSede =  "Vista completa de todos los clientes del sistema" . "<strong style='color: #28a745;'>" . " Acceso Completo" ."</strong>";
@@ -148,7 +143,6 @@ ob_start();
                                         $sentencia = $connect->prepare("SELECT * FROM clientes WHERE idsede = :sede ORDER BY nomcli DESC;");
                                         $sentencia->execute([':sede' => $userIdSede]);
                                     }
-
                                     $data = array();
                                     if($sentencia){
                                         while($r = $sentencia->fetchObject()){
@@ -271,5 +265,5 @@ ob_start();
 </html>
 <?php }else{ 
     header('Location: ../error404.php');
- } ?>
+} ?>
 <?php ob_end_flush(); ?>

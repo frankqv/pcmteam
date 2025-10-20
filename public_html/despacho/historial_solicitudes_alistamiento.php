@@ -124,6 +124,9 @@ $sql_stats = "SELECT
     SUM(CASE WHEN estado = 'pendiente' THEN 1 ELSE 0 END) as pendientes,
     SUM(CASE WHEN estado = 'en_proceso' THEN 1 ELSE 0 END) as en_proceso,
     SUM(CASE WHEN estado = 'completada' THEN 1 ELSE 0 END) as completadas,
+    SUM(CASE WHEN estado = 'despachado' THEN 1 ELSE 0 END) as despachados,
+    SUM(CASE WHEN estado = 'entregado' THEN 1 ELSE 0 END) as entregados,
+    SUM(CASE WHEN estado IN ('despachado', 'entregado') THEN 1 ELSE 0 END) as despachados_entregados,
     SUM(CASE WHEN estado = 'cancelada' THEN 1 ELSE 0 END) as canceladas
 FROM solicitud_alistamiento";
 $stmt_stats = $connect->query($sql_stats);
@@ -169,6 +172,8 @@ if (isset($_SESSION['id'])) {
         .badge-pendiente { background: #ffc107; color: #000; }
         .badge-en_proceso { background: #17a2b8; color: #fff; }
         .badge-completada { background: #28a745; color: #fff; }
+        .badge-despachado { background: #007bff; color: #fff; }
+        .badge-entregado { background: #00CC54; color: #fff; }
         .badge-cancelada { background: #6c757d; color: #fff; }
         .modal-header-edit {
             background: #2B6B5D;
@@ -225,28 +230,40 @@ if (isset($_SESSION['id'])) {
                     <?php endif; ?>
                     <!-- Estadísticas -->
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-lg-2 col-md-4 col-sm-6">
                             <div class="stats-card" style="background: #275781;">
                                 <h3><?php echo $stats['total']; ?></h3>
                                 <p>Total Solicitudes</p>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="stats-card" style="background: #ad2235ff 100%;">
+                        <div class="col-lg-2 col-md-4 col-sm-6">
+                            <div class="stats-card" style="background: #CC0618;">
                                 <h3><?php echo $stats['pendientes']; ?></h3>
                                 <p>Pendientes</p>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-lg-2 col-md-4 col-sm-6">
                             <div class="stats-card" style="background: #F0DD00; color:#6E6E6E;">
                                 <h3><?php echo $stats['en_proceso']; ?></h3>
                                 <p>En Proceso</p>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="stats-card success" style="background: #117f2c;">
+                        <div class="col-lg-2 col-md-4 col-sm-6">
+                            <div class="stats-card" style="background: #28a745;">
                                 <h3><?php echo $stats['completadas']; ?></h3>
                                 <p>Completadas</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6">
+                            <div class="stats-card" style="background: #00CC54;">
+                                <h3><?php echo $stats['despachados_entregados']; ?></h3>
+                                <p>Despachados/Entregados</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6">
+                            <div class="stats-card" style="background: #6c757d;">
+                                <h3><?php echo $stats['canceladas']; ?></h3>
+                                <p>Canceladas</p>
                             </div>
                         </div>
                     </div>
@@ -326,10 +343,12 @@ if (isset($_SESSION['id'])) {
                                                 <td><?php echo e($sol['cliente'] ?: 'N/A'); ?></td>
                                                 <td><?php echo e($sol['cantidad']); ?></td>
                                                 <td>
-                                                    <select class="form-control form-control-sm estado-select" data-solicitud-id="<?php echo $sol['id']; ?>" style="min-width: 120px;">
+                                                    <select class="form-control form-control-sm estado-select" data-solicitud-id="<?php echo $sol['id']; ?>" style="min-width: 140px;">
                                                         <option value="pendiente" <?php echo $sol['estado'] === 'pendiente' ? 'selected' : ''; ?>>Pendiente</option>
                                                         <option value="en_proceso" <?php echo $sol['estado'] === 'en_proceso' ? 'selected' : ''; ?>>En Proceso</option>
                                                         <option value="completada" <?php echo $sol['estado'] === 'completada' ? 'selected' : ''; ?>>Completada</option>
+                                                        <option value="despachado" <?php echo $sol['estado'] === 'despachado' ? 'selected' : ''; ?>>Despachado</option>
+                                                        <option value="entregado" <?php echo $sol['estado'] === 'entregado' ? 'selected' : ''; ?>>Entregado</option>
                                                         <option value="cancelada" <?php echo $sol['estado'] === 'cancelada' ? 'selected' : ''; ?>>Cancelada</option>
                                                     </select>
                                                 </td>
@@ -575,11 +594,13 @@ if (isset($_SESSION['id'])) {
                         success: function(response) {
                             if (response.success) {
                                 // Actualizar color del badge
-                                $select.removeClass('bg-danger bg-warning bg-info bg-success bg-secondary');
+                                $select.removeClass('bg-danger bg-warning bg-info bg-success bg-primary bg-secondary');
                                 switch(nuevoEstado) {
-                                    case 'pendiente': $select.addClass('bg-danger'); break;
+                                    case 'pendiente': $select.addClass('bg-warning'); break;
                                     case 'en_proceso': $select.addClass('bg-info'); break;
                                     case 'completada': $select.addClass('bg-success'); break;
+                                    case 'despachado': $select.addClass('bg-primary'); break;
+                                    case 'entregado': $select.addClass('bg-success'); break;
                                     case 'cancelada': $select.addClass('bg-secondary'); break;
                                 }
                                 alert('✅ ' + response.mensaje);

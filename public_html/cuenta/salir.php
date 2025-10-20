@@ -13,7 +13,6 @@ if (ini_get("session.use_cookies")) {
 }
 // Destruir la sesión
 session_destroy();
-
 // Redirigir al login
 header("Location: ../home.php");
 exit();

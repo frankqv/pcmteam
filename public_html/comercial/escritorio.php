@@ -2,13 +2,11 @@
 <?php
 ob_start();
 session_start();
-if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])){
+if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
     header('location: ../error404.php');
     exit;
 }
-
 require_once('../../config/ctconex.php');
-
 // Obtener información del usuario
 $userInfo = [];
 if (isset($_SESSION['id'])) {
@@ -17,10 +15,8 @@ if (isset($_SESSION['id'])) {
     $stmtUser->execute([':id' => $_SESSION['id']]);
     $userInfo = $stmtUser->fetch(PDO::FETCH_ASSOC);
 }
-
 // Obtener estadísticas del comercial
 $usuario_id = $_SESSION['id'];
-
 // Mis solicitudes de alistamiento (últimas 5)
 $sql_mis_solicitudes = "SELECT COUNT(*) as total,
                         SUM(CASE WHEN estado = 'pendiente' THEN 1 ELSE 0 END) as pendientes,
@@ -31,7 +27,6 @@ $sql_mis_solicitudes = "SELECT COUNT(*) as total,
 $stmt_mis_sol = $connect->prepare($sql_mis_solicitudes);
 $stmt_mis_sol->execute([':usuario_id' => $usuario_id]);
 $stats_solicitudes = $stmt_mis_sol->fetch(PDO::FETCH_ASSOC);
-
 // Últimas 5 solicitudes
 $sql_ultimas = "SELECT * FROM solicitud_alistamiento
                 WHERE usuario_id = :usuario_id
@@ -39,7 +34,6 @@ $sql_ultimas = "SELECT * FROM solicitud_alistamiento
 $stmt_ultimas = $connect->prepare($sql_ultimas);
 $stmt_ultimas->execute([':usuario_id' => $usuario_id]);
 $ultimas_solicitudes = $stmt_ultimas->fetchAll(PDO::FETCH_ASSOC);
-
 // Mis ventas del mes
 $sql_ventas_mes = "SELECT COUNT(*) as total_ventas,
                    SUM(total_price) as total_dinero,
@@ -51,7 +45,6 @@ $sql_ventas_mes = "SELECT COUNT(*) as total_ventas,
 $stmt_ventas = $connect->prepare($sql_ventas_mes);
 $stmt_ventas->execute([':usuario_id' => $usuario_id]);
 $stats_ventas = $stmt_ventas->fetch(PDO::FETCH_ASSOC);
-
 // Total de clientes registrados
 $sql_clientes = "SELECT COUNT(*) as total FROM clientes WHERE estad = 'Activo'";
 $stmt_clientes = $connect->query($sql_clientes);
@@ -76,7 +69,7 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
         }
         .dashboard-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
         .quick-action-card {
             background: linear-gradient(135deg, #2B41CC 0%, #5865F2 100%);
@@ -99,7 +92,7 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
             background: white;
             padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
             margin-bottom: 20px;
             border-left: 5px solid;
         }
@@ -166,7 +159,7 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
         }
         .action-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
         .btn-solicitud {
             background: linear-gradient(135deg, #7B2CBF 0%, #9D4EDD 100%);
@@ -208,14 +201,14 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
 </head>
 <body>
     <div class="wrapper">
-        <?php include_once '../layouts/nav.php'; include_once '../layouts/menu_data.php'; ?>
+        <?php include_once '../layouts/nav.php';
+        include_once '../layouts/menu_data.php'; ?>
         <nav id="sidebar">
             <div class="sidebar-header">
                 <h3><img src="../assets/img/favicon.webp" class="img-fluid"><span>PCMARKETTEAM</span></h3>
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
         <div id="content">
             <!-- Top Navbar -->
             <div class="top-navbar">
@@ -233,7 +226,7 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
                                 <li class="dropdown nav-item active">
                                     <a href="#" class="nav-link" data-toggle="dropdown">
                                         <img src="../assets/img/<?php echo htmlspecialchars($userInfo['foto'] ?? 'reere.webp'); ?>"
-                                             style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+                                            style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
                                     </a>
                                     <ul class="dropdown-menu p-3 text-center" style="min-width: 220px;">
                                         <li><strong><?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?></strong></li>
@@ -250,11 +243,9 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
                     </div>
                 </nav>
             </div>
-
             <!-- Main Content -->
             <div class="main-content">
                 <div class="container-fluid">
-
                     <!-- Welcome Banner -->
                     <div class="welcome-banner">
                         <h2>¡Bienvenid@, <?php echo htmlspecialchars($userInfo['nombre'] ?? 'Usuario'); ?>!</h2>
@@ -265,7 +256,6 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
                             <?php echo date('l, d \d\e F Y'); ?>
                         </p>
                     </div>
-
                     <!-- Estadísticas Rápidas -->
                     <div class="row">
                         <div class="col-md-3">
@@ -300,7 +290,6 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
                             </div>
                         </div>
                     </div>
-
                     <!-- Acciones Rápidas -->
                     <div class="row mt-4">
                         <div class="col-lg-8">
@@ -343,9 +332,7 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
                                             </a>
                                         </div>
                                     </div>
-
                                     <hr class="my-4">
-
                                     <!-- Business Room Section -->
                                     <div class="row">
                                         <div class="col-md-12">
@@ -357,9 +344,7 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
                                             </a>
                                         </div>
                                     </div>
-
                                     <hr class="my-4">
-
                                     <div class="row">
                                         <div class="col-md-4">
                                             <a href="../clientes/mostrar.php" class="btn btn-outline-primary btn-block">
@@ -383,7 +368,6 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
                                 </div>
                             </div>
                         </div>
-
                         <!-- Últimas Solicitudes -->
                         <div class="col-lg-4">
                             <div class="card dashboard-card">
@@ -406,10 +390,16 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
                                                     <div>
                                                         <?php
                                                         $badge_class = 'badge-secondary';
-                                                        switch($sol['estado']) {
-                                                            case 'pendiente': $badge_class = 'badge-warning'; break;
-                                                            case 'en_proceso': $badge_class = 'badge-info'; break;
-                                                            case 'completada': $badge_class = 'badge-success'; break;
+                                                        switch ($sol['estado']) {
+                                                            case 'pendiente':
+                                                                $badge_class = 'badge-warning';
+                                                                break;
+                                                            case 'en_proceso':
+                                                                $badge_class = 'badge-info';
+                                                                break;
+                                                            case 'completada':
+                                                                $badge_class = 'badge-success';
+                                                                break;
                                                         }
                                                         ?>
                                                         <span class="badge <?php echo $badge_class; ?>"><?php echo ucfirst($sol['estado']); ?></span>
@@ -432,7 +422,6 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
                             </div>
                         </div>
                     </div>
-
                     <!-- Clientes de Mi Sede -->
                     <div class="row mt-4">
                         <div class="col-12">
@@ -455,12 +444,10 @@ $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
-
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/popper.min.js"></script>
     <script src="../assets/js/bootstrap.min.js"></script>

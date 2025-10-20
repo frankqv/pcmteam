@@ -7,7 +7,13 @@ ob_start();
   }
   // if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2]))
 ?>
-<?php if(isset($_SESSION['id'])) { ?>
+<?php if(isset($_SESSION['id'])) {
+    // Obtener sedes únicas de la tabla clientes
+    require '../../config/ctconex.php';
+    $sqlSedes = "SELECT DISTINCT idsede FROM clientes WHERE idsede IS NOT NULL AND idsede != '' ORDER BY idsede ASC";
+    $stmtSedes = $connect->query($sqlSedes);
+    $sedes = $stmtSedes->fetchAll(PDO::FETCH_COLUMN);
+?>
 <!doctype html>
 <html lang="es">
 <head>
@@ -108,9 +114,9 @@ ob_start();
                                     <div class="row">
                                         <div class="col-md-6 col-lg-6">
                                             <div class="form-group">
-                                                <label for="email">DNI del cliente<span
+                                                <label for="txtnum">DNI del cliente<span
                                                         class="text-danger">*</span></label>
-                                                <input type="text" maxlength="12"
+                                                <input type="text" id="txtnum" maxlength="12"
                                                     onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
                                                     class="form-control" name="txtnum" required
                                                     placeholder="DNI del cliente">
@@ -118,9 +124,9 @@ ob_start();
                                         </div>
                                         <div class="col-md-6 col-lg-6">
                                             <div class="form-group">
-                                                <label for="email">Nombres del cliente<span
+                                                <label for="txtnaame">Nombres del cliente<span
                                                         class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" name="txtnaame" required
+                                                <input type="text" id="txtnaame" class="form-control" name="txtnaame" required
                                                     placeholder="Nombre de la cliente">
                                             </div>
                                         </div>
@@ -128,37 +134,37 @@ ob_start();
                                     <div class="row">
                                         <div class="col-md-6 col-lg-6">
                                             <div class="form-group">
-                                                <label for="email">Apellidos del cliente<span
+                                                <label for="txtape">Apellidos del cliente<span
                                                         class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" name="txtape" required
+                                                <input type="text" id="txtape" class="form-control" name="txtape" required
                                                     placeholder="Apellido del cliente">
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-lg-6">
                                             <div class="form-group">
-                                                <label for="email">Celular del cliente<span
+                                                <label for="txtcel">Celular del cliente<span
                                                         class="text-danger">*</span></label>
-                                                <input type="tel" class="form-control" maxlength="10"
+                                                <input type="tel" id="txtcel" class="form-control" maxlength="10"
                                                     onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
                                                     placeholder="324 123 1234"
-       pattern="^\d{10}$|^\d{3}\s\d{3}\s\d{4}$"
-       title="Formato: 324 123 1234 o 3241231234"
-                                                    name="txtcel" required placeholder="Celular de la cliente">
+                                                    pattern="^\d{10}$|^\d{3}\s\d{3}\s\d{4}$"
+                                                    title="Formato: 324 123 1234 o 3241231234"
+                                                    name="txtcel" required>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 col-lg-6">
                                             <div class="form-group">
-                                                <label for="email">Correo del cliente</label>
-                                                <input type="email" class="form-control" name="txtema"
+                                                <label for="txtema">Correo del cliente</label>
+                                                <input type="email" id="txtema" class="form-control" name="txtema"
                                                     placeholder="Correo del cliente">
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-lg-6">
                                             <div class="form-group">
-                                                <label for="text">Nacimiento del cliente</label>
-                                                <input type="date" class="form-control" name="txtnaci" placeholder="">
+                                                <label for="txtnaci">Nacimiento del cliente</label>
+                                                <input type="date" id="txtnaci" class="form-control" name="txtnaci">
                                             </div>
                                         </div>
                                     </div>
@@ -166,26 +172,34 @@ ob_start();
                                     <!-- 1. "txtdire" -->
                                     <div class="col-md-6 col-lg-6">
                                         <div class="form-group">
-                                            <label for="text">Dirección del Cliente</label>
-                                            <input type="text" class="form-control" name="txtdire" placeholder="Dirección del Cliente">
+                                            <label for="txtdire">Dirección del Cliente</label>
+                                            <input type="text" id="txtdire" class="form-control" name="txtdire" placeholder="Dirección del Cliente">
                                         </div>
                                     </div>
                                     <!-- 2. "txtciud" -->
                                     <div class="col-md-3 col-lg-3">
                                         <div class="form-group">
-                                            <label for="text">Ciudad</label>
-                                            <input type="text" class="form-control" name="txtciud" placeholder="Ciudad">
+                                            <label for="txtciud">Ciudad</label>
+                                            <input type="text" id="txtciud" class="form-control" name="txtciud" placeholder="Ciudad">
                                         </div>
                                     </div>
-                                      <div class="col-md-3 col-lg-3">
+                                    <!-- 3. "txtsede" - Sedes dinámicas desde BD -->
+                                    <div class="col-md-3 col-lg-3">
                                         <div class="form-group">
                                             <label for="txtsede">Seleccione una sede <span class="text-danger">*</span></label>
-                                            <select class="form-control" name="txtsede" required>
+                                            <select id="txtsede" class="form-control" name="txtsede" required>
                                                 <option value="">Seleccione una sede</option>
-                                                <option value="Principal">Bodega   #1</option>
-                                                <option value="Medellin">Medellin #2</option>
-                                                <option value="Cucuta">Cúcuta   #3</option>
-                                                <option value="Unilago">Unilago  #4</option>
+                                                <?php
+                                                $counter = 1;
+                                                foreach ($sedes as $sede):
+                                                ?>
+                                                    <option value="<?php echo htmlspecialchars($sede); ?>">
+                                                        <?php echo htmlspecialchars($sede) . ' #' . $counter; ?>
+                                                    </option>
+                                                <?php
+                                                $counter++;
+                                                endforeach;
+                                                ?>
                                             </select>
                                         </div>
                                     </div>
@@ -194,9 +208,9 @@ ob_start();
                                     <div class="row">
                                         <div class="col-md-12 col-lg-12">
                                             <div class="form-group">
-                                                <label for="email">Estado del cliente<span
+                                                <label for="txtesta">Estado del cliente<span
                                                         class="text-danger">*</span></label>
-                                                <select class="form-control" required name="txtesta">
+                                                <select id="txtesta" class="form-control" required name="txtesta">
                                                     <option value="Activo">Activo</option>
                                                 </select>
                                             </div>

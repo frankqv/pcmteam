@@ -145,6 +145,7 @@ C:.
 │   │   salir.php
 │   │
 │   ├───administrador
+│   │       dev_dashboard.php
 │   │       escritorio.php
 │   │
 │   ├───assets
@@ -261,17 +262,13 @@ C:.
 │   │
 │   ├───clientes
 │   │       actualizar.php
-│   │       bodega.php
-│   │       cucuta.php
 │   │       eliminar.php
 │   │       importar.php
 │   │       informacion.php
-│   │       medellin.php
 │   │       mis_clientes.php
 │   │       mostrar.php
 │   │       nuevo.php
 │   │       plantilla_excel.php
-│   │       unilago.php
 │   │
 │   ├───comercial
 │   │       escritorio.php
@@ -1670,8 +1667,3 @@ C:.
                 function.php
                 LICENSE
                 README.md
-
-
-
-se encuentra fallos en el diseño grafico  y en la navegacion "public_html/jtecnico/escritorio.php" del mismo mira  que fallos por ejemplo de doble barra de scroll en la la parte lateral derecha, eso no se ve bien, 
-puedes si existe la posibilidad de que que el dia de la semana este en español? Sabado, 18 de October 2025

@@ -106,7 +106,13 @@ ob_start();
                                         class="text-danger">*</span> son necesarios.
                                 </div>
                                 <?php
- require '../../config/ctconex.php'; 
+ require '../../config/ctconex.php';
+
+ // Obtener sedes únicas de la tabla clientes
+ $sqlSedes = "SELECT DISTINCT idsede FROM clientes WHERE idsede IS NOT NULL AND idsede != '' ORDER BY idsede ASC";
+ $stmtSedes = $connect->query($sqlSedes);
+ $sedes = $stmtSedes->fetchAll(PDO::FETCH_COLUMN);
+
  $id = $_GET['id'];
  $sentencia = $connect->prepare("SELECT * FROM clientes  WHERE clientes.idclie= '$id';");
  $sentencia->execute();
@@ -123,9 +129,9 @@ if($sentencia){
   <div class="row">
       <div class="col-md-6 col-lg-6">
           <div class="form-group">
-              <label for="email">DNI del cliente<span
+              <label for="txtnum">DNI del cliente<span
                       class="text-danger">*</span></label>
-              <input type="text" maxlength="10"
+              <input type="text" id="txtnum" maxlength="10"
                   onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
                   class="form-control" value="<?php echo  $f->numid  ; ?>"
                   name="txtnum" required placeholder="DNI del cliente">
@@ -134,9 +140,9 @@ if($sentencia){
       </div>
       <div class="col-md-6 col-lg-6">
           <div class="form-group">
-              <label for="email">Nombres del cliente<span
+              <label for="txtnaame">Nombres del cliente<span
                       class="text-danger">*</span></label>
-              <input type="text" value="<?php echo  $f->nomcli  ; ?>"
+              <input type="text" id="txtnaame" value="<?php echo  $f->nomcli  ; ?>"
                   class="form-control" name="txtnaame" required
                   placeholder="Nombre de la cliente">
           </div>
@@ -145,18 +151,18 @@ if($sentencia){
   <div class="row">
       <div class="col-md-6 col-lg-6">
           <div class="form-group">
-              <label for="email">Apellidos del cliente<span
+              <label for="txtape">Apellidos del cliente<span
                       class="text-danger">*</span></label>
-              <input type="text" class="form-control"
+              <input type="text" id="txtape" class="form-control"
                   value="<?php echo  $f->apecli  ; ?>" name="txtape" required
                   placeholder="Apellido del cliente">
           </div>
       </div>
       <div class="col-md-6 col-lg-6">
           <div class="form-group">
-              <label for="email">Celular del cliente<span
+              <label for="txtcel">Celular del cliente<span
                       class="text-danger">*</span></label>
-              <input type="text" class="form-control" maxlength="10"
+              <input type="text" id="txtcel" class="form-control" maxlength="10"
                   onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
                   value="<?php echo  $f->celu  ; ?>" name="txtcel" required
                   placeholder="Celular de la cliente">
@@ -166,45 +172,52 @@ if($sentencia){
   <div class="row">
       <div class="col-md-6 col-lg-6">
           <div class="form-group">
-              <label for="email">Correo del cliente</label>
-              <input type="email" class="form-control"
+              <label for="txtema">Correo del cliente</label>
+              <input type="email" id="txtema" class="form-control"
                   value="<?php echo  $f->correo  ; ?>" name="txtema"
                   placeholder="Correo del cliente" required>
           </div>
       </div>
       <div class="col-md-6 col-lg-6">
           <div class="form-group">
-              <label for="email">Nacimiento del cliente</label>
-              <input type="date" class="form-control"
-                  value="<?php echo  $f->naci  ; ?>" name="txtnaci" placeholder="">
+              <label for="txtnaci">Nacimiento del cliente</label>
+              <input type="date" id="txtnaci" class="form-control"
+                  value="<?php echo  $f->naci  ; ?>" name="txtnaci">
           </div>
       </div>
- 
+
 <!---->
   <div class="col-md-6 col-lg-6">
       <div class="form-group">
-          <label for="text">Dirección del Cliente</label>
-          <input type="text" class="form-control"
+          <label for="txtdire">Dirección del Cliente</label>
+          <input type="text" id="txtdire" class="form-control"
               value="<?php echo  $f->dircli  ; ?>" name="txtdire"
               placeholder="Dirección del Cliente" required>
       </div>
   </div>
   <div class="col-md-3 col-lg-3">
       <div class="form-group">
-          <label for="text">Ciudad Y Departamento</label>
-          <input type="text" class="form-control"
+          <label for="txtciud">Ciudad Y Departamento</label>
+          <input type="text" id="txtciud" class="form-control"
               value="<?php echo  $f->ciucli ; ?>" name="txtciud" placeholder="Ciudad">
       </div>
   </div>
   <div class="col-md-3 col-lg-3">
     <div class="form-group">
         <label for="txtsede">Selecione una sede</label>
-        <select class="form-control" name="txtsede" required>
+        <select id="txtsede" class="form-control" name="txtsede" required>
             <option value="">Seleccione una sede</option>
-            <option value="Principal" <?php if($f->idsede == 'Principal') echo 'selected'; ?>>Bodega   #1</option>
-            <option value="Medellin" <?php if($f->idsede == 'Medellin') echo 'selected'; ?>>Medellin #2</option>
-            <option value="Cucuta" <?php if($f->idsede == 'Cucuta') echo 'selected'; ?>>Cúcuta   #3</option>
-            <option value="Unilago" <?php if($f->idsede == 'Unilago') echo 'selected'; ?>>Unilago  #4</option> 
+            <?php
+            $counter = 1;
+            foreach ($sedes as $sede):
+            ?>
+                <option value="<?php echo htmlspecialchars($sede); ?>" <?php if($f->idsede == $sede) echo 'selected'; ?>>
+                    <?php echo htmlspecialchars($sede) . ' #' . $counter; ?>
+                </option>
+            <?php
+            $counter++;
+            endforeach;
+            ?>
         </select>
     </div>
   </div>
@@ -225,9 +238,9 @@ if($sentencia){
   <div class="row">
       <div class="col-md-12 col-lg-12">
           <div class="form-group">
-              <label for="email">Estado del cliente<span
+              <label for="txtesta">Estado del cliente<span
                       class="text-danger">*</span></label>
-              <select class="form-control" required name="txtesta">
+              <select id="txtesta" class="form-control" required name="txtesta">
                   <option value="<?php echo  $f->estad  ; ?>">
                       <?php echo  $f->estad  ; ?></option>
                   <option>--------Seleccione---------</option>
