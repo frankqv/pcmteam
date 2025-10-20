@@ -1,9 +1,17 @@
 <?php
 /// config/ctconex.php
-define('dbhost', 'localhost');
-define('dbuser', 'u171145084_pcmteam');
-define('dbpass', 'PCcomercial2025*');
-define('dbname', 'u171145084_pcmteam');
+if (!defined('dbhost')) {
+    define('dbhost', 'localhost');
+}
+if (!defined('dbuser')) {
+    define('dbuser', 'u171145084_pcmteam');
+}
+if (!defined('dbpass')) {
+    define('dbpass', 'PCcomercial2025*');
+}
+if (!defined('dbname')) {
+    define('dbname', 'u171145084_pcmteam');
+}
 try {
     // Conexión PDO
     date_default_timezone_set('America/Bogota');

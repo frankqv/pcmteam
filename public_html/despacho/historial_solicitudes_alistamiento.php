@@ -4,7 +4,7 @@
 ob_start();
 session_start();
 // Solo Admin (1) y Bodega (7) pueden acceder
-if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 7])) {
+if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1,3,4,5,6, 7])) {
     header('location: ../error404.php');
     exit;
 }

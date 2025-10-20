@@ -300,7 +300,7 @@ if (isset($_SESSION['id'])) {
                                                         <option value="Coordinadora">Coordinadora</option>
                                                         <option value="Interrapidisimo Pte Aranda">Interrapidísimo Pte Aranda</option>
                                                         <option value="Despacho Tienda Pte Aranda">Despacho Tienda Pte Aranda</option>
-                                                        <option value="Despacho Tienda Unilago">Despacho Tienda Unilago</option>
+                                                        <option value="Despacho Tienda capital_tech">Despacho Tienda Capital Tech</option>
                                                         <option value="Despacho Tienda Medellin">Despacho Tienda Medellín</option>
                                                         <option value="Despacho Tienda Cúcuta">Despacho Tienda Cúcuta</option>
                                                         <option value="Picap | Envio por terceros">Picap | Envío por terceros</option>

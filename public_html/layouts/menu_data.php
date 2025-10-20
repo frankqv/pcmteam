@@ -1,10 +1,46 @@
-<!-- menu.php-->
+<!-- menu_data.php - Sistema de Menú Dinámico PCMARKETTEAM -->
 <?php
+/**
+ * ========================================================================
+ * MENU_DATA.PHP - Configuración del Menú Principal del Sistema
+ * ========================================================================
+ * Este archivo genera el menú lateral dinámicamente según el rol del usuario.
+ * ROLES DEL SISTEMA:
+ * ------------------
+ * 1 = Administrador    → Acceso total al sistema
+ * 2 = Cliente Genérico → Acceso limitado a ventas y servicios
+ * 3 = Contable         → Finanzas, ventas, reportes
+ * 4 = Comercial        → Ventas, clientes, alistamientos
+ * 5 = Jefe Técnico     → Proceso técnico, inventario, equipo
+ * 6 = Técnico          → Proceso técnico, asignaciones
+ * 7 = Bodega           → Inventario, logística*
+ * ========================================================================
+ */
+// Iniciar sesión si no está activa
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-$rol = $_SESSION['rol'] ?? 0; // Obtener el rol de la sesión
-// Configuración del panel según rol
+
+// Obtener rol del usuario actual
+$rol = $_SESSION['rol'] ?? 0;
+
+// Obtener información completa del usuario (incluyendo idsede)
+$userIdSede = null;
+if (isset($_SESSION['id'])) {
+    require_once __DIR__ . '/../../config/ctconex.php';
+    try {
+        $sqlUserInfo = "SELECT idsede FROM usuarios WHERE id = :id LIMIT 1";
+        $stmtUserInfo = $connect->prepare($sqlUserInfo);
+        $stmtUserInfo->execute([':id' => $_SESSION['id']]);
+        $userData = $stmtUserInfo->fetch(PDO::FETCH_ASSOC);
+        $userIdSede = !empty($userData['idsede']) ? trim($userData['idsede']) : null;
+    } catch (PDOException $e) {
+        // Si hay error, continuar sin sede
+        $userIdSede = null;
+    }
+}
+// 1. CONFIGURACIÓN DEL PANEL PRINCIPAL (Escritorio por Rol)
+// ========================================================================
 switch ($rol) {
     case 1:
         $panelName = 'Panel Administrativo';
@@ -39,323 +75,450 @@ switch ($rol) {
         $panelUrl = '../administrador/escritorio.php';
         break;
 }
-# Inicializar el menú principal
+// Inicializar el menú con el enlace al escritorio
 $menu = [
     [
         'label' => $panelName,
         'url' => $panelUrl,
         'icon' => 'dashboard'
-    ],
+    ]
 ];
-# ==================== NOTIFICACIOENS 🔔 ====================
-if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
+// 2. NOTIFICACIONES
+// Roles: Admin, Cliente, Contable, Jefe Técnico, Técnico, Bodega
+if (in_array($rol, [1, 2, 3, 5, 6, 7])) {
     $menu[] = [
-        'label' => 'NOTIFICACIONES (Build)',
+        'label' => 'NOTIFICACIONES',
         'icon' => 'notifications',
         'id' => 'notificaciones_group',
         'children' => [
-            ['icon' => '', 'label' => 'Preventa comerciales (reservas venta) (build)', 'url' => '../venta/preventa.php'],
-            ['icon' => '', 'label' => 'Solicitud de Pedido comerciales (build)', 'url' => '../bodega/preventa.php.php'],
-            ['icon' => '', 'label' => 'Equipos Asignados (build)', 'url' => '../bodega/asignar.php'],
+            [
+                'icon' => 'assignment',
+                'label' => 'Alistamiento',
+                'url' => '../despacho/historial_solicitudes_alistamiento.php'
+            ],
+            [
+                'icon' => 'assignment_ind',
+                'label' => 'Equipos Asignados',
+                'url' => '../bodega/asignar.php'
+            ]
         ]
     ];
 }
-# ==================== GRUPO 1: PROCESO ====================
+// 3. PROCESO TÉCNICO (Flujo de trabajo completo de equipos)
+// Roles: Todos (temporalmente - revisar permisos reales)
 if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
     $menu[] = [
         'label' => 'PROCESO',
         'icon' => 'factory',
         'id' => 'proceso_group',
         'children' => [
+            // 3.1. Triage Fase 1 - Recepción e ingreso
             [
                 'label' => '1° TRIAGE',
                 'icon' => 'assignment_turned_in',
                 'class' => 'style-triage1',
                 'children' => [
-                    ['icon' => 'local_shipping', 'label' => '1) Proveedores', 'url' => '../proveedor/mostrar.php'],
-                    ['icon' => 'barcode_reader', 'label' => '2) barcode Zebra', 'url' => '../bodega/barcode.php'],
-                    ['icon' => 'app_registration', 'label' => '3) Entradas', 'url' => '../bodega/entradas.php'],
-                    ['icon' => 'inventory', 'label' => '4) Inventario', 'url' => '../bodega/inventario.php'],
-                    ['icon' => 'assignment', 'label' => '5) Asignar Técnico', 'url' => '../bodega/asignar.php'],
+                    [
+                        'icon' => 'local_shipping',
+                        'label' => '1) Proveedores',
+                        'url' => '../proveedor/mostrar.php'
+                    ],
+                    [
+                        'icon' => 'barcode_reader',
+                        'label' => '2) Barcode Zebra',
+                        'url' => '../bodega/barcode.php'
+                    ],
+                    [
+                        'icon' => 'app_registration',
+                        'label' => '3) Entradas',
+                        'url' => '../bodega/entradas.php'
+                    ],
+                    [
+                        'icon' => 'inventory',
+                        'label' => '4) Inventario',
+                        'url' => '../bodega/inventario.php'
+                    ],
+                    [
+                        'icon' => 'assignment',
+                        'label' => '5) Asignar Técnico',
+                        'url' => '../bodega/asignar.php'
+                    ]
                 ]
             ],
+            // 3.2. Triage Fase 2 - Diagnóstico avanzado
             [
                 'label' => '2° TRIAGE',
-                'class' => 'style-triage2',
                 'icon' => 'assignment_late',
+                'class' => 'style-triage2',
                 'children' => [
-                    ['label' => '◖ INGRESAR TRIAGE 2', 'url' => '../bodega/triage2.php'],
-                    ['label' => '◖ HISTORICO TRIAGE 2', 'url' => '../bodega/lista_triage_2.php'],
-                    ['label' => '●  Asignar Técnico MYL', 'url' => '../bodega/asignar.php'],
+                    [
+                        'label' => '▹ Ingresar Triage 2',
+                        'url' => '../bodega/triage2.php'
+                    ],
+                    [
+                        'label' => '◇ Histórico Triage 2',
+                        'url' => '../bodega/lista_triage_2.php'
+                    ],
+                    [
+                        'label' => '▹ Asignar Técnico MYL',
+                        'url' => '../bodega/asignar.php'
+                    ]
                 ]
             ],
+            // 3.3. Mantenimiento y Limpieza
             [
-                'label' => 'MANTENIMIENTO LIMPIEZA',
+                'label' => 'MANTENIMIENTO Y LIMPIEZA',
+                'icon' => 'build',
                 'class' => 'style-mantenimiento',
                 'children' => [
-                    ['label' => '◖LISTADO EQUIPOS', 'url' => '../laboratorio/mostrar.php'],
-                    ['label' => '◖LISTA PARTES', 'url' => '../bodega/lista_parte.php'],
-                    ['label' => '◖SOLICITUD PARTE', 'url' => '../bodega/solicitar_parte.php'],
-                    ['label' => '● HISTORIAL MANTENIMIENTO', 'url' => '../laboratorio/historial_lab.php'],
+                    [
+                        'label' => 'Listado de Equipos',
+                        'url' => '../laboratorio/mostrar.php'
+                    ],
+                    [
+                        'label' => 'Lista de Partes',
+                        'url' => '../bodega/lista_parte.php'
+                    ],
+                    [
+                        'label' => 'Solicitar Parte',
+                        'url' => '../bodega/solicitar_parte.php'
+                    ],
+                    [
+                        'label' => 'Historial Mantenimiento',
+                        'url' => '../laboratorio/historial_lab.php'
+                    ]
                 ]
             ],
+            // 3.4. Reparación Eléctrica
             [
-                'label' => 'ELECTRICO', 
+                'label' => 'ELÉCTRICO',
+                'icon' => 'electrical_services',
                 'class' => 'style-electrico',
                 'children' => [
-                    ['label' => '◖REPARAR', 'url' => '../bodega/electrico.php',],
-                    ['label' => '● HISTORIAL', 'url' => '../bodega/historial_electrico.php'],
+                    [
+                        'label' => 'Reparar',
+                        'url' => '../bodega/electrico.php'
+                    ],
+                    [
+                        'label' => 'Historial',
+                        'url' => '../bodega/historial_electrico.php'
+                    ]
                 ]
             ],
+            // 3.5. Reparación Estética
             [
-                'label' => 'ESTETICO',
+                'label' => 'ESTÉTICO',
+                'icon' => 'palette',
                 'class' => 'style-estetico',
                 'children' => [
-                    ['label' => '◖REPARAR', 'url' => '../bodega/estetico.php',],
-                    ['label' => '◖LISTADO', 'url' => '../bodega/lista_estetico.php'],
-                    ['label' => '● HISTORIAL', 'url' => '../bodega/historial_estetico.php'],
+                    [
+                        'label' => 'Reparar',
+                        'url' => '../bodega/estetico.php'
+                    ],
+                    [
+                        'label' => 'Listado',
+                        'url' => '../bodega/lista_estetico.php'
+                    ],
+                    [
+                        'label' => 'Historial',
+                        'url' => '../bodega/historial_estetico.php'
+                    ]
                 ]
-            ],            
+            ],
+            // 3.6. Control de Calidad
             [
                 'label' => 'CONTROL DE CALIDAD',
                 'icon' => 'verified',
                 'id' => 'control_calidad_group',
                 'class' => 'style-control-calidad',
                 'children' => [
-                    ['label' => '◖Ingresar',  'url' => '../control_calidad/mostrar.php'],
-                    ['label' => '● Historial', 'url' => '../control_calidad/historial.php'],
+                    [
+                        'label' => 'Ingresar',
+                        'url' => '../control_calidad/mostrar.php'
+                    ],
+                    [
+                        'label' => 'Historial',
+                        'url' => '../control_calidad/historial.php'
+                    ]
                 ]
             ],
+            // 3.7. Business Room - Equipos listos para venta
             [
                 'label' => 'BUSINESS ROOM',
-                'icon' => 'paid',
-                'id' => 'control_calidad_group',
+                'icon' => 'store',
+                'id' => 'business_room_group',
                 'url' => '../b_room/mostrar.php',
                 'class' => 'business'
             ]
         ]
     ];
 }
-# ==================== GRUPO 2: Proceso de Venta ====================
-$ventaItems = [];
-// Preventa - Solicitud de Alistamiento
-if (in_array($rol, [1, 4])) {
-    $ventaItems[] = [
-        'label' => '● SOLITITUD ALISTAMIENTO',
+// 4. ALISTAMIENTOS (Preparación de equipos para venta)
+// ========================================================================
+$alistamientoItems = [];
+// 4.1. Crear Alistamiento
+if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
+    $alistamientoItems[] = [
+        'label' => 'Crear Alistamiento',
+        'icon' => 'add_circle',
         'url' => '../venta/preventa.php'
     ];
 }
-//historias de preventa/ historial completo de Solicitudes de Alistamiento
-if(in_array($rol, [1, 3, 4, 5, 6, 7])) {
-    $ventaItems[] = [
-        'label' => '● Historico soliciturdes Preventa',
-        'url'=> '../venta/historico_preventa.php'
+// 4.2. Historial de Alistamiento (Preventa)
+if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
+    $alistamientoItems[] = [
+        'label' => 'MI Solicitud',
+        'icon' => 'history',
+        'url' => '../venta/historico_preventa.php'
     ];
 }
-// Reservas de Venta
-if (in_array($rol, [1, 4])) {
-    $ventaItems[] = [
-        'label' => 'RESERVAS',
-        'icon' => 'bookmark',
-        'children' => [
-            ['label' => '> Crear Reserva', 'url' => '../bodega/reserva_venta.php'],
-            ['label' => '> Ver Reservas', 'url' => '../bodega/lista_reserva_venta.php']
-        ]
+// 4.3. Histórico Completo
+// Roles: Admin, Contable, Jefe Técnico, Técnico, Bodega
+if (in_array($rol, [1, 3, 5, 6, 7])) {
+    $alistamientoItems[] = [
+        'label' => 'Histórico Completo',
+        'icon' => 'folder_open',
+        'url' => '../despacho/historial_solicitudes_alistamiento.php'
     ];
 }
-// Ventas
+// Agregar sección ALISTAMIENTOS al menú si hay elementos
+if (!empty($alistamientoItems)) {
+    $menu[] = [
+        'label' => 'ALISTAMIENTOS',
+        'icon' => 'playlist_add_check',
+        'id' => 'alistamiento_group',
+        'children' => $alistamientoItems
+    ];
+}
+// 5. VENTAS (Proceso comercial completo)
+// ========================================================================
+$ventaItems = [];
+// 5.1. Lista de Productos
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $ventaItems[] = [
-        'label' => 'LISTA DE PRODUCTOS',
-        'icon' => 'assignment_add',
+        'label' => 'Lista de Productos',
+        'icon' => 'inventory_2',
         'url' => '../bodega/lista_producto.php'
     ];
 }
-if (in_array($rol, [1, 3, 4, 5,6,7])) {
-    $ventaItems[] = [
-        'label' => 'CLIENTES',
-        'icon' => 'groups',
-        'url' => '../clientes/mostrar.php'
-    ];
+// 5.2. Gestión de Clientes
+// Solo se muestra si el usuario tiene una sede asignada (idsede no vacío)
+// El Admin (rol 1) siempre tiene acceso completo
+if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
+    // Admin siempre ve Clientes, los demás solo si tienen sede asignada
+    if ($rol == 1 || !empty($userIdSede)) {
+        $ventaItems[] = [
+            'label' => 'Clientes',
+            'icon' => 'groups',
+            'url' => '../clientes/mostrar.php'
+        ];
+    }
 }
-// Clientes por Tienda
+// 5.3. Clientes por Sede
+// Roles: Admin, Cliente, Comercial, Jefe Técnico, Bodega
+// Solo se muestra si el usuario tiene una sede asignada (idsede no vacío)
 if (in_array($rol, [1, 2, 4, 5, 7])) {
-    $ventaItems[] = [
-        'label' => 'CLIENTES × LOCAL',
-        'icon' => 'store',
-        'children' => [
-            ['label' => ' > Puente Aranda', 'url' => '../clientes/bodega.php'],
-            ['label' => ' > Unilago', 'url' => '../clientes/unilago.php'],
-            ['label' => ' > Cúcuta', 'url' => '../clientes/cucuta.php'],
-            ['label' => ' > Medellín', 'url' => '../clientes/medellin.php']
-        ]
-    ];
+    // Admin siempre ve Clientes por Sede, los demás solo si tienen sede asignada
+    if ($rol == 1 || !empty($userIdSede)) {
+        $ventaItems[] = [
+            'label' => 'Clientes por Sede',
+            'icon' => 'store',
+            'children' => [
+                ['label' => 'Puente Aranda', 'url' => '../clientes/bodega.php'],
+                ['label' => 'Unilago', 'url' => '../clientes/unilago.php'],
+                ['label' => 'Cúcuta', 'url' => '../clientes/cucuta.php'],
+                ['label' => 'Medellín', 'url' => '../clientes/medellin.php']
+            ]
+        ];
+    }
 }
+// 5.4. Catálogo de Productos
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $ventaItems[] = [
-    'label' => 'CATALOGO',
-    'icon' => 'book',
-    'url' => '../venta/catalogo.php'
+        'label' => 'Catálogo',
+        'icon' => 'book',
+        'url' => '../venta/catalogo.php'
     ];
 }
+// 5.5. Nueva Venta (Simple)
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $ventaItems[] = [
-        'label' => 'VENDER',
-        'icon' => 'request_page',
+        'label' => 'Vender',
+        'icon' => 'point_of_sale',
         'url' => '../venta/nuevo.php'
     ];
 }
-// Nueva Venta Múltiple
+// 5.6. Venta Múltiple
+// Roles: Admin, Comercial
 if (in_array($rol, [1, 4])) {
     $ventaItems[] = [
-        'label' => 'VENTA MÚLTIPLE',
+        'label' => 'Venta Múltiple',
         'icon' => 'shopping_cart',
         'url' => '../venta/nuevo_multiproducto.php'
     ];
 }
+// 5.7. Historial de Ventas
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $ventaItems[] = [
-        'label' => 'HISTORIA VENTA',
-        'icon' => 'store',
+        'label' => 'Historial de Ventas',
+        'icon' => 'receipt_long',
         'url' => '../venta/mostrar.php'
     ];
 }
-// Marketing
+// 5.8. Marketing
+// Roles: Solo Admin
 if (in_array($rol, [1])) {
     $ventaItems[] = [
-        'icon' => 'touch_app',
-        'label' => 'MARKETING',
+        'label' => 'Marketing',
+        'icon' => 'campaign',
         'url' => '../marketing/mostrar.php'
     ];
 }
+// 5.9. Venta de Servicios
+// Roles: Admin, Cliente, Comercial, Jefe Técnico
 if (in_array($rol, [1, 2, 4, 5])) {
     $ventaItems[] = [
-        'label' => 'Venta De Servicio',
+        'label' => 'Venta de Servicio',
         'icon' => 'engineering',
-        'id' => 'tecnico_group',
-        'url' => '../servicio/mostrar.php',
+        'id' => 'servicio_group',
+        'url' => '../servicio/mostrar.php'
     ];
 }
-if (!empty( $ventaItems)) {
+// Agregar sección VENTAS al menú si hay elementos
+if (!empty($ventaItems)) {
     $menu[] = [
         'label' => 'VENTAS',
         'icon' => 'payments',
         'id' => 'venta_group',
-        'children' =>  $ventaItems
+        'children' => $ventaItems
     ];
 }
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-# ==================== GRUPO 3: Proceso de Despacho ====================
+// 6. DESPACHO (Logística y entrega de equipos)
+// ========================================================================
 $despachoItems = [];
-// HISTORIAL DE ALISTAMIENTO
+// 6.1. Historial de Alistamiento
+// Roles: Admin, Contable, Jefe Técnico, Técnico, Bodega
 if (in_array($rol, [1, 3, 5, 6, 7])) {
     $despachoItems[] = [
-        'label' => '📋 HISTORIAL DE ALISTAMIENTO',
+        'label' => 'Historial de Alistamiento',
+        'icon' => 'assignment',
         'url' => '../despacho/historial_solicitudes_alistamiento.php'
     ];
 }
-// Ordenes pendientes de despacho
+// 6.2. Órdenes Pendientes
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $despachoItems[] = [
-        'label' => '📦 ÓRDENES PENDIENTES',
+        'label' => 'Órdenes Pendientes',
+        'icon' => 'pending_actions',
         'url' => '../despacho/pendientes.php'
     ];
 }
-// Historial de despachos
+// 6.3. Historial de Despachos
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $despachoItems[] = [
-        'label' => '📄 HISTORIAL DESPACHOS',
+        'label' => 'Historial de Despachos',
+        'icon' => 'local_shipping',
         'url' => '../despacho/historial.php'
     ];
 }
-// Si hay elementos en despacho, agregar al menú
+// Agregar sección DESPACHO al menú si hay elementos
 if (!empty($despachoItems)) {
     $menu[] = [
         'label' => 'DESPACHO',
         'icon' => 'local_shipping',
-        'id'   => 'despacho_group',
+        'id' => 'despacho_group',
         'children' => $despachoItems
     ];
 }
-# ==================== GRUPO 5: FINANZAS Y CONTABILIDAD ====================
-$finanzasItems = [];
-// Ingresos 
+// 7. CONTABILIDAD (Finanzas y facturación)
+// ========================================================================
+$contabilidadItems = [];
+// 7.1. Ingresos
+// Roles: Admin, Cliente, Contable, Comercial
 if (in_array($rol, [1, 2, 3, 4])) {
-    $finanzasItems[] = [
-        'label' => 'INGRESOS (Build)',
-        'icon' => 'signal_cellular_alt',
+    $contabilidadItems[] = [
+        'label' => 'Ingresos',
+        'icon' => 'trending_up',
         'url' => '../ingresos/mostrar.php'
     ];
 }
-// Gastos Generales
+// 7.2. Gastos Generales
+// Roles: Admin, Cliente, Contable, Comercial
 if (in_array($rol, [1, 2, 3, 4])) {
-    $finanzasItems[] = [
+    $contabilidadItems[] = [
         'label' => 'Gastos Generales',
-        'icon' => 'savings',
+        'icon' => 'account_balance_wallet',
         'children' => [
-            ['label' => '> Mostrar Gastos', 'url' => '../gastos/mostrar.php'],
-            ['label' => '> Nuevo Gasto', 'url' => '../gastos/nuevo.php']
+            ['label' => 'Mostrar Gastos', 'url' => '../gastos/mostrar.php'],
+            ['label' => 'Nuevo Gasto', 'url' => '../gastos/nuevo.php']
         ]
     ];
 }
-// Facturas y Comprobantes
+// 7.3. Facturación
+// Roles: Admin, Contable, Comercial
 if (in_array($rol, [1, 3, 4])) {
-    $finanzasItems[] = [
+    $contabilidadItems[] = [
         'label' => 'Facturación',
         'icon' => 'receipt',
         'children' => [
-            ['label' => '> Facturas', 'url' => '../factura/mostrar.php'],
-            ['label' => '> Comprobantes', 'url' => '../comprobante/mostrar.php']
+            ['label' => 'Facturas', 'url' => '../factura/mostrar.php'],
+            ['label' => 'Comprobantes', 'url' => '../comprobante/mostrar.php']
         ]
     ];
 }
+// 7.4. Historial de Ventas (También en sección Ventas)
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
-    $finanzasItems[] = [
-        'label' => 'HISTORIA VENTA',
-        'icon' => 'store',
+    $contabilidadItems[] = [
+        'label' => 'Historial de Ventas',
+        'icon' => 'receipt_long',
         'url' => '../venta/mostrar.php'
     ];
 }
-// Si hay elementos en finanzas, agregar al menú
-if (!empty($finanzasItems)) {
+// Agregar sección CONTABILIDAD al menú si hay elementos
+if (!empty($contabilidadItems)) {
     $menu[] = [
         'label' => 'CONTABILIDAD',
         'icon' => 'account_balance',
-        'id' => 'finanzas_group',
-        'children' => $finanzasItems
+        'id' => 'contabilidad_group',
+        'children' => $contabilidadItems
     ];
 }
-# ==================== GRUPO 6: ANÁLISIS Y REPORTES ====================
+// 8. ANÁLISIS Y REPORTES (Business Intelligence)
+// ========================================================================
 $reportesItems = [];
-// Reportes
+// 8.1. Reportes Detallados
+// Roles: Admin, Contable
 if (in_array($rol, [1, 3])) {
     $reportesItems[] = [
         'label' => 'Reportes',
-        'icon' => 'signal_cellular_alt',
+        'icon' => 'summarize',
         'children' => [
-            ['label' => '> Productos', 'url' => '../reporte/productos.php'],
-            ['label' => '> Clientes', 'url' => '../reporte/clientes.php'],
-            ['label' => '> Ventas', 'url' => '../reporte/ventas.php'],
-            ['label' => '> Técnicos', 'url' => '../reporte/tecnicos.php']
+            ['label' => 'Productos', 'url' => '../reporte/productos.php'],
+            ['label' => 'Clientes', 'url' => '../reporte/clientes.php'],
+            ['label' => 'Ventas', 'url' => '../reporte/ventas.php'],
+            ['label' => 'Técnicos', 'url' => '../reporte/tecnicos.php']
         ]
     ];
 }
-// Graficos Y estadisticas de tecnicos
+// 8.2. Estadísticas de Técnicos
+// Roles: Admin, Contable
 if (in_array($rol, [1, 3])) {
     $reportesItems[] = [
-        'label' => 'TECNICOS (BUILD)',
-        'icon' => 'signal_cellular_alt',
-        'url' => 'bodega/graficos_tecnicos.php' ];
+        'label' => 'Estadísticas Técnicos',
+        'icon' => 'bar_chart',
+        'url' => '../bodega/graficos_tecnicos.php'
+    ];
 }
-// Gráficos
+// 8.3. Gráficos Generales
+// Roles: Admin, Contable
 if (in_array($rol, [1, 3])) {
     $reportesItems[] = [
         'label' => 'Gráficos',
-        'url' => '../graficos/mostrar.php',
-        'icon' => 'grain'
+        'icon' => 'show_chart',
+        'url' => '../graficos/mostrar.php'
     ];
 }
+// Agregar sección ANÁLISIS Y REPORTES al menú si hay elementos
 if (!empty($reportesItems)) {
     $menu[] = [
         'label' => 'ANÁLISIS Y REPORTES',
@@ -364,39 +527,45 @@ if (!empty($reportesItems)) {
         'children' => $reportesItems
     ];
 }
-# ==================== GRUPO 7: ADMINISTRACIÓN DEL SISTEMA ====================
+// 9. ADMINISTRACIÓN (Gestión del sistema y usuarios)
 $adminItems = [];
-// Documentos Generales
+// 9.1. Documentos Generales
+// Roles: Todos excepto invitados (rol 0)
 if (!in_array($rol, [0])) {
     $adminItems[] = [
-        'label' => 'Docs Generales',
+        'label' => 'Documentos Generales',
         'icon' => 'library_books',
-        'url' => '../docs/mostrar.php',
+        'url' => '../docs/mostrar.php'
     ];
 }
-// Usuarios
+// 9.2. Gestión de Usuarios
+// Roles: Admin, Contable, Jefe Técnico
 if (in_array($rol, [1, 3, 5])) {
     $adminItems[] = [
         'label' => 'Usuarios',
-        'url' => '../usuario/mostrar.php',
-        'icon' => 'manage_accounts'
+        'icon' => 'manage_accounts',
+        'url' => '../usuario/mostrar.php'
     ];
 }
-// Configuración
+// 9.3. Configuración del Sistema
+// Roles: Admin, Contable, Jefe Técnico
 if (in_array($rol, [1, 3, 5])) {
     $adminItems[] = [
         'label' => 'Configuración',
-        'url' => '../cuenta/configuracion.php',
-        'icon' => 'settings'
+        'icon' => 'settings',
+        'url' => '../cuenta/configuracion.php'
     ];
 }
-if (in_array($rol, [1,2,3,4,5,6,7])){
+// 9.4. Mi Perfil
+// Roles: Todos los usuarios autenticados
+if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
     $adminItems[] = [
-        'label' => 'Perfil',
-        'url'   => '../cuenta/perfil.php',
-        'icon'  => 'settings_account_box'
+        'label' => 'Mi Perfil',
+        'icon' => 'account_circle',
+        'url' => '../cuenta/perfil.php'
     ];
 }
+// Agregar sección ADMINISTRACIÓN al menú si hay elementos
 if (!empty($adminItems)) {
     $menu[] = [
         'label' => 'ADMINISTRACIÓN',
@@ -405,27 +574,47 @@ if (!empty($adminItems)) {
         'children' => $adminItems
     ];
 }
-# ==================== PANELES DE CONTROL ====================
-
-
-# ==================== OPCIONES FINALES ====================
-// Información de versión (solo para desarrollo)
-if (in_array($rol, [1, 7])) { // Solo admin y bodega ven la versión
+// 10. DESARROLLO (Solo para testing - ELIMINAR EN PRODUCCIÓN)
+// TODO: Eliminar esta sección antes de deployment en producción
+if (in_array($rol, [1])) { // Solo Administrador
+    $panelesItems = [
+        ['label' => 'Panel Admin', 'url' => '../administrador/escritorio.php'],
+        ['label' => 'Panel Usuario Genérico', 'url' => '../u_generico/escritorio.php'],
+        ['label' => 'Panel Contable', 'url' => '../contable/escritorio.php'],
+        ['label' => 'Panel Comercial', 'url' => '../comercial/escritorio.php'],
+        ['label' => 'Panel Jefe Técnico', 'url' => '../jtecnico/escritorio.php'],
+        ['label' => 'Panel Técnico', 'url' => '../tecnico/escritorio.php'],
+        ['label' => 'Panel Bodega', 'url' => '../bodega/escritorio.php'],
+        ['label' => 'Panel Avanzado (Dev)', 'url' => '../administrador/dev.php']
+    ];
+    if (!empty($panelesItems)) {
+        $menu[] = [
+            'label' => 'DESARROLLO',
+            'icon' => 'code',
+            'id' => 'dev_group',
+            'children' => $panelesItems
+        ];
+    }
+}
+// 11. INFORMACIÓN DEL SISTEMA
+// Versión del sistema (Solo Admin y Bodega)
+if (in_array($rol, [1, 7])) {
     $menu[] = [
         'label' => 'Información',
         'icon' => 'info',
         'children' => [
             ['label' => 'Versión: 0.790', 'url' => '#'],
-            ['label' =>  'αlfa - Septiembre 2025', 'url' => '#']
+            ['label' => 'Alfa - Octubre 2025', 'url' => '#']
         ]
     ];
 }
-// Salir - siempre al final
+// 12. CERRAR SESIÓN
+// Opción de salir - siempre visible para usuarios autenticados
 if (!in_array($rol, [0])) {
     $menu[] = [
         'label' => 'Salir',
-        'url' => '../cuenta/salir.php',
-        'icon' => 'logout'
+        'icon' => 'logout',
+        'url' => '../cuenta/salir.php'
     ];
 }
 ?>

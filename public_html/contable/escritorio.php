@@ -2,14 +2,11 @@
 <?php
 ob_start();
 session_start();
-
 if(!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1,3])){
     header('location: ../error404.php');
     exit;
 }
-
 require_once('../../config/ctconex.php');
-
 // Obtener información del usuario
 $userInfo = [];
 if (isset($_SESSION['id'])) {
@@ -18,10 +15,8 @@ if (isset($_SESSION['id'])) {
     $stmtUser->execute([':id' => $_SESSION['id']]);
     $userInfo = $stmtUser->fetch(PDO::FETCH_ASSOC);
 }
-
 // Estadísticas de ventas
 $usuario_id = $_SESSION['id'];
-
 // Ventas totales del día
 $sql_ventas_dia = "SELECT COUNT(*) as total_ventas,
                    SUM(total_price) as total_dinero,
@@ -31,7 +26,6 @@ $sql_ventas_dia = "SELECT COUNT(*) as total_ventas,
 $stmt_ventas_dia = $connect->prepare($sql_ventas_dia);
 $stmt_ventas_dia->execute();
 $stats_ventas_dia = $stmt_ventas_dia->fetch(PDO::FETCH_ASSOC);
-
 // Ventas del mes
 $sql_ventas_mes = "SELECT COUNT(*) as total_ventas,
                    SUM(total_price) as total_dinero,
@@ -42,12 +36,10 @@ $sql_ventas_mes = "SELECT COUNT(*) as total_ventas,
 $stmt_ventas_mes = $connect->prepare($sql_ventas_mes);
 $stmt_ventas_mes->execute();
 $stats_ventas_mes = $stmt_ventas_mes->fetch(PDO::FETCH_ASSOC);
-
 // Total de clientes
 $sql_clientes = "SELECT COUNT(*) as total FROM clientes WHERE estad = 'Activo'";
 $stmt_clientes = $connect->query($sql_clientes);
 $total_clientes = $stmt_clientes->fetch(PDO::FETCH_ASSOC)['total'];
-
 // Ventas recientes (últimas 10)
 $sql_ventas_recientes = "SELECT o.*, u.nombre as vendedor_nombre
                          FROM orders o
@@ -97,7 +89,7 @@ $ventas_recientes = $stmt_ventas_recientes->fetchAll(PDO::FETCH_ASSOC);
             margin: 0;
         }
         .welcome-banner {
-            background: linear-gradient(135deg, #F0DD00 0%, #FFE500 100%);
+            background: #7AD48E;
             color: #333;
             padding: 40px;
             border-radius: 15px;
@@ -145,7 +137,7 @@ $ventas_recientes = $stmt_ventas_recientes->fetchAll(PDO::FETCH_ASSOC);
             box-shadow: 0 8px 20px rgba(43, 65, 204, 0.3);
         }
         .btn-clientes {
-            background: linear-gradient(135deg, #00CC54 0%, #00E05F 100%);
+            background: #2B6B5D;
             color: white;
         }
         .btn-clientes:hover {
@@ -176,7 +168,6 @@ $ventas_recientes = $stmt_ventas_recientes->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
         <div id="content">
             <!-- Top Navbar -->
             <div class="top-navbar">
@@ -211,11 +202,9 @@ $ventas_recientes = $stmt_ventas_recientes->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </nav>
             </div>
-
             <!-- Main Content -->
             <div class="main-content">
                 <div class="container-fluid">
-
                     <!-- Welcome Banner -->
                     <div class="welcome-banner">
                         <h2>💰 Panel Contable</h2>
@@ -226,7 +215,6 @@ $ventas_recientes = $stmt_ventas_recientes->fetchAll(PDO::FETCH_ASSOC);
                             <?php echo date('l, d \d\e F Y'); ?>
                         </p>
                     </div>
-
                     <!-- Estadísticas Rápidas -->
                     <div class="row">
                         <div class="col-md-3">
@@ -268,7 +256,6 @@ $ventas_recientes = $stmt_ventas_recientes->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                         </div>
                     </div>
-
                     <!-- Acciones Rápidas -->
                     <div class="row mt-4">
                         <div class="col-lg-8">
@@ -314,7 +301,6 @@ $ventas_recientes = $stmt_ventas_recientes->fetchAll(PDO::FETCH_ASSOC);
                                 </div>
                             </div>
                         </div>
-
                         <!-- Ventas Recientes -->
                         <div class="col-lg-4">
                             <div class="card dashboard-card">
@@ -327,7 +313,7 @@ $ventas_recientes = $stmt_ventas_recientes->fetchAll(PDO::FETCH_ASSOC);
                                             <div class="recent-item">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <div>
-                                                        <strong>Orden #<?php echo $venta['id']; ?></strong><br>
+                                                        <strong>Orden #<?php echo $venta['idord']; ?></strong><br>
                                                         <small class="text-muted">
                                                             <i class="material-icons" style="font-size: 14px; vertical-align: middle;">person</i>
                                                             <?php echo htmlspecialchars($venta['vendedor_nombre'] ?? 'Sin vendedor'); ?>
@@ -359,12 +345,10 @@ $ventas_recientes = $stmt_ventas_recientes->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
-
     <!-- Scripts -->
     <script src="../assets/js/jquery-3.3.1.slim.min.js"></script>
     <script src="../assets/js/popper.min.js"></script>
