@@ -1,0 +1,14 @@
+{
+  "intelephense.rename.namespaceMode": "all",
+  "intelephense.phpdoc.textFormat": "snippet",
+  "indentRainbow.indicatorStyle": "classic",
+  "intelephense.phpdoc.classTemplate": {
+
+    "summary": "$1",
+    "tags": [
+      "@package ${1:$SYMBOL_NAMESPACE}"
+    ]
+  }
+}
+
+
