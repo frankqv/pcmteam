@@ -400,7 +400,7 @@ if (isset($_SESSION['id'])) {
                                                     <th>ID</th>
                                                     <th>Fecha</th>
                                                     <th>Descripción</th>
-                                                    <th>Cantidad</th>
+                                                    <th>Cant. Referencias</th>
                                                     <th>Estado</th>
                                                     <th>Acciones</th>
                                                 </tr>
