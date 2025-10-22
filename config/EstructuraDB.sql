@@ -9,72 +9,71 @@ SET time_zone = "+00:00";
 
 
 CREATE TABLE `bodega_asignaciones` (
-  `id` int NOT NULL,
-  `tecnico_id` int NOT NULL,
-  `inventario_id` int NOT NULL,
-  `fecha_asignacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `usuario_id` int DEFAULT NULL
+  `id` int(11) NOT NULL,
+  `tecnico_id` int(11) NOT NULL,
+  `inventario_id` int(11) NOT NULL,
+  `fecha_asignacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `usuario_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `bodega_cart_compra` (
-  `id` int NOT NULL,
-  `usuario_id` int NOT NULL,
-  `inventario_id` int NOT NULL,
-  `qty` int NOT NULL DEFAULT '1',
+  `id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `inventario_id` int(11) NOT NULL,
+  `qty` int(11) NOT NULL DEFAULT 1,
   `precio_unit` decimal(12,2) DEFAULT NULL,
-  `subtotal` decimal(12,2) GENERATED ALWAYS AS ((`qty` * ifnull(`precio_unit`,0))) STORED,
-  `added_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `subtotal` decimal(12,2) GENERATED ALWAYS AS (`qty` * ifnull(`precio_unit`,0)) STORED,
+  `added_at` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bodega_compra` (
-  `id` int NOT NULL,
-  `proveedor_id` int DEFAULT NULL,
-  `usuario_id` int NOT NULL,
-  `total_compra` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `fecha_compra` datetime DEFAULT CURRENT_TIMESTAMP,
-  `estado` enum('pendiente','recibido','cancelado') COLLATE utf8mb4_unicode_ci DEFAULT 'pendiente',
-  `tipo_doc` enum('factura','remision','otro') COLLATE utf8mb4_unicode_ci DEFAULT 'factura',
-  `referencia` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `evidencia` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `id` int(11) NOT NULL,
+  `proveedor_id` int(11) DEFAULT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `total_compra` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `fecha_compra` datetime DEFAULT current_timestamp(),
+  `estado` enum('pendiente','recibido','cancelado') DEFAULT 'pendiente',
+  `tipo_doc` enum('factura','remision','otro') DEFAULT 'factura',
+  `referencia` varchar(150) DEFAULT NULL,
+  `evidencia` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bodega_control_calidad` (
-  `id` int NOT NULL,
-  `inventario_id` int NOT NULL COMMENT 'ID del equipo en inventario',
-  `fecha_control` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `tecnico_id` int NOT NULL COMMENT 'ID del técnico que realiza el control',
-  `burning_test` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Resultado de Burning Test',
-  `sentinel_test` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Resultado de Sentinel',
-  `estado_final` enum('aprobado','rechazado') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `categoria_rec` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Categorización REC',
-  `observaciones` text COLLATE utf8mb4_unicode_ci
+  `id` int(11) NOT NULL,
+  `inventario_id` int(11) NOT NULL COMMENT 'ID del equipo en inventario',
+  `fecha_control` datetime NOT NULL DEFAULT current_timestamp(),
+  `tecnico_id` int(11) NOT NULL COMMENT 'ID del técnico que realiza el control',
+  `burning_test` text NOT NULL COMMENT 'Resultado de Burning Test',
+  `sentinel_test` text NOT NULL COMMENT 'Resultado de Sentinel',
+  `estado_final` enum('aprobado','rechazado') NOT NULL,
+  `categoria_rec` varchar(50) NOT NULL COMMENT 'Categorización REC',
+  `observaciones` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bodega_control_calidad` (`id`, `inventario_id`, `fecha_control`, `tecnico_id`, `burning_test`, `sentinel_test`, `estado_final`, `categoria_rec`, `observaciones`) VALUES
 (8, 57, '2025-09-19 09:27:14', 1, 'bien', 'bien', 'aprobado', 'REC-A', 'n/d'),
-(9, 109, '2025-09-29 10:05:58', 1, 'Super, ligero sobrecalentamiento', 'vida del disco al 98||', 'aprobado', 'REC-A', 'Esta lisot para la venta'),
-(10, 125, '2025-10-02 11:41:12', 33, 'todo okay', 'todo okay', 'aprobado', 'REC-A', 'todo OKAY en control de calidad');
+(9, 106, '2025-09-24 22:18:01', 38, 'okay', 'okay', 'aprobado', 'REC-A', 'okay');
 
 CREATE TABLE `bodega_diagnosticos` (
-  `id` int NOT NULL,
-  `inventario_id` int NOT NULL COMMENT 'ID del equipo en inventario',
-  `fecha_diagnostico` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `tecnico_id` int NOT NULL COMMENT 'ID del técnico que realiza el diagnóstico',
-  `camara` text COLLATE utf8mb4_unicode_ci COMMENT 'Resultado prueba de cámara',
-  `teclado` text COLLATE utf8mb4_unicode_ci COMMENT 'Resultado prueba de teclado',
-  `parlantes` text COLLATE utf8mb4_unicode_ci COMMENT 'Resultado prueba de audio',
-  `bateria` text COLLATE utf8mb4_unicode_ci COMMENT 'Resultado prueba de batería',
-  `microfono` text COLLATE utf8mb4_unicode_ci COMMENT 'Resultado prueba de micrófono',
-  `pantalla` text COLLATE utf8mb4_unicode_ci COMMENT 'Resultado prueba de pantalla',
-  `puertos` text COLLATE utf8mb4_unicode_ci COMMENT 'Resultado prueba de puertos',
-  `disco` text COLLATE utf8mb4_unicode_ci COMMENT 'Resultado prueba de disco',
-  `falla_electrica` enum('si','no') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'no',
-  `detalle_falla_electrica` text COLLATE utf8mb4_unicode_ci,
-  `falla_estetica` enum('si','no') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'no',
-  `detalle_falla_estetica` text COLLATE utf8mb4_unicode_ci,
-  `estado_reparacion` enum('falla_mecanica','falla_electrica','reparacion_cosmetica','aprobado') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `observaciones` text COLLATE utf8mb4_unicode_ci
+  `id` int(11) NOT NULL,
+  `inventario_id` int(11) NOT NULL COMMENT 'ID del equipo en inventario',
+  `fecha_diagnostico` datetime NOT NULL DEFAULT current_timestamp(),
+  `tecnico_id` int(11) NOT NULL COMMENT 'ID del técnico que realiza el diagnóstico',
+  `camara` text DEFAULT NULL COMMENT 'Resultado prueba de cámara',
+  `teclado` text DEFAULT NULL COMMENT 'Resultado prueba de teclado',
+  `parlantes` text DEFAULT NULL COMMENT 'Resultado prueba de audio',
+  `bateria` text DEFAULT NULL COMMENT 'Resultado prueba de batería',
+  `microfono` text DEFAULT NULL COMMENT 'Resultado prueba de micrófono',
+  `pantalla` text DEFAULT NULL COMMENT 'Resultado prueba de pantalla',
+  `puertos` text DEFAULT NULL COMMENT 'Resultado prueba de puertos',
+  `disco` text DEFAULT NULL COMMENT 'Resultado prueba de disco',
+  `falla_electrica` enum('si','no') NOT NULL DEFAULT 'no',
+  `detalle_falla_electrica` text DEFAULT NULL,
+  `falla_estetica` enum('si','no') NOT NULL DEFAULT 'no',
+  `detalle_falla_estetica` text DEFAULT NULL,
+  `estado_reparacion` enum('falla_mecanica','falla_electrica','reparacion_cosmetica','aprobado') NOT NULL,
+  `observaciones` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bodega_diagnosticos` (`id`, `inventario_id`, `fecha_diagnostico`, `tecnico_id`, `camara`, `teclado`, `parlantes`, `bateria`, `microfono`, `pantalla`, `puertos`, `disco`, `falla_electrica`, `detalle_falla_electrica`, `falla_estetica`, `detalle_falla_estetica`, `estado_reparacion`, `observaciones`) VALUES
@@ -82,53 +81,59 @@ INSERT INTO `bodega_diagnosticos` (`id`, `inventario_id`, `fecha_diagnostico`, `
 (61, 57, '2025-09-19 09:18:27', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: %', 'no', NULL, 'no', NULL, 'aprobado', ''),
 (62, 59, '2025-09-23 16:50:03', 36, 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 76', 'no', '', 'si', 'una tecla pelada (a)', 'falla_electrica', 'no sirve parlante'),
 (63, 59, '2025-09-23 16:56:13', 36, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: %', 'no', NULL, 'no', NULL, 'falla_electrica', 'falla padmaouse'),
-(64, 109, '2025-09-24 15:04:59', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 100', 'si', 'falla', 'si', 'falla', 'aprobado', 'testando ando'),
-(65, 109, '2025-09-24 15:05:05', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 100', 'si', 'falla', 'si', 'falla', 'aprobado', 'testando ando'),
-(66, 227, '2025-09-27 12:24:03', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"MALO\",\"HDMI\":\"BUENO\",\"USB\":\"MALO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 98', 'si', 'limpieza¿Presenta falla eléctrica?', 'si', 'Fallas Estéticas', 'aprobado', 'observacion Gobal'),
-(71, 156, '2025-09-27 12:24:03', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"MALO\",\"HDMI\":\"BUENO\",\"USB\":\"MALO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 98', 'si', 'limpieza¿Presenta falla eléctrica?', 'si', 'Fallas Estéticas', 'aprobado', 'observacion Gobal'),
-(72, 127, '2025-09-29 17:45:46', 1, 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"MALO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 78', 'si', 'fallo 1 Electronico puerto usb balsatados', 'si', '2 Detalle de la falla estética', 'aprobado', 'AAAAAAA observacioens'),
-(73, 227, '2025-10-02 10:01:30', 1, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 95', 'si', 'Fallo eléctrico Puerto sulfatado', 'si', 'Esquinas de portátiles para reconstrucción, y tapas talladas', 'aprobado', 'sobre calentamiento'),
-(74, 127, '2025-10-02 10:01:30', 1, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 95', 'si', 'Fallo eléctrico Puerto sulfatado', 'si', 'Esquinas de portátiles para reconstrucción, y tapas talladas', 'aprobado', 'sobre calentamiento'),
-(78, 141, '2025-10-02 10:01:30', 1, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 95', 'si', 'Fallo eléctrico Puerto sulfatado', 'si', 'Esquinas de portátiles para reconstrucción, y tapas talladas', 'aprobado', 'sobre calentamiento'),
-(79, 143, '2025-10-02 10:01:30', 1, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 95', 'si', 'Fallo eléctrico Puerto sulfatado', 'si', 'Esquinas de portátiles para reconstrucción, y tapas talladas', 'aprobado', 'sobre calentamiento'),
-(80, 144, '2025-10-02 10:01:30', 1, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 95', 'si', 'Fallo eléctrico Puerto sulfatado', 'si', 'Esquinas de portátiles para reconstrucción, y tapas talladas', 'aprobado', 'sobre calentamiento');
+(64, 79, '2025-09-23 22:17:45', 36, 'BUENO', 'BUENO', 'BUENO', 'N/D', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"N\\/D\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 93', 'no', '', 'no', '', 'aprobado', 'Pendiente por probar puertos de red y hmdi'),
+(65, 64, '2025-09-23 22:38:16', 36, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"N\\/D\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 93', 'no', '', 'no', '', 'aprobado', 'Pendientes puertos de red y hdmi'),
+(66, 78, '2025-09-23 22:51:22', 36, 'BUENO', 'BUENO', 'BUENO', 'N/D', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"N\\/D\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 0', 'no', '', 'no', '', 'aprobado', 'Pendientes puertos de red y hdmi'),
+(67, 105, '2025-09-24 14:17:59', 1, 'MALO', 'BUENO', 'MALO', 'BUENO', 'MALO', 'MALO', '{\"VGA\":\"BUENO\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 100', 'si', 'falla electrica', 'si', 'falla estica2', 'aprobado', 'Falta el puerto'),
+(68, 65, '2025-09-24 14:27:15', 36, 'BUENO', 'BUENO', 'BUENO', 'N/D', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"N\\/D\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 99', 'no', '', 'no', '', 'aprobado', 'buenas condiciones'),
+(69, 106, '2025-09-24 14:34:14', 1, 'MALO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'MALO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 100', 'si', 'falla 1', 'si', 'si tiene falla 2', 'aprobado', 'teiene una falla'),
+(70, 106, '2025-09-24 15:19:10', 1, 'BUENO', 'BUENO', 'MALO', 'MALO', 'BUENO', 'MALO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"N\\/D\",\"USB\":\"N\\/D\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 93', 'si', 'puerto, camara borrosa', 'si', 'rayones', 'aprobado', 'okay'),
+(71, 106, '2025-09-24 15:22:56', 1, 'BUENO', 'BUENO', 'BUENO', 'MALO', 'MALO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 100', 'no', '', 'no', '', 'aprobado', 'okay'),
+(72, 106, '2025-09-24 15:51:31', 1, 'BUENO', 'BUENO', 'BUENO', 'N/D', 'MALO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 100', 'no', '', 'no', '', 'aprobado', 'okay'),
+(73, 106, '2025-09-24 16:16:14', 1, 'BUENO', 'BUENO', 'BUENO', 'N/D', 'MALO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"N\\/D\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"MALO\"}', 'Estado: N/D; Vida útil: 100', 'si', 'microfono', 'si', 'rayones', 'aprobado', 'revision'),
+(74, 62, '2025-09-24 17:16:25', 36, 'BUENO', 'BUENO', 'BUENO', 'N/D', 'BUENO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 99', 'no', '', 'no', '', 'aprobado', 'pendiente red y hdmi'),
+(75, 62, '2025-09-24 17:19:56', 36, 'BUENO', 'BUENO', 'BUENO', 'N/D', 'BUENO', 'MALO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 99', 'no', '', 'no', '', 'falla_electrica', 'pantalla manchada y puertos pendientes red y hmdi'),
+(76, 60, '2025-09-24 17:26:27', 36, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"N\\/D\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 0', 'no', '', 'no', '', 'aprobado', 'pendiente red y hdmi'),
+(77, 70, '2025-09-24 17:51:15', 36, 'BUENO', 'BUENO', 'BUENO', 'N/D', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"N\\/D\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 0', 'no', '', 'no', '', 'aprobado', 'buenas condiciones'),
+(78, 69, '2025-09-24 17:59:58', 36, 'BUENO', 'BUENO', 'BUENO', 'N/D', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"N\\/D\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 100', 'no', '', 'no', '', 'aprobado', 'buenas condiciones'),
+(79, 102, '2025-09-24 19:09:52', 36, 'BUENO', 'BUENO', 'BUENO', 'N/D', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"N\\/D\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 0', 'no', '', 'no', '', 'aprobado', 'Puertos pendientes  de red y hmdi'),
+(80, 85, '2025-09-24 19:21:14', 36, 'BUENO', 'BUENO', 'BUENO', 'N/D', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"N\\/D\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 96', 'no', '', 'no', '', 'aprobado', 'Pendiente puertos de red y hdmi'),
+(157, 140, '2025-09-30 09:29:38', 36, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"N\\/D\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 97', 'si', 'temperatura', 'no', '', 'falla_electrica', 'PENDIENTE PUERTOS DE RED Y HDMI'),
+(158, 154, '2025-09-30 09:31:45', 36, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"N\\/D\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 92', 'si', 'TEMPERATURA', 'no', '', 'falla_electrica', 'PENDIENTE PUERTOS DE RED Y HDMI'),
+(159, 129, '2025-09-30 09:35:04', 36, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', '{\"VGA\":\"N\\/D\",\"DVI\":\"N\\/D\",\"HDMI\":\"N\\/D\",\"USB\":\"BUENO\",\"Red\":\"N\\/D\"}', 'Estado: N/D; Vida útil: 90', 'si', 'TEMPERATURA', 'no', '', 'falla_electrica', 'PENDIENTE PUERTOS DE RED Y HDMI'),
+(160, 74, '2025-10-01 15:41:09', 12, 'MALO', 'N/D', 'MALO', 'BUENO', 'MALO', 'BUENO', '{\"VGA\":\"BUENO\",\"DVI\":\"BUENO\",\"HDMI\":\"BUENO\",\"USB\":\"BUENO\",\"Red\":\"BUENO\"}', 'Estado: N/D; Vida útil: 97%', 'no', NULL, 'no', NULL, 'falla_electrica', 'NO FUNCIONA CAMMARA Y MICROFONO, NO LE FUCIONA WIFI');
 
 CREATE TABLE `bodega_electrico` (
-  `id` int NOT NULL,
-  `inventario_id` int NOT NULL,
-  `fecha_proceso` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `tecnico_id` int NOT NULL,
-  `estado_bateria` text COLLATE utf8mb4_unicode_ci,
-  `estado_fuente` text COLLATE utf8mb4_unicode_ci,
-  `estado_puertos` text COLLATE utf8mb4_unicode_ci,
-  `estado_pantalla` text COLLATE utf8mb4_unicode_ci,
-  `estado_teclado` text COLLATE utf8mb4_unicode_ci,
-  `estado_audio` text COLLATE utf8mb4_unicode_ci,
-  `fallas_detectadas` text COLLATE utf8mb4_unicode_ci,
-  `reparaciones_realizadas` text COLLATE utf8mb4_unicode_ci,
-  `estado_final` enum('aprobado','rechazado','requiere_revision') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `observaciones` text COLLATE utf8mb4_unicode_ci
+  `id` int(11) NOT NULL,
+  `inventario_id` int(11) NOT NULL,
+  `fecha_proceso` datetime NOT NULL DEFAULT current_timestamp(),
+  `tecnico_id` int(11) NOT NULL,
+  `estado_bateria` text DEFAULT NULL,
+  `estado_fuente` text DEFAULT NULL,
+  `estado_puertos` text DEFAULT NULL,
+  `estado_pantalla` text DEFAULT NULL,
+  `estado_teclado` text DEFAULT NULL,
+  `estado_audio` text DEFAULT NULL,
+  `fallas_detectadas` text DEFAULT NULL,
+  `reparaciones_realizadas` text DEFAULT NULL,
+  `estado_final` enum('aprobado','rechazado','requiere_revision') NOT NULL,
+  `observaciones` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bodega_electrico` (`id`, `inventario_id`, `fecha_proceso`, `tecnico_id`, `estado_bateria`, `estado_fuente`, `estado_puertos`, `estado_pantalla`, `estado_teclado`, `estado_audio`, `fallas_detectadas`, `reparaciones_realizadas`, `estado_final`, `observaciones`) VALUES
 (5, 57, '2025-09-19 09:23:02', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'Reparado, Puerto USB lateral ', 'Reparado, Puerto USB lateral ', 'aprobado', 'Todo bien'),
 (6, 57, '2025-09-19 09:23:19', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'Reparado, Puerto USB lateral ', 'Reparado, Puerto USB lateral ', 'aprobado', 'Todo bien'),
-(7, 109, '2025-09-29 09:38:19', 1, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'Reparacion de puertos sulfatados', 'Cambio de puertos \r\nReconstrucion de posamanos', 'aprobado', 'Rayones en tapa superior'),
-(8, 122, '2025-09-29 10:35:24', 1, 'REGULAR', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'REGULAR', 'falla 1 ', 'falla 2 Reparacion', 'rechazado', 'revision'),
-(9, 122, '2025-09-29 10:36:54', 1, 'REGULAR', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'REGULAR', 'falla 1 ', 'falla 2 Reparacion', 'rechazado', 'revision'),
-(10, 122, '2025-09-29 10:37:59', 1, 'REGULAR', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'REGULAR', 'falla 1 ', 'falla 2 Reparacion', 'rechazado', 'revision'),
-(11, 122, '2025-09-29 10:38:01', 1, 'REGULAR', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'REGULAR', 'falla 1 ', 'falla 2 Reparacion', 'rechazado', 'revision'),
-(12, 122, '2025-09-29 10:38:01', 1, 'REGULAR', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'REGULAR', 'falla 1 ', 'falla 2 Reparacion', 'rechazado', 'revision'),
-(13, 125, '2025-10-02 11:37:38', 33, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'Se reparo los puertos sulfatados, \r\nPin de carga doblado', 'reparacion de pin de carga', 'aprobado', '');
+(7, 106, '2025-09-24 22:16:56', 38, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'okay', 'okay', 'aprobado', 'okay'),
+(8, 106, '2025-09-24 22:17:03', 38, 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'BUENO', 'okay', 'okay', 'aprobado', 'okay');
 
 CREATE TABLE `bodega_entradas` (
-  `id` int NOT NULL,
-  `inventario_id` int NOT NULL COMMENT 'ID del equipo en inventario',
-  `fecha_entrada` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `proveedor_id` int NOT NULL COMMENT 'ID del proveedor',
-  `usuario_id` int NOT NULL COMMENT 'ID del usuario que registra',
-  `cantidad` int NOT NULL DEFAULT '1',
-  `observaciones` text COLLATE utf8mb4_unicode_ci
+  `id` int(11) NOT NULL,
+  `inventario_id` int(11) NOT NULL COMMENT 'ID del equipo en inventario',
+  `fecha_entrada` datetime NOT NULL DEFAULT current_timestamp(),
+  `proveedor_id` int(11) NOT NULL COMMENT 'ID del proveedor',
+  `usuario_id` int(11) NOT NULL COMMENT 'ID del usuario que registra',
+  `cantidad` int(11) NOT NULL DEFAULT 1,
+  `observaciones` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bodega_entradas` (`id`, `inventario_id`, `fecha_entrada`, `proveedor_id`, `usuario_id`, `cantidad`, `observaciones`) VALUES
@@ -137,107 +142,116 @@ INSERT INTO `bodega_entradas` (`id`, `inventario_id`, `fecha_entrada`, `proveedo
 (30, 58, '2025-09-23 14:47:11', 1, 1, 1, 'Prueba de inserción'),
 (31, 59, '2025-09-23 15:23:33', 1, 1, 1, 'Prueba de inserción'),
 (32, 105, '2025-09-23 19:36:40', 1, 1, 1, 'Prueba de inserción'),
-(33, 106, '2025-09-23 15:40:49', 1, 1, 1, 'Prueba de inserción'),
-(34, 107, '2025-09-24 11:50:16', 1, 1, 1, 'Prueba de inserción'),
-(35, 108, '2025-09-24 12:00:35', 1, 1, 1, 'Prueba de inserción'),
-(36, 109, '2025-09-24 12:03:40', 8, 1, 1, 'rayones'),
-(40, 116, '2025-09-26 15:32:37', 24, 1, 1, 'Importado desde Excel - Fila 2'),
-(41, 227, '2025-09-27 10:35:03', 8, 1, 1, 'n/d'),
-(42, 228, '2025-10-04 10:19:12', 1, 1, 1, 'Importado desde Excel - Fila 2'),
-(43, 229, '2025-10-04 10:19:12', 1, 1, 1, 'Importado desde Excel - Fila 3'),
-(44, 357, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2025'),
-(45, 358, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2026'),
-(46, 359, '2025-10-09 15:37:46', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2027'),
-(185, 435, '2025-10-09 16:59:40', 1, 1, 1, 'Importado desde Excel - Lote: CUCUTA9_octubre2026 - n/d'),
-(186, 436, '2025-10-09 16:59:40', 1, 1, 1, 'Importado desde Excel - Lote: CUCUTA9_octubre2026 - n/d'),
-(187, 437, '2025-10-09 16:59:40', 1, 1, 1, 'Importado desde Excel - Lote: CUCUTA9_octubre2026 - n/d');
+(33, 106, '2025-09-24 14:31:38', 1, 1, 1, 'Prueba de inserción'),
+(34, 162, '2025-09-26 22:31:11', 24, 1, 1, ''),
+(35, 227, '2025-10-09 21:33:26', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2026'),
+(36, 228, '2025-10-09 21:33:26', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2027'),
+(37, 229, '2025-10-09 21:33:26', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2028'),
+(38, 230, '2025-10-09 21:33:26', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2029'),
+(39, 231, '2025-10-09 21:33:26', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2030'),
+(40, 232, '2025-10-09 21:33:26', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2031'),
+(41, 233, '2025-10-09 21:33:26', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2032'),
+(42, 234, '2025-10-09 21:33:26', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2033'),
+(43, 235, '2025-10-09 21:33:26', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2034'),
+(44, 236, '2025-10-09 21:33:26', 1, 1, 1, 'Importado desde Excel - Lote: medellin9_octubre2035'),
+(113, 305, '2025-10-09 22:00:02', 1, 1, 1, 'Importado desde Excel - Lote: CUCUTA9_octubre2026 - n/d'),
+(114, 306, '2025-10-09 22:00:02', 1, 1, 1, 'Importado desde Excel - Lote: CUCUTA9_octubre2026 - n/d');
 
 CREATE TABLE `bodega_estetico` (
-  `id` int NOT NULL,
-  `inventario_id` int NOT NULL,
-  `fecha_proceso` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `tecnico_id` int NOT NULL,
-  `estado_carcasa` text COLLATE utf8mb4_unicode_ci,
-  `estado_pantalla_fisica` text COLLATE utf8mb4_unicode_ci,
-  `estado_teclado_fisico` text COLLATE utf8mb4_unicode_ci,
-  `rayones_golpes` text COLLATE utf8mb4_unicode_ci,
-  `limpieza_realizada` enum('si','no') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'no',
-  `partes_reemplazadas` text COLLATE utf8mb4_unicode_ci,
-  `grado_asignado` enum('A','B','C','SCRAP') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `estado_final` enum('aprobado','rechazado','requiere_revision') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `observaciones` text COLLATE utf8mb4_unicode_ci
+  `id` int(11) NOT NULL,
+  `inventario_id` int(11) NOT NULL,
+  `fecha_proceso` datetime NOT NULL DEFAULT current_timestamp(),
+  `tecnico_id` int(11) NOT NULL,
+  `estado_carcasa` text DEFAULT NULL,
+  `estado_pantalla_fisica` text DEFAULT NULL,
+  `estado_teclado_fisico` text DEFAULT NULL,
+  `rayones_golpes` text DEFAULT NULL,
+  `limpieza_realizada` enum('si','no') NOT NULL DEFAULT 'no',
+  `partes_reemplazadas` text DEFAULT NULL,
+  `grado_asignado` enum('A','B','C','SCRAP') NOT NULL,
+  `estado_final` enum('aprobado','rechazado','requiere_revision') NOT NULL,
+  `observaciones` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bodega_estetico` (`id`, `inventario_id`, `fecha_proceso`, `tecnico_id`, `estado_carcasa`, `estado_pantalla_fisica`, `estado_teclado_fisico`, `rayones_golpes`, `limpieza_realizada`, `partes_reemplazadas`, `grado_asignado`, `estado_final`, `observaciones`) VALUES
 (11, 57, '2025-09-19 09:25:29', 1, 'EXCELENTE', 'EXCELENTE', 'EXCELENTE', 'n/d', 'si', 'n/d', 'A', 'aprobado', ''),
-(12, 109, '2025-09-29 10:04:37', 1, 'EXCELENTE', 'EXCELENTE', 'BUENO', 'super', 'si', 'ninguna', 'A', 'aprobado', 'listo Observaciones Adicionales'),
-(13, 125, '2025-10-02 11:38:34', 33, 'EXCELENTE', 'EXCELENTE', 'EXCELENTE', 'todo Okay,', 'si', '', 'A', 'aprobado', 'Reparacion de pieza'),
-(14, 125, '2025-10-02 11:39:25', 33, 'EXCELENTE', 'EXCELENTE', 'EXCELENTE', 'todo Okay,', 'si', '', 'A', 'aprobado', 'Reparacion de pieza');
+(12, 106, '2025-09-24 22:17:29', 38, 'EXCELENTE', 'EXCELENTE', 'EXCELENTE', 'okay', 'si', 'okay', 'A', 'aprobado', 'okay'),
+(13, 106, '2025-09-24 22:17:35', 38, 'EXCELENTE', 'EXCELENTE', 'EXCELENTE', 'okay', 'si', 'okay', 'A', 'aprobado', 'okay');
 
 CREATE TABLE `bodega_ingresos` (
-  `id` int NOT NULL,
-  `orden_id` int NOT NULL,
+  `id` int(11) NOT NULL,
+  `orden_id` int(11) NOT NULL,
   `monto` decimal(12,2) NOT NULL,
-  `fecha_ingreso` datetime DEFAULT CURRENT_TIMESTAMP,
-  `metodo_pago` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `referencia_pago` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `recibido_por` int DEFAULT NULL,
-  `notas` text COLLATE utf8mb4_unicode_ci
+  `fecha_ingreso` datetime DEFAULT current_timestamp(),
+  `metodo_pago` varchar(100) DEFAULT NULL,
+  `referencia_pago` varchar(150) DEFAULT NULL,
+  `recibido_por` int(11) DEFAULT NULL,
+  `notas` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bodega_inventario` (
-  `id` int NOT NULL,
-  `codigo_g` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Código general del equipo',
-  `ubicacion` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Zona específica en bodega/laboratorio',
-  `posicion` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Posición exacta dentro de la ubicación',
-  `fecha_ingreso` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fecha_modificacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `producto` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Tipo de producto (Laptop, Desktop, Monitor, AIO, etc.)',
-  `marca` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Marca del equipo',
-  `serial` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Número de serie del fabricante',
-  `modelo` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Modelo o Referencia del equipo',
-  `procesador` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Especificaciones del procesador',
-  `ram` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Memoria RAM instalada',
-  `disco` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Tipo y capacidad del disco',
-  `pulgadas` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Tamaño de pantalla',
-  `observaciones` text COLLATE utf8mb4_unicode_ci COMMENT 'Notas técnicas y observaciones',
-  `grado` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `disposicion` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Estado actual del equipo en el proceso',
-  `estado` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'activo',
-  `tecnico_id` int DEFAULT NULL,
-  `pedido_id` int DEFAULT NULL,
-  `producto_id` int DEFAULT NULL,
-  `tactil` text COLLATE utf8mb4_unicode_ci,
-  `lote` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `activo_fijo` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `precio` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `foto` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `id` int(11) NOT NULL,
+  `codigo_g` varchar(50) NOT NULL COMMENT 'Código general del equipo',
+  `ubicacion` varchar(100) NOT NULL COMMENT 'Zona específica en bodega/laboratorio',
+  `posicion` varchar(50) NOT NULL COMMENT 'Posición exacta dentro de la ubicación',
+  `fecha_ingreso` datetime NOT NULL DEFAULT current_timestamp(),
+  `fecha_modificacion` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `producto` varchar(50) NOT NULL COMMENT 'Tipo de producto (Laptop, Desktop, Monitor, AIO, etc.)',
+  `marca` varchar(50) NOT NULL COMMENT 'Marca del equipo',
+  `serial` varchar(100) NOT NULL COMMENT 'Número de serie del fabricante',
+  `modelo` varchar(100) NOT NULL COMMENT 'Modelo o Referencia del equipo',
+  `procesador` varchar(100) DEFAULT NULL COMMENT 'Especificaciones del procesador',
+  `ram` varchar(50) DEFAULT NULL COMMENT 'Memoria RAM instalada',
+  `disco` varchar(100) DEFAULT NULL COMMENT 'Tipo y capacidad del disco',
+  `pulgadas` varchar(20) DEFAULT NULL COMMENT 'Tamaño de pantalla',
+  `observaciones` text DEFAULT NULL COMMENT 'Notas técnicas y observaciones',
+  `grado` varchar(50) DEFAULT NULL,
+  `disposicion` varchar(50) NOT NULL COMMENT 'Estado actual del equipo en el proceso',
+  `estado` varchar(20) NOT NULL DEFAULT 'activo',
+  `tecnico_id` int(11) DEFAULT NULL,
+  `pedido_id` int(11) DEFAULT NULL,
+  `producto_id` int(11) DEFAULT NULL,
+  `tactil` text DEFAULT NULL,
+  `lote` varchar(50) DEFAULT NULL,
+  `activo_fijo` varchar(50) DEFAULT NULL,
+  `precio` decimal(16,2) NOT NULL DEFAULT 0.00,
+  `foto` varchar(250) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `ubicacion`, `posicion`, `fecha_ingreso`, `fecha_modificacion`, `producto`, `marca`, `serial`, `modelo`, `procesador`, `ram`, `disco`, `pulgadas`, `observaciones`, `grado`, `disposicion`, `estado`, `tecnico_id`, `pedido_id`, `producto_id`, `tactil`, `lote`, `activo_fijo`, `precio`, `foto`) VALUES
-(108, 'TEST001', 'Principal', 'ESTANTE-TEST', '2025-09-24 12:00:35', '2025-10-06 14:26:33', 'Portatil', 'Dell', 'TEST123456789', 'Test Model', 'Intel Test', '8GB', '256GB SSD', '15.6', 'Equipo de prueba', 'A', 'en_proceso', 'activo', 13, NULL, NULL, 'NO', 'TEST-LOTE-001', NULL, 0.00, NULL),
-(109, 'EQ002', 'Principal', 'recibido_para_garantia', '2025-09-24 12:03:40', '2025-10-01 16:47:03', 'Desktop', 'Dell', 'HP987654321', 'EliteDesk 800', 'Intel i5-1135G7', '4GB', '512GB SSD', '16', 'rayones', 'B', 'Vendido', 'activo', 1, NULL, NULL, 'NO', 'pchekt542007-25', NULL, 0.00, NULL),
-(116, 'EQ032', 'Cucuta', 'De_vuelto_garantia', '2025-09-26 15:32:37', '2025-10-01 16:15:13', 'Portatil', 'Dell', 'DL123456789', 'Latitude 5520', 'Intel i5-1135G7', '8GB', '256GB SSD', '15.6', 'Equipo en buen estado', 'A', 'En revisión', 'activo', 13, NULL, NULL, 'NO', 'LOTE-2025-01', NULL, 0.00, NULL),
-(117, 'CLLPT1-5-198', 'Principal', 'ESTANTE-1-A', '2025-09-26 15:48:58', '2025-10-06 14:25:08', 'Portatil', 'Lenovo', 'PF1TKJVS', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_proceso', 'activo', 1, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(118, 'CLLPT1-5-202', 'Principal', 'ESTANTE-1-B', '2025-09-26 15:48:58', '2025-10-06 14:25:08', 'Portatil', 'Lenovo', 'PF1TKGL7', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_proceso', 'activo', 1, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(119, 'CLLPT1-5-204', 'Unilago', 'Recibido', '2025-09-26 15:48:58', '2025-10-01 16:48:33', 'Portatil', 'Lenovo', 'PF1TKC3S', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_diagnostico', 'activo', 8, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(120, 'CLLPT1-5-205', 'Principal', 'ESTANTE-1-D', '2025-09-26 15:48:58', '2025-10-06 14:26:12', 'Portatil', 'Lenovo', 'PF290E91', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_proceso', 'activo', 13, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(121, 'CLLPT1-5-207', 'Principal', 'ESTANTE-1-E', '2025-09-26 15:48:58', '2025-10-06 14:25:07', 'Portatil', 'Lenovo', 'PF290C50', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_proceso', 'activo', 1, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(122, 'CLLPT1-5-221', 'Principal', 'ESTANTE-2-A', '2025-09-26 15:48:58', '2025-09-29 10:38:01', 'Portatil', 'Lenovo', 'PF2BB7XR', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_revision', 'activo', 1, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(123, 'CLLPT1-5-222', 'Principal', 'ESTANTE-2-B', '2025-09-26 15:48:58', '2025-10-06 14:25:08', 'Portatil', 'Lenovo', 'PF2ASHL1', 'ThinkPad X1 Yoga 4th Gen', 'I7 8TH', '16GB', '512 SSD', '13.3', 'N/A', 'B', 'en_proceso', 'activo', 1, NULL, NULL, 'SI', 'COLSOF1', NULL, 0.00, NULL),
-(435, 'n_d_cucuta_oct25_15', 'Cucuta', 'Recibido', '2025-10-09 16:59:40', '2025-10-09 16:59:40', 'Desktop', 'Lenovo', 'MJPWN50', 'M77', 'AMD A8', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
-(436, 'n_d_cucuta_oct25_16', 'Cucuta', 'Recibido', '2025-10-09 16:59:40', '2025-10-09 16:59:40', 'Desktop', 'Dell', 'D8SQDF1', 'VOSTRO 200', 'PENTIUM', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
-(437, 'n_d_cucuta_oct25_17', 'Cucuta', 'Recibido', '2025-10-09 16:59:40', '2025-10-09 16:59:40', 'Desktop', 'Lenovo', 'PB44R6P', 'M77', 'AMD A8', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL);
+(57, 'LPPAD-  1432', 'Principal', 'Enviado', '2025-09-18 15:30:37', '2025-10-02 09:31:56', 'Portatil', 'HP', 'HP987654321', 'EliteDesk 800', 'Intel i5-1135G7', '8GB', '512GB SSD', '16', 'lista', 'B', 'Vendido', 'activo', 1, NULL, NULL, 'NO', 'pchekt542007-25', NULL, 1600000.00, NULL),
+(60, 'EULPT2-5-003', 'Principal', '', '2025-09-23 16:20:15', '2025-09-24 19:10:52', 'LAPTOP', 'LENOVO', 'PF1LJ4ME', 'T470', 'I5 6TH', '8GB', '256SSD', '14\"', 'proveedor_id: 1 | cantidad: 1', 'B', 'en_proceso', 'activo', 36, 1, NULL, 'SI', 'EULPT2-5', NULL, 0.00, NULL),
+(61, 'EULPT2-5-007', 'Principal', '', '2025-09-23 16:20:15', '2025-09-24 19:21:21', 'LAPTOP', 'LENOVO', 'PF18G3UC', 'T470', 'I5 6TH', '8GB', '256SSD', '14\"', 'proveedor_id: 1 | cantidad: 1', 'B', 'en_diagnostico', 'activo', 36, 1, NULL, 'SI', 'EULPT2-5', NULL, 0.00, NULL),
+(62, 'EULPT2-5-008', 'Principal', '', '2025-09-23 16:20:15', '2025-10-09 21:32:24', 'LAPTOP', 'LENOVO', 'PF1DS1YZ', 'T470', 'I5 6TH', '8GB', '256SSD', '14\"', 'Mancha en pantalla', 'B', 'Para Venta', 'activo', 38, 1, NULL, 'SI', 'EULPT2-5', NULL, 0.00, NULL),
+(63, 'EULPT2-5-023', 'Principal', '', '2025-09-23 16:20:15', '2025-09-24 19:21:06', 'LAPTOP', 'LENOVO', 'PF15R7EZ', 'T470', 'I5 6TH', '8GB', '256SSD', '14\"', 'proveedor_id: 1 | cantidad: 1', 'B', 'en_diagnostico', 'activo', 36, 1, NULL, 'SI', 'EULPT2-5', NULL, 0.00, NULL),
+(64, 'EULPT2-5-026', 'Principal', '', '2025-09-23 16:20:15', '2025-09-24 21:57:23', 'LAPTOP', 'LENOVO', 'PF15STG9', 'T470', 'I5 6TH', '8GB', '256SSD', '14\"', 'proveedor_id: 1 | cantidad: 1', 'B', 'en_proceso', 'activo', 38, 1, NULL, 'SI', 'EULPT2-5', NULL, 0.00, NULL),
+(65, 'EULPT2-5-028', 'Principal', '', '2025-09-23 16:20:15', '2025-09-24 18:05:26', 'LAPTOP', 'LENOVO', 'PF15RZL9', 'T470', 'I5 6TH', '8GB', '256SSD', '14\"', 'QUEBRADO ESQUINA | proveedor_id: 1 | cantidad: 1', 'B', 'en_proceso', 'activo', 38, 1, NULL, 'SI', 'EULPT2-5', NULL, 0.00, NULL),
+(66, 'EULPT2-5-031', 'Principal', '', '2025-09-23 16:20:15', '2025-09-26 11:31:32', 'LAPTOP', 'LENOVO', 'PF15GK8J', 'T470', 'I5 6TH', '8GB', '256SSD', '14\"', 'proveedor_id: 1 | cantidad: 1', 'B', 'en_proceso', 'activo', 12, 1, NULL, 'SI', 'EULPT2-5', NULL, 0.00, NULL),
+(67, 'EULPT2-5-032', 'Principal', '', '2025-09-23 16:20:15', '2025-09-24 15:33:57', 'LAPTOP', 'LENOVO', 'PF18AB8S', 'T470', 'I5 6TH', '8GB', '256SSD', '14\"', 'proveedor_id: 1 | cantidad: 1', 'B', 'en_proceso', 'activo', 38, 1, NULL, 'SI', 'EULPT2-5', NULL, 0.00, NULL),
+(68, 'EULPT2-5-035', 'Principal', '', '2025-09-23 16:20:15', '2025-10-01 09:35:19', 'LAPTOP', 'LENOVO', 'PF15RPV1', 'T470', 'I5 6TH', '8GB', '256SSD', '14\"', 'proveedor_id: 1 | cantidad: 1', 'B', 'en_proceso', 'activo', 38, 1, NULL, 'SI', 'EULPT2-5', NULL, 0.00, NULL),
+(69, 'EULPT2-5-041', 'Principal', '', '2025-09-23 16:20:15', '2025-09-24 21:06:50', 'LAPTOP', 'LENOVO', 'PF1LXW2Z', 'T470', 'I5 6TH', '8GB', '256SSD', '14\"', 'proveedor_id: 1 | cantidad: 1', 'B', 'en_proceso', 'activo', 38, 1, NULL, 'SI', 'EULPT2-5', NULL, 0.00, NULL),
+(70, 'EULPT2-5-046', 'Principal', '', '2025-09-23 16:20:15', '2025-09-24 21:07:30', 'LAPTOP', 'LENOVO', 'PF1LHRJQ', 'T470', 'I5 6TH', '8GB', '256SSD', '14\"', 'proveedor_id: 1 | cantidad: 1', 'B', 'en_diagnostico', 'activo', 38, 1, NULL, 'SI', 'EULPT2-5', NULL, 0.00, NULL),
+(297, 'n_d_cucuta_oct25_8', 'Cucuta', 'Recibido', '2025-10-09 22:00:02', '2025-10-09 22:00:02', 'Desktop', 'Lenovo', 'MJ07CM08', 'M710S', 'I5-6TH', '8GB', '500 HDD', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
+(298, 'n_d_cucuta_oct25_9', 'Cucuta', 'Recibido', '2025-10-09 22:00:02', '2025-10-09 22:00:02', 'Desktop', 'Lenovo', 'MJ05KEJR', 'M710S', 'I5-6TH', '8GB', '500 HDD', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
+(299, 'n_d_cucuta_oct25_10', 'Cucuta', 'Recibido', '2025-10-09 22:00:02', '2025-10-09 22:00:02', 'Desktop', 'Lenovo', 'MJPVZ17', 'M82', 'CELERON', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL);
+INSERT INTO `bodega_inventario` (`id`, `codigo_g`, `ubicacion`, `posicion`, `fecha_ingreso`, `fecha_modificacion`, `producto`, `marca`, `serial`, `modelo`, `procesador`, `ram`, `disco`, `pulgadas`, `observaciones`, `grado`, `disposicion`, `estado`, `tecnico_id`, `pedido_id`, `producto_id`, `tactil`, `lote`, `activo_fijo`, `precio`, `foto`) VALUES
+(300, 'n_d_cucuta_oct25_11', 'Cucuta', 'Recibido', '2025-10-09 22:00:02', '2025-10-09 22:00:02', 'Desktop', 'Lenovo', 'MJ040V2Z', 'M93', 'AMD A8', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
+(301, 'n_d_cucuta_oct25_12', 'Cucuta', 'Recibido', '2025-10-09 22:00:02', '2025-10-09 22:00:02', 'Desktop', 'Lenovo', 'MJPVE73', 'M90', 'CELERON', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
+(302, 'n_d_cucuta_oct25_13', 'Cucuta', 'Recibido', '2025-10-09 22:00:02', '2025-10-09 22:00:02', 'Desktop', 'Lenovo', 'MJLGW78', 'M92', 'CELERON', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
+(303, 'n_d_cucuta_oct25_14', 'Cucuta', 'Recibido', '2025-10-09 22:00:02', '2025-10-09 22:00:02', 'Desktop', 'Lenovo', 'MJ13622', 'M77', 'AMD A8', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
+(304, 'n_d_cucuta_oct25_15', 'Cucuta', 'Recibido', '2025-10-09 22:00:02', '2025-10-09 22:00:02', 'Desktop', 'Lenovo', 'MJPWN50', 'M77', 'AMD A8', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
+(305, 'n_d_cucuta_oct25_16', 'Cucuta', 'Recibido', '2025-10-09 22:00:02', '2025-10-09 22:00:02', 'Desktop', 'Dell', 'D8SQDF1', 'VOSTRO 200', 'PENTIUM', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL),
+(306, 'n_d_cucuta_oct25_17', 'Cucuta', 'Recibido', '2025-10-09 22:00:02', '2025-10-09 22:00:02', 'Desktop', 'Lenovo', 'PB44R6P', 'M77', 'AMD A8', '4GB', 'SIN DISCO', 'SFF', 'n/d', 'B', 'Para Venta', 'activo', NULL, NULL, NULL, 'NO', 'CUCUTA9_octubre2026', NULL, 0.00, NULL);
 
 CREATE TABLE `bodega_log_cambios` (
-  `id` int NOT NULL,
-  `inventario_id` int NOT NULL COMMENT 'ID del equipo en inventario',
-  `usuario_id` int NOT NULL COMMENT 'ID del usuario que realizó el cambio',
-  `fecha_cambio` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha y hora del cambio',
-  `campo_modificado` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Nombre del campo modificado',
-  `valor_anterior` text COLLATE utf8mb4_unicode_ci COMMENT 'Valor anterior del campo',
-  `valor_nuevo` text COLLATE utf8mb4_unicode_ci COMMENT 'Nuevo valor del campo',
-  `tipo_cambio` enum('edicion_manual','importacion','sistema') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'edicion_manual' COMMENT 'Tipo de cambio realizado'
+  `id` int(11) NOT NULL,
+  `inventario_id` int(11) NOT NULL COMMENT 'ID del equipo en inventario',
+  `usuario_id` int(11) NOT NULL COMMENT 'ID del usuario que realizó el cambio',
+  `fecha_cambio` datetime NOT NULL DEFAULT current_timestamp() COMMENT 'Fecha y hora del cambio',
+  `campo_modificado` varchar(100) NOT NULL COMMENT 'Nombre del campo modificado',
+  `valor_anterior` text DEFAULT NULL COMMENT 'Valor anterior del campo',
+  `valor_nuevo` text DEFAULT NULL COMMENT 'Nuevo valor del campo',
+  `tipo_cambio` enum('edicion_manual','importacion','sistema') NOT NULL DEFAULT 'edicion_manual' COMMENT 'Tipo de cambio realizado'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Log de cambios realizados en equipos del inventario';
 
 INSERT INTO `bodega_log_cambios` (`id`, `inventario_id`, `usuario_id`, `fecha_cambio`, `campo_modificado`, `valor_anterior`, `valor_nuevo`, `tipo_cambio`) VALUES
@@ -245,306 +259,288 @@ INSERT INTO `bodega_log_cambios` (`id`, `inventario_id`, `usuario_id`, `fecha_ca
 (30, 57, 1, '2025-09-19 09:23:19', 'disposicion_electrico', 'en_mantenimiento', 'pendiente_estetico', 'edicion_manual'),
 (31, 57, 1, '2025-09-19 09:25:29', 'disposicion', 'pendiente_estetico', 'pendiente_control_calidad', 'edicion_manual'),
 (32, 57, 1, '2025-09-19 09:27:14', 'disposicion', 'pendiente_control_calidad', 'Para Venta', 'edicion_manual'),
-(33, 109, 1, '2025-09-29 09:38:19', 'disposicion_electrico', 'en_mantenimiento', 'pendiente_estetico', 'edicion_manual'),
-(34, 109, 1, '2025-09-29 10:04:37', 'disposicion', 'pendiente_estetico', 'pendiente_control_calidad', 'edicion_manual'),
-(35, 109, 1, '2025-09-29 10:05:59', 'disposicion', 'pendiente_control_calidad', 'Para Venta', 'edicion_manual'),
-(36, 122, 1, '2025-09-29 10:35:24', 'disposicion_electrico', 'en_mantenimiento', 'en_revision', 'edicion_manual'),
-(37, 122, 1, '2025-09-29 10:36:54', 'disposicion_electrico', 'en_mantenimiento', 'en_revision', 'edicion_manual'),
-(38, 122, 1, '2025-09-29 10:37:59', 'disposicion_electrico', 'en_mantenimiento', 'en_revision', 'edicion_manual'),
-(39, 122, 1, '2025-09-29 10:38:01', 'disposicion_electrico', 'en_mantenimiento', 'en_revision', 'edicion_manual'),
-(40, 122, 1, '2025-09-29 10:38:01', 'disposicion_electrico', 'en_mantenimiento', 'en_revision', 'edicion_manual'),
-(41, 109, 1, '2025-09-30 10:25:57', 'disposicion', 'Para Venta', 'Vendido', 'sistema'),
-(42, 125, 33, '2025-10-02 11:37:38', 'disposicion_electrico', 'en_mantenimiento', 'pendiente_estetico', 'edicion_manual'),
-(43, 125, 33, '2025-10-02 11:38:34', 'disposicion', 'pendiente_estetico', 'pendiente_control_calidad', 'edicion_manual'),
-(44, 125, 33, '2025-10-02 11:39:25', 'disposicion', 'pendiente_estetico', 'pendiente_control_calidad', 'edicion_manual'),
-(45, 125, 33, '2025-10-02 11:41:12', 'disposicion', 'pendiente_control_calidad', 'Para Venta', 'edicion_manual'),
-(46, 125, 1, '2025-10-09 10:02:54', 'disposicion', 'Para Venta', 'Vendido', 'sistema'),
-(47, 375, 1, '2025-10-10 12:46:23', 'precio', NULL, '1230000', 'edicion_manual'),
-(48, 375, 1, '2025-10-10 12:46:52', 'precio', NULL, '1200032', 'edicion_manual'),
-(49, 375, 1, '2025-10-10 13:57:03', 'precio', NULL, '1950000', 'edicion_manual'),
-(50, 375, 1, '2025-10-10 13:59:23', 'precio', NULL, '992300', 'edicion_manual'),
-(51, 357, 1, '2025-10-16 10:02:29', 'precio', NULL, '500000', 'edicion_manual'),
-(52, 361, 1, '2025-10-16 10:20:04', 'disposicion', 'Para Venta', 'Vendido', 'sistema');
+(33, 106, 38, '2025-09-24 22:16:56', 'disposicion_electrico', 'en_mantenimiento', 'pendiente_estetico', 'edicion_manual'),
+(34, 106, 38, '2025-09-24 22:17:03', 'disposicion_electrico', 'en_mantenimiento', 'pendiente_estetico', 'edicion_manual'),
+(35, 106, 38, '2025-09-24 22:17:29', 'disposicion', 'pendiente_estetico', 'pendiente_control_calidad', 'edicion_manual'),
+(36, 106, 38, '2025-09-24 22:17:35', 'disposicion', 'pendiente_estetico', 'pendiente_control_calidad', 'edicion_manual'),
+(37, 106, 38, '2025-09-24 22:18:01', 'disposicion', 'pendiente_control_calidad', 'Para Venta', 'edicion_manual'),
+(38, 106, 38, '2025-09-24 22:36:23', 'disposicion', 'Para Venta', 'Vendido', 'sistema'),
+(39, 57, 1, '2025-10-02 09:31:56', 'disposicion', 'Para Venta', 'Vendido', 'sistema'),
+(43, 296, 1, '2025-10-17 15:49:08', 'precio', NULL, '80000', 'edicion_manual'),
+(44, 296, 1, '2025-10-17 15:49:21', 'precio', NULL, '850000', 'edicion_manual');
 
 CREATE TABLE `bodega_mantenimiento` (
-  `id` int NOT NULL,
-  `inventario_id` int NOT NULL,
-  `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `tecnico_id` int DEFAULT NULL,
-  `usuario_registro` int DEFAULT NULL,
-  `estado` enum('pendiente','realizado','rechazado') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pendiente',
-  `tipo_proceso` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `observaciones` text COLLATE utf8mb4_unicode_ci,
-  `falla_electrica` enum('si','no') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'no',
-  `detalle_falla_electrica` text COLLATE utf8mb4_unicode_ci,
-  `falla_estetica` enum('si','no') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'no',
-  `detalle_falla_estetica` text COLLATE utf8mb4_unicode_ci,
-  `partes_solicitadas` text COLLATE utf8mb4_unicode_ci,
-  `referencia_externa` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `tecnico_diagnostico` int DEFAULT NULL,
-  `limpieza_electronico` enum('pendiente','realizada','no_aplica') COLLATE utf8mb4_unicode_ci DEFAULT 'pendiente',
-  `observaciones_limpieza_electronico` text COLLATE utf8mb4_unicode_ci,
-  `mantenimiento_crema_disciplinaria` enum('pendiente','realizada','no_aplica') COLLATE utf8mb4_unicode_ci DEFAULT 'pendiente',
-  `observaciones_mantenimiento_crema` text COLLATE utf8mb4_unicode_ci,
-  `mantenimiento_partes` enum('pendiente','realizada','no_aplica') COLLATE utf8mb4_unicode_ci DEFAULT 'pendiente',
-  `cambio_piezas` enum('si','no') COLLATE utf8mb4_unicode_ci DEFAULT 'no',
-  `piezas_solicitadas_cambiadas` text COLLATE utf8mb4_unicode_ci,
-  `proceso_reconstruccion` enum('si','no') COLLATE utf8mb4_unicode_ci DEFAULT 'no',
-  `parte_reconstruida` text COLLATE utf8mb4_unicode_ci,
-  `limpieza_general` enum('pendiente','realizada','no_aplica') COLLATE utf8mb4_unicode_ci DEFAULT 'pendiente',
-  `remite_otra_area` enum('si','no') COLLATE utf8mb4_unicode_ci DEFAULT 'no',
-  `area_remite` text COLLATE utf8mb4_unicode_ci,
-  `proceso_electronico` text COLLATE utf8mb4_unicode_ci,
-  `observaciones_globales` text COLLATE utf8mb4_unicode_ci
+  `id` int(11) NOT NULL,
+  `inventario_id` int(11) NOT NULL,
+  `fecha_registro` datetime NOT NULL DEFAULT current_timestamp(),
+  `tecnico_id` int(11) DEFAULT NULL,
+  `usuario_registro` int(11) DEFAULT NULL,
+  `estado` enum('pendiente','realizado','rechazado') NOT NULL DEFAULT 'pendiente',
+  `tipo_proceso` varchar(100) DEFAULT NULL,
+  `observaciones` text DEFAULT NULL,
+  `falla_electrica` enum('si','no') NOT NULL DEFAULT 'no',
+  `detalle_falla_electrica` text DEFAULT NULL,
+  `falla_estetica` enum('si','no') NOT NULL DEFAULT 'no',
+  `detalle_falla_estetica` text DEFAULT NULL,
+  `partes_solicitadas` text DEFAULT NULL,
+  `referencia_externa` varchar(255) DEFAULT NULL,
+  `tecnico_diagnostico` int(11) DEFAULT NULL,
+  `limpieza_electronico` enum('pendiente','realizada','no_aplica') DEFAULT 'pendiente',
+  `observaciones_limpieza_electronico` text DEFAULT NULL,
+  `mantenimiento_crema_disciplinaria` enum('pendiente','realizada','no_aplica') DEFAULT 'pendiente',
+  `observaciones_mantenimiento_crema` text DEFAULT NULL,
+  `mantenimiento_partes` enum('pendiente','realizada','no_aplica') DEFAULT 'pendiente',
+  `cambio_piezas` enum('si','no') DEFAULT 'no',
+  `piezas_solicitadas_cambiadas` text DEFAULT NULL,
+  `proceso_reconstruccion` enum('si','no') DEFAULT 'no',
+  `parte_reconstruida` text DEFAULT NULL,
+  `limpieza_general` enum('pendiente','realizada','no_aplica') DEFAULT 'pendiente',
+  `remite_otra_area` enum('si','no') DEFAULT 'no',
+  `area_remite` text DEFAULT NULL,
+  `proceso_electronico` text DEFAULT NULL,
+  `observaciones_globales` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bodega_mantenimiento` (`id`, `inventario_id`, `fecha_registro`, `tecnico_id`, `usuario_registro`, `estado`, `tipo_proceso`, `observaciones`, `falla_electrica`, `detalle_falla_electrica`, `falla_estetica`, `detalle_falla_estetica`, `partes_solicitadas`, `referencia_externa`, `tecnico_diagnostico`, `limpieza_electronico`, `observaciones_limpieza_electronico`, `mantenimiento_crema_disciplinaria`, `observaciones_mantenimiento_crema`, `mantenimiento_partes`, `cambio_piezas`, `piezas_solicitadas_cambiadas`, `proceso_reconstruccion`, `parte_reconstruida`, `limpieza_general`, `remite_otra_area`, `area_remite`, `proceso_electronico`, `observaciones_globales`) VALUES
-(24, 57, '2025-09-19 09:21:27', 1, 1, 'realizado', NULL, NULL, 'si', 'Puerto lateral USB', 'si', 'Tapas rayadas', NULL, NULL, NULL, 'realizada', 'okay', 'realizada', 'okay', 'pendiente', 'si', '{\"detalle\":\"se requiere\",\"cantidad\":\"1\",\"codigo_equipo\":\"LPDA1432\",\"serial_parte\":\"L15L3A03\",\"marca_parte\":\"LENOVO\",\"nivel_urgencia\":\"Baja\",\"referencia_parte\":\"L15L3A03\",\"ubicacion_pieza\":\"CAJA B2\"}', 'no', '', 'pendiente', 'no', '', '', 'Fallos estetico y esteico'),
+(24, 57, '2025-09-19 09:21:27', 38, 1, 'realizado', NULL, NULL, 'si', 'Puerto lateral USB', 'si', 'Tapas rayadas', NULL, NULL, NULL, 'realizada', 'okay', 'realizada', 'okay', 'pendiente', 'si', '{\"detalle\":\"se requiere\",\"cantidad\":\"1\",\"codigo_equipo\":\"LPDA1432\",\"serial_parte\":\"L15L3A03\",\"marca_parte\":\"LENOVO\",\"nivel_urgencia\":\"Baja\",\"referencia_parte\":\"L15L3A03\",\"ubicacion_pieza\":\"CAJA B2\"}', 'no', '', 'pendiente', 'no', '', '', 'Fallos estetico y esteico'),
 (25, 59, '2025-09-23 16:57:44', 36, 36, 'realizado', NULL, NULL, 'si', '', 'si', '', NULL, NULL, NULL, 'realizada', '', 'realizada', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'si', 'laboratorio', '', ''),
-(26, 109, '2025-09-24 17:14:15', 1, 1, 'realizado', NULL, NULL, 'si', 'TIENE', 'si', 'TIENE', NULL, NULL, NULL, 'realizada', 'REALIZADO', 'realizada', 'OKAY', 'pendiente', 'no', '', 'si', 'PUERTOS DAÑADOS', 'pendiente', 'si', 'laboratorio', '', 'FALLA'),
-(27, 122, '2025-09-29 09:23:44', 1, 1, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', ''),
-(28, 127, '2025-10-02 10:07:49', 1, 1, 'realizado', NULL, NULL, 'no', '', 'si', 'Rayones en tapas', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'Reparacion falla electrica Matenimiento'),
-(29, 127, '2025-10-02 10:14:04', 1, 1, 'realizado', NULL, NULL, 'no', '', 'si', 'Rayones en tapas', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'Reparacion falla electrica Matenimiento'),
-(30, 127, '2025-10-02 10:14:07', 1, 1, 'realizado', NULL, NULL, 'no', '', 'si', 'Rayones en tapas', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'Reparacion falla electrica Matenimiento'),
-(31, 127, '2025-10-06 09:37:37', 1, 1, 'realizado', NULL, NULL, 'no', '', 'si', 'Tapas rayadas 2 | 6 OCTUBRE 2025', NULL, NULL, NULL, 'realizada', 'LIMPIEZA REALIZADA', 'realizada', 'LIPIEZA REALIZADA', 'pendiente', 'no', '', 'si', 'Rejilla de aire', 'pendiente', 'no', '', '', 'TEXTO \r\nCLLPT1-5-239 OBSERVVACIONES GLOBALES'),
-(32, 127, '2025-10-06 09:37:47', 1, 1, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', ''),
-(33, 127, '2025-10-06 09:44:03', 1, 1, 'realizado', NULL, NULL, 'si', 'si ', 'si', 'si ', NULL, NULL, NULL, 'realizada', 'Okay 1', 'realizada', 'Okay 2', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'Observaciones Globales\r\n\r\nCLLPT1-5-239 — Lenovo ThinkPad X1 Yoga 4th Gen\r\n'),
-(34, 117, '2025-10-06 15:06:07', 1, 1, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', ''),
-(35, 118, '2025-10-06 15:11:31', 1, 1, 'realizado', NULL, NULL, 'si', 'Puertos Usb sulfatados', 'si', 'Rayones en tapas ', NULL, NULL, NULL, 'realizada', 'Limpieza de borad, cambio de fluw en conectores USbs', 'realizada', 'Amplicacion de pasta termica, reparaciond e de regilla', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'Observaciones Globales de cllpti-5-202, texto  TESTEO muestra de - Observacion Globales'),
-(36, 118, '2025-10-06 15:36:02', 1, 1, 'realizado', NULL, NULL, 'si', 'Puertos Usb sulfatados', 'si', 'Rayones en tapas ', NULL, NULL, NULL, 'realizada', 'Limpieza de borad, cambio de fluw en conectores USbs', 'realizada', 'Amplicacion de pasta termica, reparaciond e de regilla', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'Observaciones Globales de cllpti-5-202, texto  TESTEO muestra de - Observacion Globales'),
-(37, 127, '2025-10-06 17:42:29', 1, 1, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', ''),
-(38, 127, '2025-10-06 17:55:13', 1, 1, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', '');
+(26, 64, '2025-09-24 22:01:01', 38, 38, 'realizado', NULL, NULL, 'no', '', 'si', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'si', '', 'pendiente', 'si', 'laboratorio', '', ''),
+(27, 64, '2025-09-24 22:07:23', 38, 38, 'realizado', NULL, NULL, 'si', 'puertos usb sulfatados', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'si', 'laboratorio', '', ''),
+(28, 79, '2025-09-24 22:46:09', 38, 38, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', ''),
+(29, 67, '2025-09-25 16:18:58', 38, 38, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'realizada', 'Ninguna', 'realizada', 'Estado normal ', 'pendiente', 'no', '', 'si', 'Membrana teclado hacia arriba', 'pendiente', 'no', '', '', 'Se reconstruyo membrana teclado, flecha hacia arriba removiendo la parte dañada y sustituyendo por una nueva.'),
+(30, 62, '2025-09-25 16:26:20', 38, 38, 'realizado', NULL, NULL, 'si', 'si tiene fallo electrico', 'si', 'fallo estético', NULL, NULL, NULL, 'realizada', 'realizado', 'realizada', 'realizado', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'fallos de unida'),
+(31, 62, '2025-09-25 16:27:06', 38, 38, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', ''),
+(32, 62, '2025-09-25 16:34:01', 38, 38, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', ''),
+(64, 99, '2025-09-29 20:02:24', 38, 38, 'realizado', NULL, NULL, 'no', '', 'si', 'Matizados de posa manos y tapa cubierta', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'si', 'Se realizo reconstruccion de posamanos y tapa cubierta ', 'pendiente', 'si', 'laboratorio', '', 'Se realizo reconstrucción de pasamanos y tapa cubierta '),
+(65, 76, '2025-09-29 20:36:18', 12, 12, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'no_aplica', '', 'realizada', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', ''),
+(66, 83, '2025-09-29 20:50:02', 12, 12, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'no_aplica', '', 'realizada', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'sin disco '),
+(67, 78, '2025-09-29 22:02:36', 38, 38, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'si', '{\"detalle\":\"Teclado\",\"cantidad\":\"1\",\"codigo_equipo\":\"EULPT2-5-063\",\"serial_parte\":\"\",\"marca_parte\":\"Lenovo\",\"nivel_urgencia\":\"Baja\",\"referencia_parte\":\"\",\"ubicacion_pieza\":\"\"}', 'no', '', 'pendiente', 'no', '', '', 'Se realizó el cambio del teclado; posteriormente, se llevaron a cabo pruebas de funcionalidad, las cuales arrojaron resultados satisfactorios.'),
+(68, 97, '2025-09-29 22:20:10', 12, 12, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'no_aplica', '', 'realizada', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', ''),
+(69, 82, '2025-09-29 22:21:12', 12, 12, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'no_aplica', '', 'realizada', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', ''),
+(70, 84, '2025-10-01 15:36:57', 12, 12, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'no_aplica', '', 'realizada', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', ''),
+(71, 74, '2025-10-01 15:42:42', 12, 12, 'realizado', NULL, NULL, 'si', '', 'no', '', NULL, NULL, NULL, 'pendiente', '', 'pendiente', '', 'pendiente', 'no', '', 'no', '', 'pendiente', 'si', 'laboratorio', '', ''),
+(72, 155, '2025-10-02 16:23:10', 38, 38, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'realizada', 'Teclado y superficies limpias.\r\nSe retiró el polvo y suciedad acumulada, dejando el equipo en condiciones óptimas de higiene.\r\n\r\nVentilador limpiado correctamente.\r\nSe eliminó el polvo que obstruía la ventilación, mejorando el flujo de aire y el rendimiento térmico.\r\n\r\nCrema disipadora reemplazada.\r\nSe aplicó nueva pasta térmica al procesador, asegurando una adecuada transferencia de calor.\r\n\r\nSistema operativo Windows 10 instalado y operativo.\r\nSe completó la instalación y configuración básica, dejando el equipo funcional y actualizado.\r\n\r\nMantenimiento preventivo completado.\r\nEl equipo queda en condiciones normales de operación. Se recomienda mantener rutina periódica de limpieza.', 'realizada', 'Ninguna', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'se requiere el cambio de la teclado pues esta presentando fallas en algunas teclas'),
+(73, 87, '2025-10-02 16:28:11', 38, 38, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'realizada', 'Teclado y superficies limpias.\r\nSe retiró el polvo y suciedad acumulada, dejando el equipo en condiciones óptimas de higiene.\r\n\r\nVentilador limpiado correctamente.\r\nSe eliminó el polvo que obstruía la ventilación, mejorando el flujo de aire y el rendimiento térmico.\r\n\r\nCrema disipadora reemplazada.\r\nSe aplicó nueva pasta térmica al procesador, asegurando una adecuada transferencia de calor.\r\n\r\nSistema operativo Windows 10 instalado y operativo.\r\nSe completó la instalación y configuración básica, dejando el equipo funcional y actualizado.\r\n\r\nMantenimiento preventivo completado.\r\nEl equipo queda en condiciones normales de operación. Se recomienda mantener rutina periódica de limpieza.', 'realizada', 'Ninguna', 'pendiente', 'si', '{\"detalle\":\"Tapa superior\",\"cantidad\":\"1\",\"codigo_equipo\":\"EULPT2-5-087\",\"serial_parte\":\"\",\"marca_parte\":\"\",\"nivel_urgencia\":\"Baja\",\"referencia_parte\":\"\",\"ubicacion_pieza\":\"\"}', 'no', '', 'pendiente', 'no', '', '', 'Se procede a desmontar tapa superior  a fin de tener la muestra para buscarla en bodega.'),
+(74, 90, '2025-10-02 16:34:58', 38, 38, 'realizado', NULL, NULL, 'no', '', 'si', 'Raya tapa superior ', NULL, NULL, NULL, 'realizada', 'Teclado y superficies limpias.\r\nSe retiró el polvo y suciedad acumulada, dejando el equipo en condiciones óptimas de higiene.\r\n\r\nVentilador limpiado correctamente.\r\nSe eliminó el polvo que obstruía la ventilación, mejorando el flujo de aire y el rendimiento térmico.\r\n\r\nCrema disipadora reemplazada.\r\nSe aplicó nueva pasta térmica al procesador, asegurando una adecuada transferencia de calor.\r\n\r\nSistema operativo Windows 10 instalado y operativo.\r\nSe completó la instalación y configuración básica, dejando el equipo funcional y actualizado.\r\n\r\nMantenimiento preventivo completado.\r\nEl equipo queda en condiciones normales de operación. Se recomienda mantener rutina periódica de limpieza.', 'realizada', 'Ninguna', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'Se realiza el cambio de la tecla de desplazamiento superior pues el quipo no contaba con este, adicional a ello se realiza el montaje de disco SSD/256GB,'),
+(75, 103, '2025-10-02 16:43:27', 38, 38, 'realizado', NULL, NULL, 'no', '', 'si', 'Rayas tapa superior ', NULL, NULL, NULL, 'realizada', 'Teclado y superficies limpias.\r\nSe retiró el polvo y suciedad acumulada, dejando el equipo en condiciones óptimas de higiene.\r\n\r\nVentilador limpiado correctamente.\r\nSe eliminó el polvo que obstruía la ventilación, mejorando el flujo de aire y el rendimiento térmico.\r\n\r\nCrema disipadora reemplazada.\r\nSe aplicó nueva pasta térmica al procesador, asegurando una adecuada transferencia de calor.\r\n\r\nSistema operativo Windows 10 instalado y operativo.\r\nSe completó la instalación y configuración básica, dejando el equipo funcional y actualizado.\r\n\r\nMantenimiento preventivo completado.\r\nEl equipo queda en condiciones normales de operación. Se recomienda mantener rutina periódica de limpieza.', 'realizada', 'Ninguna', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'Se realizó el montaje de unidad SSD de 256 GB, mejorando el rendimiento general del equipo y permitiendo una mayor velocidad de arranque y respuesta del sistema.\r\n\r\nSe instaló la araña de la tecla “N”, ya que el teclado no contaba con este componente, dejando el mismo completamente funcional.'),
+(76, 103, '2025-10-02 16:45:26', 38, 38, 'realizado', NULL, NULL, 'no', '', 'no', '', NULL, NULL, NULL, 'realizada', 'Teclado y superficies limpias.\r\nSe retiró el polvo y suciedad acumulada, dejando el equipo en condiciones óptimas de higiene.\r\n\r\nVentilador limpiado correctamente.\r\nSe eliminó el polvo que obstruía la ventilación, mejorando el flujo de aire y el rendimiento térmico.\r\n\r\nCrema disipadora reemplazada.\r\nSe aplicó nueva pasta térmica al procesador, asegurando una adecuada transferencia de calor.\r\n\r\nSistema operativo Windows 10 instalado y operativo.\r\nSe completó la instalación y configuración básica, dejando el equipo funcional y actualizado.\r\n\r\nMantenimiento preventivo completado.\r\nEl equipo queda en condiciones normales de operación. Se recomienda mantener rutina periódica de limpieza.', 'realizada', 'Ninguna', 'pendiente', 'no', '', 'no', '', 'pendiente', 'no', '', '', 'se realiza el montaje de disco SSD/256GB.'),
+(77, 95, '2025-10-02 16:54:46', 38, 38, 'realizado', NULL, NULL, 'no', '', 'si', 'Matizar en la zona de reconstrucción.', NULL, NULL, NULL, 'realizada', 'Teclado y superficies limpias.\r\nSe retiró el polvo y suciedad acumulada, dejando el equipo en condiciones óptimas de higiene.\r\n\r\nVentilador limpiado correctamente.\r\nSe eliminó el polvo que obstruía la ventilación, mejorando el flujo de aire y el rendimiento térmico.\r\n\r\nCrema disipadora reemplazada.\r\nSe aplicó nueva pasta térmica al procesador, asegurando una adecuada transferencia de calor.\r\n\r\nSistema operativo Windows 10 instalado y operativo.\r\nSe completó la instalación y configuración básica, dejando el equipo funcional y actualizado.\r\n\r\nMantenimiento preventivo completado.\r\nEl equipo queda en condiciones normales de operación. Se recomienda mantener rutina periódica de limpieza.', 'realizada', 'Ninguna', 'pendiente', 'no', '', 'si', 'posa manos parte inferior izquierda.', 'pendiente', 'no', '', '', 'se realiza reconstrucción de la esquina inferior izquierda que presentaba ruptura del posa manos.'),
+(78, 106, '2025-10-08 23:03:08', 1, 1, 'realizado', NULL, NULL, 'si', 'puertos sulfatados', 'si', 'rayones en tapas', NULL, NULL, NULL, 'realizada', 'realizaar', 'realizada', 'realizar', 'pendiente', 'si', '{\"detalle\":\"\",\"cantidad\":\"1\",\"codigo_equipo\":\"TEST001\",\"serial_parte\":\"\",\"marca_parte\":\"\",\"nivel_urgencia\":\"Baja\",\"referencia_parte\":\"\",\"ubicacion_pieza\":\"\"}', 'si', 'reparar', 'pendiente', 'no', '', '', 'daños globales');
 
 CREATE TABLE `bodega_ordenes` (
-  `idord` int NOT NULL,
-  `cliente_id` int NOT NULL,
-  `responsable` int NOT NULL,
-  `total_items` int NOT NULL DEFAULT '0',
-  `total_pago` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `idord` int(11) NOT NULL,
+  `cliente_id` int(11) NOT NULL,
+  `responsable` int(11) NOT NULL,
+  `total_items` int(11) NOT NULL DEFAULT 0,
+  `total_pago` decimal(12,2) NOT NULL DEFAULT 0.00,
   `fecha_pago` datetime DEFAULT NULL,
-  `metodo_pago` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `estado_pago` enum('Debe_plata','Pendiente','Aceptado','total_pagado') COLLATE utf8mb4_unicode_ci DEFAULT 'Pendiente',
-  `tipo_doc` enum('factura','ticket','remision') COLLATE utf8mb4_unicode_ci DEFAULT 'ticket',
-  `num_documento` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `evidencia_pago` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `despachado_en` text COLLATE utf8mb4_unicode_ci,
-  `creado_por` int DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+  `metodo_pago` varchar(100) DEFAULT NULL,
+  `estado_pago` enum('Debe_plata','Pendiente','Aceptado','total_pagado') DEFAULT 'Pendiente',
+  `tipo_doc` enum('factura','ticket','remision') DEFAULT 'ticket',
+  `num_documento` varchar(100) DEFAULT NULL,
+  `evidencia_pago` varchar(255) DEFAULT NULL,
+  `despachado_en` text DEFAULT NULL,
+  `creado_por` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `bodega_partes` (
-  `id` int NOT NULL,
-  `caja` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cantidad` int NOT NULL,
-  `marca` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `referencia` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `generacion` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `numero_parte` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `condicion` enum('Nuevo','Usado') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `teclado` enum('Con Teclado','Sin Teclado','n/n') COLLATE utf8mb4_unicode_ci DEFAULT 'n/n',
+  `id` int(11) NOT NULL,
+  `caja` varchar(50) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `marca` varchar(50) NOT NULL,
+  `referencia` varchar(100) NOT NULL,
+  `generacion` varchar(50) DEFAULT NULL,
+  `numero_parte` varchar(100) DEFAULT NULL,
+  `condicion` enum('Nuevo','Usado') NOT NULL,
+  `teclado` enum('Con Teclado','Sin Teclado','n/n') DEFAULT 'n/n',
   `precio` decimal(12,2) NOT NULL,
   `precio_nuevo_con_teclado` decimal(12,2) DEFAULT NULL,
   `precio_nuevo_sin_teclado` decimal(12,2) DEFAULT NULL,
   `precio_usado_con_teclado` decimal(12,2) DEFAULT NULL,
   `precio_usado_sin_teclado` decimal(12,2) DEFAULT NULL,
-  `producto` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `imagen_url` text COLLATE utf8mb4_unicode_ci,
-  `fecha_registro` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `detalles` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `codigo` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `serial` varchar(25) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `producto` varchar(100) DEFAULT NULL,
+  `imagen_url` text DEFAULT NULL,
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp(),
+  `detalles` varchar(250) DEFAULT NULL,
+  `codigo` varchar(50) DEFAULT NULL,
+  `serial` varchar(25) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bodega_partes` (`id`, `caja`, `cantidad`, `marca`, `referencia`, `generacion`, `numero_parte`, `condicion`, `teclado`, `precio`, `precio_nuevo_con_teclado`, `precio_nuevo_sin_teclado`, `precio_usado_con_teclado`, `precio_usado_sin_teclado`, `producto`, `imagen_url`, `fecha_registro`, `detalles`, `codigo`, `serial`) VALUES
 (1, 'CAJA B2', 30, 'LENOVO', 'L15L3A03', NULL, 'L15L3A03', 'Usado', 'n/n', 230000.00, NULL, NULL, NULL, NULL, 'Bateria', '#', '2025-07-15 03:58:18', NULL, 'equipo2000', NULL),
 (2, 'CAJA B2', 19, 'LENOVO', 'L20B2PF0', NULL, 'L20B2PF0', 'Usado', 'n/n', 240000.00, NULL, NULL, NULL, NULL, 'Bateria', '#', '2025-07-15 03:58:18', NULL, NULL, NULL),
-(3, 'CAJA B2', 30, 'LENOVO', 'L15L3A03', NULL, 'L15L3A03', 'Usado', 'n/n', 230000.00, NULL, NULL, NULL, NULL, 'Bateria', '#', '2025-07-15 03:58:25', NULL, NULL, NULL),
-(4, 'CAJA B2', 19, 'LENOVO', 'L20B2PF0', NULL, 'L20B2PF0', 'Usado', 'n/n', 240000.00, NULL, NULL, NULL, NULL, 'Bateria', '#', '2025-07-15 03:58:25', NULL, NULL, NULL),
-(5, 'CAJA F1', 12, 'DELL', 'PA-12', 'GEN 3', '0VJCH5', 'Usado', 'n/n', 85000.00, NULL, NULL, NULL, NULL, 'Fuente', '#', '2025-09-02 21:11:24', NULL, NULL, NULL),
-(6, 'CAJA F2', 8, 'LENOVO', 'ADLX65NLC3A', 'GEN 2', '36200287', 'Nuevo', 'n/n', 120000.00, NULL, NULL, NULL, NULL, 'Fuente', '#', '2025-09-02 20:45:41', NULL, NULL, NULL),
-(7, 'CAJA F3', 5, 'HP', 'PPP009L-E', 'GEN 1', '677774-002', 'Usado', 'n/n', 70000.00, NULL, NULL, NULL, NULL, 'Fuente', '#', '2025-07-15 03:59:10', NULL, NULL, NULL);
 
 CREATE TABLE `bodega_salidas` (
-  `id` int NOT NULL,
-  `inventario_id` int NOT NULL,
-  `cliente_id` int DEFAULT NULL,
-  `tecnico_id` int NOT NULL,
-  `usuario_id` int NOT NULL,
-  `orden_id` int DEFAULT NULL,
-  `fecha_salida` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `cantidad` int NOT NULL DEFAULT '1',
-  `precio_unit` decimal(10,2) DEFAULT '0.00',
+  `id` int(11) NOT NULL,
+  `inventario_id` int(11) NOT NULL,
+  `cliente_id` int(11) DEFAULT NULL,
+  `tecnico_id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `orden_id` int(11) DEFAULT NULL,
+  `fecha_salida` datetime NOT NULL DEFAULT current_timestamp(),
+  `cantidad` int(11) NOT NULL DEFAULT 1,
+  `precio_unit` decimal(16,2) DEFAULT 0.00,
   `razon_salida` varchar(255) NOT NULL,
-  `observaciones` text,
+  `observaciones` text DEFAULT NULL,
   `estado_despacho` enum('pendiente','en_ruta','entregado','cancelado') DEFAULT 'pendiente',
   `guia_remision` varchar(100) DEFAULT NULL,
   `evidencia_foto` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO `bodega_salidas` (`id`, `inventario_id`, `cliente_id`, `tecnico_id`, `usuario_id`, `orden_id`, `fecha_salida`, `cantidad`, `precio_unit`, `razon_salida`, `observaciones`, `estado_despacho`, `guia_remision`, `evidencia_foto`) VALUES
-(6, 108, NULL, 1, 1, NULL, '2025-09-24 12:01:54', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(7, 109, NULL, 1, 1, NULL, '2025-09-24 12:13:07', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(8, 130, NULL, 36, 1, NULL, '2025-09-26 16:01:04', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(9, 121, NULL, 36, 1, NULL, '2025-09-26 16:01:11', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(10, 117, NULL, 36, 1, NULL, '2025-09-27 09:56:43', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(11, 118, NULL, 36, 1, NULL, '2025-09-27 09:56:43', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(12, 120, NULL, 36, 1, NULL, '2025-09-27 09:56:43', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(13, 123, NULL, 36, 1, NULL, '2025-09-27 09:56:43', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(14, 139, NULL, 36, 1, NULL, '2025-09-27 09:56:43', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(15, 145, NULL, 36, 1, NULL, '2025-09-27 09:56:43', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(16, 146, NULL, 36, 1, NULL, '2025-09-27 09:56:43', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(76, 145, NULL, 13, 1, NULL, '2025-10-06 14:26:12', 1, 0.00, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(77, 133, NULL, 13, 1, NULL, '2025-10-06 14:26:12', 1, 0.00, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
-(78, 108, NULL, 13, 1, NULL, '2025-10-06 14:26:33', 1, 0.00, 'Asignación para process', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL);
+(1, 57, NULL, 1, 1, NULL, '2025-09-18 15:47:55', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 1', 'pendiente', NULL, NULL),
+(5, 65, NULL, 36, 36, NULL, '2025-09-23 22:10:21', 1, 0.00, 'Asignación para triage', 'Asignado desde dashboard por usuario ID: 36', 'pendiente', NULL, NULL),
 
 CREATE TABLE `bodega_solicitud_parte` (
-  `id` int NOT NULL,
-  `detalle_solicitud` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cantidad_solicitada` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `codigo_equipo` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `serial_parte` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `marca_parte` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cantidad` int NOT NULL DEFAULT '1',
-  `usuario_solicitante` int DEFAULT NULL,
-  `estado` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pendiente',
-  `fecha_solicitud` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `nivel_urgencia` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `referencia_parte` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ubicacion_pieza` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `id_tecnico` int NOT NULL,
-  `inventario_id` int DEFAULT NULL
+  `id` int(11) NOT NULL,
+  `detalle_solicitud` varchar(250) NOT NULL,
+  `cantidad_solicitada` varchar(45) NOT NULL,
+  `codigo_equipo` varchar(45) NOT NULL,
+  `serial_parte` varchar(250) NOT NULL,
+  `marca_parte` varchar(45) NOT NULL,
+  `cantidad` int(11) NOT NULL DEFAULT 1,
+  `usuario_solicitante` int(11) DEFAULT NULL,
+  `estado` varchar(50) NOT NULL DEFAULT 'pendiente',
+  `fecha_solicitud` datetime NOT NULL DEFAULT current_timestamp(),
+  `nivel_urgencia` varchar(45) NOT NULL,
+  `referencia_parte` varchar(45) NOT NULL,
+  `ubicacion_pieza` varchar(45) NOT NULL,
+  `id_tecnico` int(11) NOT NULL,
+  `inventario_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bodega_solicitud_parte` (`id`, `detalle_solicitud`, `cantidad_solicitada`, `codigo_equipo`, `serial_parte`, `marca_parte`, `cantidad`, `usuario_solicitante`, `estado`, `fecha_solicitud`, `nivel_urgencia`, `referencia_parte`, `ubicacion_pieza`, `id_tecnico`, `inventario_id`) VALUES
-(8, 'se requiere', '1', 'LPDA1432', 'L15L3A03', 'LENOVO', 1, 1, 'pendiente', '2025-09-19 09:21:27', 'Baja', 'L15L3A03', 'CAJA B2', 1, 57);
+(8, 'se requiere', '1', 'LPDA1432', 'L15L3A03', 'LENOVO', 1, 1, 'pendiente', '2025-09-19 09:21:27', 'Baja', 'L15L3A03', 'CAJA B2', 1, 57),
+(9, 'Teclado', '1', 'EULPT2-5-063', '', 'Lenovo', 1, 38, 'pendiente', '2025-09-27 16:52:59', 'Baja', '', '', 38, 78),
+(10, 'DISCO DURO', '1', 'EULPT2-5-061', '', '', 1, 10, 'pendiente', '2025-09-29 14:42:16', 'Baja', '', '', 10, 77),
+(11, 'Teclado', '1', 'EULPT2-5-063', '', 'Lenovo', 1, 38, 'pendiente', '2025-09-29 22:02:36', 'Baja', '', '', 38, 78),
+(12, 'Tapa superior', '1', 'EULPT2-5-087', '', '', 1, 38, 'pendiente', '2025-10-02 16:28:11', 'Baja', '', '', 38, 87);
 
 CREATE TABLE `cart` (
-  `idv` int NOT NULL,
-  `user_id` int NOT NULL,
-  `idprod` int NOT NULL,
-  `name` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `price` int NOT NULL,
-  `quantity` int NOT NULL
+  `idv` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `idprod` int(11) NOT NULL,
+  `name` text NOT NULL,
+  `price` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `cart_compra` (
-  `idcarco` int NOT NULL,
-  `user_id` int NOT NULL,
-  `idprod` int NOT NULL,
-  `name` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `price` int NOT NULL,
-  `quantity` int NOT NULL
+  `idcarco` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `idprod` int(11) NOT NULL,
+  `name` text NOT NULL,
+  `price` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `categoria` (
-  `idcate` int NOT NULL,
-  `nomca` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `estado` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `fere` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `idcate` int(11) NOT NULL,
+  `nomca` text NOT NULL,
+  `estado` varchar(15) NOT NULL,
+  `fere` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `clientes` (
-  `idclie` int NOT NULL,
-  `numid` char(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nomcli` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `apecli` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idclie` int(11) NOT NULL,
+  `numid` char(50) NOT NULL,
+  `nomcli` text NOT NULL,
+  `apecli` text NOT NULL,
   `naci` date NOT NULL DEFAULT '1900-01-01',
-  `correo` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `celu` char(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `estad` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `fere` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `dircli` text COLLATE utf8mb4_unicode_ci,
-  `ciucli` text COLLATE utf8mb4_unicode_ci,
-  `idsede` text COLLATE utf8mb4_unicode_ci
+  `correo` text NOT NULL,
+  `celu` char(10) NOT NULL,
+  `estad` varchar(15) NOT NULL,
+  `fere` timestamp NOT NULL DEFAULT current_timestamp(),
+  `dircli` text DEFAULT NULL,
+  `ciucli` text DEFAULT NULL,
+  `idsede` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `clientes` (`idclie`, `numid`, `nomcli`, `apecli`, `naci`, `correo`, `celu`, `estad`, `fere`, `dircli`, `ciucli`, `idsede`) VALUES
-(20, '12345678', 'Juan', 'Perez', '1990-01-01', 'juan@correo.com', '3001234567', 'Activo', '2025-09-19 15:13:30', 'Calle 1 #2-3', 'Bogotá', 'Medellin'),
+(20, '12345678', 'Juan', 'Perez', '1990-01-01', 'juan@correo.com', '3001234567', 'Inactivo', '2025-09-19 15:13:30', 'Calle 1 #2-3', 'Bogotá', 'Medellin'),
 (21, '87654321', 'Maria', 'Garay', '1985-05-15', 'maria@correo.com', '3009876543', 'Activo', '2025-09-19 15:13:30', 'Carrera 5 #10-20', 'Bogotá', 'Unilago'),
-(22, '11223344', 'Carlos', 'Lopez Vanegas', '1992-08-22', 'carlos@correo.com', '3005556772', 'Activo', '2025-09-19 15:13:30', 'Avenida 3 #15-8', 'Cucuta', 'Cucuta'),
-(23, '55667788', 'Anyi', 'Rodriguez Vidal', '1988-12-10', 'ana@correo.com', '3001112222', 'Activo', '2025-09-19 15:13:30', 'Calle 8 #25-12', 'Bogotá', 'Principal'),
-(24, '1000603244', 'Gabiriel Arturo', 'Pacheco Franco', '2025-10-16', 'arturpacheco@gmail.com', '3242023365', 'Activo', '2025-10-16 15:19:37', 'Cra. 53 #14-51, Puente Aranda, Bogotá', 'BOGOTA (C/MARCA) (110110)', 'Principal');
 
 CREATE TABLE `compra` (
-  `idcomp` int NOT NULL,
-  `user_id` int NOT NULL,
-  `method` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `total_products` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idcomp` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `method` text NOT NULL,
+  `total_products` text NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
-  `placed_on` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payment_status` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tipc` text COLLATE utf8mb4_unicode_ci NOT NULL
+  `placed_on` text NOT NULL,
+  `payment_status` text NOT NULL,
+  `tipc` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `despachos` (
-  `id` int NOT NULL,
-  `orden_id` int NOT NULL,
-  `fecha_despacho` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `responsable` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `observaciones` text COLLATE utf8mb4_unicode_ci
+  `id` int(11) NOT NULL,
+  `orden_id` int(11) NOT NULL,
+  `fecha_despacho` timestamp NULL DEFAULT current_timestamp(),
+  `responsable` varchar(100) NOT NULL,
+  `observaciones` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `gastos` (
-  `idga` int NOT NULL,
-  `detall` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idga` int(11) NOT NULL,
+  `detall` text NOT NULL,
   `total` decimal(10,2) NOT NULL,
-  `fec` text COLLATE utf8mb4_unicode_ci NOT NULL
+  `fec` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `ingresos` (
-  `iding` int NOT NULL,
-  `detalle` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `iding` int(11) NOT NULL,
+  `detalle` text NOT NULL,
   `total` decimal(10,2) NOT NULL,
-  `fec` text COLLATE utf8mb4_unicode_ci NOT NULL
+  `fec` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `ingresos` (`iding`, `detalle`, `total`, `fec`) VALUES
-(23, 'VENTA DE PRODUCTOS - Orden #18', 0.00, '2025-09-30'),
-(24, 'VENTA DE PRODUCTOS - Orden #19', 1400000.00, '2025-10-09'),
-(25, 'VENTA DE PRODUCTOS - Orden #20', 1600000.00, '2025-10-16');
+(23, 'VENTA DE PRODUCTOS - Orden #18', 0.00, '2025-09-24'),
+(24, 'VENTA DE PRODUCTOS - Orden #19', 1600000.00, '2025-10-02');
 
 CREATE TABLE `marketing` (
-  `id` int NOT NULL,
-  `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descripcion` text COLLATE utf8mb4_unicode_ci,
-  `canal` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `canal` varchar(50) DEFAULT NULL,
   `fecha_inicio` date DEFAULT NULL,
   `fecha_fin` date DEFAULT NULL,
-  `gastos` decimal(12,2) DEFAULT '0.00',
-  `ingresos` decimal(12,2) DEFAULT '0.00',
-  `retorno_inversion` decimal(12,2) GENERATED ALWAYS AS ((case when (`gastos` > 0) then ((`ingresos` - `gastos`) / `gastos`) else NULL end)) STORED,
-  `responsable` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `estado` enum('activa','finalizada','pendiente') COLLATE utf8mb4_unicode_ci DEFAULT 'pendiente',
-  `fuente_datos` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `gastos` decimal(12,2) DEFAULT 0.00,
+  `ingresos` decimal(12,2) DEFAULT 0.00,
+  `retorno_inversion` decimal(12,2) GENERATED ALWAYS AS (case when `gastos` > 0 then (`ingresos` - `gastos`) / `gastos` else NULL end) STORED,
+  `responsable` varchar(100) DEFAULT NULL,
+  `estado` enum('activa','finalizada','pendiente') DEFAULT 'pendiente',
+  `fuente_datos` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `orders` (
-  `idord` int NOT NULL,
-  `user_id` int NOT NULL,
-  `user_cli` int NOT NULL,
-  `method` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `total_products` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idord` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `user_cli` int(11) NOT NULL,
+  `method` text NOT NULL,
+  `total_products` text NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
-  `placed_on` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payment_status` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tipc` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `despacho` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `responsable` varchar(55) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `placed_on` text NOT NULL,
+  `payment_status` text NOT NULL,
+  `tipc` text NOT NULL,
+  `despacho` varchar(255) DEFAULT NULL,
+  `responsable` varchar(55) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `orders` (`idord`, `user_id`, `user_cli`, `method`, `total_products`, `total_price`, `placed_on`, `payment_status`, `tipc`, `despacho`, `responsable`) VALUES
-(18, 1, 20, 'Tarjeta', '0', 0.00, '2025-09-30 10:25:57', 'Aceptado', '0', 'Pendiente', 'Frank Quiñonez Vidal'),
-(19, 1, 23, 'Efectivo', '0', 1400000.00, '2025-10-09 10:02:54', 'Aceptado', '0', 'Pendiente', 'Frank Quiñonez Vidal'),
-(20, 1, 24, 'Efectivo', '0', 1600000.00, '2025-10-16 10:20:04', 'Aceptado', '0', 'Pendiente', 'Frank Quiñonez Vidal');
+(18, 38, 23, 'Efectivo', '0', 0.00, '2025-09-24 22:36:23', 'Aceptado', '0', 'Pendiente', 'Jonathan Calderon'),
+(19, 1, 22, 'Efectivo', '0', 1600000.00, '2025-10-02 09:31:56', 'Aceptado', '0', 'Pendiente', 'Frank Quiñonez Vidal'),
+(20, 42, 23, 'sistecredito', '3', 3150000.00, '2025-10-17 20:51:31', 'Aceptado', 'Venta', 'Pendiente', 'Local Cucuta'),
+(21, 42, 23, 'finanzacion', '1', 1100000.00, '2025-10-17 21:14:02', 'Aceptado', 'Venta', 'Pendiente', 'Local Cucuta');
 
 CREATE TABLE `plan` (
-  `idplan` int NOT NULL,
-  `foto` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nompla` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `estp` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idplan` int(11) NOT NULL,
+  `foto` text NOT NULL,
+  `nompla` text NOT NULL,
+  `estp` varchar(15) NOT NULL,
   `prec` decimal(10,2) NOT NULL,
-  `fere` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `fere` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `plan` (`idplan`, `foto`, `nompla`, `estp`, `prec`, `fere`) VALUES
@@ -556,120 +552,174 @@ INSERT INTO `plan` (`idplan`, `foto`, `nompla`, `estp`, `prec`, `fere`) VALUES
 (6, '756730.png', 'reting', 'Activo', 90000.00, '2025-06-19 19:49:49');
 
 CREATE TABLE `producto` (
-  `idprod` int NOT NULL,
-  `codba` char(14) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nomprd` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `idcate` int NOT NULL,
+  `idprod` int(11) NOT NULL,
+  `codba` char(14) NOT NULL,
+  `nomprd` text NOT NULL,
+  `idcate` int(11) NOT NULL,
   `precio` decimal(10,2) NOT NULL,
-  `stock` int NOT NULL,
-  `foto` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `stock` int(11) NOT NULL,
+  `foto` text NOT NULL,
   `venci` date NOT NULL,
-  `esta` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `fere` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `serial` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `marca` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `ram` varchar(8) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `disco` text COLLATE utf8mb4_unicode_ci,
-  `prcpro` varchar(8) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `pntpro` varchar(8) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `tarpro` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `grado` enum('A','B','C','SCRAP','#N/D','','0') COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `esta` varchar(15) NOT NULL,
+  `fere` timestamp NOT NULL DEFAULT current_timestamp(),
+  `serial` varchar(50) DEFAULT NULL,
+  `marca` varchar(50) DEFAULT NULL,
+  `ram` varchar(8) DEFAULT NULL,
+  `disco` text DEFAULT NULL,
+  `prcpro` varchar(8) DEFAULT NULL,
+  `pntpro` varchar(8) DEFAULT NULL,
+  `tarpro` varchar(30) DEFAULT NULL,
+  `grado` enum('A','B','C','SCRAP','#N/D','','0') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `proveedores` (
-  `id` int NOT NULL,
-  `privado` int DEFAULT NULL,
-  `nombre` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `celu` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `correo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `dire` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cuiprov` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `nomenclatura` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `nit` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `fecha_creacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fecha_actualizacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `id` int(11) NOT NULL,
+  `privado` int(11) DEFAULT NULL,
+  `nombre` varchar(200) DEFAULT NULL,
+  `celu` varchar(50) DEFAULT NULL,
+  `correo` varchar(100) DEFAULT NULL,
+  `dire` varchar(250) DEFAULT NULL,
+  `cuiprov` varchar(30) DEFAULT NULL,
+  `nomenclatura` varchar(10) DEFAULT NULL,
+  `nit` varchar(15) DEFAULT NULL,
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `proveedores` (`id`, `privado`, `nombre`, `celu`, `correo`, `dire`, `cuiprov`, `nomenclatura`, `nit`, `fecha_creacion`, `fecha_actualizacion`) VALUES
-(1, 1, 'EULPT2-5-PCmarkett', '304 4177 847', 'pcmarkettingdigital@gmail.com', 'Cl. 14 #53-19,', 'Bogota DC', 'PRV024qeqw', '9012322738', '2025-09-23 20:51:06', '2025-10-06 17:28:59'),
-(8, 1, 'Ejemplo S.A.S.', 'A', 'ejemplo@email.com', 'Calle 123 #45-67', 'Bogota', 'EJEMSAS', '901234567', '2025-07-14 17:20:31', '2025-09-23 20:47:40'),
+(8, 1, 'Ejemplo S.A.S.', '3202344974', 'ejemplo@email.com', 'Calle 123 #45-67', 'Bogota', 'EJEMSAS', '901234567', '2025-07-14 17:20:31', '2025-09-18 20:19:28'),
 (9, 1, 'PcShek Tecnologia Y Servicios S A S', '3186890437', 'comercial@pcshek.com', 'TV 66 # 35 - 11 MD 3 BG 9', 'Bogota', 'PCSH', '900413420', '2025-07-14 17:20:31', '2025-07-14 17:20:31'),
-(24, 1, 'COLSOF1', '315 7146 129', 'proteccion.datos@colsof.com.co', 'Vereda Vuelta Grande, Predio San Rafael, Zona Franca Metropolitana, Bodega, 55-56, Cota, Cundinamarca', '800015583', 'PRV025', NULL, '2025-09-26 19:49:52', '2025-09-26 20:02:41');
+(24, 1, 'COLSOF1', '315 7146 129', 'proteccion.datos@colsof.com.co', 'Vereda Vuelta Grande, Predio San Rafael, Zona Franca Metropolitana, Bodega, 55-56, Cota, Cundinamarca', '800015583', 'COLSOF1', NULL, '2025-09-26 19:42:50', '2025-09-26 19:43:39');
+
+CREATE TABLE `reservas` (
+  `id` int(11) NOT NULL,
+  `inventario_id` int(11) NOT NULL COMMENT 'FK a bodega_inventario.id',
+  `usuario_id` int(11) NOT NULL COMMENT 'FK a usuarios.id (quien reserva)',
+  `cliente_id` int(11) NOT NULL COMMENT 'FK a clientes.idclie (para quien se reserva)',
+  `fecha_reserva` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_vencimiento` date NOT NULL,
+  `observaciones` text DEFAULT NULL,
+  `estado` enum('activa','vencida','completada','cancelada') NOT NULL DEFAULT 'activa'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Tabla para gestionar reservas de equipos para la venta';
 
 CREATE TABLE `reserva_venta` (
-  `id` int NOT NULL,
-  `inventario_id` int NOT NULL,
-  `usuario_id` int NOT NULL COMMENT 'ID del comercial que crea la reserva',
-  `cliente_id` int NOT NULL,
-  `fecha_reserva` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `id` int(11) NOT NULL,
+  `inventario_id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL COMMENT 'ID del comercial que crea la reserva',
+  `cliente_id` int(11) NOT NULL,
+  `fecha_reserva` datetime NOT NULL DEFAULT current_timestamp(),
   `fecha_vencimiento` date NOT NULL,
-  `observaciones` text COLLATE utf8mb4_unicode_ci,
-  `estado` enum('activa','vencida','completada','cancelada') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'activa',
-  `fecha_creacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fecha_actualizacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `observaciones` text DEFAULT NULL,
+  `estado` enum('activa','vencida','completada','cancelada') NOT NULL DEFAULT 'activa',
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `servicio` (
-  `idservc` int NOT NULL,
-  `idplan` int NOT NULL,
+  `idservc` int(11) NOT NULL,
+  `idplan` int(11) NOT NULL,
   `ini` date NOT NULL,
   `fin` date DEFAULT NULL,
-  `idclie` int NOT NULL,
-  `estod` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `meto` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idclie` int(11) NOT NULL,
+  `estod` varchar(15) NOT NULL,
+  `meto` text NOT NULL,
   `canc` decimal(10,2) NOT NULL,
-  `fere` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `servtxt` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `servfoto` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `responsable` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `fere` timestamp NOT NULL DEFAULT current_timestamp(),
+  `servtxt` varchar(250) DEFAULT NULL,
+  `servfoto` varchar(255) DEFAULT NULL,
+  `responsable` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `setting` (
-  `idsett` int NOT NULL,
-  `nomem` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ruc` char(14) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `decrp` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `corr` varchar(35) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `direc1` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `direc2` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `celu` char(16) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `foto` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `idsett` int(11) NOT NULL,
+  `nomem` varchar(150) NOT NULL,
+  `ruc` char(14) NOT NULL,
+  `decrp` varchar(150) NOT NULL,
+  `corr` varchar(250) NOT NULL,
+  `direc1` varchar(250) NOT NULL,
+  `direc2` varchar(250) NOT NULL,
+  `celu` char(16) NOT NULL,
+  `foto` varchar(250) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `setting` (`idsett`, `nomem`, `ruc`, `decrp`, `corr`, `direc1`, `direc2`, `celu`, `foto`) VALUES
-(1, 'PCMARKETT SAS', '9012322738', 'Venta Computadores', 'pcmarkett2018@gmail.com', 'Cl. 14 #53-19, Bogotá, Colombia', 'CC Monterrey, Cra. 48 #10-45 Local 237, El Poblado, Medellín, Antioquia', '304 4177847', NULL);
+(1, 'PCMARKETT SAS', '9012322738', 'Venta Computadores', 'pcmarkett2018@gmail.com', 'Cl. 14 #53-19, Bogotá, Colombia', 'CC Monterrey, Cra. 48 #10-45 Local 237, El Poblado, Medellín, Antioquia', '304 4177847', '239999.webp');
+
 
 CREATE TABLE `solicitud_alistamiento` (
-  `id` int NOT NULL,
-  `solicitante` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `usuario_id` int NOT NULL COMMENT 'ID del usuario que solicita',
-  `sede` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cliente` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cantidad` varchar(1600) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descripcion` varchar(1600) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `marca` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `modelo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `observacion` varchar(1200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `tecnico_responsable` int DEFAULT NULL,
-  `fecha_solicitud` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `estado` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pendiente',
-  `fecha_creacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fecha_actualizacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `observacion_global` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `id` int(11) NOT NULL,
+  `solicitante` varchar(255) NOT NULL,
+  `usuario_id` int(11) NOT NULL COMMENT 'ID del usuario que solicita',
+  `sede` varchar(100) NOT NULL,
+  `cliente` varchar(255) DEFAULT NULL,
+`cantidad` varchar(1600) NOT NULL,
+`descripcion` varchar(1600) NOT NULL,
+`marca` varchar(100) DEFAULT NULL,
+`modelo` varchar(100) DEFAULT NULL,
+`observacion` varchar(1200) DEFAULT NULL,
+  `tecnico_responsable` int(11) DEFAULT NULL,
+  `fecha_solicitud` datetime NOT NULL DEFAULT current_timestamp(),
+  `estado` varchar(500) NOT NULL DEFAULT 'pendiente',
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `observacion_global` varchar(150) DEFAULT NULL,
+  `observacion_tecnico` varchar(250) DEFAULT NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+INSERT INTO `solicitud_alistamiento` (`id`, `solicitante`, `usuario_id`, `sede`, `cliente`, `cantidad`, `descripcion`, `marca`, `modelo`, `observacion`, `tecnico_responsable`, `fecha_solicitud`, `estado`, `fecha_creacion`, `fecha_actualizacion`, `observacion_global`, `observacion_tecnico`) VALUES
+(1, 'Local Cucuta', 42, 'Cúcuta', 'TEST carlos andres', '2', '2x torres corei 5 de 4ta', 'hp', 'elikbook 80', 'Despacho: Interrapidisimo Pte Aranda | Productos JSON: [{\"cantidad\":2,\"descripcion\":\"torres corei 5 de 4ta\",\"marca\":\"hp\",\"modelo\":\"elikbook 80\",\"observacion\":\"ojo cambiar ram por una de 16gb ojo ponerle un vinilo al costado color gris\"}]', 15, '2025-10-17 21:24:58', 'pendiente', '2025-10-17 21:24:58', '2025-10-21 14:45:41', 'Empacar bien', NULL),
+(2, 'frank4', 31, 'Pagina Web', 'Testeo Solicitud de Alistamiento', '3', '3x latop i7 8th, ram 8gb, 256 sdd', 'lenovo', 'testeo', 'Despacho: Despacho Tienda Pte Aranda | Productos JSON: [{\"cantidad\":3,\"descripcion\":\"latop i7 8th, ram 8gb, 256 sdd\",\"marca\":\"lenovo\",\"modelo\":\"testeo\",\"observacion\":\"con progrmas\"}]', 15, '2025-10-20 16:12:45', 'pendiente', '2025-10-20 16:12:45', '2025-10-20 16:12:45', '', NULL),
+(3, 'Stefany Ramirez ', 40, 'Principal - Puente Aranda', 'Alberto escobar', '1', '1x Cpu cire i7 7th 16gb 512ssd', 'dell', NULL, 'Despacho: Despacho Tienda Pte Aranda | Productos JSON: [{\"cantidad\":1,\"descripcion\":\"Cpu cire i7 7th 16gb 512ssd\",\"marca\":\"dell\",\"modelo\":\"\",\"observacion\":\"office, win 11 y cables\"}]', 15, '2025-10-20 16:24:56', 'entregado', '2025-10-20 16:24:56', '2025-10-21 14:25:32', 'office, win 11 y cables', NULL),
+
+/*========  Tabla nueva de poreceso de venta con formato de pedido Segun solicitado con Andres  =================================*/
+CREATE TABLE `aistamiento_venta`(
+`idventa` int(11) not null,
+`fecha_venta` datetime NOT NULL DEFAULT current_timestamp(),
+`fecha_actualizacion` datetime NOT NULL DEFAULT current_timestamp(),
+`solicitante` varchar(255) NOT NULL,
+`usuario_id` int(11) NOT NULL COMMENT 'ID del usuario que solicita',
+`sede` varchar(150) Not null,
+`idclien` varchar(150) not null,
+`nit_cliente` varchar(150) not null comment `Es el dato con cual se busca en campol label, este dato cualquiera de estos  5 en la labla de clientes(numbid, nombrecli, apecli,correo,celu) en la visat aprevia de busqueda de cliente`,
+`nomcliente` varchar(250) not null comment `Nota: trear informacion si o si de la tabla de "clientes" (clietes.nomcli) y (clientes.apecli)`,
+`telcliente` varchar(150) not null COMMENT `traer el dato de la tabla de "clientes" segun corresponda el dato a traer`,
+`canal_venta` varchar(150) not null comment `traer el dato de la tabla de "clientes" segun corresponda el dato a traer`,
+`concepto_salida` varchar (150) not null comment `traer el dato de la tabla de "clientes" segun corresponda el dato a traer`,
+`cantidad` varchar(1600) NOT NULL,
+`marca` varchar(1600) DEFAULT NULL,
+`modelo` varchar(2600) DEFAULT NULL,
+`ram` varchar(2600) DEFAULT NULL,
+`disco` varchar(2600) DEFAULT NULL,
+`ubicacion` varchar(250) not null,
+`descripcion` varchar(2600) NOT NULL comment `se auto rellena con la informacion que pondran en la casillas anteriores a ellas  tales como: (marca, modelo ram, disco, opcioon uno si nos lo pone el usaurio ingresado desde  label la informacio, y tambien exista opcion 2. o que se aparezca una venta o recuado o mini venta en la misma pestaña tipo PopUp, para buscar y selecionar lo disponible en bodega esta en la tabla "bodega_inventario" exista forma buscar por (tabla. "bodega_inventario" campos: {producto, marca, modelo, procesador, ram, disco, grado} es un label Input de busqueda), y  selecionar buscar por los siguiente atribustos que severa una vista previa (solo muestre los equipos "bodega_inventari.grado{'A', 'B'}" y tenga un estado "bodega_inventario.estado(activo)" y ademas supremamente importante("bodega_inventario.disposicion('en_proceso', 'en revision', 'en_diagnostico', 'Por Alistamiento',  mejor dicho cualquuier dispocion que no sera 'Vendido', que lo muestre)") )" estado()) [] )`,
+`observacion` varchar(1200) DEFAULT NULL,
+`precio_unitario` varchar(150) DEFAULT null,
+`total_venta` varchar(1600) DEFAULT null comment `total de la venta, con la suma cantidades y, en resumen total de la venta`;
+`ticket` varchar(160) not null comment `texto alfanumerio`,
+`valor_abono` varchar(250) not null comment `cuanto abono el cliente`,
+`medio_abono` varchar(250) not null comment `va ser una lista desplagable voy poner desde el frontEnd`,
+`saldo` varchar(250) not null comment `cuanto queda de saldo`,
+`medio_saldo` varchar(250) not null comment `va ser una lista desplagable voy poner desde el frontEnd es por que fue pagado es el metedo de pago utilizo por eso los voz hacer esa lista seleccionable desde el fontend, no en la base de datos`,
+`numguia_envio` varchar(250) not null comment `numero de seguimiento del paquete , para que cuando tecnicos lo despachen luego, la comercial lo ponga ese numero de seguimiento`
+`ruta_archivo` varchar(1600) NOT NULL COMMENT `solamente se guarda nombre del archivo mi ideal esque depediendo donde este el archivo se guarde la informacion aqui 'pcmteam\public_html\a_img' y va guardar varios nombresd e archivos en la en el mismo campo, como si fuera un json `,
+`observacion_global` varchar(150) DEFAULT NULL,
+`observacion_tecnico` varchar(250) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
 CREATE TABLE `usuarios` (
-  `id` int NOT NULL,
-  `nombre` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `usuario` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `correo` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `clave` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `rol` char(1) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `foto` text COLLATE utf8mb4_unicode_ci,
-  `estado` char(1) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `fere` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `idsede` varchar(25) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cumple` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Fecha de cumpleaños del usuario'
+  `id` int(11) NOT NULL,
+  `nombre` varchar(30) NOT NULL,
+  `usuario` varchar(45) NOT NULL,
+  `correo` varchar(30) NOT NULL,
+  `clave` text NOT NULL,
+  `rol` char(1) NOT NULL,
+  `foto` text DEFAULT NULL,
+  `estado` char(1) NOT NULL,
+  `fere` timestamp NOT NULL DEFAULT current_timestamp(),
+  `idsede` varchar(25) DEFAULT NULL,
+  `cumple` varchar(45) DEFAULT NULL COMMENT 'Fecha de cumpleaños del usuario'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `usuarios` (`id`, `nombre`, `usuario`, `correo`, `clave`, `rol`, `foto`, `estado`, `fere`, `idsede`, `cumple`) VALUES
@@ -677,46 +727,19 @@ INSERT INTO `usuarios` (`id`, `nombre`, `usuario`, `correo`, `clave`, `rol`, `fo
 (2, 'Cristhian Romero', 'CristhianRomeropc', 'cr123@data.com', '53c9051e332d17250009640d364414c4', '1', 'reere.webp', '1', '2025-05-29 08:37:54', 'Principal', NULL),
 (3, 'Jasson Robles', 'Jassonroblespc', 'jr123@data.com', '75dbf8a92d4276fb51528da4e4a9d2c3', '1', 'reere.webp', '1', '2025-05-29 08:38:35', 'Principal', NULL),
 (4, 'Andrés Buitrago', 'AndresBuitragopc', 'ab123@data.com', '4b812d068c142583012bfb70131a61ab', '1', 'reere.webp', '1', '2025-05-29 08:38:57', 'Principal', NULL),
-(5, 'Nohelia Jaraba', 'Noheliajarabapc', 'nj123@data.com', '58b906fa888b10ebd49aa571bcef5149', '1', 'reere.webp', '1', '2025-05-29 08:39:16', 'Principal', NULL),
-(6, 'Anyi González', 'AnyiGonzalezpc', 'anyig123@data.com', '45deac01a8028dd922151f30e78e54ae', '1', 'reere.webp', '1', '2025-05-29 08:39:49', 'Principal', NULL),
-(7, 'FranciscoQV', 'Francisco QV', 'fqv123@data.com', 'e555b59d75e072eb5f18124db1cf1e22', '1', 'reere.webp', '1', '2025-05-29 08:40:11', 'Principal', ''),
-(8, 'Sergio Lara', 'Sergiolarapc', 'sl123@data.com', '16170c99b0432f43d245347aa04aceaf', '6', 'reere.webp', '1', '2025-05-29 08:40:48', 'Principal', NULL),
-(9, 'Juan González', 'Juangonzalezpc', 'jg123@data.com', '210a23d675fe23128f532944f408089c', '5', 'reere.webp', '1', '2025-05-29 08:41:07', 'Principal', NULL),
-(10, 'Luis González', 'Luisgonzalezpc', 'lg123@data.com', '2f04e635bab80099208ccdd506acad69', '6', 'reere.webp', '1', '2025-05-29 08:41:31', 'Principal', NULL),
-(11, 'Natali Florez', 'Nataliflorezpc', 'nf123@data.com', 'd8ef5df38ad01af8d7c5e6e7a478f00d', '2', 'reere.webp', '1', '2025-05-30 00:25:58', 'Principal', NULL),
-(12, 'Fabian Sanchez', 'Fabiansanchezpc', 'fs123@data.com', 'c7417ff8f3f5c8600b914497b6b73492', '6', 'reere.webp', '1', '2025-05-30 00:27:34', 'Principal', NULL),
-(13, 'José Borda', 'Josebordapc', 'jb123@data.com', '4cd26c72d84d1e1d8fe7da2194d5153e', '5', 'reere.webp', '1', '2025-05-30 00:30:57', 'Principal', NULL),
-(14, 'Felipe Romero', 'Feliperomeropc', 'fr123@data.com', 'c843da53f7e567b80ff967cb3ba23aee', '5', 'reere.webp', '1', '2025-05-30 00:31:24', 'Principal', NULL),
-(15, 'Rodrigo Martínez', 'Rodrigomartinezpc', 'rm123@data.com', 'eafabe7aff85735469db0f134663b7cb', '7', 'reere.webp', '1', '2025-05-30 00:31:43', 'Principal', NULL),
-(16, 'Deivi Lopez', 'Deivilopezpc', 'dl123@data.com', 'facbcd76dde2c647198b1bab1d5d834d', '7', 'reere.webp', '1', '2025-05-30 00:32:08', 'Principal', NULL),
-(17, 'Maricela Tabla', 'Maricelatablapc', 'mt123@data.com', '0e57650e147ce827aec8b788db5a25ab', '3', 'reere.webp', '1', '2025-05-30 00:32:29', 'Principal', NULL),
-(18, 'Ana Gaviria Contable', 'Anagaviriapc', 'ag123@data.com', '30e5488c3c420588715fe3a51143e7ec', '0', 'reere.webp', '1', '2025-05-30 00:32:51', 'Remoto', '2025-09-01'),
-(19, 'Laura Pedraza', 'Laurapedrazapc', 'lp123@data.com', '39382aa4884af196f11ed8feba7d128f', '4', 'reere.webp', '1', '2025-05-30 00:33:16', 'Unilago', NULL),
-(21, 'Gabriela Gutiérrez', 'gabrielagutierrezpc', 'gg123@data.com', '7d9bfd94d852319998c99d2c07980246', '4', 'reere.webp', '1', '2025-05-30 00:33:42', 'Cucuta', NULL),
-(22, 'Mónica Valencia', 'Monicavalenciapc', 'mv123@data.com', '213a253bf5cce2d84e4032ace9e29aa7', '4', 'reere.webp', '1', '2025-05-30 00:34:06', 'Medellin', NULL),
-(28, 'frank2', 'frank2', 'frank2@gmail.com', '202cb962ac59075b964b07152d234b70', '2', 'reere.webp', '1', '2025-06-07 07:40:21', 'Principal', NULL),
-(29, 'frank3', 'frank3', 'frank3@gmail.com', '202cb962ac59075b964b07152d234b70', '3', 'reere.webp', '1', '2025-06-10 06:07:48', 'Cucuta', NULL),
-(31, 'frank4', 'frank4', 'frank4@gmail.com', '202cb962ac59075b964b07152d234b70', '4', 'reere.webp', '1', '2025-06-10 06:08:22', 'Unilago', NULL),
-(32, 'frank5', 'frank5', 'frank5@gmail.com', '202cb962ac59075b964b07152d234b70', '5', 'reere.webp', '1', '2025-06-10 06:08:38', 'Medellin', NULL),
-(33, 'Tecnico FranciscoQV', 'frank6', 'frank6@gmail.com', '202cb962ac59075b964b07152d234b70', '6', 'reere.webp', '1', '2025-06-10 06:09:04', 'Medellin', ''),
-(34, 'frank7', 'frank7', 'frank7@gmail.com', '202cb962ac59075b964b07152d234b70', '7', 'reere.webp', '1', '2025-06-10 06:09:18', 'Principal', NULL),
-(35, 'salome', 'salome', 'salome@gmail.com', '202cb962ac59075b964b07152d234b70', '2', 'reere.webp', '1', '2025-07-13 01:22:31', 'Medellin', NULL),
-(36, 'Karen Perez', 'karenperez', 'karenperez@testeo.com', 'a98d0843cade39eb83e1807304341392', '1', 'reere.webp', '1', '2025-09-23 14:40:32', NULL, NULL);
 
 CREATE TABLE `venta_detalles` (
-  `id` int NOT NULL,
-  `orden_id` int NOT NULL,
-  `inventario_id` int NOT NULL,
-  `serial` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `codigo_g` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` int(11) NOT NULL,
+  `orden_id` int(11) NOT NULL,
+  `inventario_id` int(11) NOT NULL,
+  `serial` varchar(100) NOT NULL,
+  `codigo_g` varchar(50) NOT NULL,
   `precio_unitario` decimal(10,2) NOT NULL,
-  `fecha_venta` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `fecha_venta` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `venta_detalles` (`id`, `orden_id`, `inventario_id`, `serial`, `codigo_g`, `precio_unitario`, `fecha_venta`) VALUES
-(4, 18, 109, 'HP987654321', 'EQ002', 0.00, '2025-09-30 15:25:57'),
-(5, 19, 125, 'PF2ASHKP', 'CLLPT1-5-228', 1400000.00, '2025-10-09 15:02:54'),
-(6, 20, 361, 'FVHD11JJMNHP', 'N/A/Medellin-2028', 1600000.00, '2025-10-16 15:20:04');
+(4, 18, 106, 'TEST123456789', 'TEST001', 0.00, '2025-09-24 22:36:23'),
 
 
 ALTER TABLE `bodega_asignaciones`
@@ -846,6 +869,12 @@ ALTER TABLE `proveedores`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nit_unique` (`nit`);
 
+ALTER TABLE `reservas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_inventario_id` (`inventario_id`),
+  ADD KEY `idx_usuario_id` (`usuario_id`),
+  ADD KEY `idx_cliente_id` (`cliente_id`);
+
 ALTER TABLE `reserva_venta`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_inventario` (`inventario_id`),
@@ -860,6 +889,9 @@ ALTER TABLE `servicio`
 ALTER TABLE `setting`
   ADD PRIMARY KEY (`idsett`);
 
+ALTER TABLE `solicitud_alistamiento`
+  ADD PRIMARY KEY (`id`);
+
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`);
 
@@ -869,107 +901,110 @@ ALTER TABLE `venta_detalles`
   ADD KEY `idx_inventario_id` (`inventario_id`);
 
 
-ALTER TABLE `bodega_asignaciones`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
 ALTER TABLE `bodega_cart_compra`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `bodega_compra`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `bodega_control_calidad`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 ALTER TABLE `bodega_diagnosticos`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
 
 ALTER TABLE `bodega_electrico`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 ALTER TABLE `bodega_entradas`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=188;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=129;
 
 ALTER TABLE `bodega_estetico`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 ALTER TABLE `bodega_ingresos`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `bodega_inventario`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=438;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=307;
 
 ALTER TABLE `bodega_log_cambios`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 ALTER TABLE `bodega_mantenimiento`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 ALTER TABLE `bodega_ordenes`
-  MODIFY `idord` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idord` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 ALTER TABLE `bodega_partes`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 ALTER TABLE `bodega_salidas`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=181;
 
 ALTER TABLE `bodega_solicitud_parte`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 ALTER TABLE `cart`
-  MODIFY `idv` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `idv` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 ALTER TABLE `cart_compra`
-  MODIFY `idcarco` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `idcarco` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 ALTER TABLE `categoria`
-  MODIFY `idcate` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idcate` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 ALTER TABLE `clientes`
-  MODIFY `idclie` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `idclie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 ALTER TABLE `compra`
-  MODIFY `idcomp` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `idcomp` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 ALTER TABLE `despachos`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 ALTER TABLE `gastos`
-  MODIFY `idga` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `idga` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 ALTER TABLE `ingresos`
-  MODIFY `iding` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `iding` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 ALTER TABLE `marketing`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `orders`
-  MODIFY `idord` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `idord` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 ALTER TABLE `plan`
-  MODIFY `idplan` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idplan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 ALTER TABLE `producto`
-  MODIFY `idprod` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `idprod` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 ALTER TABLE `proveedores`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+ALTER TABLE `reservas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `reserva_venta`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `servicio`
-  MODIFY `idservc` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idservc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 ALTER TABLE `setting`
-  MODIFY `idsett` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idsett` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+ALTER TABLE `solicitud_alistamiento`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 ALTER TABLE `usuarios`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 ALTER TABLE `venta_detalles`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 
 ALTER TABLE `bodega_salidas`
@@ -979,10 +1014,10 @@ ALTER TABLE `bodega_salidas`
   ADD CONSTRAINT `fk_salida_tecnico` FOREIGN KEY (`tecnico_id`) REFERENCES `usuarios` (`id`),
   ADD CONSTRAINT `fk_salida_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 
-ALTER TABLE `reserva_venta`
-  ADD CONSTRAINT `fk_reserva_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`idclie`) ON DELETE CASCADE,
+ALTER TABLE `reservas`
+  ADD CONSTRAINT `fk_reserva_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`idclie`),
   ADD CONSTRAINT `fk_reserva_inventario` FOREIGN KEY (`inventario_id`) REFERENCES `bodega_inventario` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_reserva_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_reserva_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
