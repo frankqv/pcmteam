@@ -317,7 +317,7 @@ if (isset($_SESSION['id'])) {
                                             <!-- Cliente (Búsqueda) -->
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="cliente_search">Cliente</label>
+                                                    <label for="cliente_search">Cuidad/direccion/nombre del Cliente/ NIT / numero de contacto de celular (Forma Temporal)</label>
                                                     <input type="text" class="form-control" id="cliente_search" name="cliente_search" placeholder="Buscar cliente...">
                                                     <input type="hidden" id="cliente_id" name="cliente_id">
                                                     <input type="hidden" id="cliente_nombre" name="cliente_nombre">
