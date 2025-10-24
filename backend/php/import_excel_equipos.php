@@ -213,7 +213,7 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
                     tactil, grado, disposicion, observaciones, ubicacion, posicion, lote, estado
                 ) VALUES (
                     :codigo_g, :producto, :marca, :modelo, :serial, :procesador, :ram, :disco, :pulgadas,
-                    :tactil, :grado, :disposicion, :observaciones, :ubicacion, :posicion, :lote, 'activo'
+                    :tactil, :grado, :disposicion, :observaciones, :ubicacion, :posicion, :lote, :estado, 
                 )";
                 $stmt_inventario = $connect->prepare($sql_inventario);
                 $stmt_inventario->execute([

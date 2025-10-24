@@ -286,7 +286,7 @@ if (isset($_SESSION['id'])) {
                           <select class="form-control" id="sede" name="sede" required>
                             <option value="">Seleccione...</option>
                             <option value="Principal - Puente Aranda">Principal - Puente Aranda</option>
-                            <option value="Unilago">Unilago</option>
+                            <option value="CapitalTech">CapitalTech</option>
                             <option value="Cúcuta">Cúcuta</option>
                             <option value="Medellin">Medellín</option>
                             <option value="capital_tech">Capital Tech</option>

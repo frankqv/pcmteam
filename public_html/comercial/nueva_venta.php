@@ -33,7 +33,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
         .grado-A { background: #00CC54; }
         .grado-B { background: #F0DD00; color: #333; }
         .grado-C { background: #CC0618; }
-
         .producto-card {
             border: 2px solid #eee;
             border-radius: 8px;
@@ -46,7 +45,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
             border-color: #00CC54;
             box-shadow: 0 2px 8px rgba(0, 204, 84, 0.2);
         }
-
         .total-box {
             background: #f8f9fa;
             border-radius: 8px;
@@ -65,7 +63,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
             font-weight: bold;
             color: #00CC54;
         }
-
         .section-card {
             margin-bottom: 25px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -82,19 +79,16 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
     <div class="wrapper">
         <div class="body-overlay"></div>
         <?php include_once '../layouts/nav.php'; include_once '../layouts/menu_data.php'; ?>
-
         <nav id="sidebar">
             <div class="sidebar-header">
                 <h3><img src="../assets/img/favicon.webp" class="img-fluid" /><span>PCMARKETTEAM</span></h3>
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
         <div id="content">
             <div class='pre-loader'>
                 <img class='loading-gif' alt='loading' src="https://i.imgflip.com/9vd6wr.gif" />
             </div>
-
             <div class="top-navbar">
                 <nav class="navbar navbar-expand-lg">
                     <div class="container-fluid">
@@ -125,7 +119,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
                     </div>
                 </nav>
             </div>
-
             <div class="main-content">
                 <!-- Botón Volver -->
                 <div class="row mb-3">
@@ -136,7 +129,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
                         </a>
                     </div>
                 </div>
-
                 <form id="formNuevaVenta">
                     <!-- SECCIÓN 1: CLIENTE -->
                     <div class="card section-card">
@@ -163,7 +155,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
                             </div>
                         </div>
                     </div>
-
                     <!-- SECCIÓN 2: INFORMACIÓN GENERAL -->
                     <div class="card section-card">
                         <div class="section-header">
@@ -180,16 +171,15 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
                                 </div>
                                 <div class="col-md-4">
                                     <label for="txtTicket">Ticket *</label>
-                                    <input type="text" id="txtTicket" class="form-control" placeholder="TKT-2025-001" required>
+                                    <input type="text" id="txtTicket" class="form-control" placeholder="TKT-2025-001">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="txtUbicacion">Ubicación de Envío *</label>
-                                    <input type="text" id="txtUbicacion" class="form-control" placeholder="Dirección de entrega" required>
+                                    <label for="txtUbicacion">Direccion de Envío *</label>
+                                    <input type="text" id="txtUbicacion" class="form-control" placeholder="Dirección de Envio" required>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <!-- SECCIÓN 3: PRODUCTOS -->
                     <div class="card section-card">
                         <div class="section-header d-flex justify-content-between align-items-center">
@@ -214,7 +204,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
                             </div>
                         </div>
                     </div>
-
                     <!-- SECCIÓN 4: INFORMACIÓN FINANCIERA -->
                     <div class="card section-card">
                         <div class="section-header">
@@ -270,7 +259,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
                             </div>
                         </div>
                     </div>
-
                     <!-- SECCIÓN 5: OBSERVACIONES -->
                     <div class="card section-card">
                         <div class="section-header">
@@ -288,7 +276,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
                             </div>
                         </div>
                     </div>
-
                     <!-- BOTONES DE ACCIÓN -->
                     <div class="row mb-4">
                         <div class="col-12 text-right">
@@ -306,13 +293,11 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
                             </button>
                         </div>
                     </div>
-
                     <input type="hidden" id="hiddenClienteId">
                 </form>
             </div>
         </div>
     </div>
-
     <!-- Modal Buscar Inventario -->
     <div class="modal fade" id="modalBuscarInventario" tabindex="-1">
         <div class="modal-dialog" style="max-width: 90%; width: 90%;">
@@ -337,7 +322,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
             </div>
         </div>
     </div>
-
     <!-- Modal Agregar Manual -->
     <div class="modal fade" id="modalAgregarManual" tabindex="-1">
         <div class="modal-dialog modal-lg">
@@ -397,7 +381,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
             </div>
         </div>
     </div>
-
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/popper.min.js"></script>
     <script src="../assets/js/bootstrap.min.js"></script>

@@ -247,6 +247,16 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7
     ?>
     <script type="text/javascript">
       $(document).ready(function() {
+        // Establecer fecha actual por defecto en el input de fecha
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const todayFormatted = yyyy + '-' + mm + '-' + dd;
+
+        $('#txtnaci').val(todayFormatted);
+
+        // Sidebar y menu
         $('#sidebarCollapse').on('click', function() {
           $('#sidebar').toggleClass('active');
           $('#content').toggleClass('active');

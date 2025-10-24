@@ -9,7 +9,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
 <?php if (isset($_SESSION['id'])) { ?>
   <!DOCTYPE html>
   <html lang="es">
-
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -29,52 +28,42 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
         border-radius: 4px;
         font-weight: 600;
       }
-
       .badge-borrador {
         background: #6c757d;
         color: white;
       }
-
       .badge-pendiente {
         background: #CC0618;
         color: white;
       }
-
       .badge-aprobado {
         background: #2B41CC;
         color: white;
       }
-
       .badge-en_alistamiento {
         background: #F0DD00;
         color: #333;
       }
-
       .badge-alistado {
         background: #00CC54;
         color: white;
       }
-
       .badge-despachado {
         background: #7B2CBF;
         color: white;
       }
-
       .badge-en_transito {
         background: #17a2b8;
         color: white;
       }
-
       .badge-entregado {
         background: #28a745;
         color: white;
       }
-
       .badge-cancelado {
         background: #dc3545;
         color: white;
       }
-
       /* === BOTONES === */
       .btn-nueva-venta {
         background: linear-gradient(135deg, #2B6B5D 0%, #1a4a3f 100%);
@@ -87,58 +76,48 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
         transition: all 0.3s;
         box-shadow: 0 2px 8px rgba(43, 107, 93, 0.3);
       }
-
       .btn-nueva-venta:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(43, 107, 93, 0.4);
         color: white;
       }
-
       .btn-nueva-venta .material-icons {
         vertical-align: middle;
         margin-right: 5px;
       }
-
       /* === CARD PRINCIPAL === */
       .card-listado {
         border-radius: 12px;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
         border: none;
       }
-
       .card-listado .card-header {
         background: linear-gradient(135deg, #2B6B5D 0%, #1a4a3f 100%);
         color: white;
         border-radius: 12px 12px 0 0;
         padding: 20px;
       }
-
       .card-listado .card-header h4 {
         margin: 0;
         font-weight: 600;
         display: flex;
         align-items: center;
       }
-
       .card-listado .card-header h4 .material-icons {
         margin-right: 10px;
       }
-
       /* === TABLA === */
       #tablaVentas {
         font-size: 14px;
       }
-
       #tablaVentas thead th {
         background: #f8f9fa;
         font-weight: 600;
         border-bottom: 2px solid #dee2e6;
       }
-
       #tablaVentas tbody td {
         vertical-align: middle;
       }
-
       /* === BOTONES DE ACCIÓN === */
       .btn-action {
         padding: 6px 10px;
@@ -147,21 +126,17 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
         margin: 0 2px;
         transition: all 0.2s;
       }
-
       .btn-action:hover {
         transform: scale(1.1);
       }
-
       .btn-action .material-icons {
         font-size: 18px;
         vertical-align: middle;
       }
-
       /* === MODAL DETALLE === */
       .modal-detalle .info-section {
         margin-bottom: 20px;
       }
-
       .modal-detalle .info-section h6 {
         color: #2B6B5D;
         font-weight: 600;
@@ -169,70 +144,57 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
         padding-bottom: 10px;
         border-bottom: 2px solid #2B6B5D;
       }
-
       .modal-detalle .info-table th {
         width: 40%;
         font-weight: 600;
         color: #495057;
       }
-
       .modal-detalle .info-table td {
         color: #212529;
       }
-
       .modal-detalle .productos-table {
         font-size: 13px;
       }
-
       .modal-detalle .productos-table thead {
         background: #f8f9fa;
       }
-
       /* === MODAL CAMBIAR ESTADO === */
       .swal2-html-container .form-control {
         margin-bottom: 10px;
       }
     </style>
   </head>
-
   <body>
     <div class="wrapper">
       <div class="body-overlay"></div>
-
       <?php
       include_once '../layouts/nav.php';
       include_once '../layouts/menu_data.php';
       ?>
-
       <nav id="sidebar">
         <div class="sidebar-header">
           <h3><img src="../assets/img/favicon.webp" class="img-fluid" /><span>PCMARKETTEAM</span></h3>
         </div>
         <?php renderMenu($menu); ?>
       </nav>
-
       <div id="content">
         <div class='pre-loader'>
           <img class='loading-gif' alt='loading' src="https://i.imgflip.com/9vd6wr.gif" />
         </div>
-
         <div class="top-navbar">
           <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
               <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-none d-none">
                 <span class="material-icons">arrow_back_ios</span>
               </button>
-
               <a class="navbar-brand" href="#">
                 <span class="material-icons" style="vertical-align: middle;">shopping_cart</span>
                 Alistamiento de Ventas
               </a>
-
               <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
                 data-toggle="collapse" data-target="#navbarSupportedContent">
                 <span class="material-icons">more_vert</span>
               </button>
-
               <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none">
                 <ul class="nav navbar-nav ml-auto">
                   <li class="dropdown nav-item active">
@@ -249,7 +211,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
             </div>
           </nav>
         </div>
-
         <div class="main-content">
           <!-- BOTÓN NUEVA VENTA -->
           <div class="row mb-4">
@@ -260,7 +221,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
               </a>
             </div>
           </div>
-
           <!-- TABLA DE VENTAS -->
           <div class="row">
             <div class="col-12">
@@ -297,10 +257,9 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
         </div>
       </div>
     </div>
-
     <!-- ==================== MODAL: VER DETALLE ==================== -->
     <div class="modal fade" id="modalVerDetalle" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-dialog" style="max-width: 95%; width: 95%;" role="document">
         <div class="modal-content">
           <div class="modal-header" style="background: #2B6B5D; color: white;">
             <h5 class="modal-title">
@@ -320,7 +279,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
         </div>
       </div>
     </div>
-
     <!-- ==================== SCRIPTS ==================== -->
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/popper.min.js"></script>
@@ -329,11 +287,9 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
     <script type="text/javascript" src="../assets/js/datatable.js"></script>
     <script type="text/javascript" src="../assets/js/datatablebuttons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
       $(document).ready(function() {
         console.log('🔵 Alistamiento Venta - Inicializando...');
-
         // ==================== DATATABLE ====================
         const tablaVentas = $('#tablaVentas').DataTable({
           ajax: {
@@ -433,19 +389,15 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
           responsive: true,
           pageLength: 25
         });
-
         console.log('✅ DataTable inicializado');
-
         // ==================== VER DETALLE ====================
         $(document).on('click', '.btnVerDetalle', function() {
           const id = $(this).data('id');
           console.log('📋 Cargando detalle de venta ID:', id);
-
           $.get('../../backend/php/alistamiento_api.php?action=obtener_venta&id=' + id, function(response) {
             if (response.success) {
               const venta = response.data;
               console.log('✅ Venta cargada:', venta);
-
               let html = `
                 <div class="row">
                   <!-- COLUMNA IZQUIERDA: INFORMACIÓN GENERAL -->
@@ -465,7 +417,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
                       </table>
                     </div>
                   </div>
-
                   <!-- COLUMNA DERECHA: INFORMACIÓN FINANCIERA -->
                   <div class="col-md-6">
                     <div class="info-section">
@@ -481,9 +432,7 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
                     </div>
                   </div>
                 </div>
-
                 <hr style="margin: 30px 0; border-top: 2px solid #dee2e6;">
-
                 <!-- PRODUCTOS -->
                 <div class="info-section">
                   <h6><span class="material-icons" style="vertical-align: middle; font-size: 20px;">inventory</span> Productos</h6>
@@ -500,7 +449,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
                       </thead>
                       <tbody>
               `;
-
               venta.items.forEach(function(item) {
                 html += `
                   <tr>
@@ -517,14 +465,12 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
                   </tr>
                 `;
               });
-
               html += `
                       </tbody>
                     </table>
                   </div>
                 </div>
               `;
-
               // OBSERVACIONES
               if (venta.observacion_global) {
                 html += `
@@ -535,7 +481,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
                   </div>
                 `;
               }
-
               $('#detalleVentaBody').html(html);
               $('#modalVerDetalle').modal('show');
             } else {
@@ -545,12 +490,10 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
             Swal.fire('Error', 'Error al cargar el detalle de la venta', 'error');
           });
         });
-
         // ==================== CAMBIAR ESTADO ====================
         $(document).on('click', '.btnCambiarEstado', function() {
           const id = $(this).data('id');
           console.log('🔄 Cambiar estado de venta ID:', id);
-
           Swal.fire({
             title: 'Cambiar Estado',
             html: `
@@ -580,12 +523,10 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
             preConfirm: () => {
               const estado = $('#swalEstado').val();
               const observacion = $('#swalObservacion').val();
-
               if (!estado) {
                 Swal.showValidationMessage('Debe seleccionar un estado');
                 return false;
               }
-
               return {
                 estado: estado,
                 observacion: observacion
@@ -594,7 +535,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
           }).then((result) => {
             if (result.isConfirmed) {
               console.log('✅ Cambiando estado a:', result.value.estado);
-
               $.post('../../backend/php/alistamiento_api.php', {
                 action: 'cambiar_estado',
                 id: id,
@@ -613,12 +553,10 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
             }
           });
         });
-
         // ==================== ELIMINAR VENTA ====================
         $(document).on('click', '.btnEliminar', function() {
           const id = $(this).data('id');
           console.log('🗑️ Intentando eliminar venta ID:', id);
-
           Swal.fire({
             title: '¿Está seguro?',
             html: '<p>Solo se pueden eliminar ventas en estado <strong>Borrador</strong> o <strong>Cancelado</strong>.</p><p class="text-danger">Esta acción no se puede deshacer.</p>',
@@ -631,7 +569,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
           }).then((result) => {
             if (result.isConfirmed) {
               console.log('✅ Confirmado - Eliminando venta ID:', id);
-
               $.post('../../backend/php/alistamiento_api.php', {
                 action: 'eliminar_venta',
                 id: id
@@ -648,22 +585,18 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 4])) {
             }
           });
         });
-
         // ==================== SIDEBAR ====================
         $('#sidebarCollapse').on('click', function() {
           $('#sidebar').toggleClass('active');
           $('#content').toggleClass('active');
         });
-
         $('.more-button,.body-overlay').on('click', function() {
           $('#sidebar,.body-overlay').toggleClass('show-nav');
         });
-
         console.log('✅ Alistamiento Venta - Inicialización completa');
       });
     </script>
   </body>
-
   </html>
 <?php } else {
   header('Location: ../error404.php');
