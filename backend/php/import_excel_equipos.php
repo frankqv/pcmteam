@@ -111,8 +111,8 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
             }
             // Debug: registrar datos extraídos
             error_log("Fila {$row} datos: " . json_encode($data));
-            // Validar campos obligatorios
-            $requiredFields = ['codigo_g', 'ubicacion', 'posicion', 'producto', 'marca', 'serial', 'modelo', 'ram', 'grado', 'disposicion', 'tactil', 'proveedor_id'];
+            // Validar solo los campos realmente críticos
+            $requiredFields = ['codigo_g', 'ubicacion', 'posicion', 'producto', 'marca', 'serial'];
             $missingFields = [];
             foreach ($requiredFields as $field) {
                 if (empty($data[$field])) {
@@ -128,6 +128,14 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
                 ];
                 continue;
             }
+
+            // Asignar valores por defecto si están vacíos
+            if (empty($data['modelo'])) $data['modelo'] = 'N/A';
+            if (empty($data['ram'])) $data['ram'] = 'N/A';
+            if (empty($data['grado'])) $data['grado'] = 'C';
+            if (empty($data['disposicion'])) $data['disposicion'] = 'En Bodega';
+            if (empty($data['tactil'])) $data['tactil'] = 'NO';
+            if (empty($data['proveedor_id'])) $data['proveedor_id'] = 1;
             // Verificar si el serial ya existe (debe ser único)
             $stmt_check_serial = $connect->prepare("SELECT id FROM bodega_inventario WHERE serial = :serial");
             $stmt_check_serial->execute(['serial' => $data['serial']]);
@@ -151,69 +159,27 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
                 ];
                 continue;
             }
-            // 4. Validar valores de campos específicos
-            $validUbicaciones = ['Principal', 'Unilago', 'Cúcuta', 'Medellín'];
-            if (!in_array($data['ubicacion'], $validUbicaciones)) {
-                $results['errors'][] = [
-                    'row' => $row,
-                    'codigo' => $codigo_g,
-                    'error' => "Ubicación '{$data['ubicacion']}' no válida. Valores permitidos: " . implode(', ', $validUbicaciones)
-                ];
-                continue;
+            // 4. Normalizar y validar valores (más flexible)
+            // Normalizar táctil
+            $data['tactil'] = strtoupper(trim($data['tactil']));
+            if (!in_array($data['tactil'], ['SI', 'NO'])) {
+                $data['tactil'] = 'NO'; // Valor por defecto
             }
-            $validProductos = ['Portatil', 'Desktop', 'Monitor', 'AIO', 'Tablet', 'Celular', 'Impresora', 'Periferico', 'otro'];
-            if (!in_array($data['producto'], $validProductos)) {
-                $results['errors'][] = [
-                    'row' => $row,
-                    'codigo' => $codigo_g,
-                    'error' => "Tipo de producto '{$data['producto']}' no válido."
-                ];
-                continue;
-            }
-            $validMarcas = ['HP', 'Dell', 'Lenovo', 'Acer', 'CompuMax', 'Otro'];
-            if (!in_array($data['marca'], $validMarcas)) {
-                $results['errors'][] = [
-                    'row' => $row,
-                    'codigo' => $codigo_g,
-                    'error' => "Marca '{$data['marca']}' no válida."
-                ];
-                continue;
-            }
-            $validGrados = ['A', 'B', 'C', 'SCRAP', '#N/D'];
+
+            // Normalizar grado
+            $data['grado'] = strtoupper(trim($data['grado']));
+            $validGrados = ['A', 'B', 'C', 'SCRAP', '#N/D', 'N/A'];
             if (!in_array($data['grado'], $validGrados)) {
-                $results['errors'][] = [
-                    'row' => $row,
-                    'codigo' => $codigo_g,
-                    'error' => "Grado '{$data['grado']}' no válido."
-                ];
-                continue;
-            }
-            $validDisposiciones = ['En revisión', 'Por Alistamiento', 'En Laboratorio', 'En Bodega', 'Disposicion final', 'Para Venta'];
-            if (!in_array($data['disposicion'], $validDisposiciones)) {
-                $results['errors'][] = [
-                    'row' => $row,
-                    'codigo' => $codigo_g,
-                    'error' => "Disposición '{$data['disposicion']}' no válida."
-                ];
-                continue;
-            }
-            $validTactil = ['SI', 'NO'];
-            if (!in_array($data['tactil'], $validTactil)) {
-                $results['errors'][] = [
-                    'row' => $row,
-                    'codigo' => $codigo_g,
-                    'error' => "Valor táctil '{$data['tactil']}' no válido. Use SI o NO."
-                ];
-                continue;
+                $data['grado'] = 'C'; // Valor por defecto
             }
             try {
                 // 5. Insertar en bodega_inventario
                 $sql_inventario = "INSERT INTO bodega_inventario (
-                    codigo_g, producto, marca, modelo, serial, procesador, ram, disco, pulgadas, 
+                    codigo_g, producto, marca, modelo, serial, procesador, ram, disco, pulgadas,
                     tactil, grado, disposicion, observaciones, ubicacion, posicion, lote, estado
                 ) VALUES (
                     :codigo_g, :producto, :marca, :modelo, :serial, :procesador, :ram, :disco, :pulgadas,
-                    :tactil, :grado, :disposicion, :observaciones, :ubicacion, :posicion, :lote, :estado, 
+                    :tactil, :grado, :disposicion, :observaciones, :ubicacion, :posicion, :lote, 'activo'
                 )";
                 $stmt_inventario = $connect->prepare($sql_inventario);
                 $stmt_inventario->execute([
@@ -222,17 +188,17 @@ if (isset($_FILES['excel_file']) && $_FILES['excel_file']['error'] == UPLOAD_ERR
                     ':marca' => $data['marca'],
                     ':modelo' => $data['modelo'],
                     ':serial' => $data['serial'],
-                    ':procesador' => $data['procesador'],
+                    ':procesador' => $data['procesador'] ?: null,
                     ':ram' => $data['ram'],
-                    ':disco' => $data['disco'],
-                    ':pulgadas' => $data['pulgadas'],
+                    ':disco' => $data['disco'] ?: null,
+                    ':pulgadas' => $data['pulgadas'] ?: null,
                     ':tactil' => $data['tactil'],
                     ':grado' => $data['grado'],
                     ':disposicion' => $data['disposicion'],
-                    ':observaciones' => $data['observaciones'],
+                    ':observaciones' => $data['observaciones'] ?: null,
                     ':ubicacion' => $data['ubicacion'],
                     ':posicion' => $data['posicion'],
-                    ':lote' => $data['lote']
+                    ':lote' => $data['lote'] ?: null
                 ]);
                 $inventario_id = $connect->lastInsertId();
                 // 6. Insertar en bodega_entradas
