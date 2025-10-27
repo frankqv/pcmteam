@@ -173,6 +173,7 @@ if (isset($_SESSION['id'])) {
                                     <table class="table table-hover" id="example">
                                         <thead class="text-primary">
                                             <tr>
+                                                <th>ID</th>
                                                 <th>Nomenclatura</th>
                                                 <th>Nombre</th>
                                                 <th>Celular</th>
@@ -185,6 +186,7 @@ if (isset($_SESSION['id'])) {
                                         <tbody>
                                             <?php foreach ($data as $d): ?>
                                                 <tr>
+                                                    <td><?php echo $d->id; ?></td>
                                                     <td><?php echo $d->nomenclatura; ?></td>
                                                     <td><?php echo $d->nombre; ?></td>
                                                     <td><?php echo $d->celu; ?></td>

@@ -62,6 +62,8 @@ if(!$proveedor){
                         </div>
                         <div class="card-body">
                             <dl class="row">
+                                <dt class="col-sm-4">ID PROVEEDOR <br/><small>Fundamenta importar desde Excel</small> </dt>
+                                <dd class="col-sm-8"><?php echo htmlspecialchars($proveedor->id); ?></dd>
                                 <dt class="col-sm-4">Nomenclatura</dt>
                                 <dd class="col-sm-8"><?php echo htmlspecialchars($proveedor->nomenclatura); ?></dd>
                                 <dt class="col-sm-4">Nombre</dt>
