@@ -321,7 +321,7 @@ if (isset($_SESSION['id'])) {
                       <div class="col-md-4">
                         <div class="form-group">
                           <label for="cliente_search">Cuidad/direccion/nombre del Cliente/ NIT / numero de contacto de celular (Forma Temporal)</label>
-                          <input type="text" class="form-control" id="cliente_search" name="cliente_search" placeholder="Buscar cliente...">
+                          <input type="text" class="form-control" id="cliente_search" name="cliente_search" placeholder="Buscar cliente..." required>
                           <input type="hidden" id="cliente_id" name="cliente_id">
                           <input type="hidden" id="cliente_nombre" name="cliente_nombre">
                           <small class="form-text text-muted" id="cliente_selected"></small>
@@ -348,12 +348,12 @@ if (isset($_SESSION['id'])) {
                         </thead>
                         <tbody id="productosBody">
                           <tr class="producto-row" data-row="1">
-                            <td><input type="number" id="cantidad_1" name="productos[1][cantidad]" class="form-control form-control-sm cantidad-input" min="1" value="1" aria-label="Cantidad producto 1"></td>
-                            <td><input type="text" id="descripcion_1" name="productos[1][descripcion]" class="form-control form-control-sm descripcion-input" placeholder="Ej: Laptop HP i5 8GB" aria-label="Descripción producto 1"></td>
-                            <td><input type="text" id="marca_1" name="productos[1][marca]" class="form-control form-control-sm marca-input" placeholder="HP" aria-label="Marca producto 1"></td>
-                            <td><input type="text" id="modelo_1" name="productos[1][modelo]" class="form-control form-control-sm modelo-input" placeholder="EliteBook 840" aria-label="Modelo producto 1"></td>
-                            <td><input type="text" id="observacion_1" name="productos[1][observacion]" class="form-control form-control-sm observacion-input" placeholder="Opcional" aria-label="Observación producto 1"></td>
-                            <td><button type="button" class="btn btn-danger btn-sm btn-remove-row" disabled aria-label="Eliminar producto 1"><i class="material-icons" style="font-size: 14px;">close</i></button></td>
+                            <td><input type="number" id="cantidad_1" name="productos[1][cantidad]" class="form-control form-control-sm cantidad-input" min="1" value="1" aria-label="Cantidad producto 1" required></td>
+                            <td><input type="text" id="descripcion_1" name="productos[1][descripcion]" class="form-control form-control-sm descripcion-input" placeholder="Ej: Laptop HP i5 8GB" aria-label="Descripción producto 1" required></td>
+                            <td><input type="text" id="marca_1" name="productos[1][marca]" class="form-control form-control-sm marca-input" placeholder="HP" aria-label="Marca producto 1" required></td>
+                            <td><input type="text" id="modelo_1" name="productos[1][modelo]" class="form-control form-control-sm modelo-input" placeholder="EliteBook 840" aria-label="Modelo producto 1" required></td>
+                            <td><input type="text" id="observacion_1" name="productos[1][observacion]" class="form-control form-control-sm observacion-input" placeholder="Opcional" aria-label="Observación producto 1" required></td>
+                            <td><button type="button" class="btn btn-danger btn-sm btn-remove-row" disabled aria-label="Eliminar producto 1"><i class="material-icons" style="font-size: 14px;" required>close</i></button></td>
                           </tr>
                           <tr class="producto-row" data-row="2">
                             <td><input type="number" id="cantidad_2" name="productos[2][cantidad]" class="form-control form-control-sm cantidad-input" min="1" value="1" aria-label="Cantidad producto 2"></td>
