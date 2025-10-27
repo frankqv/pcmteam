@@ -351,8 +351,8 @@ if (isset($_SESSION['id'])) {
                             <td><input type="number" id="cantidad_1" name="productos[1][cantidad]" class="form-control form-control-sm cantidad-input" min="1" value="1" aria-label="Cantidad producto 1" required></td>
                             <td><input type="text" id="descripcion_1" name="productos[1][descripcion]" class="form-control form-control-sm descripcion-input" placeholder="Ej: Laptop HP i5 8GB" aria-label="Descripción producto 1" required></td>
                             <td><input type="text" id="marca_1" name="productos[1][marca]" class="form-control form-control-sm marca-input" placeholder="HP" aria-label="Marca producto 1" required></td>
-                            <td><input type="text" id="modelo_1" name="productos[1][modelo]" class="form-control form-control-sm modelo-input" placeholder="EliteBook 840" aria-label="Modelo producto 1" required></td>
-                            <td><input type="text" id="observacion_1" name="productos[1][observacion]" class="form-control form-control-sm observacion-input" placeholder="Opcional" aria-label="Observación producto 1" required></td>
+                            <td><input type="text" id="modelo_1" name="productos[1][modelo]" class="form-control form-control-sm modelo-input" placeholder="EliteBook 840" aria-label="Modelo producto 1" ></td>
+                            <td><input type="text" id="observacion_1" name="productos[1][observacion]" class="form-control form-control-sm observacion-input" placeholder="Opcional" aria-label="Observación producto 1"></td>
                             <td><button type="button" class="btn btn-danger btn-sm btn-remove-row" disabled aria-label="Eliminar producto 1"><i class="material-icons" style="font-size: 14px;" required>close</i></button></td>
                           </tr>
                           <tr class="producto-row" data-row="2">

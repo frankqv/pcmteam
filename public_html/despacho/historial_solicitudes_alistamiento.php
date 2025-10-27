@@ -101,6 +101,12 @@ if (!empty($busqueda)) {
     $params[':busqueda'] = $busqueda;
     $params[':busqueda_like'] = '%' . $busqueda . '%';
 }
+ if (!empty($busqueda)) {
+    $where_conditions[] = "(sa.id LIKE :busqueda_like OR sa.solicitante LIKE :busqueda_like OR sa.cliente LIKE :busqueda_like OR sa.descripcion LIKE :busqueda_like)";
+    $where_conditions[] = "(sa.id LIKE :busqueda_like OR sa.solicitante LIKE :busqueda_like OR sa.cliente LIKE :busqueda_like OR u_tecnico.nombre LIKE :busqueda_like OR sa.descripcion LIKE :busqueda_like)";
+     $params[':busqueda_like'] = '%' . $busqueda . '%';
+ }
+ 
 $where_clause = count($where_conditions) > 0 ? 'WHERE ' . implode(' AND ', $where_conditions) : '';
 $sql = "SELECT
             sa.*,
@@ -290,12 +296,12 @@ if (isset($_SESSION['id'])) {
                                             </select>
                                         </div>
                                     </div>
+                                    
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Buscar</label>
-                                            <input type="text" name="busqueda" class="form-control"
-                                                   placeholder="ID, solicitante, cliente, descripción..."
-                                                   value="<?php echo e($busqueda); ?>">
+                                            <input type="text" name="busqueda" class="form-control" placeholder="ID, solicitante, cliente, descripción..."
+                                                    value="<?php echo e($busqueda); ?>">
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -360,6 +366,7 @@ if (isset($_SESSION['id'])) {
                                                                 <?php echo e($tec['nombre']); ?>
                                                             </option>
                                                         <?php endforeach; ?>
+                                                        
                                                     </select>
                                                 </td>
                                                 <td class="text-center">

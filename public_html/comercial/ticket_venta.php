@@ -1,3 +1,6 @@
+/* claude.ia ayudame crear un ticket para los usuarios cuando hagan unaventa se pueda imprimir desde un boton en la  */
+
+
 <?php
 # Incluyendo librerias necesarias #
 require "../../backend/pdf/code128.php";

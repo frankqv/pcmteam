@@ -15,6 +15,7 @@
 ## Estructura Actual del Proyecto
 
 ```
+
 C:\laragon\www\pcmteam>tree /f
 Listado de rutas de carpetas
 El número de serie del volumen es 1CFA-2E35
@@ -27,9 +28,11 @@ C:.
 │   COLORES_DASHBOARD_COMERCIAL.md
 │   composer.json
 │   composer.lock
+│   CORRECCIONES_APLICADAS.md
 │   CORRECCION_CLIENTES.md
 │   CORRECCION_PREVENTA.md
 │   DASHBOARD_COMERCIAL.md
+│   DIAGNOSTICO_SELECT2.md
 │   FIX_CAMBIO_CONTRASEÑA.md
 │   index.php
 │   Mapa actual del proyecto.txt
@@ -37,9 +40,13 @@ C:.
 │   RESUMEN_FINAL_SISTEMA.md
 │   RESUMEN_SESION_171025.md
 │   SOLUCION_PREVENTA_FINAL.md
+│   VERIFICACION_SISTEMA_ALISTAMIENTO.md
 │
 ├───.claude
 │       settings.local.json
+│
+├───.vscode
+│       settings.json
 │
 ├───backend
 │   │   fix_autoincrement.php
@@ -71,6 +78,7 @@ C:.
 │   │           zapfdingbats.php
 │   │
 │   └───php
+│           alistamiento_api.php
 │           buscar_equipos_preventa.php
 │           buscar_equipo_posicion.php
 │           ctlogx.php
@@ -124,13 +132,22 @@ C:.
 │           st_updpropsd2.php
 │           st_updservic.php
 │           st_upduser.php
+│           test_clientes.php
 │           test_connection.php
 │           test_insert.php
 │           update_inventario.php
 │
 ├───config
+│       BackupDB_hostinger.txt
 │       ctconex.php
 │       EstructuraDB.sql
+│       mejoras_tablas_actuales.sql
+│
+├───database
+│       alistamiento_venta.sql
+│       fix_triggers_alistamiento.sql
+│       INSTRUCCIONES_ALISTAMIENTO_VENTA.md
+│       verificar_y_corregir_saldos.sql
 │
 ├───public_html
 │   │   .htaccess
@@ -175,6 +192,7 @@ C:.
 │   │   │   │   reere.webp
 │   │   │   │   sideimage.webp
 │   │   │   │
+│   │   │   ├───comprobantes
 │   │   │   └───subidas
 │   │   │           106707.jpg
 │   │   │           106707.webp
@@ -201,6 +219,7 @@ C:.
 │   │   │           portatil_display.jpeg
 │   │   │
 │   │   └───js
+│   │           alistamiento_venta.js
 │   │           bootstrap.min.js
 │   │           buttonshtml5.js
 │   │           buttonsprint.js
@@ -208,11 +227,13 @@ C:.
 │   │           charts-loader.js
 │   │           datatable.js
 │   │           datatablebuttons.js
+│   │           debug_select2.js
 │   │           example.js
 │   │           jquery-3.3.1.min.js
 │   │           jquery-3.3.1.slim.min.js
 │   │           jszip.js
 │   │           loader.js
+│   │           nueva_venta.js
 │   │           package-lock.json
 │   │           package.json
 │   │           pdfmake.js
@@ -223,7 +244,11 @@ C:.
 │   │           sidebarCollapse.js
 │   │           spanish.json
 │   │           sweetalert.js
+│   │           sweetalet2.js
 │   │           vfs_fonts.js
+│   │
+│   ├───a_img
+│   │       testeo.png
 │   │
 │   ├───bodega
 │   │       asignar.php
@@ -271,7 +296,13 @@ C:.
 │   │       plantilla_excel.php
 │   │
 │   ├───comercial
+│   │       alistamiento_venta.php
+│   │       archivo_viejo_nueva_venta.php
 │   │       escritorio.php
+│   │       historico_venta.php
+│   │       nueva_venta.php
+│   │       ticket_venta.php
+│   │       ver_ventas.php
 │   │
 │   ├───compra
 │   │       cancelar.php
@@ -426,6 +457,7 @@ C:.
 │   │
 │   └───venta
 │           abcz.php
+│           alistamiento_venta.php
 │           cancelar.php
 │           catalogo.php
 │           eliminar.php
