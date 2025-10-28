@@ -1,4 +1,5 @@
 <?php
+// st_updconfi.php
 require_once __DIR__ . '../../../config/ctconex.php';
 if (isset($_POST['stupdconfi'])) {
     $idsett = $_POST['txtidadm'];

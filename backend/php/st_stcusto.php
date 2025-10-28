@@ -14,6 +14,8 @@ if (isset($_POST['staddcust'])) {
     $dircli = trim($_POST['txtdire']);
     $ciucli = trim($_POST['txtciud']);
     $idsede = $_POST['txtsede'];
+    $tipo_cliente = !empty($_POST['txttipo']) ? $_POST['txttipo'] : NULL;
+    $canal_venta = !empty($_POST['txtcanal']) ? $_POST['txtcanal'] : NULL;
     // Validación básica
     if (empty($numid)) {
         echo '<script type="text/javascript">
@@ -48,9 +50,9 @@ if (isset($_POST['staddcust'])) {
                         exit;
                     }
                 }
-                // Insertar con TODOS los campos
-                $sql = "INSERT INTO clientes(numid, nomcli, apecli, naci, correo, celu, estad, dircli, ciucli, idsede)
-                        VALUES (:numid, :nomcli, :apecli, :naci, :correo, :celu, :estad, :dircli, :ciucli, :idsede)";
+                // Insertar con TODOS los campos (incluyendo tipo_cliente y canal_venta)
+                $sql = "INSERT INTO clientes(numid, nomcli, apecli, naci, correo, celu, estad, dircli, ciucli, idsede, tipo_cliente, canal_venta)
+                        VALUES (:numid, :nomcli, :apecli, :naci, :correo, :celu, :estad, :dircli, :ciucli, :idsede, :tipo_cliente, :canal_venta)";
                 $stmt = $connect->prepare($sql);
                 $stmt->bindParam(':numid', $numid);
                 $stmt->bindParam(':nomcli', $nomcli);
@@ -62,6 +64,8 @@ if (isset($_POST['staddcust'])) {
                 $stmt->bindParam(':dircli', $dircli);
                 $stmt->bindParam(':ciucli', $ciucli);
                 $stmt->bindParam(':idsede', $idsede);
+                $stmt->bindParam(':tipo_cliente', $tipo_cliente);
+                $stmt->bindParam(':canal_venta', $canal_venta);
                 if ($stmt->execute()) {
                     echo '<script type="text/javascript">
                             swal("¡Registrado!", "Cliente agregado correctamente", "success").then(function() {

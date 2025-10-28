@@ -253,11 +253,10 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2])) {
         </div>
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="../assets/js/jquery-3.3.1.slim.min.js"></script>
-        <script src="../assets/js/popper.min.js"></script>
-        <script src="../assets/js/bootstrap.min.js"></script>
         <script src="../assets/js/jquery-3.3.1.min.js"></script>
-        <script src="../assets/js/sweetalert.js"></script>
+        <script src="../assets/js/popper.min.js"></script>
+        <script src="../assets/js/bootstrap.min.js"></script>
+        <script src="../assets/js/sweetalert.js"></script>
         <?php
         include_once '../../backend/php/st_updconfi.php'
         ?>
