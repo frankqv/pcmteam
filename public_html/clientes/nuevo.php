@@ -217,9 +217,6 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7
                             <option value="">Seleccione tipo de cliente</option>
                             <option value="usuario_final">Usuario Final</option>
                             <option value="mayorista">Mayorista</option>
-                            <option value="distribuidor">Distribuidor</option>
-                            <option value="corporativo">Corporativo</option>
-                            <option value="gobierno">Gobierno</option>
                           </select>
                         </div>
                       </div>
@@ -228,15 +225,15 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7
                           <label for="txtcanal">Canal de Venta</label>
                           <select id="txtcanal" class="form-control" name="txtcanal">
                             <option value="">Seleccione canal de venta</option>
-                            <option value="whatsapp">WhatsApp</option>
                             <option value="whatsapp_pauta">WhatsApp Pauta</option>
                             <option value="facebook">Facebook</option>
                             <option value="instagram">Instagram</option>
                             <option value="marketplace">Marketplace</option>
-                            <option value="referido">Referido</option>
                             <option value="tienda_fisica">Tienda Física</option>
                             <option value="llamada">Llamada Telefónica</option>
                             <option value="correo">Correo Electrónico</option>
+                            <option value="whatsapp">WhatsApp</option>
+                            <option value="referido">Referido</option>
                             <option value="otro">Otro</option>
                           </select>
                         </div>

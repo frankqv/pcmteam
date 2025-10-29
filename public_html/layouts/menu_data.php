@@ -253,6 +253,49 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
         ]
     ];
 }
+// 3.9 ALISTAMIENTOS (Preparación de equipos para venta)
+// ========================================================================
+$comercialMenu = [];
+if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
+  $comercialMenu [] =[
+    'label'=> 'Panel Principal',
+    'icon'=> 'dashboard',
+    'url'=> '../comercial/escritorio.php'
+  ];
+  $comercialMenu [] = [
+    'label' => 'Clientes',
+    'icon' => 'circule',
+    'children' => [
+      ['label' => 'Nuevo Cliente', 'icon' => 'group_add', 'url' => '../clientes/nuevo.php'],
+      ['label' => 'Lista de Clientes', 'icon' => 'list', 'url' => '../clientes/mostrar.php']
+    ],
+  ];
+  $comercialMenu [] =[
+    'label'=> 'Nueva Venta',
+    'icon'=> 'add_shopping_cart',
+    'url'=> '../comercial/nueva_venta.php'
+  ];
+  $comercialMenu [] =[
+    'label'=> 'Historial de Ventas',
+    'icon'=> 'receipt_long',
+    'url'=> '../comercial/historico_venta.php'
+  ];
+  $comercialMenu [] =[
+    'label'=> 'Lista de Productos',
+    'icon'=> 'inventory_2',
+    'url'=> '../bodega/lista_producto.php'
+  ];
+}
+// Seccion padre
+if (!empty($comercialMenu)) {
+    $menu[] = [
+        'label' => 'Comercial',
+        'icon' => 'payments',
+        'id' => 'comercial_venta',
+        'children' => $comercialMenu
+    ];
+}
+
 // 4. ALISTAMIENTOS (Preparación de equipos para venta)
 // ========================================================================
 $alistamientoItems = [];

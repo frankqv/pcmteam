@@ -148,7 +148,7 @@ if (isset($_POST['action'])) {
         case 'guardar_venta':
             try {
                 $conn->begin_transaction();
-                // Generar IDs
+                // Generar IDs el id tickets Nota: cambia luego por códg factura saque el world_office el programa contable usa Anyi y las demas contadoras
                 $idventa = generarIdVenta($conn);
                 $ticket = generarTicket($conn);
                 // Datos básicos
@@ -223,10 +223,8 @@ if (isset($_POST['action'])) {
                 if (!$stmt->execute()) {
                     throw new Exception('Error al guardar: ' . $stmt->error);
                 }
-
                 // Obtener el ID de la venta insertada
                 $alistamiento_venta_id = $conn->insert_id;
-
                 // ==========================================
                 // REGISTRAR EN TABLA INGRESOS (si hay abono)
                 // ==========================================
@@ -234,7 +232,6 @@ if (isset($_POST['action'])) {
                     $detalle = "Abono inicial - Venta {$idventa}";
                     $referencia_pago = !empty($_POST['referencia_pago']) ? mysqli_real_escape_string($conn, $_POST['referencia_pago']) : '';
                     $observacion_ingresos = "Primer abono registrado al momento de crear la venta";
-
                     $sql_ingreso = "INSERT INTO ingresos (
                         alistamiento_venta_id,
                         detalle,
@@ -246,13 +243,10 @@ if (isset($_POST['action'])) {
                         observacion_ingresos,
                         fecha_registro
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-
                     $stmt_ingreso = $conn->prepare($sql_ingreso);
-
                     if (!$stmt_ingreso) {
                         throw new Exception('Error al preparar ingreso: ' . $conn->error);
                     }
-
                     $stmt_ingreso->bind_param(
                         'isdssiis',
                         $alistamiento_venta_id,
@@ -264,22 +258,17 @@ if (isset($_POST['action'])) {
                         $idcliente,
                         $observacion_ingresos
                     );
-
                     if (!$stmt_ingreso->execute()) {
                         throw new Exception('Error al guardar ingreso: ' . $stmt_ingreso->error);
                     }
-
                     $stmt_ingreso->close();
                 }
-
                 $conn->commit();
-
                 // Mensaje de éxito
                 $message = 'Venta guardada correctamente';
                 if ($valor_abono > 0 && !empty($metodo_pago_abono)) {
                     $message .= ' y abono registrado en ingresos';
                 }
-
                 echo json_encode([
                     'success' => true,
                     'message' => $message,
