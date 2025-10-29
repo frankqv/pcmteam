@@ -491,7 +491,8 @@ if (isset($_POST['action'])) {
                                         <option value="">Seleccione...</option>
                                         <option value="Bogotá Principal" selected>Bogotá Principal</option>
                                         <option value="Medellín">Medellín</option>
-                                        <option value="Cali">Cali</option>
+                                        <option value="Cucuta">Cucuta</option>
+                                        <!-- nota: Agregar más opciones segun mediate una consulta a la base de datos tabla:  usuarios.idsede -->
                                     </select>
                                 </div>
                                 <div class="col-md-4">

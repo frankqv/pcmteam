@@ -257,33 +257,15 @@ if (in_array($rol, [1, 2, 3, 4, 5, 6, 7])) {
 // ========================================================================
 $comercialMenu = [];
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
-  $comercialMenu [] =[
-    'label'=> 'Panel Principal',
-    'icon'=> 'dashboard',
-    'url'=> '../comercial/escritorio.php'
-  ];
-  $comercialMenu [] = [
-    'label' => 'Clientes',
-    'icon' => 'circule',
-    'children' => [
-      ['label' => 'Nuevo Cliente', 'icon' => 'group_add', 'url' => '../clientes/nuevo.php'],
-      ['label' => 'Lista de Clientes', 'icon' => 'list', 'url' => '../clientes/mostrar.php']
-    ],
-  ];
-  $comercialMenu [] =[
-    'label'=> 'Nueva Venta',
-    'icon'=> 'add_shopping_cart',
-    'url'=> '../comercial/nueva_venta.php'
-  ];
-  $comercialMenu [] =[
-    'label'=> 'Historial de Ventas',
-    'icon'=> 'receipt_long',
-    'url'=> '../comercial/historico_venta.php'
-  ];
-  $comercialMenu [] =[
-    'label'=> 'Lista de Productos',
-    'icon'=> 'inventory_2',
-    'url'=> '../bodega/lista_producto.php'
+  $comercialMenu = [
+    ['label' => 'Panel Principal', 'icon' => 'dashboard', 'url' =>'../comercial/escritorio.php'],
+    ['label' => 'Lista de Clientes', 'icon' => 'list', 'url' => '../clientes/mostrar.php'],
+    ['label' => 'Nuevo Cliente', 'icon' => 'group_add', 'url' => '../clientes/nuevo.php'],
+    ['label' => 'Catalogo', 'icon' => 'auto_stories', 'url' => '../b_room/mostrar.php'],
+    ['label' => 'Nueva Venta', 'icon' => 'add_shopping_cart', 'url' => '../comercial/nueva_venta.php'],
+    ['label' => 'Crear Alistamiento',  'icon' => 'add_circle', 'url' => '../venta/preventa.php'],
+    ['label' => 'Mi Solitud', 'icon' => 'history', 'url' => '../venta/historico_preventa.php'],
+    ['label' => 'Historial de Ventas', 'icon' => 'receipt_long', 'url' => '../comercial/historico_venta.php']
   ];
 }
 // Seccion padre
@@ -298,8 +280,7 @@ if (!empty($comercialMenu)) {
 
 // 4. ALISTAMIENTOS (Preparación de equipos para venta)
 // ========================================================================
-$alistamientoItems = [];
-// 4.1. Crear Alistamiento
+/* $alistamientoItems = [];
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $alistamientoItems[] = [
         'label' => 'Crear Alistamiento',
@@ -307,7 +288,6 @@ if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
         'url' => '../venta/preventa.php'
     ];
 }
-// 4.2. Historial de Alistamiento (Preventa)
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $alistamientoItems[] = [
         'label' => 'MI Solicitud',
@@ -315,7 +295,6 @@ if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
         'url' => '../venta/historico_preventa.php'
     ];
 }
-// 4.3. Histórico Completo
 // Roles: Admin, Contable, Jefe Técnico, Técnico, Bodega
 if (in_array($rol, [1, 3, 5, 6, 7])) {
     $alistamientoItems[] = [
@@ -332,7 +311,7 @@ if (!empty($alistamientoItems)) {
         'id' => 'alistamiento_group',
         'children' => $alistamientoItems
     ];
-}
+} */
 // 5. VENTAS (Proceso comercial completo)
 // ========================================================================
 $ventaItems = [];

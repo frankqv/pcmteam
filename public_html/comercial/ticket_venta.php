@@ -1,6 +1,17 @@
-/* claude.ia ayudame crear un ticket para los usuarios cuando hagan unaventa se pueda imprimir desde un boton en la  */
+/* NOTA  crear un ticket para los usuarios cuando hagan unaventa se pueda imprimir desde un boton en la  */
+/* informacion 
+* tabla de "clientes"
+
+Titulo de DELICADO
+CUIDAD DEL CLIENTE
+direccion: CLIENTE
+CC/NIT: cedula cliente
+* informacion en la tabla de "settings"
+Tambien crear par seccion de alistamiento 
 
 
+
+*/
 <?php
 # Incluyendo librerias necesarias #
 require "../../backend/pdf/code128.php";

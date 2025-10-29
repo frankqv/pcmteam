@@ -1,7 +1,6 @@
 <?php
 ob_start();
 session_start();
-
 if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7])) {
   header('location: ../error404.php');
 }
@@ -115,7 +114,7 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7
                   </div>
                   <form enctype="multipart/form-data" method="POST" autocomplete="off">
                     <div class="row">
-                      <div class="col-md-6 col-lg-6">
+                      <div class="col-md-4 col-lg-4">
                         <div class="form-group">
                           <label for="txtnum">DNI del cliente<span
                               class="text-danger">*</span></label>
@@ -125,7 +124,7 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7
                             placeholder="DNI del cliente">
                         </div>
                       </div>
-                      <div class="col-md-6 col-lg-6">
+                      <div class="col-md-4 col-lg-4">
                         <div class="form-group">
                           <label for="txtnaame">Nombres del cliente<span
                               class="text-danger">*</span></label>
@@ -133,17 +132,16 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7
                             placeholder="Nombre de la cliente">
                         </div>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-6 col-lg-6">
+                      <div class="col-md-4 col-lg-4">
                         <div class="form-group">
-                          <label for="txtape">Apellidos del cliente<span
-                              class="text-danger">*</span></label>
+                          <label for="txtape">Apellidos del cliente<span class="text-danger">*</span></label>
                           <input type="text" id="txtape" class="form-control" name="txtape"
                             placeholder="Apellido del cliente">
                         </div>
                       </div>
-                      <div class="col-md-6 col-lg-6">
+                    </div>
+                    <div class="row">
+                      <div class="col-md-4 col-lg-4">
                         <div class="form-group">
                           <label for="txtcel">Celular del cliente<span
                               class="text-danger">*</span></label>
@@ -155,16 +153,14 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7
                             name="txtcel" required>
                         </div>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-6 col-lg-6">
+                      <div class="col-md-4 col-lg-4">
                         <div class="form-group">
                           <label for="txtema">Correo del cliente</label>
                           <input type="email" id="txtema" class="form-control" name="txtema"
                             placeholder="Correo del cliente">
                         </div>
                       </div>
-                      <div class="col-md-6 col-lg-6">
+                      <div class="col-md-4 col-lg-4">
                         <div class="form-group">
                           <label for="txtnaci">Fecha de registro del cliete</label>
                           <input type="date" id="txtnaci" class="form-control" name="txtnaci">
@@ -210,7 +206,7 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7
                     <!-- FIN ROW campos adicionales -->
                     <!-- NUEVOS CAMPOS: tipo_cliente y canal_venta -->
                     <div class="row">
-                      <div class="col-md-6 col-lg-6">
+                      <div class="col-md-4 col-lg-4">
                         <div class="form-group">
                           <label for="txttipo">Tipo de Cliente</label>
                           <select id="txttipo" class="form-control" name="txttipo">
@@ -220,7 +216,7 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7
                           </select>
                         </div>
                       </div>
-                      <div class="col-md-6 col-lg-6">
+                      <div class="col-md-4 col-lg-4">
                         <div class="form-group">
                           <label for="txtcanal">Canal de Venta</label>
                           <select id="txtcanal" class="form-control" name="txtcanal">
@@ -228,8 +224,10 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7
                             <option value="whatsapp_pauta">WhatsApp Pauta</option>
                             <option value="facebook">Facebook</option>
                             <option value="instagram">Instagram</option>
-                            <option value="marketplace">Marketplace</option>
-                            <option value="tienda_fisica">Tienda Física</option>
+                            <option value="e-commerce">E-commerce</option>
+                            <option value="landing_page">Landing Page</option>
+                            <option value="marketplace_addi">Marketplace Adii</option>
+                            <option value="venta_fisica_por_anuncio">Venta Física por Anuncio</option>
                             <option value="llamada">Llamada Telefónica</option>
                             <option value="correo">Correo Electrónico</option>
                             <option value="whatsapp">WhatsApp</option>
@@ -238,19 +236,17 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7
                           </select>
                         </div>
                       </div>
-                    </div>
-                    <!-- FIN NUEVOS CAMPOS -->
-                    <div class="row">
-                      <div class="col-md-12 col-lg-12">
+                      <div class="col-md-4 col-lg-4">
                         <div class="form-group">
                           <label for="txtesta">Estado del cliente<span
                               class="text-danger">*</span></label>
-                          <select id="txtesta" class="form-control" required name="txtesta">
+                          <select id="txtesta" class="form-control" required name="txtesta" readonly>
                             <option value="Activo">Activo</option>
                           </select>
                         </div>
                       </div>
                     </div>
+                    <!-- FIN NUEVOS CAMPOS -->
                     <hr>
                     <div class="form-group">
                       <div class="col-sm-12">
@@ -285,9 +281,7 @@ if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2, 3, 4, 5, 6, 7
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
         const todayFormatted = yyyy + '-' + mm + '-' + dd;
-
         $('#txtnaci').val(todayFormatted);
-
         // Sidebar y menu
         $('#sidebarCollapse').on('click', function() {
           $('#sidebar').toggleClass('active');
