@@ -265,9 +265,14 @@ if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     ['label' => 'Nueva Venta', 'icon' => 'add_shopping_cart', 'url' => '../comercial/nueva_venta.php'],
     ['label' => 'Crear Alistamiento',  'icon' => 'add_circle', 'url' => '../venta/preventa.php'],
     ['label' => 'Mi Solitud', 'icon' => 'history', 'url' => '../venta/historico_preventa.php'],
-    ['label' => 'Historial de Ventas', 'icon' => 'receipt_long', 'url' => '../comercial/historico_venta.php']
+    ['label' => 'Historial de Ventas', 'icon' => 'receipt_long', 'url' => '../comercial/historico_venta.php'],
+    ['label' => 'Órdenes Pendientes', 'icon' => 'pending_actions', 'url' => '../despacho/pedientes.php' ],
+    ['label' => 'Historico Despacho', 'icon' => 'local_shipping', 'url' => '../despacho/historial.php' ]
   ];
 }
+
+
+
 // Seccion padre
 if (!empty($comercialMenu)) {
     $menu[] = [
@@ -280,7 +285,7 @@ if (!empty($comercialMenu)) {
 
 // 4. ALISTAMIENTOS (Preparación de equipos para venta)
 // ========================================================================
-/* $alistamientoItems = [];
+$alistamientoItems = [];
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $alistamientoItems[] = [
         'label' => 'Crear Alistamiento',
@@ -311,18 +316,13 @@ if (!empty($alistamientoItems)) {
         'id' => 'alistamiento_group',
         'children' => $alistamientoItems
     ];
-} */
+}
+/*
 // 5. VENTAS (Proceso comercial completo)
 // ========================================================================
 $ventaItems = [];
 // 5.1. Lista de Productos
-if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
-    $ventaItems[] = [
-        'label' => 'Lista de Productos',
-        'icon' => 'inventory_2',
-        'url' => '../bodega/lista_producto.php'
-    ];
-}
+// Roles: Admin, Cliente, Contable, Comercial, Jefe Técnico, Bodega
 // 5.2. Gestión de Clientes
 // Solo se muestra si el usuario tiene una sede asignada (idsede no vacío)
 // El Admin (rol 1) siempre tiene acceso completo
@@ -414,7 +414,7 @@ if (!empty($ventaItems)) {
         'id' => 'venta_group',
         'children' => $ventaItems
     ];
-}
+} */
 // 6. DESPACHO (Logística y entrega de equipos)
 // ========================================================================
 $despachoItems = [];
@@ -427,6 +427,7 @@ if (in_array($rol, [1, 3, 5, 6, 7])) {
         'url' => '../despacho/historial_solicitudes_alistamiento.php'
     ];
 }
+/*
 // 6.2. Órdenes Pendientes
 if (in_array($rol, [1, 3, 4, 5, 6, 7])) {
     $despachoItems[] = [
@@ -451,7 +452,7 @@ if (!empty($despachoItems)) {
         'id' => 'despacho_group',
         'children' => $despachoItems
     ];
-}
+} */
 // 7. CONTABILIDAD (Finanzas y facturación)
 // ========================================================================
 $contabilidadItems = [];

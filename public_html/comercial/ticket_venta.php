@@ -2,16 +2,17 @@
 /* informacion 
 * tabla de "clientes"
 
-Titulo de DELICADO
-CUIDAD DEL CLIENTE
-direccion: CLIENTE
-CC/NIT: cedula cliente
+<br/>Titulo de DELICADO
+<br/>CUIDAD DEL CLIENTE
+<br/>direccion: CLIENTE
+<br/>CC/NIT: cedula cliente
+<br/>y un parrafo que diga "PRODUCTO CON SELLOS DE SEGURIDAD"
 * informacion en la tabla de "settings"
 Tambien crear par seccion de alistamiento 
-
-
-
 */
+/* tamnie si se puede para ahorrar papael se imprima de pares la orden 1, la 2, en la misma hoja.
+
+
 <?php
 # Incluyendo librerias necesarias #
 require "../../backend/pdf/code128.php";
