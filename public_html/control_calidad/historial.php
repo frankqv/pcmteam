@@ -5,7 +5,7 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-$rol = $_SESSION['rol'] ?? 0;
+$rol = $_SESSION['rol'] ?? 1;
 if (!in_array($rol, [1, 5])) {
     header("Location: ../cuenta/sin_permiso.php");
     exit;

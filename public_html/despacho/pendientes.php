@@ -1,21 +1,17 @@
 <?php
 ob_start();
 session_start();
-
 if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], [1, 2,3,4,5,6, 7])) {
     header('location: ../error404.php');
     exit();
 }
-
 require_once '../../config/ctconex.php';
-
 // --- LÓGICA DE PROCESAMIENTO DE DESPACHO ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orden_id'])) {
     $ordenId = $_POST['orden_id'];
     
     try {
         $conn->begin_transaction();
-
         // 1. Obtener los inventario_id de los productos de la orden
         $sql_detalles = "SELECT inventario_id FROM venta_detalles WHERE orden_id = ?";
         $stmt_detalles = $conn->prepare($sql_detalles);
@@ -39,18 +35,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orden_id'])) {
         $types = str_repeat('i', count($inventario_ids));
         $stmt_update_inventario->bind_param($types, ...$inventario_ids);
         $stmt_update_inventario->execute();
-
         // 3. Actualizar el estado de la orden a 'Enviado' o 'Despachado'
         // Esto hace que la orden desaparezca de la lista de pendientes
         $sql_update_order = "UPDATE orders SET despacho = 'Enviado' WHERE idord = ?";
         $stmt_update_order = $conn->prepare($sql_update_order);
         $stmt_update_order->bind_param("i", $ordenId);
         $stmt_update_order->execute();
-
         $conn->commit();
         echo "<script>alert('Despacho procesado con éxito.'); window.location.href='despachos.php';</script>";
         exit;
-
     } catch (Exception $e) {
         $conn->rollback();
         echo "<script>alert('Error al procesar el despacho: " . $e->getMessage() . "'); window.location.href='despachos.php';</script>";
@@ -58,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orden_id'])) {
     }
 }
 // --- FIN DE LA LÓGICA DE PROCESAMIENTO DE DESPACHO ---
-
 // Resto del código (HTML, JavaScript, etc.) para mostrar la página
 // ...
 ?>
@@ -173,7 +165,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orden_id'])) {
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
@@ -246,7 +237,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orden_id'])) {
             </div>
         </div>
     </div>
-
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
     <script src="../assets/js/popper.min.js"></script>
     <script src="../assets/js/bootstrap.min.js"></script>

@@ -7,10 +7,8 @@ ob_start();
   }
 ?>
 <?php if(isset($_SESSION['id'])) { ?>
-
 <!doctype html>
 <html lang="es">
-
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -22,10 +20,7 @@ ob_start();
     <!----css3---->
     <link rel="stylesheet" href="../assets/css/custom.css">
     <link rel="stylesheet" href="../assets/css/loader.css">
-
-
     <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -33,11 +28,8 @@ ob_start();
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="icon" type="image/png" href="../assets/img/favicon.webp" />
 </head>
-
 <body>
-
     <div class="wrapper">
-
         <div class="body-overlay"></div>
         <!-- layouts nav.php  |  Sidebar -->
         <?php    include_once '../layouts/nav.php';  include_once '../layouts/menu_data.php';    ?>
@@ -47,11 +39,6 @@ ob_start();
             </div>
             <?php renderMenu($menu); ?>
         </nav>
-
-
-
-
-
         <!-- Page Content  -->
         <div id="content">
             <div class='pre-loader'>
@@ -60,19 +47,15 @@ ob_start();
             <div class="top-navbar">
                 <nav class="navbar navbar-expand-lg">
                     <div class="container-fluid">
-
                         <button type="button" id="sidebarCollapse" class="d-xl-block d-lg-block d-md-mone d-none">
                             <span class="material-icons">arrow_back_ios</span>
                         </button>
-
                         <a class="navbar-brand" href="#"> Gastos </a>
-
                         <button class="d-inline-block d-lg-none ml-auto more-button" type="button"
                             data-toggle="collapse" data-target="#navbarSupportedContent"
                             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="material-icons">more_vert</span>
                         </button>
-
                         <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
                             id="navbarSupportedContent">
                             <ul class="nav navbar-nav ml-auto">
@@ -83,9 +66,7 @@ ob_start();
                                 </li>
                                 <li class="dropdown nav-item active">
                                     <a href="#" class="nav-link" data-toggle="dropdown">
-
                                         <img src="../assets/img/reere.webp">
-
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
@@ -94,16 +75,13 @@ ob_start();
                                         <li>
                                             <a href="../cuenta/salir.php">Salir</a>
                                         </li>
-
                                     </ul>
                                 </li>
-
                             </ul>
                         </div>
                     </div>
                 </nav>
             </div>
-
             <div class="main-content">
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
@@ -120,7 +98,6 @@ ob_start();
                                 <h4 class="card-title">Gastos recientes</h4>
                                 <p class="category">Nuevas gastos reciente añadidos el dia de hoy</p>
                             </div>
-
                             <div class="card-content table-responsive">
                                 <div class="alert alert-warning">
                                     <strong>Estimado usuario!</strong> Los campos remarcados con <span
@@ -132,16 +109,11 @@ ob_start();
                                             <div class="form-group">
                                                 <label for="email">Detalle de los gastos<span
                                                         class="text-danger">*</span></label>
-
                                                 <textarea class="form-control" name="detta" rows="5" cols="33"
                                                     required></textarea>
-
                                             </div>
                                         </div>
-
-
                                     </div>
-
                                     <div class="row">
                                         <div class="col-md-6 col-lg-6">
                                             <div class="form-group">
@@ -151,7 +123,6 @@ ob_start();
                                                     required class="form-control" name="montoot">
                                             </div>
                                         </div>
-
                                         <div class="col-md-6 col-lg-6">
                                             <div class="form-group">
                                                 <label for="email">Fecha<span class="text-danger">*</span></label>
@@ -159,7 +130,6 @@ ob_start();
                                             </div>
                                         </div>
                                     </div>
-
                                     <hr>
                                     <div class="form-group">
                                         <div class="col-sm-12">
@@ -169,40 +139,32 @@ ob_start();
                                         </div>
                                     </div>
                                 </form>
-
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
-
-
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="../assets/js/jquery-3.3.1.slim.min.js"></script>
     <script src="../assets/js/popper.min.js"></script>
     <script src="../assets/js/bootstrap.min.js"></script>
     <script src="../assets/js/jquery-3.3.1.min.js"></script>
-
     <script src="../assets/js/sweetalert.js"></script>
     <?php
     include_once '../../backend/php/st_add_gastos.php'
 ?>
-
     <script type="text/javascript">
     $(document).ready(function() {
         $('#sidebarCollapse').on('click', function() {
             $('#sidebar').toggleClass('active');
             $('#content').toggleClass('active');
         });
-
         $('.more-button,.body-overlay').on('click', function() {
             $('#sidebar,.body-overlay').toggleClass('show-nav');
         });
-
     });
     </script>
     <script src="../assets/js/loader.js"></script>
@@ -219,15 +181,8 @@ ob_start();
         document.getElementById('fechaActual').value = ano + "-" + mes + "-" + dia;
     }
     </script>
-
 </body>
-
 </html>
-
-
-
-
-
 <?php }else{ 
     header('Location: ../error404.php');
  } ?>
