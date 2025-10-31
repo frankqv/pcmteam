@@ -251,43 +251,43 @@ if (isset($_SESSION['id'])) {
           <?php endif; ?>
           <!-- Estadísticas -->
           <div class="row">
-            <div class="col-lg-2 col-md-2 col-sm-6">
+            <div class="col-xl col-lg-3 col-md-4 col-sm-6">
               <div class="stats-card" style="background: #275781;">
                 <h3><?php echo $stats['total']; ?></h3>
                 <small>Total Solicitudes</small>
               </div>
             </div>
-            <div class="col-lg-2 col-md-2 col-sm-6">
+            <div class="col-xl col-lg-3 col-md-4 col-sm-6">
               <div class="stats-card" style="background: #CC0618;">
                 <h3><?php echo $stats['pendientes']; ?></h3>
                 <small>Pendientes</small>
               </div>
             </div>
-            <div class="col-lg-2 col-md-2 col-sm-6">
+            <div class="col-xl col-lg-3 col-md-4 col-sm-6">
               <div class="stats-card" style="background: #F0DD00; color:#6E6E6E;">
                 <h3><?php echo $stats['en_proceso']; ?></h3>
                 <small>En Proceso</small>
               </div>
             </div>
-            <div class="col-lg-2 col-md-2 col-sm-6">
+            <div class="col-xl col-lg-3 col-md-4 col-sm-6">
               <div class="stats-card" style="background: #28a745;">
                 <h3><?php echo $stats['completadas']; ?></h3>
                 <small>Completadas</small>
               </div>
             </div>
-            <div class="col-lg-2 col-md-2 col-sm-6">
+            <div class="col-xl col-lg-3 col-md-4 col-sm-6">
               <div class="stats-card" style="background: #ff9a35; color: #fff;">
                 <h3><?php echo $stats['entrega_parcial']; ?></h3>
                 <small>Entrega Parcial</small>
               </div>
             </div>
-            <div class="col-lg-2 col-md-2 col-sm-6">
+            <div class="col-xl col-lg-3 col-md-4 col-sm-6">
               <div class="stats-card" style="background: #00CC54;">
                 <h3><?php echo $stats['despachados_entregados']; ?></h3>
                 <small>Despachados/Entregados</small>
               </div>
             </div>
-            <div class="col-lg-2 col-md-2 col-sm-6">
+            <div class="col-xl col-lg-3 col-md-4 col-sm-6">
               <div class="stats-card" style="background: #6c757d;">
                 <h3><?php echo $stats['canceladas']; ?></h3>
                 <small>Canceladas</small>

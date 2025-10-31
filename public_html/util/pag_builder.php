@@ -1,7 +1,8 @@
 <!-- Funcion recursiva de imagen SVG, de pagina en construccion -->
 <?php
-function construcionpage(): void {
-        echo' 
+function construcionpage(): void
+{
+  echo ' 
             <div class="top-navbar"> <!-- Contenido de top-navbar-->
                 <nav class="navbar navbar-expand-lg" style=" background-color: red;">
                     <div class="container-fluid">
@@ -820,7 +821,7 @@ function construcionpage(): void {
             </g>
           </g>
         </svg>
-     <!-- FIN DE LA IMAGEN SVG -->
-                    ';}
+    <!-- FIN DE LA IMAGEN SVG -->
+  ';
+}
 ?>
-

@@ -1,0 +1,78 @@
+// ============================================================================================
+Descripcion Transferencia
+// ============================================================================================
+Realiza tu pago directamente en nuestra cuenta
+<br> 💳 <b>Bancolombia 25123456789</b>
+<br>Por favor, usa el número del pedido como referencia de pago y envíanos la captura de pantalla a nuestro WhatsApp
+<b>+57 301 234-5678</b>
+<br><br>
+<button id="btn-copiar-cuenta"
+  style="background:#000; color:white; border:2px solid #ffff00; padding:10px 20px; cursor:pointer; border-radius:5px; transition:all 0.3s; font-weight:bold;">
+  Copiar número de cuenta 25123456789
+</button>
+
+
+
+
+// ============================================================================================
+Funciones.php
+// ============================================================================================
+<?php
+// Si ya existe la etiqueta <?php al inicio, NO la agregues de nuevo
+// Permitir HTML en instrucciones de pago de WooCommerce
+add_filter('woocommerce_gateway_description', 'permitir_html_instrucciones_pago', 10, 2);
+function permitir_html_instrucciones_pago($description, $payment_id) {
+    return wp_kses_post($description);
+}
+// Agregar JavaScript para el botón de copiar cuenta
+add_action('wp_footer', 'agregar_script_copiar_cuenta');
+function agregar_script_copiar_cuenta() {
+    ?>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const boton = document.getElementById('btn-copiar-cuenta');
+    if (boton) {
+      boton.addEventListener('click', function () {
+        const numeroCuenta = '25123456789';
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(numeroCuenta).then(() => {
+            mostrarExito(this);
+          }).catch(() => {
+            copiarConMetodoAntiguo(numeroCuenta, this);
+          });
+        } else {
+          copiarConMetodoAntiguo(numeroCuenta, this);
+        }
+      });
+    }
+    function mostrarExito(boton) {
+      boton.style.background = '#00cc00';
+      boton.style.color = '#fff';
+      boton.style.border = '3px solid #00ff00';
+      boton.textContent = '¡Copiado Exitosamente!';
+      setTimeout(() => {
+        boton.style.background = '#000';
+        boton.style.color = 'white';
+        boton.style.border = '2px solid #ffff00';
+        boton.textContent = 'Copiar número de cuenta 25123456789';
+      }, 1500);
+    }
+    function copiarConMetodoAntiguo(texto, boton) {
+      const textarea = document.createElement('textarea');
+      textarea.value = texto;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        mostrarExito(boton);
+      } catch (err) {
+        alert('No se pudo copiar. Por favor, copia manualmente: ' + texto);
+      }
+      document.body.removeChild(textarea);
+    }
+  });
+</script>
+<?php
+}

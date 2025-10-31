@@ -19,7 +19,6 @@
             ?>
         </select>
     </div>
-
     <div class="col-md-6 col-lg-6">
         <div class="form-group">
             <label for="servtxt">Observación del Técnico<span class="text-danger">*</span></label>
@@ -27,21 +26,7 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
 <!-- ************************************************** -->
-
-
-
-
 <div class="col-md-4 col-lg-4">
     <div class="form-group">
         <label for="email">Clientes<span class="text-danger">*</span></label>
@@ -60,7 +45,6 @@
             <?php
                     }
             ?>
-
         </select>
     </div>
 </div>

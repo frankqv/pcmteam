@@ -123,7 +123,7 @@ ob_start();
                             <div class="card-content table-responsive">
                                 <?php
                                require '../../config/ctconex.php'; 
- $sentencia = $connect->prepare("SELECT gastos.idga, gastos.detall, gastos.total, gastos.fec FROM gastos ORDER BY idga DESC;");
+ $sentencia = $connect->prepare("SELECT gastos.idga, gastos.detalle, gastos.total, gastos.metodo_pago, gastos.fecha_resgistro FROM gastos ORDER BY idga DESC;");
  $sentencia->execute();
 
 $data =  array();
@@ -139,19 +139,38 @@ if($sentencia){
                                         <tr>
                                             <th>Fecha</th>
                                             <th>Detalle</th>
+                                            <th>Método Pago</th>
                                             <th>Total</th>
-
+                                            <th>Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach($data as $g):?>
+                                        <?php foreach($data as $g):
+                                            // Decodificar JSON de gastos
+                                            $gastos_json = json_decode($g->detalle, true);
+                                            $es_json = is_array($gastos_json);
+                                        ?>
                                         <tr>
-
-                                            <td><?php echo  $g->fec; ?></td>
-                                            <td><?php echo $g->detall ?></td>
-                                            <td><?php echo  $g->total; ?></td>
-
-
+                                            <td><?php echo date('d/m/Y H:i', strtotime($g->fecha_resgistro)); ?></td>
+                                            <td>
+                                                <?php if ($es_json): ?>
+                                                    <strong><?php echo count($gastos_json); ?> gasto(s)</strong>
+                                                    <ul class="mb-0 pl-3">
+                                                        <?php foreach ($gastos_json as $item): ?>
+                                                            <li><?php echo htmlspecialchars($item['descripcion']); ?> - $<?php echo number_format($item['monto'], 0, ',', '.'); ?></li>
+                                                        <?php endforeach; ?>
+                                                    </ul>
+                                                <?php else: ?>
+                                                    <?php echo htmlspecialchars($g->detalle); ?>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td><span class="badge badge-info"><?php echo htmlspecialchars($g->metodo_pago); ?></span></td>
+                                            <td><strong class="text-danger">$<?php echo number_format($g->total, 0, ',', '.'); ?></strong></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info" onclick="verDetalle(<?php echo $g->idga; ?>)" title="Ver Detalle">
+                                                    <i class="material-icons" style="font-size: 16px;">visibility</i>
+                                                </button>
+                                            </td>
                                         </tr>
                                         <?php endforeach; ?>
                                     </tbody>
@@ -217,6 +236,12 @@ if($sentencia){
             }
         });
     });
+    </script>
+
+    <script>
+    function verDetalle(id) {
+        window.location.href = 'ver.php?id=' + id;
+    }
     </script>
 
 </body>

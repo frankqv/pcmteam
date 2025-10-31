@@ -13,6 +13,11 @@ $usuario_id = $_SESSION['id'];
 $usuario_rol = $_SESSION['rol'];
 $usuario_sede = $_SESSION['idsede'] ?? '';
 
+// Obtener filtros
+$filtro_estado = $_GET['estado'] ?? '';
+$filtro_fecha_desde = $_GET['fecha_desde'] ?? '';
+$filtro_fecha_hasta = $_GET['fecha_hasta'] ?? '';
+
 // Construir consulta según el rol
 $sql = "SELECT
     av.id,
@@ -20,6 +25,7 @@ $sql = "SELECT
     av.ticket,
     av.fecha_venta,
     av.estado,
+    av.canal_venta,
     av.total_venta,
     av.valor_abono,
     av.saldo_pendiente,
@@ -44,6 +50,22 @@ if ($usuario_rol == 1) {
 } else {
     // Otros roles: Solo ven ventas de su misma sede
     $sql .= " AND av.sede = '$usuario_sede'";
+}
+
+// Aplicar filtros adicionales
+if (!empty($filtro_estado)) {
+    $filtro_estado_safe = $conn->real_escape_string($filtro_estado);
+    $sql .= " AND av.estado = '$filtro_estado_safe'";
+}
+
+if (!empty($filtro_fecha_desde)) {
+    $filtro_fecha_desde_safe = $conn->real_escape_string($filtro_fecha_desde);
+    $sql .= " AND DATE(av.fecha_venta) >= '$filtro_fecha_desde_safe'";
+}
+
+if (!empty($filtro_fecha_hasta)) {
+    $filtro_fecha_hasta_safe = $conn->real_escape_string($filtro_fecha_hasta);
+    $sql .= " AND DATE(av.fecha_venta) <= '$filtro_fecha_hasta_safe'";
 }
 
 $sql .= " ORDER BY av.fecha_venta DESC";
@@ -181,33 +203,35 @@ $result = $conn->query($sql);
 
                 <!-- Filtros -->
                 <div class="filter-card">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label>Estado</label>
-                            <select id="filtroEstado" class="form-control">
-                                <option value="">Todos</option>
-                                <option value="borrador">Borrador</option>
-                                <option value="aprobado">Aprobado</option>
-                                <option value="cancelado">Cancelado</option>
-                                <option value="pendiente">Pendiente</option>
-                            </select>
+                    <form method="GET" action="">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Estado</label>
+                                <select name="estado" id="filtroEstado" class="form-control">
+                                    <option value="">Todos</option>
+                                    <option value="borrador" <?php echo $filtro_estado == 'borrador' ? 'selected' : ''; ?>>Borrador</option>
+                                    <option value="aprobado" <?php echo $filtro_estado == 'aprobado' ? 'selected' : ''; ?>>Aprobado</option>
+                                    <option value="cancelado" <?php echo $filtro_estado == 'cancelado' ? 'selected' : ''; ?>>Cancelado</option>
+                                    <option value="pendiente" <?php echo $filtro_estado == 'pendiente' ? 'selected' : ''; ?>>Pendiente</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Fecha Desde</label>
+                                <input type="date" name="fecha_desde" id="filtroFechaDesde" class="form-control" value="<?php echo htmlspecialchars($filtro_fecha_desde); ?>">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Fecha Hasta</label>
+                                <input type="date" name="fecha_hasta" id="filtroFechaHasta" class="form-control" value="<?php echo htmlspecialchars($filtro_fecha_hasta); ?>">
+                            </div>
+                            <div class="col-md-3">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-primary btn-block" id="btnFiltrar">
+                                    <span class="material-icons" style="vertical-align: middle; font-size: 18px;">search</span>
+                                    Filtrar
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <label>Fecha Desde</label>
-                            <input type="date" id="filtroFechaDesde" class="form-control">
-                        </div>
-                        <div class="col-md-3">
-                            <label>Fecha Hasta</label>
-                            <input type="date" id="filtroFechaHasta" class="form-control">
-                        </div>
-                        <div class="col-md-3">
-                            <label>&nbsp;</label>
-                            <button class="btn btn-primary btn-block" id="btnFiltrar">
-                                <span class="material-icons" style="vertical-align: middle; font-size: 18px;">search</span>
-                                Filtrar
-                            </button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
 
                 <!-- Tabla de ventas -->
@@ -222,6 +246,7 @@ $result = $conn->query($sql);
                                         <th>Fecha</th>
                                         <th>Cliente</th>
                                         <th>Vendedor</th>
+                                        <th>Canal Venta</th>
                                         <th>Concepto</th>
                                         <th>Total</th>
                                         <th>Abono</th>
@@ -242,6 +267,7 @@ $result = $conn->query($sql);
                                                     <small class="text-muted">NIT: <?php echo htmlspecialchars($row['numid']); ?></small>
                                                 </td>
                                                 <td><?php echo htmlspecialchars($row['vendedor']); ?></td>
+                                                <td><span class="badge badge-info"><?php echo htmlspecialchars($row['canal_venta'] ?? 'N/A'); ?></span></td>
                                                 <td><?php echo htmlspecialchars($row['concepto_salida']); ?></td>
                                                 <td class="total-positivo">$<?php echo number_format($row['total_venta'], 0, ',', '.'); ?></td>
                                                 <td>$<?php echo number_format($row['valor_abono'], 0, ',', '.'); ?></td>
@@ -274,7 +300,7 @@ $result = $conn->query($sql);
                                         <?php endwhile; ?>
                                     <?php else: ?>
                                         <tr>
-                                            <td colspan="11" class="text-center">No hay ventas registradas</td>
+                                            <td colspan="12" class="text-center">No hay ventas registradas</td>
                                         </tr>
                                     <?php endif; ?>
                                 </tbody>
@@ -334,11 +360,6 @@ $result = $conn->query($sql);
             ]
         });
 
-        // Filtrar
-        $('#btnFiltrar').click(function() {
-            // Aquí puedes agregar lógica de filtrado AJAX si lo deseas
-            location.reload();
-        });
     });
 
     function verDetalle(id) {

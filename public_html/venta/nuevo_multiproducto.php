@@ -26,13 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sql_order = "INSERT INTO orders (user_id, user_cli, method, total_products, total_price, placed_on, payment_status, tipc, despacho, responsable)
                       VALUES (?, ?, ?, ?, ?, NOW(), 'Aceptado', 'Venta', 'Pendiente', ?)";
         $stmt_order = $connect->prepare($sql_order);
-
         // Calcular total de productos
         $total_productos = 0;
         foreach ($carrito as $item) {
             $total_productos += $item['cantidad'];
         }
-
         $stmt_order->execute([
             $vendedor_id,           // user_id (vendedor)
             $cliente_id,            // user_cli (cliente)
@@ -51,9 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $precio_unitario = $item['precio'] ?? 0;
             // a. Encontrar los IDs de inventario disponibles
             $sql_inventario_ids = "SELECT id, serial, codigo_g FROM bodega_inventario
-                                   WHERE marca = ? AND modelo = ? AND procesador = ? AND ram = ? AND disco = ? AND grado = ?
-                                   AND disposicion = 'Para Venta' AND estado = 'activo'
-                                   LIMIT " . intval($cantidad_vendida);
+                                    WHERE marca = ? AND modelo = ? AND procesador = ? AND ram = ? AND disco = ? AND grado = ?
+                                    AND disposicion = 'Para Venta' AND estado = 'activo'
+                                    LIMIT " . intval($cantidad_vendida);
             $stmt_inventario_ids = $connect->prepare($sql_inventario_ids);
             $stmt_inventario_ids->execute([$item['marca'], $item['modelo'], $item['procesador'], $item['ram'], $item['disco'], $item['grado']]);
             $inventario_disponibles = $stmt_inventario_ids->fetchAll(PDO::FETCH_ASSOC);
