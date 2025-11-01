@@ -8,6 +8,7 @@ if (isset($_POST['staddgast'])) {
         $metodo_pago = trim($_POST['metodo_pago']);
         $idcliente = !empty($_POST['idcliente']) ? intval($_POST['idcliente']) : 0;
         $gasto_por = $_SESSION['id']; // Usuario que registra el gasto
+        $observacion_general = trim($_POST['observacion_general'] ?? '');
 
         // Validar que haya gastos
         if (empty($gastos)) {
@@ -75,8 +76,9 @@ if (isset($_POST['staddgast'])) {
             gasto_por,
             idcliente,
             foto,
+            observacion_general,
             fecha_resgistro
-        ) VALUES (?, ?, ?, ?, ?, ?, NOW())";
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
 
         $stmt = $conn->prepare($sql);
 
@@ -85,13 +87,14 @@ if (isset($_POST['staddgast'])) {
         }
 
         $stmt->bind_param(
-            'sdsiis',
+            'sdsiiss',
             $detalle_json,
             $total_general,
             $metodo_pago,
             $gasto_por,
             $idcliente,
-            $foto_nombre
+            $foto_nombre,
+            $observacion_general
         );
 
         if ($stmt->execute()) {

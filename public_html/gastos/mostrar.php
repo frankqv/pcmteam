@@ -123,7 +123,7 @@ ob_start();
                             <div class="card-content table-responsive">
                                 <?php
                                require '../../config/ctconex.php'; 
- $sentencia = $connect->prepare("SELECT gastos.idga, gastos.detalle, gastos.total, gastos.metodo_pago, gastos.fecha_resgistro FROM gastos ORDER BY idga DESC;");
+ $sentencia = $connect->prepare("SELECT gastos.idga, gastos.detalle, gastos.total, gastos.metodo_pago, gastos.observacion_general, gastos.fecha_resgistro FROM gastos ORDER BY idga DESC;");
  $sentencia->execute();
 
 $data =  array();
@@ -162,6 +162,14 @@ if($sentencia){
                                                     </ul>
                                                 <?php else: ?>
                                                     <?php echo htmlspecialchars($g->detalle); ?>
+                                                <?php endif; ?>
+                                                <?php if (!empty($g->observacion_general)): ?>
+                                                    <div class="mt-2">
+                                                        <small class="text-muted">
+                                                            <i class="material-icons" style="font-size: 14px; vertical-align: middle;">comment</i>
+                                                            <strong>Observación:</strong> <?php echo htmlspecialchars($g->observacion_general); ?>
+                                                        </small>
+                                                    </div>
                                                 <?php endif; ?>
                                             </td>
                                             <td><span class="badge badge-info"><?php echo htmlspecialchars($g->metodo_pago); ?></span></td>

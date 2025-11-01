@@ -175,8 +175,8 @@ if (isset($_SESSION['id'])) {
       margin: 5px 0 0 0;
       opacity: 0.9;
     } .badge-pendiente {
-      background: #ffc107;
-      color: #000;
+      background: #9B2003;
+      color: #fff;
     } .badge-en_proceso {
       background: #17a2b8;
       color: #fff;
@@ -627,13 +627,13 @@ if (isset($_SESSION['id'])) {
             success: function(response) {
               if (response.success) {
                 // Actualizar color del badge
-                $select.removeClass('bg-danger bg-warning bg-info bg-success bg-primary bg-secondary');
+                $select.removeClass('bg-danger bg-warning bg-info bg-success bg-primary bg-secondary badge-entrega_parcial');
                 switch (nuevoEstado) {
                   case 'pendiente':
-                    $select.addClass('bg-warning');
+                    $select.addClass('badge-pendiente');
                     break;
                   case 'en_proceso':
-                    $select.addClass('bg-info');
+                    $select.addClass('badge-en_proceso');
                     break;
                   case 'completada':
                     $select.addClass('bg-success');
@@ -645,7 +645,7 @@ if (isset($_SESSION['id'])) {
                     $select.addClass('bg-success');
                     break;
                   case 'entrega_parcial':
-                    $select.addClass('bg-warning');
+                    $select.addClass('.badge-entrega_parcial');
                     break;
                   case 'cancelada':
                     $select.addClass('bg-secondary');

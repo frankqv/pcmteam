@@ -173,11 +173,19 @@ $usuario_id = $_SESSION['id'];
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Foto del Comprobante (Opcional)</label>
                                                 <input type="file" class="form-control" name="foto_comprobante" accept="image/*,.pdf">
                                                 <small class="form-text text-muted">Formatos: JPG, PNG, PDF. Máximo 5MB</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Observación General (Opcional)</label>
+                                                <textarea class="form-control" name="observacion_general" rows="3" placeholder="Notas adicionales sobre estos gastos..."></textarea>
+                                                <small class="form-text text-muted">Comentarios generales que aplican a todos los gastos</small>
                                             </div>
                                         </div>
                                     </div>
